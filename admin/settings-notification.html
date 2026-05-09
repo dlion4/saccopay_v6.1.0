@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications & OTP Center - Rongo SACCO | SACCOPay Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           NOTIFICATIONS PAGE STYLES
+        ======================================== */
+
+        /* Notification Stats */
+        .notif-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .ns-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ns-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .ns-card.urgent::after { background: linear-gradient(90deg, #f44336, #ff5722); }
+        .ns-card.otp::after { background: linear-gradient(90deg, var(--primary-green), var(--accent-teal)); }
+        .ns-card.requests::after { background: linear-gradient(90deg, #2196f3, #42a5f5); }
+        .ns-card.system::after { background: linear-gradient(90deg, #ff9800, #ffb74d); }
+        .ns-card.all::after { background: linear-gradient(90deg, #9c27b0, #ba68c8); }
+
+        .ns-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .ns-value {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .ns-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .ns-pulse {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes nsPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        .ns-pulse { animation: nsPulse 2s infinite; }
+
+        /* Notification Item */
+        .notif-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.2s ease;
+            position: relative;
+            background: var(--bg-secondary);
+        }
+
+        .notif-item:hover {
+            border-color: var(--primary-green-light);
+            background: var(--primary-green-ultra-light);
+        }
+
+        .notif-item.unread {
+            border-left: 4px solid var(--primary-green);
+            background: rgba(0, 208, 132, 0.02);
+        }
+
+        .notif-item.urgent-item {
+            border-left: 4px solid var(--status-danger);
+            background: rgba(244, 67, 54, 0.02);
+        }
+
+        .notif-item.otp-item {
+            border-left: 4px solid var(--accent-teal);
+            background: rgba(0, 188, 212, 0.02);
+        }
+
+        .notif-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notif-icon-wrap.otp { background: rgba(0, 208, 132, 0.1); color: var(--primary-green); }
+        .notif-icon-wrap.withdrawal { background: rgba(244, 67, 54, 0.1); color: var(--status-danger); }
+        .notif-icon-wrap.loan { background: rgba(33, 150, 243, 0.1); color: var(--accent-blue); }
+        .notif-icon-wrap.kyc { background: rgba(255, 152, 0, 0.1); color: var(--accent-orange); }
+        .notif-icon-wrap.guarantor { background: rgba(156, 39, 176, 0.1); color: var(--accent-purple); }
+        .notif-icon-wrap.system { background: rgba(121, 85, 72, 0.1); color: #795548; }
+        .notif-icon-wrap.transfer { background: rgba(0, 188, 212, 0.1); color: var(--accent-teal); }
+        .notif-icon-wrap.share { background: rgba(26, 35, 130, 0.1); color: #1a237e; }
+        .notif-icon-wrap.member { background: rgba(76, 175, 80, 0.1); color: var(--status-success); }
+        .notif-icon-wrap.compliance { background: rgba(0, 105, 92, 0.1); color: #00695c; }
+
+        .notif-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 0 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notif-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0 0 6px;
+            line-height: 1.4;
+        }
+
+        .notif-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+        }
+
+        .notif-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+
+        .notif-time {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        /* OTP Display */
+        .otp-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            background: rgba(0, 208, 132, 0.08);
+            border: 2px dashed rgba(0, 208, 132, 0.3);
+            border-radius: var(--radius-md);
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--primary-green);
+            cursor: pointer;
+        }
+
+        .otp-display:hover {
+            background: rgba(0, 208, 132, 0.12);
+            border-color: var(--primary-green);
+        }
+
+        /* OTP Timer */
+        .otp-timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+        }
+
+        .otp-timer.active { background: rgba(0, 208, 132, 0.1); color: var(--primary-green); }
+        .otp-timer.expiring { background: rgba(255, 152, 0, 0.1); color: var(--accent-orange); }
+        .otp-timer.expired { background: rgba(244, 67, 54, 0.1); color: var(--status-danger); }
+
+        /* Priority Tag */
+        .priority-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .priority-tag.urgent { background: rgba(244, 67, 54, 0.12); color: #c62828; }
+        .priority-tag.high { background: rgba(255, 152, 0, 0.12); color: #e65100; }
+        .priority-tag.normal { background: rgba(33, 150, 243, 0.1); color: #1565c0; }
+        .priority-tag.low { background: rgba(158, 158, 158, 0.1); color: #616161; }
+
+        /* Category Tag */
+        .cat-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .cat-tag.otp-cat { background: rgba(0, 208, 132, 0.1); color: var(--primary-green); }
+        .cat-tag.loan-cat { background: rgba(33, 150, 243, 0.1); color: var(--accent-blue); }
+        .cat-tag.savings-cat { background: rgba(156, 39, 176, 0.1); color: var(--accent-purple); }
+        .cat-tag.member-cat { background: rgba(255, 152, 0, 0.1); color: var(--accent-orange); }
+        .cat-tag.system-cat { background: rgba(121, 85, 72, 0.1); color: #795548; }
+        .cat-tag.compliance-cat { background: rgba(0, 105, 92, 0.1); color: #00695c; }
+
+        /* Action Buttons Row */
+        .action-btns {
+            display: flex;
+            gap: 4px;
+            margin-top: var(--spacing-sm);
+        }
+
+        /* Modal */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .mhdr.blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+        .mhdr.teal { background: linear-gradient(135deg, #00695c, #00897b); }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; width: 100%; }
+
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        .ftab { padding: 8px 18px; border-radius: var(--radius-full); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .ftab:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); }
+        .ftab.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0,208,132,0.25); }
+        .ftab .cnt { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 700; }
+        .ftab:not(.active) .cnt { background: var(--bg-tertiary); color: var(--text-tertiary); }
+
+        .m-cell { display: flex; align-items: center; gap: var(--spacing-sm); }
+        .m-av { width: 34px; height: 34px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.72rem; color: white; flex-shrink: 0; }
+        .m-av.c1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .m-av.c2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+        .m-av.c3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+        .m-av.c4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .m-av.c5 { background: linear-gradient(135deg, #f44336, #ef5350); }
+        .m-av.c6 { background: linear-gradient(135deg, #00695c, #00897b); }
+
+        @media (max-width: 768px) {
+            .notif-stats { grid-template-columns: repeat(3, 1fr); }
+            .notif-item { flex-direction: column; }
+            .notif-actions { flex-direction: row; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-logo">S</div><div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Rongo SACCO</p></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loans</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>Wallet</span></a></div>
+            <div class="nav-section-title">Reports & Compliance</div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-file-earmark-text nav-icon"></i><span>Reports</span></a></div>
+            <div class="nav-item"><a href="compliance.html" class="nav-link"><i class="bi bi-building-check nav-icon"></i><span>Compliance</span></a></div>
+            <div class="nav-section-title">Settings</div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>SACCO Settings</span></a></div>
+            <div class="nav-item"><a href="staff.html" class="nav-link"><i class="bi bi-person-badge nav-icon"></i><span>Staff Management</span></a></div>
+            <div class="nav-item"><a href="notifications.html" class="nav-link active"><i class="bi bi-bell nav-icon"></i><span>Notifications</span><span class="nav-badge">14</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search notifications..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="markAllRead()"><i class="bi bi-check2-all"></i></button>
+                    <button class="topbar-action-btn" data-bs-toggle="modal" data-bs-target="#notifSettingsModal"><i class="bi bi-gear"></i></button>
+                    <div class="user-profile" onclick="openModal('profileModal')"><div class="user-avatar">JK</div><div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Default Admin</p></div></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">Notifications & OTP Center</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-bell" style="color:var(--primary-green);"></i> Notifications & OTP Center</h2>
+                        <p>Rongo SACCO — Manage approvals, OTP verifications, service requests & system alerts</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);">
+                        <button class="btn btn-outline btn-sm" onclick="markAllRead()"><i class="bi bi-check2-all"></i> Mark All Read</button>
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#notifSettingsModal"><i class="bi bi-gear"></i> Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="notif-stats fade-in">
+                <div class="ns-card urgent" onclick="filterNotifs('urgent')">
+                    <div class="ns-value" style="color:var(--status-danger);"><span class="ns-pulse" style="background:var(--status-danger);"></span>3</div>
+                    <div class="ns-label">Urgent / OTP</div>
+                </div>
+                <div class="ns-card otp" onclick="filterNotifs('otp')">
+                    <div class="ns-value" style="color:var(--primary-green);">5</div>
+                    <div class="ns-label">Pending OTP</div>
+                </div>
+                <div class="ns-card requests" onclick="filterNotifs('requests')">
+                    <div class="ns-value" style="color:var(--accent-blue);">4</div>
+                    <div class="ns-label">Service Requests</div>
+                </div>
+                <div class="ns-card system" onclick="filterNotifs('system')">
+                    <div class="ns-value" style="color:var(--accent-orange);">2</div>
+                    <div class="ns-label">System Alerts</div>
+                </div>
+                <div class="ns-card all" onclick="filterNotifs('all')">
+                    <div class="ns-value" style="color:var(--accent-purple);">14</div>
+                    <div class="ns-label">Total Unread</div>
+                </div>
+            </div>
+
+            <!-- Notifications Panel -->
+            <div class="glass-card fade-in">
+                <div class="glass-card-header" style="flex-wrap:wrap;gap:var(--spacing-sm);">
+                    <ul class="nav nav-tabs border-0" role="tablist" style="gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <li class="nav-item"><button class="ftab active" data-bs-toggle="tab" data-bs-target="#allTab" type="button">All <span class="cnt">14</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#otpTab" type="button"><span class="ns-pulse" style="background:var(--primary-green);width:6px;height:6px;"></span> OTP Approvals <span class="cnt">5</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#requestsTab" type="button">Requests <span class="cnt">4</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#systemTab" type="button">System <span class="cnt">2</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#readTab" type="button">Read</button></li>
+                    </ul>
+                </div>
+                <div class="glass-card-body" style="padding:var(--spacing-lg) var(--spacing-xl);">
+                    <div class="tab-content">
+
+                        <!-- ALL TAB -->
+                        <div class="tab-pane fade show active" id="allTab">
+
+                            <!-- OTP: Withdrawal Approval -->
+                            <div class="notif-item urgent-item unread">
+                                <div class="notif-icon-wrap otp"><i class="bi bi-shield-lock-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">
+                                        <span class="priority-tag urgent"><i class="bi bi-exclamation-circle-fill"></i> URGENT</span>
+                                        OTP — Withdrawal Approval Required
+                                    </div>
+                                    <div class="notif-desc"><strong>Peter Omondi</strong> (SP-10145) is requesting withdrawal of <strong style="color:var(--status-danger);">KES 80,000</strong> from Regular Savings → M-Pesa. Enter OTP to approve.</div>
+                                    <div style="margin:var(--spacing-sm) 0;">
+                                        <span class="otp-display" onclick="copyOTP('847293')" title="Click to copy">847293 <i class="bi bi-copy" style="font-size:0.7rem;letter-spacing:0;"></i></span>
+                                        <span class="otp-timer active" id="timer1"><i class="bi bi-clock"></i> 04:32</span>
+                                    </div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag otp-cat"><i class="bi bi-shield-lock"></i> OTP</span>
+                                        <span class="cat-tag savings-cat"><i class="bi bi-piggy-bank"></i> Savings</span>
+                                        <span>Dec 18, 3:45 PM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveOTP('withdrawal','Peter Omondi','KES 80,000')"><i class="bi bi-check-circle"></i> Approve</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectOTP('withdrawal','Peter Omondi')"><i class="bi bi-x-circle"></i> Reject</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="viewOTPDetail('WDR-OTP-001')"><i class="bi bi-eye"></i> Details</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions">
+                                    <span class="notif-time">2 min ago</span>
+                                </div>
+                            </div>
+
+                            <!-- OTP: Loan Guarantor Approval -->
+                            <div class="notif-item otp-item unread">
+                                <div class="notif-icon-wrap guarantor"><i class="bi bi-people-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">
+                                        <span class="priority-tag urgent"><i class="bi bi-exclamation-circle-fill"></i> URGENT</span>
+                                        Guarantor OTP — Loan Approval
+                                    </div>
+                                    <div class="notif-desc"><strong>Grace Akinyi</strong> (SP-10067) applied for a <strong style="color:var(--accent-blue);">KES 300,000</strong> Personal Loan. You are listed as <strong>Guarantor #1</strong>. Enter OTP to approve.</div>
+                                    <div style="margin:var(--spacing-sm) 0;">
+                                        <span class="otp-display" onclick="copyOTP('519742')" title="Click to copy">519742 <i class="bi bi-copy" style="font-size:0.7rem;letter-spacing:0;"></i></span>
+                                        <span class="otp-timer active" id="timer2"><i class="bi bi-clock"></i> 08:15</span>
+                                    </div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag otp-cat"><i class="bi bi-shield-lock"></i> OTP</span>
+                                        <span class="cat-tag loan-cat"><i class="bi bi-cash-stack"></i> Loan</span>
+                                        <span>Dec 18, 3:20 PM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveOTP('guarantor','Grace Akinyi','KES 300,000')"><i class="bi bi-check-circle"></i> Guarantee & Approve</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectOTP('guarantor','Grace Akinyi')"><i class="bi bi-x-circle"></i> Decline</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="viewOTPDetail('GUAR-OTP-001')"><i class="bi bi-eye"></i> Details</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">25 min ago</span></div>
+                            </div>
+
+                            <!-- OTP: Share Purchase -->
+                            <div class="notif-item otp-item unread">
+                                <div class="notif-icon-wrap share"><i class="bi bi-shield-plus"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">
+                                        <span class="priority-tag high"><i class="bi bi-arrow-up-circle"></i> HIGH</span>
+                                        OTP — Share Capital Purchase
+                                    </div>
+                                    <div class="notif-desc"><strong>John Kamau</strong> (SP-10015) is purchasing <strong>20 shares (KES 20,000)</strong> from Regular Savings → Share Capital. This is <strong>non-withdrawable</strong>.</div>
+                                    <div style="margin:var(--spacing-sm) 0;">
+                                        <span class="otp-display" onclick="copyOTP('362810')" title="Click to copy">362810 <i class="bi bi-copy" style="font-size:0.7rem;letter-spacing:0;"></i></span>
+                                        <span class="otp-timer active" id="timer3"><i class="bi bi-clock"></i> 03:48</span>
+                                    </div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag otp-cat"><i class="bi bi-shield-lock"></i> OTP</span>
+                                        <span class="cat-tag savings-cat"><i class="bi bi-piggy-bank"></i> Shares</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveOTP('shares','John Kamau','20 shares')"><i class="bi bi-check-circle"></i> Approve</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectOTP('shares','John Kamau')"><i class="bi bi-x-circle"></i> Reject</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="viewOTPDetail('SHR-OTP-001')"><i class="bi bi-eye"></i> Details</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">38 min ago</span></div>
+                            </div>
+
+                            <!-- OTP: Large Transfer -->
+                            <div class="notif-item otp-item unread">
+                                <div class="notif-icon-wrap transfer"><i class="bi bi-arrow-left-right"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">
+                                        <span class="priority-tag high"><i class="bi bi-arrow-up-circle"></i> HIGH</span>
+                                        OTP — Large Wallet Transfer
+                                    </div>
+                                    <div class="notif-desc"><strong>Mary Wanjiku</strong> (SP-10023) is transferring <strong style="color:var(--accent-teal);">KES 150,000</strong> from SACCOPay Wallet to KCB Bank Account. Amount exceeds daily limit alert.</div>
+                                    <div style="margin:var(--spacing-sm) 0;">
+                                        <span class="otp-display" onclick="copyOTP('928417')" title="Click to copy">928417 <i class="bi bi-copy" style="font-size:0.7rem;letter-spacing:0;"></i></span>
+                                        <span class="otp-timer expiring" id="timer4"><i class="bi bi-clock"></i> 01:22</span>
+                                    </div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag otp-cat"><i class="bi bi-shield-lock"></i> OTP</span>
+                                        <span class="cat-tag savings-cat"><i class="bi bi-wallet2"></i> Wallet</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveOTP('transfer','Mary Wanjiku','KES 150,000')"><i class="bi bi-check-circle"></i> Approve</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectOTP('transfer','Mary Wanjiku')"><i class="bi bi-x-circle"></i> Reject</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">52 min ago</span></div>
+                            </div>
+
+                            <!-- OTP: KYC Override -->
+                            <div class="notif-item otp-item unread">
+                                <div class="notif-icon-wrap kyc"><i class="bi bi-person-check"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">
+                                        <span class="priority-tag normal"><i class="bi bi-info-circle"></i> NORMAL</span>
+                                        OTP — KYC Override Approval
+                                    </div>
+                                    <div class="notif-desc"><strong>David Otieno</strong> (Credit Officer) is requesting KYC override for <strong>Rose Nyambura</strong> (expired National ID). 30-day extension requested.</div>
+                                    <div style="margin:var(--spacing-sm) 0;">
+                                        <span class="otp-display" onclick="copyOTP('451830')" title="Click to copy">451830 <i class="bi bi-copy" style="font-size:0.7rem;letter-spacing:0;"></i></span>
+                                        <span class="otp-timer active" id="timer5"><i class="bi bi-clock"></i> 07:44</span>
+                                    </div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag otp-cat"><i class="bi bi-shield-lock"></i> OTP</span>
+                                        <span class="cat-tag member-cat"><i class="bi bi-person-check"></i> KYC</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveOTP('kyc','Rose Nyambura','30-day extension')"><i class="bi bi-check-circle"></i> Approve Override</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectOTP('kyc','Rose Nyambura')"><i class="bi bi-x-circle"></i> Deny</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">1 hr ago</span></div>
+                            </div>
+
+                            <!-- Service Request: Loan Application -->
+                            <div class="notif-item unread">
+                                <div class="notif-icon-wrap loan"><i class="bi bi-cash-stack"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">New Loan Application — Review Required</div>
+                                    <div class="notif-desc"><strong>Bernard Kiprop</strong> (SP-10078) submitted a <strong>Business Loan</strong> application for <strong>KES 750,000</strong>. Credit check passed (Score: 698). Awaiting admin review.</div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag loan-cat"><i class="bi bi-cash-stack"></i> Loan</span>
+                                        <span>Dec 18, 2:00 PM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveRequest('loan','Bernard Kiprop')"><i class="bi bi-check"></i> Approve</button>
+                                        <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.72rem;" onclick="returnRequest('loan','Bernard Kiprop')"><i class="bi bi-arrow-return-left"></i> Return</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectRequest('loan','Bernard Kiprop')"><i class="bi bi-x"></i> Reject</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="viewRequestDetail('LOAN-REQ-001')"><i class="bi bi-eye"></i> Review</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">1.5 hrs ago</span></div>
+                            </div>
+
+                            <!-- Service Request: Membership -->
+                            <div class="notif-item unread">
+                                <div class="notif-icon-wrap member"><i class="bi bi-person-plus"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">New Member Registration — Approval Needed</div>
+                                    <div class="notif-desc"><strong>Alice Muthoni</strong> submitted online registration. KYC documents uploaded. Registration fee paid via M-Pesa (KES 1,000).</div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag member-cat"><i class="bi bi-person-plus"></i> Member</span>
+                                        <span>Dec 18, 11:00 AM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="approveRequest('member','Alice Muthoni')"><i class="bi bi-check"></i> Approve</button>
+                                        <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.72rem;" onclick="rejectRequest('member','Alice Muthoni')"><i class="bi bi-x"></i> Reject</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="viewRequestDetail('MEM-REQ-001')"><i class="bi bi-eye"></i> Review</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">4 hrs ago</span></div>
+                            </div>
+
+                            <!-- Guarantor Request Forwarded -->
+                            <div class="notif-item unread">
+                                <div class="notif-icon-wrap guarantor"><i class="bi bi-people-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Guarantor Response — Loan LN-2024-00893</div>
+                                    <div class="notif-desc"><strong>Daniel Kipchoge</strong> (Guarantor #2) has <strong style="color:var(--status-success);">approved</strong> guarantee for <strong>Grace Akinyi's</strong> Personal Loan (KES 300,000). Both guarantors confirmed. Loan ready for disbursement.</div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag loan-cat"><i class="bi bi-people-fill"></i> Guarantor</span>
+                                        <span>Dec 18, 10:30 AM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-primary btn-sm" style="font-size:0.72rem;" onclick="processLoanAfterGuarantor()"><i class="bi bi-send"></i> Process Disbursement</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="viewRequestDetail('GUAR-RESP-001')"><i class="bi bi-eye"></i> View Loan</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">5 hrs ago</span></div>
+                            </div>
+
+                            <!-- Compliance Alert -->
+                            <div class="notif-item unread">
+                                <div class="notif-icon-wrap compliance"><i class="bi bi-building-check"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">SASRA Filing Reminder</div>
+                                    <div class="notif-desc">SASRA Q4 2024 Quarterly Return is due by <strong style="color:var(--status-danger);">January 15, 2025</strong> (28 days remaining). Draft has been prepared by David Otieno and is awaiting your approval.</div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag compliance-cat"><i class="bi bi-building-check"></i> Compliance</span>
+                                        <span>Dec 18, 9:00 AM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-outline btn-sm" style="font-size:0.72rem;" onclick="showToast('Navigating to Compliance page...')"><i class="bi bi-arrow-right"></i> Go to Compliance</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">6 hrs ago</span></div>
+                            </div>
+
+                            <!-- System Alert: AML -->
+                            <div class="notif-item urgent-item unread">
+                                <div class="notif-icon-wrap system"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">
+                                        <span class="priority-tag urgent"><i class="bi bi-exclamation-circle-fill"></i> ALERT</span>
+                                        AML — Suspicious Transaction Detected
+                                    </div>
+                                    <div class="notif-desc"><strong>System auto-detected</strong> structuring pattern: <strong>Bernard Kiprop</strong> made 4 deposits totaling <strong>KES 980,000</strong> within 2 hours, each just below KES 250K threshold.</div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag system-cat"><i class="bi bi-shield-exclamation"></i> AML</span>
+                                        <span>Dec 17, 3:00 PM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="clearAMLAlert()"><i class="bi bi-check"></i> Clear</button>
+                                        <button class="btn btn-sm" style="background:var(--accent-orange);color:white;font-size:0.72rem;" onclick="escalateAMLAlert()"><i class="bi bi-arrow-up"></i> Escalate</button>
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="showToast('Navigating to AML case...')"><i class="bi bi-eye"></i> Investigate</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">Yesterday</span></div>
+                            </div>
+
+                            <!-- System: Backup -->
+                            <div class="notif-item">
+                                <div class="notif-icon-wrap system"><i class="bi bi-cloud-check"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Daily Backup Complete</div>
+                                    <div class="notif-desc">Automated daily backup completed successfully. Size: 256 MB. Next backup: Dec 19, 2:00 AM.</div>
+                                    <div class="notif-meta">
+                                        <span class="cat-tag system-cat"><i class="bi bi-gear"></i> System</span>
+                                        <span>Dec 18, 2:00 AM</span>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="showToast('Backup details shown')"><i class="bi bi-eye"></i> Details</button>
+                                    </div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">Yesterday</span></div>
+                            </div>
+
+                        </div>
+
+                        <!-- OTP TAB -->
+                        <div class="tab-pane fade" id="otpTab">
+                            <div class="alert alert-info" style="font-size:0.82rem;"><i class="bi bi-shield-lock-fill me-1"></i><strong>5 OTP verifications pending</strong> your approval. OTPs expire after 10 minutes. Expired OTPs require the member to re-initiate.</div>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Member</th><th>Service</th><th>Amount / Action</th><th>OTP Code</th><th>Expires</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr style="background:rgba(244,67,54,0.03);">
+                                            <td><div class="m-cell"><div class="m-av c1">PO</div><div><div style="font-weight:600;font-size:0.82rem;">Peter Omondi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10145</div></div></div></td>
+                                            <td>Withdrawal</td>
+                                            <td style="font-weight:600;color:var(--status-danger);">KES 80,000</td>
+                                            <td><span class="otp-display" style="font-size:0.9rem;padding:4px 10px;" onclick="copyOTP('847293')">847293</span></td>
+                                            <td><span class="otp-timer active"><i class="bi bi-clock"></i> 04:32</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveOTP('withdrawal','Peter Omondi','KES 80,000')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectOTP('withdrawal','Peter Omondi')"><i class="bi bi-x"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c3">GA</div><div><div style="font-weight:600;font-size:0.82rem;">Grace Akinyi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10067</div></div></div></td>
+                                            <td>Loan Guarantee</td>
+                                            <td style="font-weight:600;color:var(--accent-blue);">KES 300,000</td>
+                                            <td><span class="otp-display" style="font-size:0.9rem;padding:4px 10px;" onclick="copyOTP('519742')">519742</span></td>
+                                            <td><span class="otp-timer active"><i class="bi bi-clock"></i> 08:15</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveOTP('guarantor','Grace Akinyi','KES 300,000')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectOTP('guarantor','Grace Akinyi')"><i class="bi bi-x"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c2">JK</div><div><div style="font-weight:600;font-size:0.82rem;">John Kamau</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10015</div></div></div></td>
+                                            <td>Share Purchase</td>
+                                            <td style="font-weight:600;color:#1a237e;">20 shares</td>
+                                            <td><span class="otp-display" style="font-size:0.9rem;padding:4px 10px;" onclick="copyOTP('362810')">362810</span></td>
+                                            <td><span class="otp-timer active"><i class="bi bi-clock"></i> 03:48</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveOTP('shares','John Kamau','20 shares')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectOTP('shares','John Kamau')"><i class="bi bi-x"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr style="background:rgba(255,152,0,0.03);">
+                                            <td><div class="m-cell"><div class="m-av c4">MW</div><div><div style="font-weight:600;font-size:0.82rem;">Mary Wanjiku</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10023</div></div></div></td>
+                                            <td>Wallet Transfer</td>
+                                            <td style="font-weight:600;color:var(--accent-teal);">KES 150,000</td>
+                                            <td><span class="otp-display" style="font-size:0.9rem;padding:4px 10px;" onclick="copyOTP('928417')">928417</span></td>
+                                            <td><span class="otp-timer expiring"><i class="bi bi-clock"></i> 01:22</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveOTP('transfer','Mary Wanjiku','KES 150,000')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectOTP('transfer','Mary Wanjiku')"><i class="bi bi-x"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c5">DO</div><div><div style="font-weight:600;font-size:0.82rem;">David Otieno</div><div style="font-size:0.68rem;color:var(--text-tertiary);">Staff</div></div></div></td>
+                                            <td>KYC Override</td>
+                                            <td style="font-weight:600;">Rose Nyambura</td>
+                                            <td><span class="otp-display" style="font-size:0.9rem;padding:4px 10px;" onclick="copyOTP('451830')">451830</span></td>
+                                            <td><span class="otp-timer active"><i class="bi bi-clock"></i> 07:44</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveOTP('kyc','Rose Nyambura','30-day extension')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectOTP('kyc','Rose Nyambura')"><i class="bi bi-x"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- REQUESTS TAB -->
+                        <div class="tab-pane fade" id="requestsTab">
+                            <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Service requests from members awaiting admin review.</p>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Member</th><th>Request Type</th><th>Details</th><th>Submitted</th><th>Priority</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><div class="m-cell"><div class="m-av c5">BK</div><div><div style="font-weight:600;">Bernard Kiprop</div></div></div></td><td><span class="cat-tag loan-cat"><i class="bi bi-cash-stack"></i> Loan</span></td><td>Business Loan — KES 750,000</td><td>Dec 18, 2:00 PM</td><td><span class="priority-tag normal">Normal</span></td><td><button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveRequest('loan','Bernard Kiprop')"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.65rem;padding:3px 8px;" onclick="returnRequest('loan','Bernard Kiprop')"><i class="bi bi-arrow-return-left"></i></button> <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectRequest('loan','Bernard Kiprop')"><i class="bi bi-x"></i></button></td></tr>
+                                        <tr><td><div class="m-cell"><div class="m-av c1">AM</div><div><div style="font-weight:600;">Alice Muthoni</div></div></div></td><td><span class="cat-tag member-cat"><i class="bi bi-person-plus"></i> Registration</span></td><td>New Member Registration</td><td>Dec 18, 11:00 AM</td><td><span class="priority-tag normal">Normal</span></td><td><button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveRequest('member','Alice Muthoni')"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectRequest('member','Alice Muthoni')"><i class="bi bi-x"></i></button></td></tr>
+                                        <tr><td><div class="m-cell"><div class="m-av c6">SA</div><div><div style="font-weight:600;">Sarah Auma</div></div></div></td><td><span class="cat-tag savings-cat"><i class="bi bi-safe2"></i> Fixed Deposit</span></td><td>Early FD withdrawal — KES 200K</td><td>Dec 17, 4:00 PM</td><td><span class="priority-tag high">High</span></td><td><button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveRequest('fd','Sarah Auma')"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectRequest('fd','Sarah Auma')"><i class="bi bi-x"></i></button></td></tr>
+                                        <tr><td><div class="m-cell"><div class="m-av c4">FK</div><div><div style="font-weight:600;">Florence Kerubo</div></div></div></td><td><span class="cat-tag loan-cat"><i class="bi bi-arrow-repeat"></i> Restructure</span></td><td>Loan restructure — extend 6 months</td><td>Dec 17, 2:30 PM</td><td><span class="priority-tag normal">Normal</span></td><td><button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveRequest('restructure','Florence Kerubo')"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.65rem;padding:3px 8px;" onclick="returnRequest('restructure','Florence Kerubo')"><i class="bi bi-arrow-return-left"></i></button> <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectRequest('restructure','Florence Kerubo')"><i class="bi bi-x"></i></button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SYSTEM TAB -->
+                        <div class="tab-pane fade" id="systemTab">
+                            <div class="notif-item urgent-item">
+                                <div class="notif-icon-wrap system"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title"><span class="priority-tag urgent"><i class="bi bi-exclamation-circle-fill"></i> ALERT</span> AML Structuring Alert</div>
+                                    <div class="notif-desc">Bernard Kiprop — 4 deposits, KES 980K total, within 2 hours.</div>
+                                    <div class="action-btns"><button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.72rem;" onclick="clearAMLAlert()"><i class="bi bi-check"></i> Clear</button><button class="btn btn-sm" style="background:var(--accent-orange);color:white;font-size:0.72rem;" onclick="escalateAMLAlert()"><i class="bi bi-arrow-up"></i> Escalate</button></div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">Yesterday</span></div>
+                            </div>
+                            <div class="notif-item">
+                                <div class="notif-icon-wrap system"><i class="bi bi-cloud-check"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Daily Backup Complete</div>
+                                    <div class="notif-desc">256 MB backup completed at 2:00 AM. All systems operational.</div>
+                                    <div class="action-btns"><button class="btn btn-ghost btn-sm" style="font-size:0.72rem;" onclick="showToast('Backup details')"><i class="bi bi-eye"></i> Details</button></div>
+                                </div>
+                                <div class="notif-actions"><span class="notif-time">Yesterday</span></div>
+                            </div>
+                        </div>
+
+                        <!-- READ TAB -->
+                        <div class="tab-pane fade" id="readTab">
+                            <div class="notif-item" style="opacity:0.6;">
+                                <div class="notif-icon-wrap otp"><i class="bi bi-check-circle-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">OTP Approved — Withdrawal KES 50,000</div>
+                                    <div class="notif-desc">You approved <strong>Samuel Kibet's</strong> withdrawal on Dec 17. Funds sent to M-Pesa.</div>
+                                    <div class="notif-meta"><span>Dec 17, 4:30 PM</span></div>
+                                </div>
+                            </div>
+                            <div class="notif-item" style="opacity:0.6;">
+                                <div class="notif-icon-wrap loan"><i class="bi bi-check-circle-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Loan Approved — Mary Wanjiku KES 250,000</div>
+                                    <div class="notif-desc">Personal loan approved and disbursed via M-Pesa on Dec 15.</div>
+                                    <div class="notif-meta"><span>Dec 15, 2:00 PM</span></div>
+                                </div>
+                            </div>
+                            <div class="notif-item" style="opacity:0.6;">
+                                <div class="notif-icon-wrap member"><i class="bi bi-check-circle-fill"></i></div>
+                                <div class="notif-body">
+                                    <div class="notif-title">Member Approved — Daniel Kipchoge</div>
+                                    <div class="notif-desc">New member registration approved. 5 shares allocated.</div>
+                                    <div class="notif-meta"><span>Dec 14, 11:00 AM</span></div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3"><button class="btn btn-ghost btn-sm" onclick="showToast('Cleared read notifications')"><i class="bi bi-trash"></i> Clear All Read</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- 1. OTP DETAIL -->
+<div class="modal fade" id="otpDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>OTP Verification Detail</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="text-align:center;padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,208,132,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);"><i class="bi bi-shield-lock-fill" style="font-size:1.8rem;color:var(--primary-green);"></i></div>
+            <span class="otp-display" style="font-size:1.5rem;" onclick="copyOTP('847293')">847293</span>
+            <div style="margin-top:var(--spacing-sm);"><span class="otp-timer active"><i class="bi bi-clock"></i> 04:32 remaining</span></div>
+        </div>
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Service</span><span class="dv">Savings Withdrawal</span></div>
+            <div class="drow"><span class="dl">Member</span><span class="dv">Peter Omondi (SP-10145)</span></div>
+            <div class="drow"><span class="dl">Amount</span><span class="dv" style="color:var(--status-danger);font-weight:700;">KES 80,000</span></div>
+            <div class="drow"><span class="dl">Source</span><span class="dv">Regular Savings</span></div>
+            <div class="drow"><span class="dl">Destination</span><span class="dv"><i class="bi bi-phone"></i> M-Pesa 0722-XXX-789</span></div>
+            <div class="drow"><span class="dl">New Balance</span><span class="dv">KES 105,000</span></div>
+            <div class="drow"><span class="dl">Initiated</span><span class="dv">Dec 18, 3:45 PM</span></div>
+            <div class="drow"><span class="dl">OTP Expires</span><span class="dv" style="color:var(--accent-orange);">Dec 18, 3:55 PM</span></div>
+        </div>
+        <div class="row g-3 mt-3">
+            <div class="col-12"><label class="flbl">Admin Notes (Optional)</label><textarea class="form-control finput" rows="2" placeholder="Add a note for audit trail..."></textarea></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-sm" style="background:var(--status-danger);color:white;" onclick="rejectFromModal()"><i class="bi bi-x-circle"></i> Reject</button>
+        <button class="btn btn-primary" onclick="approveFromModal()"><i class="bi bi-check-circle"></i> Approve & Process</button>
+    </div>
+</div></div></div>
+
+<!-- 2. REQUEST DETAIL -->
+<div class="modal fade" id="requestDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-file-check me-2"></i>Service Request Detail</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Request Type</span><span class="dv">Business Loan Application</span></div>
+            <div class="drow"><span class="dl">Member</span><span class="dv">Bernard Kiprop (SP-10078)</span></div>
+            <div class="drow"><span class="dl">Amount</span><span class="dv" style="font-weight:700;">KES 750,000</span></div>
+            <div class="drow"><span class="dl">Credit Score</span><span class="dv" style="color:var(--status-success);">698 (Good)</span></div>
+            <div class="drow"><span class="dl">Guarantors</span><span class="dv">2 confirmed ✓</span></div>
+            <div class="drow"><span class="dl">Collateral</span><span class="dv">Log book — KES 1.2M valuation</span></div>
+            <div class="drow"><span class="dl">Submitted</span><span class="dv">Dec 18, 2:00 PM</span></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Admin Decision</label>
+                <select class="form-select fselect" id="reqDecision">
+                    <option value="">Select action...</option>
+                    <option value="approve">✓ Approve</option>
+                    <option value="return">↩ Return for Amendments</option>
+                    <option value="reject">✗ Reject</option>
+                </select>
+            </div>
+            <div class="col-12"><label class="flbl">Comments</label><textarea class="form-control finput" rows="3" placeholder="Provide comments or instructions..."></textarea></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="submitRequestDecision()"><i class="bi bi-check-circle"></i> Submit Decision</button></div>
+</div></div></div>
+
+<!-- 3. NOTIFICATION SETTINGS -->
+<div class="modal fade" id="notifSettingsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-gear me-2"></i>Notification Settings</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">OTP Notifications</h6>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div><div style="font-size:0.88rem;font-weight:600;">Withdrawal OTPs</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Receive when members request withdrawals</div></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div><div style="font-size:0.88rem;font-weight:600;">Guarantor Requests</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Receive when listed as loan guarantor</div></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div><div style="font-size:0.88rem;font-weight:600;">Share Purchase OTPs</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Approve non-withdrawable share purchases</div></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div><div style="font-size:0.88rem;font-weight:600;">Large Transfer Alerts</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Transfers above KES 100,000</div></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+
+        <h6 style="font-weight:600;margin:var(--spacing-lg) 0 var(--spacing-md);">Delivery Channels</h6>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div style="font-size:0.88rem;font-weight:600;">SMS</div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div style="font-size:0.88rem;font-weight:600;">Email</div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);"><div style="font-size:0.88rem;font-weight:600;">Push / In-App</div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="showToast('Setting updated')"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;"><div style="font-size:0.88rem;font-weight:600;">Sound Alert</div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" onchange="showToast('Setting updated')"></div></div>
+
+        <h6 style="font-weight:600;margin:var(--spacing-lg) 0 var(--spacing-md);">OTP Configuration</h6>
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">OTP Expiry (Minutes)</label><select class="form-select fselect"><option>5 minutes</option><option selected>10 minutes</option><option>15 minutes</option></select></div>
+            <div class="col-md-6"><label class="flbl">OTP Length</label><select class="form-select fselect"><option>4 digits</option><option selected>6 digits</option><option>8 digits</option></select></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" onclick="saveNotifSettings()"><i class="bi bi-check-circle"></i> Save Settings</button></div>
+</div></div></div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr red"><h5 class="modal-title"><i class="bi bi-x-circle me-2"></i>Rejection Reason</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Reason</label><select class="form-select fselect" id="rejReason"><option>Insufficient funds verification</option><option>Suspicious activity</option><option>Policy violation</option><option>Document issue</option><option>Risk threshold exceeded</option><option>Other</option></select></div>
+            <div class="col-12"><label class="flbl">Comments</label><textarea class="form-control finput" rows="3" placeholder="Explain the rejection..." id="rejComments"></textarea></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked id="rejNotify"><label class="form-check-label" style="font-size:0.82rem;">Notify member via SMS</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn" style="background:#c62828;color:white;" onclick="confirmRejection()"><i class="bi bi-x-circle"></i> Confirm Rejection</button></div>
+</div></div></div>
+
+<!-- Return for Amendments Modal -->
+<div class="modal fade" id="returnModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-arrow-return-left me-2"></i>Return for Amendments</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Required Amendments</label><textarea class="form-control finput" rows="4" placeholder="Specify what needs to be corrected or added..."></textarea></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Notify member to resubmit</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="confirmReturn()"><i class="bi bi-arrow-return-left"></i> Return</button></div>
+</div></div></div>
+
+<!-- Profile -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Default Admin • Rongo SACCO</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+
+// Copy OTP
+function copyOTP(code){navigator.clipboard.writeText(code);showToast('OTP '+code+' copied to clipboard!');}
+
+// OTP Actions
+function approveOTP(type,member,detail){
+    const msgs={
+        withdrawal:'Withdrawal approved for '+member+' ('+detail+'). Funds being sent.',
+        guarantor:'Guarantee confirmed for '+member+' loan ('+detail+'). Loan proceeding.',
+        shares:'Share purchase approved for '+member+' ('+detail+'). Shares allocated.',
+        transfer:'Wallet transfer approved for '+member+' ('+detail+'). Funds sent.',
+        kyc:'KYC override approved for '+member+' ('+detail+').'
+    };
+    showToast(msgs[type]||'OTP approved!');
+}
+
+function rejectOTP(type,member){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('rejectionModal'),350);
+}
+
+// Request Actions
+function approveRequest(type,member){showToast('Request approved for '+member+'!');}
+function rejectRequest(type,member){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('rejectionModal'),350);
+}
+function returnRequest(type,member){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('returnModal'),350);
+}
+
+// View Details
+function viewOTPDetail(ref){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('otpDetailModal'),350);
+}
+
+function viewRequestDetail(ref){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('requestDetailModal'),350);
+}
+
+// Modal Actions
+function approveFromModal(){bootstrap.Modal.getInstance(document.getElementById('otpDetailModal')).hide();showToast('OTP approved! Transaction processing.');}
+function rejectFromModal(){bootstrap.Modal.getInstance(document.getElementById('otpDetailModal')).hide();setTimeout(()=>openModal('rejectionModal'),350);}
+function submitRequestDecision(){bootstrap.Modal.getInstance(document.getElementById('requestDetailModal')).hide();showToast('Decision submitted! Member notified.');}
+function confirmRejection(){bootstrap.Modal.getInstance(document.getElementById('rejectionModal')).hide();showToast('Rejected. Member notified via SMS.');}
+function confirmReturn(){bootstrap.Modal.getInstance(document.getElementById('returnModal')).hide();showToast('Returned for amendments. Member notified.');}
+
+// System
+function clearAMLAlert(){showToast('AML alert cleared — marked as false positive.');}
+function escalateAMLAlert(){showToast('AML alert escalated to FRC / Senior Management.');}
+function processLoanAfterGuarantor(){showToast('Loan disbursement initiated! Both guarantors confirmed.');}
+
+// Utility
+function markAllRead(){showToast('All 14 notifications marked as read.');}
+function filterNotifs(type){showToast('Filtered: '+type+' notifications');}
+function saveNotifSettings(){bootstrap.Modal.getInstance(document.getElementById('notifSettingsModal')).hide();showToast('Notification settings saved!');}
+
+// OTP Timers
+setInterval(()=>{
+    for(let i=1;i<=5;i++){
+        const el=document.getElementById('timer'+i);
+        if(el){
+            const text=el.textContent;
+            const match=text.match(/(\d+):(\d+)/);
+            if(match){
+                let mins=parseInt(match[1]);
+                let secs=parseInt(match[2]);
+                if(secs>0)secs--;
+                else if(mins>0){mins--;secs=59;}
+                el.querySelector('i')||el;
+                const timeStr=String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
+                el.innerHTML='<i class="bi bi-clock"></i> '+timeStr;
+                if(mins===0&&secs===0){el.className='otp-timer expired';el.innerHTML='<i class="bi bi-x-circle"></i> Expired';}
+                else if(mins<2){el.className='otp-timer expiring';}
+            }
+        }
+    }
+},1000);
+</script>
+</body>
+</html>

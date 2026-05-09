@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management - Rongo SACCO | SACCOPay Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           STAFF MANAGEMENT STYLES
+        ======================================== */
+
+        /* Role Badge */
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        .role-badge.super-admin { background: linear-gradient(135deg, rgba(0,208,132,0.15), rgba(0,188,212,0.15)); color: var(--primary-green); border: 1px solid rgba(0,208,132,0.3); }
+        .role-badge.chairman { background: rgba(26,35,130,0.1); color: #1a237e; border: 1px solid rgba(26,35,130,0.2); }
+        .role-badge.treasurer { background: rgba(0,105,92,0.1); color: #00695c; border: 1px solid rgba(0,105,92,0.2); }
+        .role-badge.secretary { background: rgba(156,39,176,0.1); color: #7b1fa2; border: 1px solid rgba(156,39,176,0.2); }
+        .role-badge.credit-officer { background: rgba(33,150,243,0.1); color: #1565c0; border: 1px solid rgba(33,150,243,0.2); }
+        .role-badge.compliance { background: rgba(0,188,212,0.1); color: #00838f; border: 1px solid rgba(0,188,212,0.2); }
+        .role-badge.accountant { background: rgba(255,152,0,0.1); color: #e65100; border: 1px solid rgba(255,152,0,0.2); }
+        .role-badge.teller { background: rgba(121,85,72,0.1); color: #5d4037; border: 1px solid rgba(121,85,72,0.2); }
+        .role-badge.board { background: rgba(103,58,183,0.1); color: #4527a0; border: 1px solid rgba(103,58,183,0.2); }
+        .role-badge.staff { background: rgba(158,158,158,0.1); color: #616161; border: 1px solid rgba(158,158,158,0.2); }
+        .role-badge.custom { background: rgba(244,67,54,0.1); color: #c62828; border: 1px solid rgba(244,67,54,0.2); }
+
+        /* Staff Card */
+        .staff-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .staff-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            border-color: var(--primary-green-light);
+        }
+        .staff-card.is-admin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--accent-teal));
+        }
+
+        .staff-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .staff-avatar.c1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .staff-avatar.c2 { background: linear-gradient(135deg, #1a237e, #283593); }
+        .staff-avatar.c3 { background: linear-gradient(135deg, #00695c, #00897b); }
+        .staff-avatar.c4 { background: linear-gradient(135deg, #7b1fa2, #9c27b0); }
+        .staff-avatar.c5 { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .staff-avatar.c6 { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .staff-avatar.c7 { background: linear-gradient(135deg, #5d4037, #795548); }
+        .staff-avatar.c8 { background: linear-gradient(135deg, #c62828, #e53935); }
+
+        .online-dot {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .online-dot.active { background: var(--status-success); }
+        .online-dot.offline { background: var(--text-tertiary); }
+        .online-dot.away { background: var(--accent-orange); }
+
+        /* Permission Grid */
+        .perm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        .perm-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        .perm-item:hover { border-color: var(--primary-green-light); background: var(--primary-green-ultra-light); }
+        .perm-item.granted { border-color: rgba(0,208,132,0.3); background: rgba(0,208,132,0.05); }
+
+        /* Org Chart */
+        .org-card {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .org-card:hover { border-color: var(--primary-green); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .org-card .org-av {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+            margin: 0 auto var(--spacing-sm);
+        }
+        .org-card h6 { font-size: 0.82rem; font-weight: 600; margin: 0 0 2px; }
+        .org-card p { font-size: 0.68rem; color: var(--text-tertiary); margin: 0; }
+
+        .org-connector { display: flex; flex-direction: column; align-items: center; }
+        .org-vline { width: 2px; height: 20px; background: var(--border-color); }
+        .org-hline { height: 2px; background: var(--border-color); }
+
+        /* Table Avatar */
+        .m-cell { display: flex; align-items: center; gap: var(--spacing-sm); }
+        .m-av { width: 36px; height: 36px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; color: white; flex-shrink: 0; }
+        .m-name { font-size: 0.85rem; font-weight: 600; }
+        .m-sub { font-size: 0.7rem; color: var(--text-tertiary); }
+
+        /* Modal */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .mhdr.blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+        .mhdr.teal { background: linear-gradient(135deg, #00695c, #00897b); }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Form */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .fselect:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        .ftab { padding: 8px 18px; border-radius: var(--radius-full); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .ftab:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); }
+        .ftab.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0,208,132,0.25); }
+        .ftab .cnt { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 700; }
+        .ftab:not(.active) .cnt { background: var(--bg-tertiary); color: var(--text-tertiary); }
+
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background:var(--border-color); }
+        .tl-item { position:relative; padding-bottom:var(--spacing-md); padding-left:var(--spacing-lg); }
+        .tl-item::before { content:''; position:absolute; left:-20px; top:5px; width:12px; height:12px; border-radius:50%; border:2px solid var(--primary-green); background:white; }
+        .tl-item.done::before { background:var(--primary-green); }
+        .tl-content { background:var(--bg-tertiary); padding:var(--spacing-md); border-radius:var(--radius-md); font-size:0.83rem; }
+        .tl-time { font-size:0.72rem; color:var(--text-tertiary); margin-bottom:3px; }
+
+        @media (max-width: 768px) {
+            .perm-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-logo">S</div><div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Rongo SACCO</p></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loans</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>Wallet</span></a></div>
+            <div class="nav-section-title">Reports & Compliance</div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-file-earmark-text nav-icon"></i><span>Reports</span></a></div>
+            <div class="nav-item"><a href="compliance.html" class="nav-link"><i class="bi bi-building-check nav-icon"></i><span>Compliance</span></a></div>
+            <div class="nav-section-title">Settings</div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>SACCO Settings</span></a></div>
+            <div class="nav-item"><a href="staff.html" class="nav-link active"><i class="bi bi-person-badge nav-icon"></i><span>Staff Management</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search staff, roles, permissions..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i></button>
+                    <div class="user-profile" onclick="openModal('profileModal')"><div class="user-avatar">JK</div><div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Default Admin</p></div></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item">Settings</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">Staff Management</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-person-badge" style="color:var(--primary-green);"></i> Staff & Management</h2>
+                        <p>Assign roles, manage permissions, and configure access for Rongo SACCO officials</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#rolesConfigModal"><i class="bi bi-tags"></i> Manage Roles</button>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addStaffModal"><i class="bi bi-plus-lg"></i> Add Staff Member</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="stats-grid fade-in" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:var(--spacing-xl);">
+                <div class="stat-card" style="cursor:pointer;" onclick="setTab('all')">
+                    <div class="stat-card-header"><div class="stat-card-icon primary"><i class="bi bi-people-fill"></i></div></div>
+                    <div class="stat-card-title">Total Staff</div>
+                    <div class="stat-card-value">12</div>
+                </div>
+                <div class="stat-card" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#rolesConfigModal">
+                    <div class="stat-card-header"><div class="stat-card-icon info"><i class="bi bi-tags-fill"></i></div></div>
+                    <div class="stat-card-title">Active Roles</div>
+                    <div class="stat-card-value">8</div>
+                </div>
+                <div class="stat-card" style="cursor:pointer;" onclick="showToast('5 staff currently online')">
+                    <div class="stat-card-header"><div class="stat-card-icon success"><i class="bi bi-circle-fill"></i></div></div>
+                    <div class="stat-card-title">Online Now</div>
+                    <div class="stat-card-value">5</div>
+                </div>
+                <div class="stat-card" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#pendingInvitesModal">
+                    <div class="stat-card-header"><div class="stat-card-icon warning"><i class="bi bi-envelope-open"></i></div></div>
+                    <div class="stat-card-title">Pending Invites</div>
+                    <div class="stat-card-value">2</div>
+                </div>
+            </div>
+
+            <!-- Main Tabs -->
+            <div class="glass-card fade-in">
+                <div class="glass-card-header">
+                    <ul class="nav nav-tabs border-0" role="tablist" style="gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <li class="nav-item"><button class="ftab active" data-bs-toggle="tab" data-bs-target="#staffListTab" type="button">Staff Directory <span class="cnt">12</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#orgTab" type="button">Org Structure</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#rolesTab" type="button">Roles & Permissions</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#activityTab" type="button">Activity Log</button></li>
+                    </ul>
+                </div>
+                <div class="glass-card-body">
+                    <div class="tab-content">
+
+                        <!-- STAFF LIST TAB -->
+                        <div class="tab-pane fade show active" id="staffListTab">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-lg);flex-wrap:wrap;gap:var(--spacing-sm);">
+                                <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                                    <button class="ftab active" onclick="setFt(this)">All <span class="cnt">12</span></button>
+                                    <button class="ftab" onclick="setFt(this)">Board <span class="cnt">5</span></button>
+                                    <button class="ftab" onclick="setFt(this)">Management <span class="cnt">4</span></button>
+                                    <button class="ftab" onclick="setFt(this)">Staff <span class="cnt">3</span></button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm finput" placeholder="Search..." style="max-width:220px;">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead><tr><th>Staff Member</th><th>Role</th><th>Member ID</th><th>Permissions</th><th>Status</th><th>Last Active</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <!-- Super Admin (Default — Cannot be modified) -->
+                                        <tr style="background:rgba(0,208,132,0.03);">
+                                            <td><div class="m-cell"><div class="m-av c1" style="position:relative;">JK<span class="online-dot active" style="width:10px;height:10px;bottom:0;right:0;"></span></div><div><div class="m-name">James Kariuki</div><div class="m-sub">Default Administrator</div></div></div></td>
+                                            <td><span class="role-badge super-admin"><i class="bi bi-shield-fill-check"></i> Super Admin</span></td>
+                                            <td><code>SP-10001</code></td>
+                                            <td><span style="font-size:0.72rem;color:var(--primary-green);font-weight:600;">Full Access (All)</span></td>
+                                            <td><span class="badge badge-success" style="font-size:0.65rem;"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Online</span></td>
+                                            <td style="font-size:0.78rem;">Now</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openStaffDetail('JK')"><i class="bi bi-eye"></i> View</button></td>
+                                        </tr>
+                                        <!-- Chairman -->
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c2" style="position:relative;">WO<span class="online-dot active" style="width:10px;height:10px;bottom:0;right:0;"></span></div><div><div class="m-name">William Ochieng</div><div class="m-sub">Board Chairman</div></div></div></td>
+                                            <td><span class="role-badge chairman"><i class="bi bi-star-fill"></i> Chairman</span></td>
+                                            <td><code>SP-10005</code></td>
+                                            <td><span style="font-size:0.72rem;color:var(--text-secondary);">Board + Approvals</span></td>
+                                            <td><span class="badge badge-success" style="font-size:0.65rem;"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Online</span></td>
+                                            <td style="font-size:0.78rem;">5 min ago</td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openStaffDetail('WO')"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openPermissions('WO','William Ochieng','Chairman')"><i class="bi bi-key"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li><a class="dropdown-item" href="#" onclick="openStaffDetail('WO')"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="openPermissions('WO','William Ochieng','Chairman')"><i class="bi bi-key me-2"></i>Permissions</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="openEditStaff('WO')"><i class="bi bi-pencil me-2"></i>Edit Role</a></li>
+                                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#resetPasswordModal"><i class="bi bi-arrow-clockwise me-2"></i>Reset Password</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="deactivateStaff('WO')"><i class="bi bi-pause-circle me-2"></i>Deactivate</a></li>
+                                                        <li><a class="dropdown-item text-danger" href="#" onclick="revokeAccess('WO')"><i class="bi bi-x-circle me-2"></i>Revoke Access</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Treasurer -->
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c3" style="position:relative;">AN<span class="online-dot active" style="width:10px;height:10px;bottom:0;right:0;"></span></div><div><div class="m-name">Agnes Nyaboke</div><div class="m-sub">Treasurer</div></div></div></td>
+                                            <td><span class="role-badge treasurer"><i class="bi bi-currency-exchange"></i> Treasurer</span></td>
+                                            <td><code>SP-10012</code></td>
+                                            <td><span style="font-size:0.72rem;color:var(--text-secondary);">Finance + Reports</span></td>
+                                            <td><span class="badge badge-success" style="font-size:0.65rem;"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Online</span></td>
+                                            <td style="font-size:0.78rem;">12 min ago</td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openStaffDetail('AN')"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openPermissions('AN','Agnes Nyaboke','Treasurer')"><i class="bi bi-key"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openStaffDetail('AN')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="openPermissions('AN','Agnes Nyaboke','Treasurer')"><i class="bi bi-key me-2"></i>Permissions</a></li><li><a class="dropdown-item" href="#" onclick="openEditStaff('AN')"><i class="bi bi-pencil me-2"></i>Edit</a></li><li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#resetPasswordModal"><i class="bi bi-arrow-clockwise me-2"></i>Reset Password</a></li><li><hr class="dropdown-divider"><li><a class="dropdown-item text-danger" href="#" onclick="revokeAccess('AN')"><i class="bi bi-x-circle me-2"></i>Revoke</a></li></ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Secretary -->
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c4" style="position:relative;">MA<span class="online-dot offline" style="width:10px;height:10px;bottom:0;right:0;"></span></div><div><div class="m-name">Mary Achieng</div><div class="m-sub">Secretary</div></div></div></td>
+                                            <td><span class="role-badge secretary"><i class="bi bi-journal-text"></i> Secretary</span></td>
+                                            <td><code>SP-10018</code></td>
+                                            <td><span style="font-size:0.72rem;color:var(--text-secondary);">Members + Compliance</span></td>
+                                            <td><span class="badge" style="background:var(--bg-tertiary);color:var(--text-tertiary);font-size:0.65rem;">Offline</span></td>
+                                            <td style="font-size:0.78rem;">3 hrs ago</td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openStaffDetail('MA')"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openPermissions('MA','Mary Achieng','Secretary')"><i class="bi bi-key"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openStaffDetail('MA')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="openPermissions('MA','Mary Achieng','Secretary')"><i class="bi bi-key me-2"></i>Permissions</a></li><li><a class="dropdown-item" href="#" onclick="openEditStaff('MA')"><i class="bi bi-pencil me-2"></i>Edit</a></li><li><hr class="dropdown-divider"><li><a class="dropdown-item text-danger" href="#" onclick="revokeAccess('MA')"><i class="bi bi-x-circle me-2"></i>Revoke</a></li></ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Credit Officer -->
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c5" style="position:relative;">DO<span class="online-dot active" style="width:10px;height:10px;bottom:0;right:0;"></span></div><div><div class="m-name">David Otieno</div><div class="m-sub">Credit Officer</div></div></div></td>
+                                            <td><span class="role-badge credit-officer"><i class="bi bi-cash-stack"></i> Credit Officer</span></td>
+                                            <td><code>SP-10025</code></td>
+                                            <td><span style="font-size:0.72rem;color:var(--text-secondary);">Loans + Collections</span></td>
+                                            <td><span class="badge badge-success" style="font-size:0.65rem;"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Online</span></td>
+                                            <td style="font-size:0.78rem;">Now</td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openStaffDetail('DO')"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openPermissions('DO','David Otieno','Credit Officer')"><i class="bi bi-key"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openStaffDetail('DO')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="openPermissions('DO','David Otieno','Credit Officer')"><i class="bi bi-key me-2"></i>Permissions</a></li><li><a class="dropdown-item" href="#" onclick="openEditStaff('DO')"><i class="bi bi-pencil me-2"></i>Edit</a></li><li><hr class="dropdown-divider"><li><a class="dropdown-item text-danger" href="#" onclick="revokeAccess('DO')"><i class="bi bi-x-circle me-2"></i>Revoke</a></li></ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Accountant -->
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av c6" style="position:relative;">FK<span class="online-dot away" style="width:10px;height:10px;bottom:0;right:0;"></span></div><div><div class="m-name">Florence Kerubo</div><div class="m-sub">Chief Accountant</div></div></div></td>
+                                            <td><span class="role-badge accountant"><i class="bi bi-calculator"></i> Accountant</span></td>
+                                            <td><code>SP-10030</code></td>
+                                            <td><span style="font-size:0.72rem;color:var(--text-secondary);">Finance + Savings</span></td>
+                                            <td><span class="badge badge-pending" style="font-size:0.65rem;">Away</span></td>
+                                            <td style="font-size:0.78rem;">30 min ago</td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openStaffDetail('FK')"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="openPermissions('FK','Florence Kerubo','Accountant')"><i class="bi bi-key"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openStaffDetail('FK')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="openEditStaff('FK')"><i class="bi bi-pencil me-2"></i>Edit</a></li><li><hr class="dropdown-divider"><li><a class="dropdown-item text-danger" href="#" onclick="revokeAccess('FK')"><i class="bi bi-x-circle me-2"></i>Revoke</a></li></ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ORG STRUCTURE TAB -->
+                        <div class="tab-pane fade" id="orgTab">
+                            <div style="text-align:center;overflow-x:auto;padding:var(--spacing-lg) 0;">
+                                <!-- Level 1: Chairman -->
+                                <div style="display:flex;justify-content:center;">
+                                    <div class="org-card" onclick="openStaffDetail('WO')"><div class="org-av" style="background:linear-gradient(135deg,#1a237e,#283593);">WO</div><h6>William Ochieng</h6><p><span class="role-badge chairman" style="font-size:0.6rem;padding:2px 8px;"><i class="bi bi-star-fill"></i> Chairman</span></p></div>
+                                </div>
+                                <div class="org-connector"><div class="org-vline"></div></div>
+                                <!-- Level 2: Admin + Secretary + Treasurer -->
+                                <div style="display:flex;justify-content:center;gap:var(--spacing-xl);flex-wrap:wrap;">
+                                    <div>
+                                        <div class="org-card" onclick="openStaffDetail('JK')" style="border-color:var(--primary-green);"><div class="org-av" style="background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));">JK</div><h6>James Kariuki</h6><p><span class="role-badge super-admin" style="font-size:0.6rem;padding:2px 8px;"><i class="bi bi-shield-fill-check"></i> Super Admin</span></p></div>
+                                        <div class="org-connector"><div class="org-vline"></div></div>
+                                        <div style="display:flex;gap:var(--spacing-md);">
+                                            <div class="org-card" onclick="openStaffDetail('DO')"><div class="org-av" style="background:linear-gradient(135deg,#1565c0,#1976d2);">DO</div><h6>David Otieno</h6><p><span class="role-badge credit-officer" style="font-size:0.6rem;padding:2px 6px;">Credit</span></p></div>
+                                            <div class="org-card" onclick="openStaffDetail('FK')"><div class="org-av" style="background:linear-gradient(135deg,#e65100,#f57c00);">FK</div><h6>Florence K.</h6><p><span class="role-badge accountant" style="font-size:0.6rem;padding:2px 6px;">Accountant</span></p></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="org-card" onclick="openStaffDetail('MA')"><div class="org-av" style="background:linear-gradient(135deg,#7b1fa2,#9c27b0);">MA</div><h6>Mary Achieng</h6><p><span class="role-badge secretary" style="font-size:0.6rem;padding:2px 8px;"><i class="bi bi-journal-text"></i> Secretary</span></p></div>
+                                    </div>
+                                    <div>
+                                        <div class="org-card" onclick="openStaffDetail('AN')"><div class="org-av" style="background:linear-gradient(135deg,#00695c,#00897b);">AN</div><h6>Agnes Nyaboke</h6><p><span class="role-badge treasurer" style="font-size:0.6rem;padding:2px 8px;"><i class="bi bi-currency-exchange"></i> Treasurer</span></p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROLES & PERMISSIONS TAB -->
+                        <div class="tab-pane fade" id="rolesTab">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-lg);">
+                                <h6 style="font-weight:600;margin:0;">Defined Roles & Assigned Permissions</h6>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createRoleModal"><i class="bi bi-plus"></i> Create Role</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Role</th><th>Badge</th><th>Staff Assigned</th><th>Permissions</th><th>Created</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr style="background:rgba(0,208,132,0.03);">
+                                            <td style="font-weight:700;">Super Admin</td>
+                                            <td><span class="role-badge super-admin"><i class="bi bi-shield-fill-check"></i> Super Admin</span></td>
+                                            <td>1 (James Kariuki)</td>
+                                            <td style="color:var(--primary-green);font-weight:600;">All Permissions (immutable)</td>
+                                            <td>System Default</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewRoleDetail('Super Admin')"><i class="bi bi-eye"></i> View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:700;">Chairman</td>
+                                            <td><span class="role-badge chairman"><i class="bi bi-star-fill"></i> Chairman</span></td>
+                                            <td>1</td>
+                                            <td>Approvals, Reports, Board, Members (View)</td>
+                                            <td>Jan 2024</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewRoleDetail('Chairman')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Chairman')"><i class="bi bi-pencil"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:700;">Treasurer</td>
+                                            <td><span class="role-badge treasurer"><i class="bi bi-currency-exchange"></i> Treasurer</span></td>
+                                            <td>1</td>
+                                            <td>Finance, Savings, Withdrawals, Reports</td>
+                                            <td>Jan 2024</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewRoleDetail('Treasurer')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Treasurer')"><i class="bi bi-pencil"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:700;">Credit Officer</td>
+                                            <td><span class="role-badge credit-officer"><i class="bi bi-cash-stack"></i> Credit Officer</span></td>
+                                            <td>2</td>
+                                            <td>Loans, Disbursements, Collections, KYC</td>
+                                            <td>Jan 2024</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewRoleDetail('Credit Officer')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Credit Officer')"><i class="bi bi-pencil"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:700;">Accountant</td>
+                                            <td><span class="role-badge accountant"><i class="bi bi-calculator"></i> Accountant</span></td>
+                                            <td>2</td>
+                                            <td>Finance, Reports, Savings, Transactions</td>
+                                            <td>Feb 2024</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewRoleDetail('Accountant')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Accountant')"><i class="bi bi-pencil"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:700;">Teller</td>
+                                            <td><span class="role-badge teller"><i class="bi bi-person-workspace"></i> Teller</span></td>
+                                            <td>3</td>
+                                            <td>Deposits, Withdrawals, Member Lookup</td>
+                                            <td>Mar 2024</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewRoleDetail('Teller')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Teller')"><i class="bi bi-pencil"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ACTIVITY LOG TAB -->
+                        <div class="tab-pane fade" id="activityTab">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Events</option><option>Role Changes</option><option>Permission Updates</option><option>Login Activity</option><option>Access Revoked</option></select></div>
+                                <div class="col-md-4"><input type="date" class="form-control finput form-control-sm"></div>
+                                <div class="col-md-4"><input type="text" class="form-control finput form-control-sm" placeholder="Search..."></div>
+                            </div>
+                            <div class="timeline">
+                                <div class="tl-item done"><div class="tl-time">Today, 10:30 AM</div><div class="tl-content"><strong>James Kariuki</strong> granted <strong>"Loan Approval"</strong> permission to <strong>David Otieno</strong> (Credit Officer)</div></div>
+                                <div class="tl-item done"><div class="tl-time">Today, 9:15 AM</div><div class="tl-content"><strong>James Kariuki</strong> added <strong>Florence Kerubo</strong> as <span class="role-badge accountant" style="font-size:0.6rem;padding:2px 6px;">Accountant</span></div></div>
+                                <div class="tl-item done"><div class="tl-time">Yesterday, 4:00 PM</div><div class="tl-content"><strong>David Otieno</strong> logged in from new device — IP: 196.201.xxx.xxx (Rongo)</div></div>
+                                <div class="tl-item done"><div class="tl-time">Yesterday, 2:30 PM</div><div class="tl-content"><strong>James Kariuki</strong> updated role permissions for <span class="role-badge treasurer" style="font-size:0.6rem;padding:2px 6px;">Treasurer</span> — added "Generate Reports"</div></div>
+                                <div class="tl-item done"><div class="tl-time">Dec 16, 11:00 AM</div><div class="tl-content"><strong>James Kariuki</strong> sent invitation to <strong>Peter Omondi</strong> for <span class="role-badge compliance" style="font-size:0.6rem;padding:2px 6px;">Compliance</span> role</div></div>
+                                <div class="tl-item done"><div class="tl-time">Dec 15, 3:00 PM</div><div class="tl-content"><strong>James Kariuki</strong> created new role <span class="role-badge teller" style="font-size:0.6rem;padding:2px 6px;">Teller</span> with 5 permissions</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- 1. ADD STAFF MEMBER (Select from members or manual) -->
+<div class="modal fade" id="addStaffModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Add Staff / Management Member</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <ul class="nav nav-tabs border-0 mb-3" role="tablist" style="gap:var(--spacing-sm);">
+            <li class="nav-item"><button class="ftab active" data-bs-toggle="tab" data-bs-target="#addFromMembers" type="button">Select from Members</button></li>
+            <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#addManual" type="button">Add Manually</button></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="addFromMembers">
+                <div class="row g-3">
+                    <div class="col-12"><label class="flbl">Search Member</label><input type="text" class="form-control finput" placeholder="Search by name, member ID, phone..." id="memberSearch"></div>
+                    <div class="col-12" id="searchResults" style="display:none;">
+                        <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);max-height:200px;overflow-y:auto;">
+                            <div style="padding:10px var(--spacing-md);border-bottom:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;gap:var(--spacing-sm);" onclick="selectMember(this,'Peter Omondi','SP-10145')" class="search-result-item">
+                                <div class="m-av c5" style="width:30px;height:30px;font-size:0.65rem;">PO</div>
+                                <div><div style="font-size:0.82rem;font-weight:600;">Peter Omondi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10145 • 0722-XXX-789</div></div>
+                            </div>
+                            <div style="padding:10px var(--spacing-md);border-bottom:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;gap:var(--spacing-sm);" onclick="selectMember(this,'Grace Akinyi','SP-10067')" class="search-result-item">
+                                <div class="m-av c4" style="width:30px;height:30px;font-size:0.65rem;">GA</div>
+                                <div><div style="font-size:0.82rem;font-weight:600;">Grace Akinyi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10067 • 0733-XXX-456</div></div>
+                            </div>
+                            <div style="padding:10px var(--spacing-md);cursor:pointer;display:flex;align-items:center;gap:var(--spacing-sm);" onclick="selectMember(this,'Samuel Kibet','SP-10189')" class="search-result-item">
+                                <div class="m-av c3" style="width:30px;height:30px;font-size:0.65rem;">SK</div>
+                                <div><div style="font-size:0.82rem;font-weight:600;">Samuel Kibet</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10189 • 0710-XXX-321</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="addManual">
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="flbl">Full Name</label><input type="text" class="form-control finput" placeholder="Enter full name"></div>
+                    <div class="col-md-6"><label class="flbl">Phone Number</label><input type="text" class="form-control finput" placeholder="+254 7XX XXX XXX"></div>
+                    <div class="col-md-6"><label class="flbl">Email Address</label><input type="email" class="form-control finput" placeholder="email@example.com"></div>
+                    <div class="col-md-6"><label class="flbl">National ID</label><input type="text" class="form-control finput" placeholder="National ID number"></div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="margin:var(--spacing-lg) 0;">
+
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);"><i class="bi bi-tag me-1" style="color:var(--primary-green);"></i> Assign Role & Badge</h6>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="flbl">Role</label>
+                <select class="form-select fselect" id="assignRole">
+                    <option value="">Select role...</option>
+                    <option value="chairman">Chairman</option>
+                    <option value="vice-chairman">Vice Chairman</option>
+                    <option value="treasurer">Treasurer</option>
+                    <option value="secretary">Secretary</option>
+                    <option value="credit-officer">Credit Officer</option>
+                    <option value="compliance">Compliance Officer</option>
+                    <option value="accountant">Accountant</option>
+                    <option value="teller">Teller</option>
+                    <option value="board">Board Member</option>
+                    <option value="staff">General Staff</option>
+                    <option value="custom">Custom Role...</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="flbl">Custom Title (Optional)</label>
+                <input type="text" class="form-control finput" placeholder="e.g. Assistant Treasurer">
+            </div>
+            <div class="col-md-6">
+                <label class="flbl">Department</label>
+                <select class="form-select fselect">
+                    <option>Board of Directors</option>
+                    <option>Management</option>
+                    <option>Credit</option>
+                    <option>Finance</option>
+                    <option>Operations</option>
+                    <option>Compliance</option>
+                    <option>IT</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="flbl">Access Level</label>
+                <select class="form-select fselect">
+                    <option>Standard — Based on role permissions</option>
+                    <option>Elevated — Role permissions + additional</option>
+                    <option>Restricted — Limited view-only access</option>
+                </select>
+            </div>
+        </div>
+
+        <hr style="margin:var(--spacing-lg) 0;">
+
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);"><i class="bi bi-key me-1" style="color:var(--accent-blue);"></i> Quick Permissions</h6>
+        <div class="perm-grid">
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Dashboard</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Members</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Edit Members</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Approve Loans</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Disburse Loans</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Manage Savings</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Process Withdrawals</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>View Reports</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Generate Reports</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Compliance Access</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>System Settings</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Staff Management</span></div>
+        </div>
+
+        <div class="alert alert-info mt-3" style="font-size:0.82rem;"><i class="bi bi-info-circle-fill me-1"></i>The member will receive an <strong>email/SMS invitation</strong> with login credentials. You remain the <strong>default admin</strong> regardless of roles assigned.</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="addStaffMember()"><i class="bi bi-person-plus"></i> Add & Send Invitation</button></div>
+</div></div></div>
+
+<!-- 2. STAFF DETAIL -->
+<div class="modal fade" id="staffDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-person-badge me-2"></i>Staff Profile — <span id="sdName">David Otieno</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div style="text-align:center;padding:var(--spacing-xl);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                    <div class="staff-avatar c5" style="width:72px;height:72px;font-size:1.5rem;margin:0 auto var(--spacing-md);position:relative;" id="sdAvatar">DO<span class="online-dot active" style="width:14px;height:14px;"></span></div>
+                    <h5 style="font-weight:700;margin:0;" id="sdFullName">David Otieno</h5>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);margin:4px 0;" id="sdTitle">Credit Officer</p>
+                    <span class="role-badge credit-officer" id="sdRoleBadge"><i class="bi bi-cash-stack"></i> Credit Officer</span>
+                    <div style="margin-top:var(--spacing-lg);">
+                        <div class="drow"><span class="dl">Member ID</span><span class="dv"><code>SP-10025</code></span></div>
+                        <div class="drow"><span class="dl">Phone</span><span class="dv">+254 722 XXX 456</span></div>
+                        <div class="drow"><span class="dl">Email</span><span class="dv">david@rongosacco.co.ke</span></div>
+                        <div class="drow"><span class="dl">Joined Staff</span><span class="dv">Jan 15, 2024</span></div>
+                        <div class="drow"><span class="dl">Last Login</span><span class="dv">Today, 9:15 AM</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <h6 style="font-weight:600;margin-bottom:var(--spacing-md);"><i class="bi bi-key" style="color:var(--primary-green);"></i> Assigned Permissions</h6>
+                <div class="perm-grid" style="margin-bottom:var(--spacing-lg);">
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>View Dashboard</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>View Members</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>View Loans</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>Approve Loans</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>Disburse Loans</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>Loan Collections</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>KYC Review</span></div>
+                    <div class="perm-item granted"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:0.8rem;"></i><span>View Reports</span></div>
+                    <div class="perm-item"><i class="bi bi-x-circle" style="color:var(--text-tertiary);font-size:0.8rem;"></i><span style="color:var(--text-tertiary);">Generate Reports</span></div>
+                    <div class="perm-item"><i class="bi bi-x-circle" style="color:var(--text-tertiary);font-size:0.8rem;"></i><span style="color:var(--text-tertiary);">System Settings</span></div>
+                    <div class="perm-item"><i class="bi bi-x-circle" style="color:var(--text-tertiary);font-size:0.8rem;"></i><span style="color:var(--text-tertiary);">Staff Management</span></div>
+                    <div class="perm-item"><i class="bi bi-x-circle" style="color:var(--text-tertiary);font-size:0.8rem;"></i><span style="color:var(--text-tertiary);">Manage Savings</span></div>
+                </div>
+                <h6 style="font-weight:600;margin-bottom:var(--spacing-md);"><i class="bi bi-clock-history" style="color:var(--accent-orange);"></i> Recent Activity</h6>
+                <div class="timeline">
+                    <div class="tl-item done"><div class="tl-time">Today, 9:15 AM</div><div class="tl-content">Logged in from 196.201.xxx.xxx (Rongo Office)</div></div>
+                    <div class="tl-item done"><div class="tl-time">Yesterday, 3:00 PM</div><div class="tl-content">Approved loan LN-2024-00890 (KES 500,000)</div></div>
+                    <div class="tl-item done"><div class="tl-time">Yesterday, 11:00 AM</div><div class="tl-content">Reviewed 4 KYC applications</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-outline btn-sm" onclick="openPermissionsFromDetail()"><i class="bi bi-key"></i> Edit Permissions</button>
+        <button class="btn btn-outline btn-sm" onclick="openEditStaffFromDetail()"><i class="bi bi-pencil"></i> Edit Role</button>
+    </div>
+</div></div></div>
+
+<!-- 3. PERMISSIONS MANAGER -->
+<div class="modal fade" id="permissionsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-key me-2"></i>Manage Permissions — <span id="pmName">Staff Name</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);display:flex;align-items:center;gap:var(--spacing-md);">
+            <div class="m-av c5" style="width:44px;height:44px;font-size:0.85rem;" id="pmAvatar">DO</div>
+            <div><div style="font-weight:700;" id="pmFullName">David Otieno</div><div style="font-size:0.78rem;"><span class="role-badge credit-officer" id="pmRoleBadge"><i class="bi bi-cash-stack"></i> Credit Officer</span></div></div>
+        </div>
+
+        <div class="alert alert-info" style="font-size:0.82rem;"><i class="bi bi-shield-fill-check me-1" style="color:var(--primary-green);"></i> You (<strong>James Kariuki — Super Admin</strong>) are granting these permissions. Your own access is <strong>immutable</strong>.</div>
+
+        <!-- Permission Categories -->
+        <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);color:var(--primary-green);"><i class="bi bi-grid-1x2 me-1"></i> Dashboard & Overview</h6>
+        <div class="perm-grid mb-3">
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Dashboard</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Analytics</span></div>
+        </div>
+
+        <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);color:var(--accent-orange);"><i class="bi bi-people me-1"></i> Member Management</h6>
+        <div class="perm-grid mb-3">
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Members</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Edit Members</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Add Members</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>KYC Review</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>KYC Override</span></div>
+        </div>
+
+        <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);color:var(--accent-blue);"><i class="bi bi-cash-stack me-1"></i> Loan Operations</h6>
+        <div class="perm-grid mb-3">
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Loans</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>Approve Loans</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>Reject Loans</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>Disburse Loans</span></div>
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>Record Repayments</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Write-Off Loans</span></div>
+        </div>
+
+        <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);color:var(--accent-purple);"><i class="bi bi-piggy-bank me-1"></i> Savings & Finance</h6>
+        <div class="perm-grid mb-3">
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>View Savings</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Process Deposits</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Process Withdrawals</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Manage Wallets</span></div>
+        </div>
+
+        <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);color:#795548;"><i class="bi bi-gear me-1"></i> System & Admin</h6>
+        <div class="perm-grid">
+            <div class="perm-item granted" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div><span>View Reports</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Generate Reports</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Compliance Access</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>System Settings</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Staff Management</span></div>
+            <div class="perm-item" onclick="togglePerm(this)"><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div><span>Audit Log Access</span></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="savePermissions()"><i class="bi bi-check-circle"></i> Save Permissions</button></div>
+</div></div></div>
+
+<!-- 4. EDIT STAFF ROLE -->
+<div class="modal fade" id="editStaffModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Staff Role</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Current Role</label><div style="padding:10px 14px;background:var(--bg-tertiary);border-radius:var(--radius-md);" id="esCurrentRole"><span class="role-badge credit-officer"><i class="bi bi-cash-stack"></i> Credit Officer</span></div></div>
+        <div class="col-12"><label class="flbl">New Role</label><select class="form-select fselect"><option value="">Keep current role</option><option>Chairman</option><option>Vice Chairman</option><option>Treasurer</option><option>Secretary</option><option>Credit Officer</option><option>Compliance Officer</option><option>Accountant</option><option>Teller</option><option>Board Member</option><option>Staff</option></select></div>
+        <div class="col-12"><label class="flbl">Custom Title</label><input type="text" class="form-control finput" placeholder="e.g. Senior Credit Officer"></div>
+        <div class="col-12"><label class="flbl">Reason for Change</label><textarea class="form-control finput" rows="2" placeholder="Reason..."></textarea></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="updateStaffRole()"><i class="bi bi-check"></i> Update Role</button></div>
+</div></div></div>
+
+<!-- 5. CREATE ROLE -->
+<div class="modal fade" id="createRoleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-tags me-2"></i>Create New Role</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-md-6"><label class="flbl">Role Name</label><input type="text" class="form-control finput" placeholder="e.g. Branch Manager"></div>
+        <div class="col-md-6"><label class="flbl">Badge Color</label><select class="form-select fselect"><option>Green</option><option>Blue</option><option>Purple</option><option>Orange</option><option>Red</option><option>Teal</option><option>Brown</option></select></div>
+        <div class="col-md-6"><label class="flbl">Badge Icon</label><select class="form-select fselect"><option value="bi-person-badge">Person Badge</option><option value="bi-star-fill">Star</option><option value="bi-shield-check">Shield</option><option value="bi-cash-stack">Cash</option><option value="bi-calculator">Calculator</option><option value="bi-building">Building</option></select></div>
+        <div class="col-md-6"><label class="flbl">Department</label><select class="form-select fselect"><option>Board</option><option>Management</option><option>Credit</option><option>Finance</option><option>Operations</option><option>Compliance</option></select></div>
+        <div class="col-12"><label class="flbl">Description</label><textarea class="form-control finput" rows="2" placeholder="Describe the role responsibilities..."></textarea></div>
+        <div class="col-12"><label class="flbl">Base Permissions Template</label><select class="form-select fselect"><option>No permissions (start from scratch)</option><option>Copy from: Chairman</option><option>Copy from: Treasurer</option><option>Copy from: Credit Officer</option><option>Copy from: Accountant</option><option>Copy from: Teller</option></select></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="createRole()"><i class="bi bi-tags"></i> Create Role</button></div>
+</div></div></div>
+
+<!-- 6. ROLES CONFIG -->
+<div class="modal fade" id="rolesConfigModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-tags me-2"></i>Manage Roles — Rongo SACCO</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Role</th><th>Badge</th><th>Assigned</th><th>Permissions</th><th>Actions</th></tr></thead>
+        <tbody>
+            <tr style="background:rgba(0,208,132,0.03);"><td style="font-weight:700;">Super Admin</td><td><span class="role-badge super-admin"><i class="bi bi-shield-fill-check"></i> Super Admin</span></td><td>1</td><td>All (immutable)</td><td><span style="font-size:0.7rem;color:var(--text-tertiary);">System default</span></td></tr>
+            <tr><td style="font-weight:600;">Chairman</td><td><span class="role-badge chairman"><i class="bi bi-star-fill"></i> Chairman</span></td><td>1</td><td>12 permissions</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Chairman')"><i class="bi bi-pencil"></i> Edit</button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="duplicateRole('Chairman')"><i class="bi bi-copy"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Treasurer</td><td><span class="role-badge treasurer"><i class="bi bi-currency-exchange"></i> Treasurer</span></td><td>1</td><td>10 permissions</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Treasurer')"><i class="bi bi-pencil"></i> Edit</button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="duplicateRole('Treasurer')"><i class="bi bi-copy"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Credit Officer</td><td><span class="role-badge credit-officer"><i class="bi bi-cash-stack"></i> Credit Officer</span></td><td>2</td><td>8 permissions</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Credit Officer')"><i class="bi bi-pencil"></i> Edit</button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="duplicateRole('Credit Officer')"><i class="bi bi-copy"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Accountant</td><td><span class="role-badge accountant"><i class="bi bi-calculator"></i> Accountant</span></td><td>2</td><td>9 permissions</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Accountant')"><i class="bi bi-pencil"></i> Edit</button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="duplicateRole('Accountant')"><i class="bi bi-copy"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Teller</td><td><span class="role-badge teller"><i class="bi bi-person-workspace"></i> Teller</span></td><td>3</td><td>5 permissions</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="editRole('Teller')"><i class="bi bi-pencil"></i> Edit</button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;color:var(--status-danger);" onclick="deleteRole('Teller')"><i class="bi bi-trash"></i></button></td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary btn-sm" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" data-bs-toggle="modal" data-bs-target="#createRoleModal"><i class="bi bi-plus"></i> Create Role</button></div>
+</div></div></div>
+
+<!-- 7. RESET PASSWORD -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr red"><h5 class="modal-title"><i class="bi bi-arrow-clockwise me-2"></i>Reset Staff Password</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-warning" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>A temporary password will be sent to the staff member's registered email and phone.</div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Send Password Via</label><div style="display:flex;gap:var(--spacing-lg);"><div class="form-check"><input class="form-check-input" type="checkbox" checked>Email</div><div class="form-check"><input class="form-check-input" type="checkbox" checked>SMS</div></div></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Force password change on next login</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#c62828,#e53935);" onclick="resetPassword()"><i class="bi bi-arrow-clockwise"></i> Reset Password</button></div>
+</div></div></div>
+
+<!-- 8. PENDING INVITES -->
+<div class="modal fade" id="pendingInvitesModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-envelope-open me-2"></i>Pending Invitations</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="padding:var(--spacing-md);border:1px solid var(--border-color);border-radius:var(--radius-md);margin-bottom:var(--spacing-sm);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-weight:600;font-size:0.88rem;">Peter Omondi</div><div style="font-size:0.72rem;color:var(--text-tertiary);">SP-10145 • <span class="role-badge compliance" style="font-size:0.6rem;padding:2px 6px;">Compliance</span></div><div style="font-size:0.68rem;color:var(--text-tertiary);margin-top:3px;">Sent: Dec 16 • Expires: Dec 23</div></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="resendInvite('Peter Omondi')"><i class="bi bi-arrow-clockwise"></i></button><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;color:var(--status-danger);" onclick="cancelInvite('Peter Omondi')"><i class="bi bi-x"></i></button></div>
+            </div>
+        </div>
+        <div style="padding:var(--spacing-md);border:1px solid var(--border-color);border-radius:var(--radius-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-weight:600;font-size:0.88rem;">Samuel Kibet</div><div style="font-size:0.72rem;color:var(--text-tertiary);">SP-10189 • <span class="role-badge teller" style="font-size:0.6rem;padding:2px 6px;">Teller</span></div><div style="font-size:0.68rem;color:var(--text-tertiary);margin-top:3px;">Sent: Dec 17 • Expires: Dec 24</div></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="resendInvite('Samuel Kibet')"><i class="bi bi-arrow-clockwise"></i></button><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;color:var(--status-danger);" onclick="cancelInvite('Samuel Kibet')"><i class="bi bi-x"></i></button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- Notifications + Profile -->
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" style="max-height:300px;overflow-y:auto;"><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><strong style="font-size:0.82rem;">David Otieno</strong> logged in from new device<p style="font-size:0.72rem;color:var(--text-tertiary);margin:2px 0 0;">Today, 9:15 AM</p></div><div style="padding:var(--spacing-md);"><strong style="font-size:0.82rem;">Invitation pending</strong> — Peter Omondi (7 days remaining)<p style="font-size:0.72rem;color:var(--text-tertiary);margin:2px 0 0;">Dec 16</p></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><div><span class="role-badge super-admin"><i class="bi bi-shield-fill-check"></i> Default Admin</span></div><p style="font-size:0.72rem;color:var(--text-tertiary);margin:var(--spacing-sm) 0;">Your admin privileges are <strong>immutable</strong>. You can assign and revoke access for all other staff members.</p><hr style="margin:var(--spacing-md) 0;"><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>My Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+function setFt(btn){btn.closest('div').querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');}
+
+// Toggle Permission
+function togglePerm(el){
+    const cb=el.querySelector('input[type=checkbox]');
+    if(cb){cb.checked=!cb.checked;el.classList.toggle('granted',cb.checked);}
+}
+
+// Search Members
+document.getElementById('memberSearch').addEventListener('input',function(){
+    document.getElementById('searchResults').style.display=this.value.length>0?'block':'none';
+});
+
+function selectMember(el,name,id){
+    document.getElementById('memberSearch').value=name+' ('+id+')';
+    document.getElementById('searchResults').style.display='none';
+    showToast('Selected: '+name);
+}
+
+// Staff Detail
+function openStaffDetail(code){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('staffDetailModal'),350);
+}
+
+// Permissions
+function openPermissions(code,name,role){
+    document.getElementById('pmName').textContent=name;
+    document.getElementById('pmFullName').textContent=name;
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('permissionsModal'),350);
+}
+
+function openPermissionsFromDetail(){
+    bootstrap.Modal.getInstance(document.getElementById('staffDetailModal')).hide();
+    setTimeout(()=>openModal('permissionsModal'),350);
+}
+
+function savePermissions(){
+    bootstrap.Modal.getInstance(document.getElementById('permissionsModal')).hide();
+    showToast('Permissions updated! Changes effective immediately.');
+}
+
+// Edit Staff
+function openEditStaff(code){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('editStaffModal'),350);
+}
+
+function openEditStaffFromDetail(){
+    bootstrap.Modal.getInstance(document.getElementById('staffDetailModal')).hide();
+    setTimeout(()=>openModal('editStaffModal'),350);
+}
+
+function updateStaffRole(){
+    bootstrap.Modal.getInstance(document.getElementById('editStaffModal')).hide();
+    showToast('Staff role updated successfully!');
+}
+
+// Add Staff
+function addStaffMember(){
+    bootstrap.Modal.getInstance(document.getElementById('addStaffModal')).hide();
+    showToast('Staff member added! Invitation sent via email & SMS.');
+}
+
+// Roles
+function createRole(){
+    bootstrap.Modal.getInstance(document.getElementById('createRoleModal')).hide();
+    showToast('New role created! You can now assign it to staff.');
+}
+
+function editRole(name){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>{showToast('Editing '+name+' role — open permissions manager');openModal('permissionsModal');},350);
+}
+
+function viewRoleDetail(name){showToast('Viewing '+name+' role details');}
+function duplicateRole(name){showToast(name+' role duplicated! Rename and customize.');}
+function deleteRole(name){showToast(name+' role deleted.');}
+
+// Actions
+function deactivateStaff(code){showToast('Staff member deactivated. Access suspended.');}
+function revokeAccess(code){showToast('Access revoked! Staff member can no longer log in.');}
+function resetPassword(){bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal')).hide();showToast('Temporary password sent to staff member.');}
+function resendInvite(name){showToast('Invitation resent to '+name);}
+function cancelInvite(name){showToast('Invitation to '+name+' cancelled.');}
+function setTab(t){showToast('Filter: '+t);}
+</script>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance & Regulatory - Rongo SACCO | SACCOPay Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           COMPLIANCE PAGE STYLES
+        ======================================== */
+
+        /* Compliance Score Ring */
+        .compliance-hero {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2xl);
+            flex-wrap: wrap;
+        }
+
+        .score-ring-wrap {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            flex-shrink: 0;
+        }
+
+        .score-ring {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-ring-inner {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .score-grade {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            margin-top: 4px;
+        }
+
+        .hero-metrics {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .hero-metric {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hero-metric:hover {
+            background: var(--primary-green-ultra-light);
+            transform: translateY(-2px);
+        }
+
+        .hm-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .hm-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .hm-trend {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .hm-trend.good { background: rgba(76,175,80,0.1); color: var(--status-success); }
+        .hm-trend.warn { background: rgba(255,152,0,0.1); color: var(--accent-orange); }
+        .hm-trend.bad { background: rgba(244,67,54,0.1); color: var(--status-danger); }
+
+        /* Status Badge Variants */
+        .cs-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .cs-badge.compliant { background: rgba(76,175,80,0.1); color: var(--status-success); }
+        .cs-badge.pending { background: rgba(255,152,0,0.1); color: var(--accent-orange); }
+        .cs-badge.overdue { background: rgba(244,67,54,0.1); color: var(--status-danger); }
+        .cs-badge.submitted { background: rgba(33,150,243,0.1); color: var(--accent-blue); }
+        .cs-badge.returned { background: rgba(156,39,176,0.1); color: var(--accent-purple); }
+        .cs-badge.rejected { background: rgba(244,67,54,0.1); color: var(--status-danger); }
+        .cs-badge.approved { background: rgba(0,208,132,0.1); color: var(--primary-green); }
+        .cs-badge.draft { background: rgba(158,158,158,0.1); color: #757575; }
+        .cs-badge.under-review { background: rgba(0,188,212,0.1); color: var(--accent-teal); }
+        .cs-badge.flagged { background: rgba(244,67,54,0.15); color: #b71c1c; }
+        .cs-badge.cleared { background: rgba(0,208,132,0.1); color: var(--primary-green); }
+        .cs-badge.escalated { background: rgba(255,152,0,0.15); color: #e65100; }
+
+        /* Risk Level */
+        .risk-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .risk-pill.low { background: rgba(76,175,80,0.1); color: var(--status-success); }
+        .risk-pill.medium { background: rgba(255,152,0,0.1); color: var(--accent-orange); }
+        .risk-pill.high { background: rgba(244,67,54,0.1); color: var(--status-danger); }
+        .risk-pill.critical { background: rgba(183,28,28,0.15); color: #b71c1c; }
+
+        /* Compliance Item Card */
+        .compliance-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .compliance-item:hover {
+            border-color: var(--primary-green-light);
+            background: var(--primary-green-ultra-light);
+            transform: translateX(3px);
+        }
+
+        .ci-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .ci-info { flex: 1; min-width: 0; }
+        .ci-info h6 { font-size: 0.88rem; font-weight: 600; margin: 0 0 2px; }
+        .ci-info p { font-size: 0.72rem; color: var(--text-tertiary); margin: 0; }
+
+        /* Approval Flow Steps */
+        .approval-flow {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: var(--spacing-lg) 0;
+            flex-wrap: wrap;
+        }
+
+        .af-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            padding: 0 var(--spacing-md);
+        }
+
+        .af-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 2px solid;
+        }
+
+        .af-dot.done { background: var(--primary-green); border-color: var(--primary-green); color: white; }
+        .af-dot.active { background: white; border-color: var(--primary-green); color: var(--primary-green); box-shadow: 0 0 0 4px rgba(0,208,132,0.15); }
+        .af-dot.waiting { background: white; border-color: var(--border-color); color: var(--text-tertiary); }
+        .af-dot.rejected-step { background: white; border-color: var(--status-danger); color: var(--status-danger); }
+        .af-dot.returned-step { background: white; border-color: var(--accent-purple); color: var(--accent-purple); }
+
+        .af-label { font-size: 0.68rem; font-weight: 600; text-align: center; max-width: 80px; }
+        .af-label.done { color: var(--primary-green); }
+        .af-label.active { color: var(--primary-green); }
+        .af-label.waiting { color: var(--text-tertiary); }
+
+        .af-line {
+            width: 40px;
+            height: 2px;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .af-line.done { background: var(--primary-green); }
+
+        /* Member Avatar */
+        .m-cell { display: flex; align-items: center; gap: var(--spacing-sm); }
+        .m-av { width: 34px; height: 34px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.72rem; color: white; flex-shrink: 0; }
+        .m-av.c1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .m-av.c2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+        .m-av.c3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+        .m-av.c4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .m-av.c5 { background: linear-gradient(135deg, #f44336, #ef5350); }
+        .m-av.c6 { background: linear-gradient(135deg, #00695c, #00897b); }
+        .m-name { font-size: 0.85rem; font-weight: 600; }
+        .m-sub { font-size: 0.7rem; color: var(--text-tertiary); }
+
+        /* Filter Tab */
+        .ftab { padding: 8px 18px; border-radius: var(--radius-full); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .ftab:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); }
+        .ftab.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0,208,132,0.25); }
+        .ftab .cnt { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 700; }
+        .ftab:not(.active) .cnt { background: var(--bg-tertiary); color: var(--text-tertiary); }
+
+        /* Modal */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .mhdr.dark { background: linear-gradient(135deg, #1a237e, #283593); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+        .mhdr.teal { background: linear-gradient(135deg, #00695c, #00897b); }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Form */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .fselect:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+
+        /* Detail Row */
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background:var(--border-color); }
+        .tl-item { position:relative; padding-bottom:var(--spacing-lg); padding-left:var(--spacing-lg); }
+        .tl-item::before { content:''; position:absolute; left:-20px; top:5px; width:12px; height:12px; border-radius:50%; border:2px solid var(--primary-green); background:white; }
+        .tl-item.done::before { background:var(--primary-green); }
+        .tl-item.warn::before { border-color:var(--accent-orange); background:var(--accent-orange); }
+        .tl-item.alert::before { border-color:var(--status-danger); background:var(--status-danger); }
+        .tl-content { background:var(--bg-tertiary); padding:var(--spacing-md); border-radius:var(--radius-md); font-size:0.83rem; }
+        .tl-time { font-size:0.72rem; color:var(--text-tertiary); margin-bottom:3px; }
+
+        /* Checklist */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+            font-size: 0.85rem;
+        }
+
+        .checklist-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        .checklist-icon.done { background: rgba(76,175,80,0.1); color: var(--status-success); }
+        .checklist-icon.pending { background: rgba(255,152,0,0.1); color: var(--accent-orange); }
+        .checklist-icon.fail { background: rgba(244,67,54,0.1); color: var(--status-danger); }
+
+        @media (max-width: 768px) {
+            .compliance-hero { flex-direction: column; align-items: stretch; }
+            .score-ring-wrap { margin: 0 auto; }
+            .hero-metrics { grid-template-columns: repeat(2, 1fr); }
+            .approval-flow { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-logo">S</div><div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Rongo SACCO</p></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loan Disbursements</span></a></div>
+            <div class="nav-item"><a href="loan-repayments.html" class="nav-link"><i class="bi bi-arrow-counterclockwise nav-icon"></i><span>Loan Repayments</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>SACCOPay Wallet</span></a></div>
+            <div class="nav-section-title">Reports & Compliance</div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-file-earmark-text nav-icon"></i><span>All Reports</span></a></div>
+            <div class="nav-item"><a href="compliance.html" class="nav-link active"><i class="bi bi-building-check nav-icon"></i><span>Compliance</span><span class="nav-badge">5</span></a></div>
+            <div class="nav-section-title">System</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell nav-icon"></i><span>Notifications</span><span class="nav-badge">3</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search compliance items, members, cases..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i><span class="notification-badge">3</span></button>
+                    <div class="user-profile" onclick="openModal('profileModal')"><div class="user-avatar">JK</div><div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Compliance Officer</p></div></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">Compliance & Regulatory</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-building-check" style="color:var(--primary-green);"></i> Compliance & Regulatory</h2>
+                        <p>Rongo SACCO — Manage regulatory filings, AML monitoring, KYC oversight & policy compliance</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#complianceChecklistModal"><i class="bi bi-check2-square"></i> Checklist</button>
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#auditLogModal"><i class="bi bi-journal-text"></i> Audit Log</button>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newSubmissionModal"><i class="bi bi-plus-lg"></i> New Submission</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compliance Score Hero -->
+            <div class="compliance-hero fade-in">
+                <div class="score-ring-wrap">
+                    <div class="score-ring" style="background:conic-gradient(var(--primary-green) 0deg 306deg, var(--accent-orange) 306deg 338deg, var(--status-danger) 338deg 352deg, var(--bg-tertiary) 352deg 360deg);">
+                        <div class="score-ring-inner">
+                            <div class="score-value" style="color:var(--primary-green);">85</div>
+                            <div class="score-label">Compliance Score</div>
+                            <span class="score-grade" style="background:rgba(0,208,132,0.12);color:var(--primary-green);">Good</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-metrics">
+                    <div class="hero-metric" data-bs-toggle="modal" data-bs-target="#regulatoryFilingsModal">
+                        <div class="hm-value" style="color:var(--primary-green);">12/14</div>
+                        <div class="hm-label">Regulatory Filings</div>
+                        <span class="hm-trend good"><i class="bi bi-check-circle"></i> 2 pending</span>
+                    </div>
+                    <div class="hero-metric" data-bs-toggle="modal" data-bs-target="#amlCasesModal">
+                        <div class="hm-value" style="color:var(--accent-orange);">5</div>
+                        <div class="hm-label">AML Alerts</div>
+                        <span class="hm-trend warn"><i class="bi bi-exclamation-triangle"></i> 3 under review</span>
+                    </div>
+                    <div class="hero-metric" data-bs-toggle="modal" data-bs-target="#kycOversightModal">
+                        <div class="hm-value" style="color:var(--accent-blue);">94%</div>
+                        <div class="hm-label">KYC Completion</div>
+                        <span class="hm-trend good"><i class="bi bi-arrow-up-short"></i> +2% this month</span>
+                    </div>
+                    <div class="hero-metric" data-bs-toggle="modal" data-bs-target="#pendingApprovalsModal">
+                        <div class="hm-value" style="color:var(--status-danger);">8</div>
+                        <div class="hm-label">Pending Approvals</div>
+                        <span class="hm-trend bad"><i class="bi bi-clock"></i> 3 urgent</span>
+                    </div>
+                    <div class="hero-metric" data-bs-toggle="modal" data-bs-target="#policyListModal">
+                        <div class="hm-value" style="color:var(--accent-purple);">18</div>
+                        <div class="hm-label">Active Policies</div>
+                        <span class="hm-trend good"><i class="bi bi-check-circle"></i> All current</span>
+                    </div>
+                    <div class="hero-metric" data-bs-toggle="modal" data-bs-target="#auditLogModal">
+                        <div class="hm-value" style="color:#795548;">342</div>
+                        <div class="hm-label">Audit Events (Month)</div>
+                        <span class="hm-trend good"><i class="bi bi-shield-check"></i> No anomalies</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Tabs -->
+            <div class="glass-card fade-in">
+                <div class="glass-card-header">
+                    <ul class="nav nav-tabs border-0" role="tablist" style="gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <li class="nav-item"><button class="ftab active" data-bs-toggle="tab" data-bs-target="#pendingTab" type="button">Pending Approvals <span class="cnt">8</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#regulatoryTab" type="button">Regulatory Filings</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#amlTab" type="button">AML Monitoring <span class="cnt">5</span></button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#kycTab" type="button">KYC Oversight</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#policyTab" type="button">Policies</button></li>
+                    </ul>
+                </div>
+                <div class="glass-card-body">
+                    <div class="tab-content">
+
+                        <!-- PENDING APPROVALS TAB -->
+                        <div class="tab-pane fade show active" id="pendingTab">
+                            <div class="alert alert-warning" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>8 items</strong> require your review and approval. <strong>3 are marked urgent.</strong></div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead><tr><th>Ref</th><th>Type</th><th>Description</th><th>Submitted By</th><th>Date</th><th>Priority</th><th>Status</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr style="background:rgba(244,67,54,0.03);">
+                                            <td><code style="color:var(--status-danger);cursor:pointer;" onclick="openApprovalDetail('CMP-2024-0891')">CMP-0891</code></td>
+                                            <td><span class="cs-badge submitted"><i class="bi bi-send-check"></i> Filing</span></td>
+                                            <td style="font-weight:600;">SASRA Q4 2024 Quarterly Return</td>
+                                            <td><div class="m-cell"><div class="m-av c2">DO</div><div><div class="m-name" style="font-size:0.78rem;">David Otieno</div></div></div></td>
+                                            <td style="font-size:0.78rem;">Dec 18</td>
+                                            <td><span class="risk-pill high"><i class="bi bi-exclamation-circle-fill"></i> Urgent</span></td>
+                                            <td><span class="cs-badge pending"><i class="bi bi-hourglass-split"></i> Pending</span></td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveItem('CMP-0891')"><i class="bi bi-check"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.65rem;padding:3px 8px;" onclick="returnItem('CMP-0891')"><i class="bi bi-arrow-return-left"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectItem('CMP-0891')"><i class="bi bi-x"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" onclick="openApprovalDetail('CMP-0891')"><i class="bi bi-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="background:rgba(244,67,54,0.03);">
+                                            <td><code style="cursor:pointer;" onclick="openApprovalDetail('CMP-2024-0890')">CMP-0890</code></td>
+                                            <td><span class="cs-badge flagged"><i class="bi bi-flag-fill"></i> AML</span></td>
+                                            <td style="font-weight:600;">Suspicious transaction — Bernard Kiprop</td>
+                                            <td><div class="m-cell"><div class="m-av c6">SY</div><div><div class="m-name" style="font-size:0.78rem;">System</div></div></div></td>
+                                            <td style="font-size:0.78rem;">Dec 17</td>
+                                            <td><span class="risk-pill high"><i class="bi bi-exclamation-circle-fill"></i> Urgent</span></td>
+                                            <td><span class="cs-badge under-review"><i class="bi bi-search"></i> Review</span></td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="clearAMLCase('CMP-0890')"><i class="bi bi-check"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--accent-orange);color:white;font-size:0.65rem;padding:3px 8px;" onclick="escalateCase('CMP-0890')"><i class="bi bi-arrow-up"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" onclick="openApprovalDetail('CMP-0890')"><i class="bi bi-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="background:rgba(244,67,54,0.03);">
+                                            <td><code style="cursor:pointer;" onclick="openApprovalDetail('CMP-2024-0889')">CMP-0889</code></td>
+                                            <td><span class="cs-badge submitted"><i class="bi bi-file-text"></i> Policy</span></td>
+                                            <td style="font-weight:600;">Updated Loan Recovery Policy v3.2</td>
+                                            <td><div class="m-cell"><div class="m-av c3">MA</div><div><div class="m-name" style="font-size:0.78rem;">Mary Achieng</div></div></div></td>
+                                            <td style="font-size:0.78rem;">Dec 16</td>
+                                            <td><span class="risk-pill high"><i class="bi bi-exclamation-circle-fill"></i> Urgent</span></td>
+                                            <td><span class="cs-badge pending"><i class="bi bi-hourglass-split"></i> Pending</span></td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveItem('CMP-0889')"><i class="bi bi-check"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.65rem;padding:3px 8px;" onclick="returnItem('CMP-0889')"><i class="bi bi-arrow-return-left"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectItem('CMP-0889')"><i class="bi bi-x"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" onclick="openApprovalDetail('CMP-0889')"><i class="bi bi-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code style="cursor:pointer;" onclick="openApprovalDetail('CMP-2024-0888')">CMP-0888</code></td>
+                                            <td><span class="cs-badge submitted"><i class="bi bi-person-check"></i> KYC</span></td>
+                                            <td>KYC override request — Rose Nyambura (expired docs)</td>
+                                            <td><div class="m-cell"><div class="m-av c4">PO</div><div><div class="m-name" style="font-size:0.78rem;">Peter Omondi</div></div></div></td>
+                                            <td style="font-size:0.78rem;">Dec 15</td>
+                                            <td><span class="risk-pill medium"><i class="bi bi-dash-circle"></i> Medium</span></td>
+                                            <td><span class="cs-badge pending"><i class="bi bi-hourglass-split"></i> Pending</span></td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveItem('CMP-0888')"><i class="bi bi-check"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.65rem;padding:3px 8px;" onclick="returnItem('CMP-0888')"><i class="bi bi-arrow-return-left"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectItem('CMP-0888')"><i class="bi bi-x"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" onclick="openApprovalDetail('CMP-0888')"><i class="bi bi-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>CMP-0887</code></td>
+                                            <td><span class="cs-badge submitted"><i class="bi bi-cash-stack"></i> Loan</span></td>
+                                            <td>Large loan exception — KES 2M (above limit)</td>
+                                            <td><div class="m-cell"><div class="m-av c1">JK</div><div><div class="m-name" style="font-size:0.78rem;">Janet Kamau</div></div></div></td>
+                                            <td style="font-size:0.78rem;">Dec 14</td>
+                                            <td><span class="risk-pill medium"><i class="bi bi-dash-circle"></i> Medium</span></td>
+                                            <td><span class="cs-badge pending"><i class="bi bi-hourglass-split"></i> Pending</span></td>
+                                            <td>
+                                                <div style="display:flex;gap:3px;">
+                                                    <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveItem('CMP-0887')"><i class="bi bi-check"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--accent-purple);color:white;font-size:0.65rem;padding:3px 8px;" onclick="returnItem('CMP-0887')"><i class="bi bi-arrow-return-left"></i></button>
+                                                    <button class="btn btn-sm" style="background:var(--status-danger);color:white;font-size:0.65rem;padding:3px 8px;" onclick="rejectItem('CMP-0887')"><i class="bi bi-x"></i></button>
+                                                    <button class="btn btn-ghost btn-icon btn-sm" onclick="openApprovalDetail('CMP-0887')"><i class="bi bi-eye"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- REGULATORY TAB -->
+                        <div class="tab-pane fade" id="regulatoryTab">
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--status-success);">12</div><div style="font-size:0.72rem;color:var(--text-secondary);">Filed & Approved</div></div></div>
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--accent-orange);">2</div><div style="font-size:0.72rem;color:var(--text-secondary);">Pending Filing</div></div></div>
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--status-danger);">0</div><div style="font-size:0.72rem;color:var(--text-secondary);">Overdue</div></div></div>
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--accent-blue);">Jan 15</div><div style="font-size:0.72rem;color:var(--text-secondary);">Next Deadline</div></div></div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Filing</th><th>Regulator</th><th>Period</th><th>Deadline</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr style="background:rgba(255,152,0,0.03);"><td style="font-weight:600;">SASRA Quarterly Return</td><td>SASRA</td><td>Q4 2024</td><td style="color:var(--accent-orange);font-weight:600;">Jan 15, 2025</td><td><span class="cs-badge pending"><i class="bi bi-hourglass-split"></i> Pending</span></td><td>—</td><td><button class="btn btn-primary btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#newSubmissionModal"><i class="bi bi-send"></i> Submit</button></td></tr>
+                                        <tr style="background:rgba(255,152,0,0.03);"><td style="font-weight:600;">Annual Financial Return</td><td>SASRA</td><td>FY 2024</td><td style="color:var(--accent-orange);font-weight:600;">Mar 31, 2025</td><td><span class="cs-badge draft"><i class="bi bi-pencil"></i> Draft</span></td><td>—</td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#newSubmissionModal"><i class="bi bi-pencil"></i> Edit</button></td></tr>
+                                        <tr><td style="font-weight:600;">SASRA Quarterly Return</td><td>SASRA</td><td>Q3 2024</td><td>Oct 15, 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Approved</span></td><td>Oct 12, 2024</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewFiling('SASRA Q3')"><i class="bi bi-eye"></i> View</button></td></tr>
+                                        <tr><td style="font-weight:600;">Withholding Tax Return</td><td>KRA</td><td>Nov 2024</td><td>Dec 20, 2024</td><td><span class="cs-badge submitted"><i class="bi bi-send-check"></i> Submitted</span></td><td>Dec 18, 2024</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewFiling('WHT Nov')"><i class="bi bi-eye"></i> View</button></td></tr>
+                                        <tr><td style="font-weight:600;">AML/CTF Annual Report</td><td>FRC</td><td>FY 2024</td><td>Jan 31, 2025</td><td><span class="cs-badge draft"><i class="bi bi-pencil"></i> Draft</span></td><td>—</td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#newSubmissionModal"><i class="bi bi-pencil"></i> Edit</button></td></tr>
+                                        <tr><td style="font-weight:600;">SASRA Quarterly Return</td><td>SASRA</td><td>Q2 2024</td><td>Jul 15, 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Approved</span></td><td>Jul 10, 2024</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="viewFiling('SASRA Q2')"><i class="bi bi-eye"></i> View</button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- AML TAB -->
+                        <div class="tab-pane fade" id="amlTab">
+                            <div class="alert alert-danger" style="font-size:0.82rem;"><i class="bi bi-shield-exclamation me-1"></i><strong>5 AML alerts</strong> detected this month. <strong>3 under review</strong>, 1 escalated, 1 cleared.</div>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Alert ID</th><th>Member</th><th>Type</th><th>Amount</th><th>Risk</th><th>Detected</th><th>Status</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr style="background:rgba(244,67,54,0.03);">
+                                            <td><code style="color:var(--status-danger);">AML-0452</code></td>
+                                            <td><div class="m-cell"><div class="m-av c5">BK</div><div><div class="m-name" style="font-size:0.78rem;">Bernard Kiprop</div><div class="m-sub">SP-10078</div></div></div></td>
+                                            <td>Structuring</td>
+                                            <td style="font-weight:600;">KES 980,000</td>
+                                            <td><span class="risk-pill high"><i class="bi bi-exclamation-circle-fill"></i> High</span></td>
+                                            <td style="font-size:0.78rem;">Dec 17</td>
+                                            <td><span class="cs-badge under-review"><i class="bi bi-search"></i> Review</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="clearAMLCase('AML-0452')" title="Clear"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--accent-orange);color:white;font-size:0.65rem;padding:3px 8px;" onclick="escalateCase('AML-0452')" title="Escalate"><i class="bi bi-arrow-up"></i></button>
+                                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#amlCaseDetailModal"><i class="bi bi-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr style="background:rgba(244,67,54,0.03);">
+                                            <td><code style="color:var(--status-danger);">AML-0451</code></td>
+                                            <td><div class="m-cell"><div class="m-av c4">GA</div><div><div class="m-name" style="font-size:0.78rem;">Grace Akinyi</div><div class="m-sub">SP-10067</div></div></div></td>
+                                            <td>Large Cash Deposit</td>
+                                            <td style="font-weight:600;">KES 1,200,000</td>
+                                            <td><span class="risk-pill medium"><i class="bi bi-dash-circle"></i> Medium</span></td>
+                                            <td style="font-size:0.78rem;">Dec 15</td>
+                                            <td><span class="cs-badge under-review"><i class="bi bi-search"></i> Review</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="clearAMLCase('AML-0451')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--accent-orange);color:white;font-size:0.65rem;padding:3px 8px;" onclick="escalateCase('AML-0451')"><i class="bi bi-arrow-up"></i></button>
+                                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#amlCaseDetailModal"><i class="bi bi-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr style="background:rgba(255,152,0,0.03);">
+                                            <td><code style="color:var(--accent-orange);">AML-0450</code></td>
+                                            <td><div class="m-cell"><div class="m-av c2">MO</div><div><div class="m-name" style="font-size:0.78rem;">Michael Odera</div><div class="m-sub">SP-10124</div></div></div></td>
+                                            <td>Unusual Pattern</td>
+                                            <td style="font-weight:600;">KES 450,000</td>
+                                            <td><span class="risk-pill medium"><i class="bi bi-dash-circle"></i> Medium</span></td>
+                                            <td style="font-size:0.78rem;">Dec 12</td>
+                                            <td><span class="cs-badge under-review"><i class="bi bi-search"></i> Review</span></td>
+                                            <td>
+                                                <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="clearAMLCase('AML-0450')"><i class="bi bi-check"></i></button>
+                                                <button class="btn btn-sm" style="background:var(--accent-orange);color:white;font-size:0.65rem;padding:3px 8px;" onclick="escalateCase('AML-0450')"><i class="bi bi-arrow-up"></i></button>
+                                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#amlCaseDetailModal"><i class="bi bi-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>AML-0449</code></td>
+                                            <td><div class="m-cell"><div class="m-av c1">JW</div><div><div class="m-name" style="font-size:0.78rem;">Jane Wanjiru</div><div class="m-sub">SP-10201</div></div></div></td>
+                                            <td>Cross-border Transfer</td>
+                                            <td style="font-weight:600;">KES 320,000</td>
+                                            <td><span class="risk-pill low"><i class="bi bi-check-circle"></i> Low</span></td>
+                                            <td style="font-size:0.78rem;">Dec 10</td>
+                                            <td><span class="cs-badge escalated"><i class="bi bi-arrow-up-circle"></i> Escalated</span></td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#amlCaseDetailModal"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>AML-0448</code></td>
+                                            <td><div class="m-cell"><div class="m-av c3">SK</div><div><div class="m-name" style="font-size:0.78rem;">Samuel Kibet</div><div class="m-sub">SP-10189</div></div></div></td>
+                                            <td>Rapid Movement</td>
+                                            <td style="font-weight:600;">KES 180,000</td>
+                                            <td><span class="risk-pill low"><i class="bi bi-check-circle"></i> Low</span></td>
+                                            <td style="font-size:0.78rem;">Dec 8</td>
+                                            <td><span class="cs-badge cleared"><i class="bi bi-check-circle"></i> Cleared</span></td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#amlCaseDetailModal"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- KYC TAB -->
+                        <div class="tab-pane fade" id="kycTab">
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:rgba(76,175,80,0.05);border-radius:var(--radius-md);text-align:center;border:1px solid rgba(76,175,80,0.15);"><div style="font-size:1.5rem;font-weight:800;color:var(--status-success);">1,736</div><div style="font-size:0.72rem;">Fully Verified</div></div></div>
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:rgba(255,152,0,0.05);border-radius:var(--radius-md);text-align:center;border:1px solid rgba(255,152,0,0.15);"><div style="font-size:1.5rem;font-weight:800;color:var(--accent-orange);">68</div><div style="font-size:0.72rem;">Pending Verification</div></div></div>
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:rgba(244,67,54,0.05);border-radius:var(--radius-md);text-align:center;border:1px solid rgba(244,67,54,0.15);"><div style="font-size:1.5rem;font-weight:800;color:var(--status-danger);">23</div><div style="font-size:0.72rem;">Expired Documents</div></div></div>
+                                <div class="col-md-3"><div style="padding:var(--spacing-md);background:rgba(33,150,243,0.05);border-radius:var(--radius-md);text-align:center;border:1px solid rgba(33,150,243,0.15);"><div style="font-size:1.5rem;font-weight:800;color:var(--accent-blue);">20</div><div style="font-size:0.72rem;">Override Requests</div></div></div>
+                            </div>
+                            <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Expiring Documents (Next 30 Days)</h6>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Member</th><th>Document</th><th>Expiry</th><th>Days Left</th><th>Status</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><div class="m-cell"><div class="m-av c5">RN</div><div><div class="m-name" style="font-size:0.78rem;">Rose Nyambura</div><div class="m-sub">SP-10156</div></div></div></td><td>National ID</td><td>Dec 25, 2024</td><td><span class="risk-pill high">7 days</span></td><td><span class="cs-badge overdue"><i class="bi bi-clock"></i> Expiring</span></td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" onclick="sendKYCReminder('Rose Nyambura')"><i class="bi bi-bell"></i> Remind</button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#kycOverrideModal"><i class="bi bi-key"></i> Override</button></td></tr>
+                                        <tr><td><div class="m-cell"><div class="m-av c4">PO</div><div><div class="m-name" style="font-size:0.78rem;">Peter Omondi</div><div class="m-sub">SP-10145</div></div></div></td><td>KRA PIN Certificate</td><td>Jan 5, 2025</td><td><span class="risk-pill medium">18 days</span></td><td><span class="cs-badge pending"><i class="bi bi-clock"></i> Expiring</span></td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" onclick="sendKYCReminder('Peter Omondi')"><i class="bi bi-bell"></i> Remind</button></td></tr>
+                                        <tr><td><div class="m-cell"><div class="m-av c2">MW</div><div><div class="m-name" style="font-size:0.78rem;">Mary Wanjiku</div><div class="m-sub">SP-10023</div></div></div></td><td>Passport</td><td>Jan 12, 2025</td><td><span class="risk-pill medium">25 days</span></td><td><span class="cs-badge pending"><i class="bi bi-clock"></i> Expiring</span></td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" onclick="sendKYCReminder('Mary Wanjiku')"><i class="bi bi-bell"></i> Remind</button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center mt-3"><button class="btn btn-outline btn-sm" onclick="sendBulkKYCReminders()"><i class="bi bi-megaphone"></i> Send Bulk Reminders (23 expiring)</button></div>
+                        </div>
+
+                        <!-- POLICIES TAB -->
+                        <div class="tab-pane fade" id="policyTab">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-lg);flex-wrap:wrap;gap:var(--spacing-sm);">
+                                <h6 style="font-weight:600;margin:0;">SACCO Policies & Procedures</h6>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newPolicyModal"><i class="bi bi-plus"></i> New Policy</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table" style="font-size:0.82rem;">
+                                    <thead><tr><th>Policy</th><th>Category</th><th>Version</th><th>Last Updated</th><th>Status</th><th>Next Review</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr><td style="font-weight:600;">Anti-Money Laundering Policy</td><td>AML/CTF</td><td>v4.1</td><td>Sep 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Active</span></td><td>Sep 2025</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#policyDetailModal"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('AML Policy')"><i class="bi bi-download"></i></button></td></tr>
+                                        <tr><td style="font-weight:600;">Know Your Customer (KYC) Policy</td><td>KYC</td><td>v3.0</td><td>Jul 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Active</span></td><td>Jul 2025</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#policyDetailModal"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('KYC Policy')"><i class="bi bi-download"></i></button></td></tr>
+                                        <tr style="background:rgba(255,152,0,0.03);"><td style="font-weight:600;">Loan Recovery Policy</td><td>Lending</td><td>v3.2</td><td>Dec 2024</td><td><span class="cs-badge pending"><i class="bi bi-hourglass-split"></i> Pending Approval</span></td><td>—</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#policyDetailModal"><i class="bi bi-eye"></i></button> <button class="btn btn-sm" style="background:var(--status-success);color:white;font-size:0.65rem;padding:3px 8px;" onclick="approveItem('POL-003')"><i class="bi bi-check"></i></button></td></tr>
+                                        <tr><td style="font-weight:600;">Credit Risk Management Policy</td><td>Risk</td><td>v2.5</td><td>Jun 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Active</span></td><td>Jun 2025</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#policyDetailModal"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('Credit Risk')"><i class="bi bi-download"></i></button></td></tr>
+                                        <tr><td style="font-weight:600;">Data Protection & Privacy Policy</td><td>IT/Data</td><td>v2.0</td><td>Mar 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Active</span></td><td>Mar 2025</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#policyDetailModal"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('Data Protection')"><i class="bi bi-download"></i></button></td></tr>
+                                        <tr><td style="font-weight:600;">Savings & Withdrawal Policy</td><td>Operations</td><td>v5.1</td><td>Oct 2024</td><td><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Active</span></td><td>Oct 2025</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#policyDetailModal"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('Savings Policy')"><i class="bi bi-download"></i></button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- 1. APPROVAL DETAIL -->
+<div class="modal fade" id="approvalDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-file-check me-2"></i>Approval Detail — <span id="adRef">CMP-0891</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <!-- Approval Flow -->
+        <div class="approval-flow">
+            <div class="af-step"><div class="af-dot done"><i class="bi bi-check"></i></div><span class="af-label done">Submitted</span></div>
+            <div class="af-line done"></div>
+            <div class="af-step"><div class="af-dot done"><i class="bi bi-check"></i></div><span class="af-label done">Reviewed</span></div>
+            <div class="af-line"></div>
+            <div class="af-step"><div class="af-dot active">3</div><span class="af-label active">Approval</span></div>
+            <div class="af-line"></div>
+            <div class="af-step"><div class="af-dot waiting">4</div><span class="af-label waiting">Filed</span></div>
+        </div>
+
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Reference</span><span class="dv"><code>CMP-2024-0891</code></span></div>
+            <div class="drow"><span class="dl">Type</span><span class="dv">SASRA Quarterly Return — Q4 2024</span></div>
+            <div class="drow"><span class="dl">Submitted By</span><span class="dv">David Otieno (Compliance Assistant)</span></div>
+            <div class="drow"><span class="dl">Date Submitted</span><span class="dv">Dec 18, 2024</span></div>
+            <div class="drow"><span class="dl">Deadline</span><span class="dv" style="color:var(--status-danger);">Jan 15, 2025 (28 days remaining)</span></div>
+            <div class="drow"><span class="dl">Priority</span><span class="dv"><span class="risk-pill high"><i class="bi bi-exclamation-circle-fill"></i> Urgent</span></span></div>
+            <div class="drow"><span class="dl">Attachments</span><span class="dv"><a href="#" onclick="showToast('File opened')" style="color:var(--primary-green);text-decoration:none;"><i class="bi bi-file-pdf me-1"></i>SASRA_Q4_2024_Return.pdf (2.4 MB)</a></span></div>
+        </div>
+
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Review Notes</h6>
+        <div class="timeline" style="margin-bottom:var(--spacing-lg);">
+            <div class="tl-item done"><div class="tl-time">Dec 18, 10:30 AM</div><div class="tl-content"><strong>David Otieno</strong> submitted for approval<br><small class="text-secondary">"Q4 return completed. All figures reconciled with GL. Attached supporting schedules."</small></div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 18, 11:00 AM</div><div class="tl-content"><strong>System</strong> — Auto-validation passed ✓<br><small class="text-secondary">All mandatory fields populated. Figures within expected ranges.</small></div></div>
+        </div>
+
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Your Decision</h6>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Decision</label>
+                <select class="form-select fselect" id="adDecision" onchange="toggleDecisionFields()">
+                    <option value="">Select action...</option>
+                    <option value="approve">✓ Approve — Proceed to Filing</option>
+                    <option value="return">↩ Return for Amendments</option>
+                    <option value="reject">✗ Reject — Do Not File</option>
+                </select>
+            </div>
+            <div class="col-12" id="adCommentsWrap"><label class="flbl">Comments / Instructions</label><textarea class="form-control finput" rows="3" id="adComments" placeholder="Add your comments or instructions..."></textarea></div>
+            <div class="col-12" id="adAmendmentsWrap" style="display:none;">
+                <label class="flbl">Specific Amendments Required</label>
+                <textarea class="form-control finput" rows="3" placeholder="List the specific changes needed before resubmission..."></textarea>
+            </div>
+            <div class="col-12" id="adRejectWrap" style="display:none;">
+                <label class="flbl">Rejection Reason</label>
+                <select class="form-select fselect">
+                    <option>Select reason...</option>
+                    <option>Incorrect data/figures</option>
+                    <option>Missing supporting documents</option>
+                    <option>Non-compliance with guidelines</option>
+                    <option>Unauthorized submission</option>
+                    <option>Other</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Document downloaded')"><i class="bi bi-download"></i> Download</button>
+        <button class="btn btn-primary" id="adSubmitBtn" onclick="submitDecision()"><i class="bi bi-check-circle"></i> Submit Decision</button>
+    </div>
+</div></div></div>
+
+<!-- 2. AML CASE DETAIL -->
+<div class="modal fade" id="amlCaseDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr red"><h5 class="modal-title"><i class="bi bi-shield-exclamation me-2"></i>AML Case Detail — AML-0452</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+                    <div class="drow"><span class="dl">Alert ID</span><span class="dv"><code>AML-0452</code></span></div>
+                    <div class="drow"><span class="dl">Member</span><span class="dv">Bernard Kiprop (SP-10078)</span></div>
+                    <div class="drow"><span class="dl">Alert Type</span><span class="dv" style="color:var(--status-danger);">Structuring (Smurfing)</span></div>
+                    <div class="drow"><span class="dl">Total Amount</span><span class="dv" style="font-weight:700;">KES 980,000</span></div>
+                    <div class="drow"><span class="dl">Risk Level</span><span class="dv"><span class="risk-pill high"><i class="bi bi-exclamation-circle-fill"></i> High</span></span></div>
+                    <div class="drow"><span class="dl">Detected</span><span class="dv">Dec 17, 2024 (System Auto-detect)</span></div>
+                </div>
+
+                <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Flagged Transactions</h6>
+                <div class="table-responsive">
+                    <table class="data-table" style="font-size:0.78rem;">
+                        <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Channel</th><th>Pattern</th></tr></thead>
+                        <tbody>
+                            <tr><td>Dec 17, 9:15 AM</td><td>Deposit</td><td>KES 245,000</td><td>M-Pesa</td><td rowspan="4" style="vertical-align:middle;text-align:center;"><span class="risk-pill high">4 deposits within 2 hours just below KES 250K threshold</span></td></tr>
+                            <tr><td>Dec 17, 9:42 AM</td><td>Deposit</td><td>KES 248,000</td><td>M-Pesa</td></tr>
+                            <tr><td>Dec 17, 10:10 AM</td><td>Deposit</td><td>KES 240,000</td><td>M-Pesa</td></tr>
+                            <tr><td>Dec 17, 11:05 AM</td><td>Deposit</td><td>KES 247,000</td><td>Airtel</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Member Risk Profile</h6>
+                <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);">
+                    <div class="drow"><span class="dl">KYC Status</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle"></i> Verified</span></div>
+                    <div class="drow"><span class="dl">Membership</span><span class="dv">3 years 4 months</span></div>
+                    <div class="drow"><span class="dl">Previous Alerts</span><span class="dv" style="color:var(--accent-orange);">1 (cleared Dec 2023)</span></div>
+                    <div class="drow"><span class="dl">Account Status</span><span class="dv"><span class="cs-badge flagged"><i class="bi bi-flag-fill"></i> Flagged</span></span></div>
+                    <div class="drow"><span class="dl">PEP Status</span><span class="dv">No</span></div>
+                    <div class="drow"><span class="dl">Sanctions Check</span><span class="dv" style="color:var(--status-success);">Clear</span></div>
+                </div>
+
+                <h6 style="font-weight:600;margin:var(--spacing-lg) 0 var(--spacing-md);">Your Action</h6>
+                <div class="row g-3">
+                    <div class="col-12"><label class="flbl">Decision</label><select class="form-select fselect" id="amlDecision"><option value="">Select...</option><option value="clear">Clear — False Positive</option><option value="escalate">Escalate to FRC</option><option value="sar">File SAR (Suspicious Activity Report)</option><option value="freeze">Freeze Account</option></select></div>
+                    <div class="col-12"><label class="flbl">Investigation Notes</label><textarea class="form-control finput" rows="3" placeholder="Document your investigation findings..."></textarea></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline btn-sm" onclick="showToast('Case report exported')"><i class="bi bi-download"></i> Export</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#c62828,#e53935);" onclick="submitAMLDecision()"><i class="bi bi-shield-check"></i> Submit Decision</button></div>
+</div></div></div>
+
+<!-- 3. NEW SUBMISSION -->
+<div class="modal fade" id="newSubmissionModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-send me-2"></i>New Compliance Submission</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-md-6"><label class="flbl">Submission Type</label><select class="form-select fselect"><option>Regulatory Filing (SASRA)</option><option>Tax Return (KRA)</option><option>AML/CTF Report (FRC)</option><option>Policy Document</option><option>Board Resolution</option><option>Audit Response</option><option>Other Compliance Document</option></select></div>
+        <div class="col-md-6"><label class="flbl">Period / Reference</label><input type="text" class="form-control finput" placeholder="e.g. Q4 2024, FY 2024"></div>
+        <div class="col-12"><label class="flbl">Title</label><input type="text" class="form-control finput" placeholder="e.g. SASRA Quarterly Return Q4 2024"></div>
+        <div class="col-md-6"><label class="flbl">Regulator / Authority</label><select class="form-select fselect"><option>SASRA</option><option>KRA</option><option>FRC</option><option>CBK</option><option>Internal (Board)</option></select></div>
+        <div class="col-md-6"><label class="flbl">Deadline</label><input type="date" class="form-control finput"></div>
+        <div class="col-12"><label class="flbl">Description / Notes</label><textarea class="form-control finput" rows="3" placeholder="Provide context and any notes for the reviewer..."></textarea></div>
+        <div class="col-12"><label class="flbl">Upload Documents</label>
+            <div style="border:2px dashed var(--border-color);border-radius:var(--radius-md);padding:var(--spacing-xl);text-align:center;cursor:pointer;" onmouseover="this.style.borderColor='var(--primary-green)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                <i class="bi bi-cloud-upload" style="font-size:2rem;color:var(--text-tertiary);"></i>
+                <p style="margin:var(--spacing-sm) 0 0;font-size:0.82rem;">Drop files here or <span style="color:var(--primary-green);font-weight:600;">browse</span></p>
+                <small style="color:var(--text-tertiary);">PDF, Excel, Word — up to 25MB</small>
+            </div>
+        </div>
+        <div class="col-md-6"><label class="flbl">Submit For Approval To</label><select class="form-select fselect"><option>James Kariuki (Compliance Officer)</option><option>Board Committee</option><option>CEO</option></select></div>
+        <div class="col-md-6"><label class="flbl">Priority</label><select class="form-select fselect"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline" onclick="saveDraft()"><i class="bi bi-save"></i> Save Draft</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="submitForApproval()"><i class="bi bi-send"></i> Submit for Approval</button></div>
+</div></div></div>
+
+<!-- 4. KYC OVERRIDE -->
+<div class="modal fade" id="kycOverrideModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-key me-2"></i>KYC Override Request</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-warning" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>KYC overrides bypass standard verification. This requires <strong>Compliance Officer approval</strong> and creates an <strong>audit trail</strong>.</div>
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Member</span><span class="dv">Rose Nyambura (SP-10156)</span></div>
+            <div class="drow"><span class="dl">Expired Document</span><span class="dv">National ID — Expired Dec 25, 2024</span></div>
+            <div class="drow"><span class="dl">Current KYC Status</span><span class="dv"><span class="cs-badge overdue"><i class="bi bi-x-circle"></i> Expired</span></span></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Override Decision</label><select class="form-select fselect"><option value="">Select...</option><option value="approve">Approve Override — Grant 30-day extension</option><option value="approve60">Approve Override — Grant 60-day extension</option><option value="reject">Reject — Restrict account until documents updated</option></select></div>
+            <div class="col-12"><label class="flbl">Justification</label><textarea class="form-control finput" rows="3" placeholder="Explain why this override is justified..."></textarea></div>
+            <div class="col-12"><label class="flbl">Conditions (if approved)</label><textarea class="form-control finput" rows="2" placeholder="e.g. Member must submit updated ID within 30 days..."></textarea></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="processKYCOverride()"><i class="bi bi-check-circle"></i> Process Override</button></div>
+</div></div></div>
+
+<!-- 5. NEW POLICY -->
+<div class="modal fade" id="newPolicyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-file-earmark-plus me-2"></i>New / Update Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Policy Title</label><input type="text" class="form-control finput" placeholder="e.g. Anti-Money Laundering Policy"></div>
+        <div class="col-md-6"><label class="flbl">Category</label><select class="form-select fselect"><option>AML/CTF</option><option>KYC</option><option>Lending</option><option>Risk Management</option><option>IT/Data Protection</option><option>Operations</option><option>HR</option><option>Governance</option></select></div>
+        <div class="col-md-6"><label class="flbl">Version</label><input type="text" class="form-control finput" placeholder="e.g. v4.2"></div>
+        <div class="col-md-6"><label class="flbl">Effective Date</label><input type="date" class="form-control finput"></div>
+        <div class="col-md-6"><label class="flbl">Review Date</label><input type="date" class="form-control finput"></div>
+        <div class="col-12"><label class="flbl">Upload Policy Document</label><input type="file" class="form-control finput"></div>
+        <div class="col-12"><label class="flbl">Summary / Change Notes</label><textarea class="form-control finput" rows="3" placeholder="Describe what changed in this version..."></textarea></div>
+        <div class="col-12"><label class="flbl">Approval Required From</label><select class="form-select fselect"><option>Compliance Officer</option><option>Board Committee</option><option>CEO</option><option>Full Board</option></select></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline" onclick="savePolicyDraft()"><i class="bi bi-save"></i> Save Draft</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="submitPolicy()"><i class="bi bi-send"></i> Submit for Approval</button></div>
+</div></div></div>
+
+<!-- 6. POLICY DETAIL -->
+<div class="modal fade" id="policyDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-file-earmark-text me-2"></i>Policy Document</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Title</span><span class="dv" style="font-weight:700;">Anti-Money Laundering Policy</span></div>
+            <div class="drow"><span class="dl">Version</span><span class="dv">v4.1</span></div>
+            <div class="drow"><span class="dl">Category</span><span class="dv">AML/CTF</span></div>
+            <div class="drow"><span class="dl">Status</span><span class="dv"><span class="cs-badge approved"><i class="bi bi-check-circle"></i> Active</span></span></div>
+            <div class="drow"><span class="dl">Effective Date</span><span class="dv">Sep 15, 2024</span></div>
+            <div class="drow"><span class="dl">Next Review</span><span class="dv">Sep 15, 2025</span></div>
+            <div class="drow"><span class="dl">Approved By</span><span class="dv">Board of Directors — Resolution BR/2024/045</span></div>
+            <div class="drow"><span class="dl">Document</span><span class="dv"><a href="#" onclick="showToast('Document opened')" style="color:var(--primary-green);text-decoration:none;"><i class="bi bi-file-pdf me-1"></i>AML_Policy_v4.1.pdf (1.8 MB)</a></span></div>
+        </div>
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Version History</h6>
+        <div class="table-responsive"><table class="data-table" style="font-size:0.78rem;"><thead><tr><th>Version</th><th>Date</th><th>Changes</th><th>Approved By</th><th>Download</th></tr></thead>
+        <tbody>
+            <tr><td>v4.1</td><td>Sep 2024</td><td>Updated transaction thresholds per SASRA directive</td><td>Board</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('AML v4.1')"><i class="bi bi-download"></i></button></td></tr>
+            <tr><td>v4.0</td><td>Mar 2024</td><td>Added PEP screening procedures</td><td>Board</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('AML v4.0')"><i class="bi bi-download"></i></button></td></tr>
+            <tr><td>v3.5</td><td>Sep 2023</td><td>Annual review — minor updates</td><td>Board</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadPolicy('AML v3.5')"><i class="bi bi-download"></i></button></td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="downloadPolicy('AML Policy')"><i class="bi bi-download"></i> Download</button><button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#newPolicyModal"><i class="bi bi-pencil"></i> Update</button></div>
+</div></div></div>
+
+<!-- 7. COMPLIANCE CHECKLIST -->
+<div class="modal fade" id="complianceChecklistModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr teal"><h5 class="modal-title"><i class="bi bi-check2-square me-2"></i>Compliance Checklist — Rongo SACCO</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-lg);"><h6 style="margin:0;font-weight:600;">Score: <span style="color:var(--primary-green);">85/100</span></h6><span style="font-size:0.78rem;color:var(--text-tertiary);">Last updated: Dec 18, 2024</span></div>
+
+        <h6 style="font-size:0.82rem;font-weight:600;color:var(--primary-green);margin-bottom:var(--spacing-md);"><i class="bi bi-check-circle-fill me-1"></i> Regulatory Compliance</h6>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>SASRA License — Valid until Dec 2025</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>SASRA Quarterly Returns — Q1-Q3 2024 filed on time</span></div>
+        <div class="checklist-item"><div class="checklist-icon pending"><i class="bi bi-hourglass"></i></div><span style="color:var(--accent-orange);">SASRA Q4 2024 Return — Due Jan 15, 2025 (pending approval)</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>KRA Tax compliance — All returns up to date</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>Annual General Meeting held — Aug 2024</span></div>
+
+        <h6 style="font-size:0.82rem;font-weight:600;color:var(--accent-blue);margin:var(--spacing-lg) 0 var(--spacing-md);"><i class="bi bi-shield-check me-1"></i> AML / KYC Compliance</h6>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>AML Policy — v4.1 active (reviewed Sep 2024)</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>KYC completion rate — 94% (above 90% threshold)</span></div>
+        <div class="checklist-item"><div class="checklist-icon pending"><i class="bi bi-hourglass"></i></div><span style="color:var(--accent-orange);">23 member documents expiring — reminders needed</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>Transaction monitoring system — Active</span></div>
+        <div class="checklist-item"><div class="checklist-icon pending"><i class="bi bi-hourglass"></i></div><span style="color:var(--accent-orange);">3 AML alerts under review</span></div>
+
+        <h6 style="font-size:0.82rem;font-weight:600;color:var(--accent-purple);margin:var(--spacing-lg) 0 var(--spacing-md);"><i class="bi bi-file-text me-1"></i> Policy & Governance</h6>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>All 18 policies current and active</span></div>
+        <div class="checklist-item"><div class="checklist-icon pending"><i class="bi bi-hourglass"></i></div><span style="color:var(--accent-orange);">Loan Recovery Policy v3.2 — pending approval</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>Board meetings — quarterly meetings on schedule</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>External audit — Completed Oct 2024 (clean opinion)</span></div>
+
+        <h6 style="font-size:0.82rem;font-weight:600;color:#795548;margin:var(--spacing-lg) 0 var(--spacing-md);"><i class="bi bi-lock me-1"></i> Data Protection</h6>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>Data Protection Policy — v2.0 active</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>Data Protection Officer appointed</span></div>
+        <div class="checklist-item"><div class="checklist-icon done"><i class="bi bi-check"></i></div><span>Registration with ODPC — Valid</span></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Checklist exported as PDF')"><i class="bi bi-download"></i> Export PDF</button></div>
+</div></div></div>
+
+<!-- 8. AUDIT LOG -->
+<div class="modal fade" id="auditLogModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-journal-text me-2"></i>Compliance Audit Log</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Events</option><option>Approvals</option><option>Rejections</option><option>AML Actions</option><option>KYC Changes</option><option>Policy Updates</option><option>Filings</option></select></div>
+            <div class="col-md-4"><input type="date" class="form-control finput form-control-sm"></div>
+            <div class="col-md-4"><input type="text" class="form-control finput form-control-sm" placeholder="Search..."></div>
+        </div>
+        <div class="timeline">
+            <div class="tl-item done"><div class="tl-time">Dec 18, 2:30 PM</div><div class="tl-content"><strong>James Kariuki</strong> approved SASRA Q4 2024 draft submission<br><small class="text-secondary">CMP-2024-0891 • Forwarded to regulator portal</small></div></div>
+            <div class="tl-item alert"><div class="tl-time">Dec 17, 3:00 PM</div><div class="tl-content"><strong>System</strong> flagged AML alert — Bernard Kiprop (structuring pattern)<br><small class="text-secondary">AML-0452 • 4 deposits totaling KES 980,000</small></div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 17, 10:00 AM</div><div class="tl-content"><strong>David Otieno</strong> submitted SASRA Q4 Return for approval<br><small class="text-secondary">CMP-2024-0891 • Attached 3 supporting documents</small></div></div>
+            <div class="tl-item warn"><div class="tl-time">Dec 16, 4:00 PM</div><div class="tl-content"><strong>Mary Achieng</strong> submitted Loan Recovery Policy v3.2 for approval<br><small class="text-secondary">CMP-2024-0889 • Updated collection procedures</small></div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 15, 11:30 AM</div><div class="tl-content"><strong>James Kariuki</strong> cleared AML case AML-0448 (Samuel Kibet — false positive)<br><small class="text-secondary">Notes: Normal salary deposits pattern confirmed with employer</small></div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 14, 9:00 AM</div><div class="tl-content"><strong>System</strong> sent KYC expiry reminders to <strong>23 members</strong><br><small class="text-secondary">Automated notification — documents expiring within 30 days</small></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Audit log exported')"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- Additional context modals referenced by hero metrics -->
+<div class="modal fade" id="regulatoryFilingsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr blue"><h5 class="modal-title">Regulatory Filings Status</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="drow"><span class="dl">Filed & Approved</span><span class="dv" style="color:var(--status-success);font-weight:700;">12</span></div><div class="drow"><span class="dl">Pending Filing</span><span class="dv" style="color:var(--accent-orange);font-weight:700;">2</span></div><div class="drow"><span class="dl">Overdue</span><span class="dv" style="color:var(--status-success);">0</span></div><div class="drow"><span class="dl">Next Deadline</span><span class="dv" style="font-weight:700;">Jan 15, 2025 (SASRA Q4)</span></div><div class="drow"><span class="dl">Compliance Rate</span><span class="dv" style="color:var(--primary-green);">100% — No overdue filings</span></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newSubmissionModal"><i class="bi bi-send"></i> New Filing</button></div></div></div></div>
+
+<div class="modal fade" id="amlCasesModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr red"><h5 class="modal-title">AML Alert Summary</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="drow"><span class="dl">Total Alerts (Month)</span><span class="dv" style="font-weight:700;">5</span></div><div class="drow"><span class="dl">Under Review</span><span class="dv" style="color:var(--accent-orange);font-weight:700;">3</span></div><div class="drow"><span class="dl">Escalated</span><span class="dv" style="color:var(--accent-orange);">1</span></div><div class="drow"><span class="dl">Cleared</span><span class="dv" style="color:var(--status-success);">1</span></div><div class="drow"><span class="dl">SARs Filed (YTD)</span><span class="dv">0</span></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="kycOversightModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr blue"><h5 class="modal-title">KYC Compliance Overview</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="drow"><span class="dl">Total Members</span><span class="dv" style="font-weight:700;">1,847</span></div><div class="drow"><span class="dl">Fully Verified</span><span class="dv" style="color:var(--status-success);font-weight:700;">1,736 (94%)</span></div><div class="drow"><span class="dl">Pending Verification</span><span class="dv" style="color:var(--accent-orange);">68</span></div><div class="drow"><span class="dl">Expired Documents</span><span class="dv" style="color:var(--status-danger);">23</span></div><div class="drow"><span class="dl">Override Requests</span><span class="dv">20</span></div><div class="drow"><span class="dl">SASRA Requirement</span><span class="dv">≥ 90% (Met ✓)</span></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="sendBulkKYCReminders()"><i class="bi bi-megaphone"></i> Bulk Reminders</button></div></div></div></div>
+
+<div class="modal fade" id="pendingApprovalsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr orange"><h5 class="modal-title">Pending Approvals Summary</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="drow"><span class="dl">Total Pending</span><span class="dv" style="font-weight:700;color:var(--accent-orange);">8</span></div><div class="drow"><span class="dl">Urgent</span><span class="dv" style="color:var(--status-danger);font-weight:700;">3</span></div><div class="drow"><span class="dl">Regulatory Filings</span><span class="dv">1</span></div><div class="drow"><span class="dl">AML Cases</span><span class="dv">3</span></div><div class="drow"><span class="dl">Policy Updates</span><span class="dv">1</span></div><div class="drow"><span class="dl">KYC Overrides</span><span class="dv">1</span></div><div class="drow"><span class="dl">Loan Exceptions</span><span class="dv">1</span></div><div class="drow"><span class="dl">Other</span><span class="dv">1</span></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="policyListModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr purple"><h5 class="modal-title">Active Policies</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="drow"><span class="dl">Total Active</span><span class="dv" style="font-weight:700;">18</span></div><div class="drow"><span class="dl">Pending Approval</span><span class="dv" style="color:var(--accent-orange);">1</span></div><div class="drow"><span class="dl">Due for Review (6 mo)</span><span class="dv">3</span></div><div class="drow"><span class="dl">Last Board Approval</span><span class="dv">Oct 2024</span></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary btn-sm" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" data-bs-toggle="modal" data-bs-target="#newPolicyModal"><i class="bi bi-plus"></i> New Policy</button></div></div></div></div>
+
+<!-- Notifications + Profile -->
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" style="max-height:350px;overflow-y:auto;"><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-danger);"></span><strong style="font-size:0.82rem;">AML Alert</strong><small style="margin-left:auto;color:var(--text-tertiary);">Yesterday</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Structuring alert — Bernard Kiprop. Requires review.</p></div><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-orange);"></span><strong style="font-size:0.82rem;">Pending Approval</strong><small style="margin-left:auto;color:var(--text-tertiary);">Today</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">SASRA Q4 Return awaiting your approval</p></div><div style="padding:var(--spacing-md);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-blue);"></span><strong style="font-size:0.82rem;">Filing Reminder</strong><small style="margin-left:auto;color:var(--text-tertiary);">2 days ago</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">SASRA Q4 deadline: Jan 15, 2025 (28 days)</p></div></div><div class="modal-footer"><button class="btn btn-ghost btn-sm">Mark All Read</button><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Compliance Officer • Rongo SACCO</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+
+// Approval Actions
+function openApprovalDetail(ref){
+    document.getElementById('adRef').textContent=ref;
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>openModal('approvalDetailModal'),350);
+}
+
+function approveItem(ref){showToast('Item '+ref+' approved! ✓');}
+function returnItem(ref){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>{
+        document.getElementById('adRef').textContent=ref;
+        document.getElementById('adDecision').value='return';
+        toggleDecisionFields();
+        openModal('approvalDetailModal');
+    },350);
+}
+function rejectItem(ref){
+    document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});
+    setTimeout(()=>{
+        document.getElementById('adRef').textContent=ref;
+        document.getElementById('adDecision').value='reject';
+        toggleDecisionFields();
+        openModal('approvalDetailModal');
+    },350);
+}
+
+function toggleDecisionFields(){
+    const v=document.getElementById('adDecision').value;
+    document.getElementById('adAmendmentsWrap').style.display=v==='return'?'block':'none';
+    document.getElementById('adRejectWrap').style.display=v==='reject'?'block':'none';
+}
+
+function submitDecision(){
+    const v=document.getElementById('adDecision').value;
+    bootstrap.Modal.getInstance(document.getElementById('approvalDetailModal')).hide();
+    const msgs={approve:'Item approved and forwarded!',return:'Item returned for amendments. Submitter notified.',reject:'Item rejected. Submitter notified with reason.'};
+    showToast(msgs[v]||'Decision submitted!');
+}
+
+// AML
+function clearAMLCase(ref){showToast('AML case '+ref+' cleared — marked as false positive.');}
+function escalateCase(ref){showToast('AML case '+ref+' escalated to FRC/Senior Management.');}
+function submitAMLDecision(){bootstrap.Modal.getInstance(document.getElementById('amlCaseDetailModal')).hide();showToast('AML decision recorded. Audit trail updated.');}
+
+// KYC
+function sendKYCReminder(name){showToast('KYC renewal reminder sent to '+name);}
+function sendBulkKYCReminders(){showToast('Bulk KYC reminders sent to 23 members!');}
+function processKYCOverride(){bootstrap.Modal.getInstance(document.getElementById('kycOverrideModal')).hide();showToast('KYC override processed. 30-day extension granted.');}
+
+// Submissions
+function submitForApproval(){bootstrap.Modal.getInstance(document.getElementById('newSubmissionModal')).hide();showToast('Submission sent for approval! Ref: CMP-2024-0892');}
+function saveDraft(){bootstrap.Modal.getInstance(document.getElementById('newSubmissionModal')).hide();showToast('Draft saved.');}
+
+// Policies
+function submitPolicy(){bootstrap.Modal.getInstance(document.getElementById('newPolicyModal')).hide();showToast('Policy submitted for approval!');}
+function savePolicyDraft(){bootstrap.Modal.getInstance(document.getElementById('newPolicyModal')).hide();showToast('Policy draft saved.');}
+function downloadPolicy(name){showToast('Downloading: '+name);}
+
+// Filings
+function viewFiling(name){showToast('Opening filing: '+name);}
+</script>
+</body>
+</html>

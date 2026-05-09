@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Portfolio | Rongo SACCO Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           LOAN PORTFOLIO - EXTENSION STYLES
+           ======================================== */
+        /* Live Indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            color: var(--status-success);
+            font-weight: 600;
+        }
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--status-success);
+            animation: pulse 2s infinite;
+        }
+        /* Loan Type Cards */
+        .loan-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        .loan-type-card {
+            padding: var(--spacing-lg);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .loan-type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+        .loan-type-card.emergency::before { background: linear-gradient(90deg, var(--status-danger), var(--accent-red)); }
+        .loan-type-card.development::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); }
+        .loan-type-card.school::before { background: linear-gradient(90deg, var(--accent-orange), #ff5722); }
+        .loan-type-card.business::before { background: linear-gradient(90deg, var(--primary-green), var(--accent-teal)); }
+        
+        .loan-type-card:hover {
+            border-color: var(--primary-green);
+            background: var(--primary-green-ultra-light);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        .loan-type-card .type-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-sm);
+            font-size: 1.25rem;
+        }
+        .loan-type-card.emergency .type-icon { background: rgba(244,67,54,0.12); color: var(--status-danger); }
+        .loan-type-card.development .type-icon { background: rgba(33,150,243,0.12); color: var(--accent-blue); }
+        .loan-type-card.school .type-icon { background: rgba(255,152,0,0.12); color: var(--accent-orange); }
+        .loan-type-card.business .type-icon { background: rgba(0,208,132,0.12); color: var(--primary-green); }
+        
+        .loan-type-card h4 {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .loan-type-card .amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .loan-type-card .count {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+        }
+        /* Tabs */
+        .loan-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+            overflow-x: auto;
+        }
+        .loan-tab {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            font-family: var(--font-sans);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .loan-tab:hover { color: var(--primary-green); }
+        .loan-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        /* Loan Status Colors */
+        .loan-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .loan-row.active { border-left: 4px solid var(--status-success); }
+        .loan-row.defaulted { border-left: 4px solid var(--status-danger); }
+        .loan-row.at-risk { border-left: 4px solid var(--status-warning); }
+        /* Loan Avatar */
+        .loan-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .loan-avatar.emergency { background: rgba(244,67,54,0.12); color: var(--status-danger); }
+        .loan-avatar.development { background: rgba(33,150,243,0.12); color: var(--accent-blue); }
+        .loan-avatar.school { background: rgba(255,152,0,0.12); color: var(--accent-orange); }
+        .loan-avatar.business { background: rgba(0,208,132,0.12); color: var(--primary-green); }
+        /* Progress Bars */
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.6s ease;
+            position: relative;
+        }
+        .progress-bar-fill.performing {
+            background: linear-gradient(90deg, var(--status-success), #2e7d32);
+        }
+        .progress-bar-fill.at-risk {
+            background: linear-gradient(90deg, var(--status-warning), #f57c00);
+        }
+        .progress-bar-fill.defaulted {
+            background: linear-gradient(90deg, var(--status-danger), #c62828);
+        }
+        /* Loan Card Row (for pending/applications) */
+        .loan-card-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .loan-card-row:hover {
+            border-color: var(--primary-green-light);
+            background: var(--primary-green-ultra-light);
+            transform: translateX(4px);
+        }
+        .loan-card-row.pending { border-left: 4px solid var(--status-warning); }
+        .loan-card-row.approved { border-left: 4px solid var(--status-success); }
+        .loan-card-row.rejected { border-left: 4px solid var(--status-danger); }
+        /* Risk Score */
+        .risk-score {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 700;
+            position: relative;
+        }
+        .risk-score.low {
+            background: rgba(76,175,80,0.12);
+            color: var(--status-success);
+            border: 2px solid var(--status-success);
+        }
+        .risk-score.medium {
+            background: rgba(255,193,7,0.12);
+            color: var(--status-warning);
+            border: 2px solid var(--status-warning);
+        }
+        .risk-score.high {
+            background: rgba(244,67,54,0.12);
+            color: var(--status-danger);
+            border: 2px solid var(--status-danger);
+        }
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: var(--spacing-md);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary-green);
+        }
+        .timeline-item.completed::before { border-color: var(--status-success); }
+        .timeline-item.pending::before { border-color: var(--status-warning); }
+        .timeline-item.rejected::before { border-color: var(--status-danger); }
+        /* Form Styles */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        .form-group label .req {
+            color: var(--status-danger);
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            font-family: var(--font-sans);
+            color: var(--text-primary);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+        }
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-hint {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        .form-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-green);
+            cursor: pointer;
+        }
+        .form-check label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        /* Modal System */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-box.lg {
+            max-width: 800px;
+        }
+        .modal-box.xl {
+            max-width: 1000px;
+        }
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-head h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            background: var(--status-danger);
+            color: white;
+        }
+        .modal-body {
+            padding: var(--spacing-xl);
+        }
+        .modal-foot {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+        }
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            min-width: 300px;
+        }
+        .toast.success {
+            background: var(--status-success);
+        }
+        .toast.error {
+            background: var(--status-danger);
+        }
+        .toast.info {
+            background: var(--status-info);
+        }
+        .toast.warning {
+            background: var(--status-warning);
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        /* Sidebar Mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+        }
+        .mobile-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            align-items: center;
+            justify-content: center;
+        }
+        /* Summary Box */
+        .summary-box {
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, rgba(0, 208, 132, 0.06), rgba(0, 188, 212, 0.06));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            font-size: 0.85rem;
+        }
+        .summary-row:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .summary-row .label {
+            color: var(--text-secondary);
+        }
+        .summary-row .value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .summary-row.total {
+            font-size: 1rem;
+            padding-top: var(--spacing-md);
+        }
+        .summary-row.total .value {
+            color: var(--primary-green-dark);
+            font-size: 1.25rem;
+        }
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        .pagination-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .pagination-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .pagination-btns button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-sans);
+        }
+        .pagination-btns button:hover {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+        .pagination-btns button.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            border-color: transparent;
+        }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+            .admin-main {
+                margin-left: 0;
+            }
+            .mobile-toggle {
+                display: flex;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+            .loan-type-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .loan-type-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .loan-card-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .topbar-search {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">RS</div>
+                <div class="sidebar-brand-text">
+                    <h1>SACCOPay</h1>
+                    <p>Rongo SACCO Admin</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt nav-icon"></i> Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-line nav-icon"></i> Analytics
+                    </a>
+                </div>
+                <div class="nav-section-title">Member Management</div>
+                <div class="nav-item">
+                    <a href="members-all.html" class="nav-link">
+                        <i class="fas fa-users nav-icon"></i> All Members
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="members-kyc.html" class="nav-link">
+                        <i class="fas fa-user-check nav-icon"></i> KYC Verification
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-section-title">Financial Operations</div>
+                <div class="nav-item">
+                    <a href="deposits.html" class="nav-link">
+                        <i class="fas fa-arrow-circle-down nav-icon"></i> Deposits
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="withdrawals.html" class="nav-link">
+                        <i class="fas fa-arrow-circle-up nav-icon"></i> Withdrawals
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="transactions.html" class="nav-link">
+                        <i class="fas fa-exchange-alt nav-icon"></i> Transactions
+                        <span class="nav-badge">34</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-money-check-alt nav-icon"></i> Settlements
+                    </a>
+                </div>
+                <div class="nav-section-title">Loan Services</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-hand-holding-usd nav-icon"></i> Loan Portfolio
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar nav-icon"></i> Applications
+                        <span class="nav-badge">18</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-coins nav-icon"></i> Share Capital
+                    </a>
+                </div>
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i> Settings
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <div style="display:flex; align-items:center; gap:var(--spacing-md);">
+                        <button class="mobile-toggle" onclick="toggleSidebar()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="topbar-search">
+                            <i class="fas fa-search topbar-search-icon"></i>
+                            <input type="text" placeholder="Search loans, members, references...">
+                        </div>
+                    </div>
+                    <div class="topbar-actions">
+                        <div class="live-indicator"><span>LIVE</span></div>
+                        <button class="topbar-action-btn" title="Notifications" onclick="openModal('notificationsModal')">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">15</span>
+                        </button>
+                        <button class="topbar-action-btn" title="Messages">
+                            <i class="fas fa-envelope"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <div class="user-profile">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info">
+                                <h4>John Maina</h4>
+                                <p>General Manager</p>
+                            </div>
+                            <i class="fas fa-chevron-down" style="font-size:0.6rem; color:var(--text-tertiary); margin-left:4px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Page Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="dashboard.html" style="color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:4px;">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <i class="fas fa-chevron-right" style="font-size:0.5rem; color:var(--text-tertiary);"></i>
+                    <span style="color:var(--text-secondary);">Loan Services</span>
+                    <i class="fas fa-chevron-right" style="font-size:0.5rem; color:var(--text-tertiary);"></i>
+                    <span style="color:var(--primary-green); font-weight:600;">Loan Portfolio</span>
+                </div>
+                <!-- Page Header -->
+                <div class="flex-between mb-4" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                    <div>
+                        <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:4px;">Loan Portfolio Management</h2>
+                        <p style="color:var(--text-secondary); font-size:0.9rem;">Monitor, manage, and analyze all loan products and disbursements for Rongo SACCO</p>
+                    </div>
+                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+                        <button class="btn btn-ghost btn-sm" onclick="refreshLoans()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openModal('exportModal')">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openModal('productsModal')">
+                            <i class="fas fa-sliders-h"></i> Loan Products
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('disburseLoanModal')">
+                            <i class="fas fa-money-check-alt"></i> Disburse Loan
+                        </button>
+                    </div>
+                </div>
+                <!-- Alert -->
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle" style="margin-top:2px;"></i>
+                    <div>
+                        <strong>Portfolio Health Status:</strong> Your loan portfolio is performing well with 89.5% of loans in good standing. Review at-risk loans for early intervention.
+                        <a href="#" style="color:var(--status-info); font-weight:500;" onclick="switchTab('at-risk')">View At-Risk Loans</a>
+                    </div>
+                </div>
+                <!-- KPI Stats Grid -->
+                <div class="stats-grid mb-4">
+                    <div class="stat-card" onclick="switchTab('active')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon success"><i class="fas fa-hand-holding-usd"></i></div>
+                        </div>
+                        <div class="stat-card-title">Total Portfolio Value</div>
+                        <div class="stat-card-value">KES 789M</div>
+                        <span class="stat-card-change positive"><i class="fas fa-arrow-up"></i> 3,456 active loans</span>
+                    </div>
+                    <div class="stat-card" onclick="openModal('disbursementsModal')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon info"><i class="fas fa-arrow-circle-down"></i></div>
+                        </div>
+                        <div class="stat-card-title">Disbursed This Month</div>
+                        <div class="stat-card-value">KES 45.2M</div>
+                        <span class="stat-card-change positive"><i class="fas fa-arrow-up"></i> 234 loans disbursed</span>
+                    </div>
+                    <div class="stat-card" onclick="switchTab('at-risk')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+                        </div>
+                        <div class="stat-card-title">At-Risk Portfolio</div>
+                        <div class="stat-card-value">KES 78.5M</div>
+                        <span class="stat-card-change negative"><i class="fas fa-exclamation-circle"></i> 289 loans (10.5%)</span>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="openModal('performanceModal')">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon primary"><i class="fas fa-chart-line"></i></div>
+                        </div>
+                        <div class="stat-card-title">Repayment Rate</div>
+                        <div class="stat-card-value">94.3%</div>
+                        <span class="stat-card-change positive"><i class="fas fa-thumbs-up"></i> Excellent</span>
+                    </div>
+                </div>
+                <!-- Loan Product Breakdown -->
+                <div class="loan-type-grid">
+                    <div class="loan-type-card emergency" onclick="filterByProduct('emergency')">
+                        <div class="type-icon"><i class="fas fa-ambulance"></i></div>
+                        <h4>Emergency Loan</h4>
+                        <div class="amount">KES 234M</div>
+                        <div class="count">1,234 loans</div>
+                    </div>
+                    <div class="loan-type-card development" onclick="filterByProduct('development')">
+                        <div class="type-icon"><i class="fas fa-home"></i></div>
+                        <h4>Development Loan</h4>
+                        <div class="amount">KES 345M</div>
+                        <div class="count">892 loans</div>
+                    </div>
+                    <div class="loan-type-card school" onclick="filterByProduct('school')">
+                        <div class="type-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h4>School Fees Loan</h4>
+                        <div class="amount">KES 156M</div>
+                        <div class="count">678 loans</div>
+                    </div>
+                    <div class="loan-type-card business" onclick="filterByProduct('business')">
+                        <div class="type-icon"><i class="fas fa-briefcase"></i></div>
+                        <h4>Business Loan</h4>
+                        <div class="amount">KES 54M</div>
+                        <div class="count">652 loans</div>
+                    </div>
+                </div>
+                <!-- Tabs -->
+                <div class="loan-tabs">
+                    <button class="loan-tab active" onclick="switchTab('active')">
+                        <i class="fas fa-check-circle"></i> Active Loans (3,456)
+                    </button>
+                    <button class="loan-tab" onclick="switchTab('at-risk')">
+                        <i class="fas fa-exclamation-triangle"></i> At-Risk (289)
+                    </button>
+                    <button class="loan-tab" onclick="switchTab('defaulted')">
+                        <i class="fas fa-times-circle"></i> Defaulted (45)
+                    </button>
+                    <button class="loan-tab" onclick="switchTab('paid-off')">
+                        <i class="fas fa-check-double"></i> Paid Off
+                    </button>
+                    <button class="loan-tab" onclick="switchTab('analytics')">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </button>
+                </div>
+                <!-- ==================== TAB: ACTIVE LOANS ==================== -->
+                <div class="tab-pane active" id="tab-active">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <div class="flex-between" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-hand-holding-usd" style="color:var(--status-success); margin-right:8px;"></i>Active Loan Portfolio
+                                </h3>
+                                <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+                                    <select class="form-input" style="width:auto; padding:6px 32px 6px 10px; font-size:0.8rem;" onchange="applyFilter('product', this.value)">
+                                        <option value="all">All Products</option>
+                                        <option value="emergency">Emergency Loan</option>
+                                        <option value="development">Development Loan</option>
+                                        <option value="school">School Fees</option>
+                                        <option value="business">Business Loan</option>
+                                    </select>
+                                    <select class="form-input" style="width:auto; padding:6px 32px 6px 10px; font-size:0.8rem;" onchange="applyFilter('sort', this.value)">
+                                        <option value="recent">Most Recent</option>
+                                        <option value="amount-high">Highest Amount</option>
+                                        <option value="amount-low">Lowest Amount</option>
+                                        <option value="due-soon">Due Soon</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" onclick="toggleSelectAll(this)" style="accent-color:var(--primary-green);"></th>
+                                        <th>Loan ID</th>
+                                        <th>Borrower</th>
+                                        <th>Product</th>
+                                        <th>Principal</th>
+                                        <th>Outstanding</th>
+                                        <th>Paid</th>
+                                        <th>Progress</th>
+                                        <th>Next Due</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="loan-row active" style="cursor:pointer;" onclick="viewLoan('LN-2026-00456')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">LN-2026-00456</code></td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="loan-avatar emergency">SA</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">Sarah Akinyi</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00123</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-danger">Emergency</span></td>
+                                        <td><strong style="font-family:var(--font-mono);">KES 500,000</strong></td>
+                                        <td><strong style="color:var(--accent-orange); font-family:var(--font-mono);">KES 350,000</strong></td>
+                                        <td><strong style="color:var(--status-success); font-family:var(--font-mono);">KES 150,000</strong></td>
+                                        <td>
+                                            <div style="min-width:100px;">
+                                                <div class="progress-bar-wrapper">
+                                                    <div class="progress-bar-fill performing" style="width:30%;"></div>
+                                                </div>
+                                                <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:2px;">30% Paid</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-size:0.8rem;">Feb 15, 2026</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">12 days</div>
+                                        </td>
+                                        <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Current</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" title="View" onclick="viewLoan('LN-2026-00456')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost" title="Payment" onclick="recordPayment('LN-2026-00456')"><i class="fas fa-money-bill-wave" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="loan-row active" style="cursor:pointer;" onclick="viewLoan('LN-2026-00455')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">LN-2026-00455</code></td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="loan-avatar development">DK</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">David Kipkorir</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00045</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-info">Development</span></td>
+                                        <td><strong style="font-family:var(--font-mono);">KES 1,200,000</strong></td>
+                                        <td><strong style="color:var(--accent-orange); font-family:var(--font-mono);">KES 720,000</strong></td>
+                                        <td><strong style="color:var(--status-success); font-family:var(--font-mono);">KES 480,000</strong></td>
+                                        <td>
+                                            <div style="min-width:100px;">
+                                                <div class="progress-bar-wrapper">
+                                                    <div class="progress-bar-fill performing" style="width:40%;"></div>
+                                                </div>
+                                                <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:2px;">40% Paid</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-size:0.8rem;">Feb 20, 2026</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">17 days</div>
+                                        </td>
+                                        <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Current</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" title="View" onclick="viewLoan('LN-2026-00455')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost" title="Payment" onclick="recordPayment('LN-2026-00455')"><i class="fas fa-money-bill-wave" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="loan-row at-risk" style="cursor:pointer;" onclick="viewLoan('LN-2026-00454')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">LN-2026-00454</code></td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="loan-avatar school">MW</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">Mary Wanjiku</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00234</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-warning">School Fees</span></td>
+                                        <td><strong style="font-family:var(--font-mono);">KES 300,000</strong></td>
+                                        <td><strong style="color:var(--accent-orange); font-family:var(--font-mono);">KES 245,000</strong></td>
+                                        <td><strong style="color:var(--status-success); font-family:var(--font-mono);">KES 55,000</strong></td>
+                                        <td>
+                                            <div style="min-width:100px;">
+                                                <div class="progress-bar-wrapper">
+                                                    <div class="progress-bar-fill at-risk" style="width:18%;"></div>
+                                                </div>
+                                                <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:2px;">18% Paid</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-size:0.8rem; color:var(--status-danger);">Jan 28, 2026</div>
+                                            <div style="font-size:0.7rem; color:var(--status-danger); font-weight:600;">5 days overdue</div>
+                                        </td>
+                                        <td><span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Late</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" title="View" onclick="viewLoan('LN-2026-00454')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-primary btn-sm" style="padding:4px 8px; font-size:0.7rem;" onclick="contactBorrower('LN-2026-00454')"><i class="fas fa-phone"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="loan-row active" style="cursor:pointer;" onclick="viewLoan('LN-2026-00453')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">LN-2026-00453</code></td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="loan-avatar business">JO</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">John Otieno</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00456</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-success">Business</span></td>
+                                        <td><strong style="font-family:var(--font-mono);">KES 800,000</strong></td>
+                                        <td><strong style="color:var(--accent-orange); font-family:var(--font-mono);">KES 200,000</strong></td>
+                                        <td><strong style="color:var(--status-success); font-family:var(--font-mono);">KES 600,000</strong></td>
+                                        <td>
+                                            <div style="min-width:100px;">
+                                                <div class="progress-bar-wrapper">
+                                                    <div class="progress-bar-fill performing" style="width:75%;"></div>
+                                                </div>
+                                                <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:2px;">75% Paid</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-size:0.8rem;">Feb 10, 2026</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">7 days</div>
+                                        </td>
+                                        <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Current</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" title="View" onclick="viewLoan('LN-2026-00453')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost" title="Payment" onclick="recordPayment('LN-2026-00453')"><i class="fas fa-money-bill-wave" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="loan-row active" style="cursor:pointer;" onclick="viewLoan('LN-2026-00452')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">LN-2026-00452</code></td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="loan-avatar emergency">GM</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">Grace Muthoni</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00678</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-danger">Emergency</span></td>
+                                        <td><strong style="font-family:var(--font-mono);">KES 250,000</strong></td>
+                                        <td><strong style="color:var(--accent-orange); font-family:var(--font-mono);">KES 150,000</strong></td>
+                                        <td><strong style="color:var(--status-success); font-family:var(--font-mono);">KES 100,000</strong></td>
+                                        <td>
+                                            <div style="min-width:100px;">
+                                                <div class="progress-bar-wrapper">
+                                                    <div class="progress-bar-fill performing" style="width:40%;"></div>
+                                                </div>
+                                                <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:2px;">40% Paid</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-size:0.8rem;">Feb 05, 2026</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">2 days</div>
+                                        </td>
+                                        <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Current</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" title="View" onclick="viewLoan('LN-2026-00452')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost" title="Payment" onclick="recordPayment('LN-2026-00452')"><i class="fas fa-money-bill-wave" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination">
+                            <div class="pagination-info">Showing <strong>1-5</strong> of <strong>3,456</strong> active loans</div>
+                            <div class="pagination-btns">
+                                <button><i class="fas fa-chevron-left"></i></button>
+                                <button class="active">1</button>
+                                <button>2</button>
+                                <button>3</button>
+                                <button>...</button>
+                                <button>692</button>
+                                <button><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: AT-RISK LOANS ==================== -->
+                <div class="tab-pane" id="tab-at-risk">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <div class="flex-between" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-exclamation-triangle" style="color:var(--status-warning); margin-right:8px;"></i>At-Risk Loans (289)
+                                </h3>
+                                <div style="display:flex; gap:var(--spacing-sm);">
+                                    <button class="btn btn-outline btn-sm" onclick="bulkSendReminders()"><i class="fas fa-bell"></i> Send Reminders</button>
+                                    <button class="btn btn-primary btn-sm" onclick="openModal('recoveryModal')"><i class="fas fa-shield-alt"></i> Recovery Plan</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="loan-card-row" onclick="viewLoan('LN-2026-00454')" style="border-left:4px solid var(--status-warning);">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); flex-shrink:0;">
+                                <div class="loan-avatar school" style="flex-shrink:0;">MW</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:8px;">
+                                        <div>
+                                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:2px;">Mary Wanjiku</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">LN-2026-00454 &bull; R-00234</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--accent-orange);">KES 245,000</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">Outstanding</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:6px;">
+                                        <span class="badge badge-warning">School Fees</span>
+                                        <span class="badge badge-danger">5 days overdue</span>
+                                        <div class="risk-score medium">6.5</div>
+                                    </div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:8px;">
+                                        <strong>Principal:</strong> KES 300,000 &bull; <strong>Paid:</strong> KES 55,000 (18%) &bull; <strong>Due:</strong> Jan 28, 2026
+                                    </div>
+                                    <div class="progress-bar-wrapper">
+                                        <div class="progress-bar-fill at-risk" style="width:18%;"></div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:4px; flex-shrink:0;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="contactBorrower('LN-2026-00454')"><i class="fas fa-phone"></i> Contact</button>
+                                    <button class="btn btn-outline btn-sm" onclick="viewLoan('LN-2026-00454')"><i class="fas fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="loan-card-row" onclick="viewLoan('LN-2026-00448')" style="border-left:4px solid var(--status-warning);">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); flex-shrink:0;">
+                                <div class="loan-avatar development" style="flex-shrink:0;">PN</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:8px;">
+                                        <div>
+                                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:2px;">Peter Njoroge</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">LN-2026-00448 &bull; R-00892</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--accent-orange);">KES 890,000</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">Outstanding</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:6px;">
+                                        <span class="badge badge-info">Development</span>
+                                        <span class="badge badge-warning">15 days overdue</span>
+                                        <div class="risk-score high">8.2</div>
+                                    </div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:8px;">
+                                        <strong>Principal:</strong> KES 1,000,000 &bull; <strong>Paid:</strong> KES 110,000 (11%) &bull; <strong>Due:</strong> Jan 18, 2026
+                                    </div>
+                                    <div class="progress-bar-wrapper">
+                                        <div class="progress-bar-fill at-risk" style="width:11%;"></div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:4px; flex-shrink:0;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="contactBorrower('LN-2026-00448')"><i class="fas fa-phone"></i> Contact</button>
+                                    <button class="btn btn-outline btn-sm" onclick="viewLoan('LN-2026-00448')"><i class="fas fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div style="text-align:center; padding:var(--spacing-lg); color:var(--text-tertiary);">
+                                <p style="font-size:0.85rem; margin-bottom:var(--spacing-sm);">Showing 2 of 289 at-risk loans</p>
+                                <button class="btn btn-outline btn-sm">Load More <i class="fas fa-arrow-down" style="margin-left:4px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: DEFAULTED LOANS ==================== -->
+                <div class="tab-pane" id="tab-defaulted">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <div class="flex-between" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-times-circle" style="color:var(--status-danger); margin-right:8px;"></i>Defaulted Loans (45)
+                                </h3>
+                                <div style="display:flex; gap:var(--spacing-sm);">
+                                    <button class="btn btn-outline btn-sm"><i class="fas fa-gavel"></i> Legal Action</button>
+                                    <button class="btn btn-primary btn-sm" onclick="openModal('recoveryModal')"><i class="fas fa-redo"></i> Recovery Process</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="loan-card-row" onclick="viewLoan('LN-2026-00387')" style="border-left:4px solid var(--status-danger);">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); flex-shrink:0;">
+                                <div class="loan-avatar business" style="flex-shrink:0;">FK</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:8px;">
+                                        <div>
+                                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:2px;">Faith Kemunto</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">LN-2026-00387 &bull; R-01567</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--status-danger);">KES 650,000</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">Outstanding</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:6px;">
+                                        <span class="badge badge-success">Business</span>
+                                        <span class="badge badge-danger">90+ days overdue</span>
+                                        <div class="risk-score high">9.5</div>
+                                    </div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:8px;">
+                                        <strong>Principal:</strong> KES 700,000 &bull; <strong>Paid:</strong> KES 50,000 (7%) &bull; <strong>Last Payment:</strong> Nov 15, 2025
+                                    </div>
+                                    <div class="progress-bar-wrapper">
+                                        <div class="progress-bar-fill defaulted" style="width:7%;"></div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:4px; flex-shrink:0;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="openModal('recoveryModal')"><i class="fas fa-redo"></i> Recover</button>
+                                    <button class="btn btn-outline btn-sm" onclick="viewLoan('LN-2026-00387')"><i class="fas fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div style="text-align:center; padding:var(--spacing-lg); color:var(--text-tertiary);">
+                                <p style="font-size:0.85rem; margin-bottom:var(--spacing-sm);">Showing 1 of 45 defaulted loans</p>
+                                <button class="btn btn-outline btn-sm">Load More <i class="fas fa-arrow-down" style="margin-left:4px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: PAID OFF ==================== -->
+                <div class="tab-pane" id="tab-paid-off">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-check-double" style="color:var(--status-success); margin-right:8px;"></i>Fully Paid Off Loans
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <div style="text-align:center; padding:var(--spacing-2xl); color:var(--text-tertiary);">
+                                <i class="fas fa-trophy" style="font-size:3rem; color:var(--status-success); margin-bottom:var(--spacing-md);"></i>
+                                <h4 style="font-size:1.1rem; color:var(--text-primary); margin-bottom:var(--spacing-sm);">2,345 Loans Successfully Paid Off</h4>
+                                <p style="font-size:0.85rem;">Total recovered: KES 1.8 Billion</p>
+                                <button class="btn btn-outline" style="margin-top:var(--spacing-lg);" onclick="viewPaidOffLoans()">
+                                    <i class="fas fa-list"></i> View Full History
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: ANALYTICS ==================== -->
+                <div class="tab-pane" id="tab-analytics">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-chart-line" style="color:var(--accent-blue); margin-right:8px;"></i>Portfolio Performance Analytics
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);">Portfolio Health Distribution</h4>
+                            <div class="grid-3 mb-4" style="gap:var(--spacing-md);">
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">Performing</span>
+                                        <i class="fas fa-check-circle" style="color:var(--status-success);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">89.5%</div>
+                                    <div class="progress-bar-wrapper">
+                                        <div class="progress-bar-fill performing" style="width:89.5%;"></div>
+                                    </div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">3,092 loans - KES 706M</div>
+                                </div>
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">At-Risk</span>
+                                        <i class="fas fa-exclamation-triangle" style="color:var(--status-warning);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">8.4%</div>
+                                    <div class="progress-bar-wrapper">
+                                        <div class="progress-bar-fill at-risk" style="width:8.4%;"></div>
+                                    </div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">289 loans - KES 66M</div>
+                                </div>
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">Defaulted</span>
+                                        <i class="fas fa-times-circle" style="color:var(--status-danger);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">2.1%</div>
+                                    <div class="progress-bar-wrapper">
+                                        <div class="progress-bar-fill defaulted" style="width:2.1%;"></div>
+                                    </div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">75 loans - KES 17M</div>
+                                </div>
+                            </div>
+                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md); margin-top:var(--spacing-xl);">Key Performance Indicators</h4>
+                            <div class="grid-4 mb-4" style="gap:var(--spacing-md);">
+                                <div class="summary-box" style="text-align:center;">
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Avg. Loan Size</div>
+                                    <div style="font-size:1.2rem; font-weight:700; color:var(--primary-green);">KES 228K</div>
+                                </div>
+                                <div class="summary-box" style="text-align:center;">
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Avg. Interest Rate</div>
+                                    <div style="font-size:1.2rem; font-weight:700; color:var(--accent-blue);">12%</div>
+                                </div>
+                                <div class="summary-box" style="text-align:center;">
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Avg. Loan Term</div>
+                                    <div style="font-size:1.2rem; font-weight:700; color:var(--accent-orange);">18 months</div>
+                                </div>
+                                <div class="summary-box" style="text-align:center;">
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Recovery Rate</div>
+                                    <div style="font-size:1.2rem; font-weight:700; color:var(--status-success);">94.3%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End dashboard-content -->
+        </main>
+    </div>
+    <!-- ==================== MODALS ==================== -->
+    <!-- Disburse Loan Modal -->
+    <div class="modal-overlay" id="disburseLoanModal">
+        <div class="modal-box lg">
+            <div class="modal-head">
+                <h3><i class="fas fa-money-check-alt" style="color:var(--primary-green); margin-right:8px;"></i>Disburse Loan</h3>
+                <button class="modal-close" onclick="closeModal('disburseLoanModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="disburseLoanForm" onsubmit="submitDisbursement(event)">
+                    <div class="form-group">
+                        <label>Select Approved Application <span class="req">*</span></label>
+                        <select class="form-input" required>
+                            <option value="">-- Select Loan Application --</option>
+                            <option>Sarah Akinyi - LN-APP-456 (KES 500,000 - Emergency)</option>
+                            <option>David Kipkorir - LN-APP-455 (KES 1,200,000 - Development)</option>
+                            <option>Mary Wanjiku - LN-APP-454 (KES 300,000 - School Fees)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Disbursement Method <span class="req">*</span></label>
+                            <select class="form-input" required>
+                                <option value="">-- Select Method --</option>
+                                <option>M-Pesa (Direct to phone)</option>
+                                <option>Bank Transfer</option>
+                                <option>Cheque</option>
+                                <option>Cash</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Disbursement Date <span class="req">*</span></label>
+                            <input type="date" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea class="form-input" rows="2" placeholder="Optional disbursement notes..."></textarea>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="sendSMSNotif" checked>
+                        <label for="sendSMSNotif">Send SMS notification to borrower</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="generateSchedule" checked>
+                        <label for="generateSchedule">Auto-generate repayment schedule</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('disburseLoanModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitDisbursement(event)"><i class="fas fa-check"></i> Disburse Loan</button>
+            </div>
+        </div>
+    </div>
+    <!-- Loan Details Modal -->
+    <div class="modal-overlay" id="loanDetailsModal">
+        <div class="modal-box xl">
+            <div class="modal-head">
+                <h3><i class="fas fa-file-invoice-dollar" style="color:var(--primary-green); margin-right:8px;"></i>Loan Details — <span id="loanId"></span></h3>
+                <button class="modal-close" onclick="closeModal('loanDetailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="loanDetailsContent"></div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('loanDetailsModal')">Close</button>
+                <button class="btn btn-outline"><i class="fas fa-print"></i> Print Statement</button>
+            </div>
+        </div>
+    </div>
+    <!-- Record Payment Modal -->
+    <div class="modal-overlay" id="recordPaymentModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-money-bill-wave" style="color:var(--status-success); margin-right:8px;"></i>Record Loan Payment</h3>
+                <button class="modal-close" onclick="closeModal('recordPaymentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Payment Amount (KES) <span class="req">*</span></label>
+                        <input type="number" class="form-input" placeholder="e.g. 50000" min="1" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Payment Method <span class="req">*</span></label>
+                            <select class="form-input" required>
+                                <option value="">-- Select --</option>
+                                <option>M-Pesa</option>
+                                <option>Bank Transfer</option>
+                                <option>Cash</option>
+                                <option>Cheque</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Date <span class="req">*</span></label>
+                            <input type="date" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Reference Number</label>
+                        <input type="text" class="form-input" placeholder="M-Pesa code or bank reference">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="sendReceipt" checked>
+                        <label for="sendReceipt">Send payment receipt to borrower</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('recordPaymentModal')">Cancel</button>
+                <button class="btn btn-primary"><i class="fas fa-save"></i> Record Payment</button>
+            </div>
+        </div>
+    </div>
+    <!-- Export Modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-file-export" style="color:var(--accent-blue); margin-right:8px;"></i>Export Loan Portfolio</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Export Format</label>
+                    <select class="form-input">
+                        <option>Excel (.xlsx)</option>
+                        <option>CSV (.csv)</option>
+                        <option>PDF (.pdf)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>From Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>To Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Filter by Status</label>
+                    <select class="form-input">
+                        <option>All Loans</option>
+                        <option>Active Only</option>
+                        <option>At-Risk Only</option>
+                        <option>Defaulted Only</option>
+                        <option>Paid Off Only</option>
+                    </select>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="includePayments" checked>
+                    <label for="includePayments">Include payment history</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="includeBorrowers" checked>
+                    <label for="includeBorrowers">Include borrower details</label>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('exportModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="doExport()"><i class="fas fa-download"></i> Export</button>
+            </div>
+        </div>
+    </div>
+    <!-- Loan Products Modal -->
+    <div class="modal-overlay" id="productsModal">
+        <div class="modal-box lg">
+            <div class="modal-head">
+                <h3><i class="fas fa-sliders-h" style="color:var(--accent-blue); margin-right:8px;"></i>Loan Products Configuration</h3>
+                <button class="modal-close" onclick="closeModal('productsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:var(--spacing-lg);">Configure interest rates, terms, and limits for each loan product</p>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Interest Rate</th>
+                                <th>Max Amount</th>
+                                <th>Max Term</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Emergency Loan</strong></td>
+                                <td>10% p.a.</td>
+                                <td>KES 500,000</td>
+                                <td>12 months</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i> Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Development Loan</strong></td>
+                                <td>12% p.a.</td>
+                                <td>KES 5,000,000</td>
+                                <td>60 months</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i> Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>School Fees Loan</strong></td>
+                                <td>8% p.a.</td>
+                                <td>KES 1,000,000</td>
+                                <td>24 months</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i> Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Business Loan</strong></td>
+                                <td>14% p.a.</td>
+                                <td>KES 10,000,000</td>
+                                <td>36 months</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td><button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i> Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('productsModal')">Close</button>
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> Add New Product</button>
+            </div>
+        </div>
+    </div>
+    <!-- Recovery Modal -->
+    <div class="modal-overlay" id="recoveryModal">
+        <div class="modal-box lg">
+            <div class="modal-head">
+                <h3><i class="fas fa-shield-alt" style="color:var(--status-warning); margin-right:8px;"></i>Loan Recovery Plan</h3>
+                <button class="modal-close" onclick="closeModal('recoveryModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Recovery Strategy <span class="req">*</span></label>
+                    <select class="form-input" required>
+                        <option value="">-- Select Strategy --</option>
+                        <option>Restructure Repayment Schedule</option>
+                        <option>Reduce Interest Rate</option>
+                        <option>Extend Loan Term</option>
+                        <option>Partial Writeoff</option>
+                        <option>Legal Action</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Recovery Notes</label>
+                    <textarea class="form-input" rows="3" placeholder="Document recovery strategy and actions taken..."></textarea>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="notifyBorrower">
+                    <label for="notifyBorrower">Notify borrower of recovery plan</label>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('recoveryModal')">Cancel</button>
+                <button class="btn btn-primary"><i class="fas fa-save"></i> Initiate Recovery</button>
+            </div>
+        </div>
+    </div>
+    <!-- Notifications Modal -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-bell" style="color:var(--accent-blue); margin-right:8px;"></i>Notifications</h3>
+                <button class="modal-close" onclick="closeModal('notificationsModal')">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height:400px; overflow-y:auto;">
+                <div class="alert alert-warning mb-1" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.85rem;">5 Loans Overdue</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:4px 0 0;">Total outstanding: KES 245,000</p>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-tertiary); white-space:nowrap;">5 min</span>
+                </div>
+                <div class="alert alert-success mb-1" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.85rem;">Loan Disbursement Completed</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:4px 0 0;">KES 500,000 disbursed to Sarah Akinyi</p>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-tertiary); white-space:nowrap;">1 hr</span>
+                </div>
+                <div class="alert alert-info mb-1" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.85rem;">18 New Loan Applications</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:4px 0 0;">Awaiting review and approval</p>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-tertiary); white-space:nowrap;">2 hrs</span>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline btn-sm" onclick="closeModal('notificationsModal')">Mark All as Read</button>
+            </div>
+        </div>
+    </div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        // ============ SIDEBAR ============
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+        // ============ TABS ============
+        function switchTab(name) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.loan-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            const tabs = document.querySelectorAll('.loan-tab');
+            const map = { 'active': 0, 'at-risk': 1, 'defaulted': 2, 'paid-off': 3, 'analytics': 4 };
+            if (map[name] !== undefined && tabs[map[name]]) tabs[map[name]].classList.add('active');
+        }
+        // ============ MODALS ============
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        });
+        // ============ LOAN DETAILS ============
+        const loans = {
+            'LN-2026-00456': { id:'LN-2026-00456', borrower:'Sarah Akinyi', mid:'R-00123', phone:'0712345678', product:'Emergency Loan', principal:'500,000', outstanding:'350,000', paid:'150,000', rate:'10%', term:'12 months', disbursed:'Jan 15, 2026', nextDue:'Feb 15, 2026', status:'Current' },
+            'LN-2026-00455': { id:'LN-2026-00455', borrower:'David Kipkorir', mid:'R-00045', phone:'0722345678', product:'Development Loan', principal:'1,200,000', outstanding:'720,000', paid:'480,000', rate:'12%', term:'60 months', disbursed:'Dec 10, 2025', nextDue:'Feb 20, 2026', status:'Current' },
+            'LN-2026-00454': { id:'LN-2026-00454', borrower:'Mary Wanjiku', mid:'R-00234', phone:'0733456789', product:'School Fees Loan', principal:'300,000', outstanding:'245,000', paid:'55,000', rate:'8%', term:'24 months', disbursed:'Jan 5, 2026', nextDue:'Jan 28, 2026 (5 days overdue)', status:'Late' },
+            'LN-2026-00453': { id:'LN-2026-00453', borrower:'John Otieno', mid:'R-00456', phone:'0744567890', product:'Business Loan', principal:'800,000', outstanding:'200,000', paid:'600,000', rate:'14%', term:'36 months', disbursed:'Aug 20, 2025', nextDue:'Feb 10, 2026', status:'Current' },
+            'LN-2026-00452': { id:'LN-2026-00452', borrower:'Grace Muthoni', mid:'R-00678', phone:'0755678901', product:'Emergency Loan', principal:'250,000', outstanding:'150,000', paid:'100,000', rate:'10%', term:'12 months', disbursed:'Jan 10, 2026', nextDue:'Feb 05, 2026', status:'Current' },
+        };
+        function viewLoan(id) {
+            const l = loans[id];
+            if (!l) return;
+            document.getElementById('loanId').textContent = l.id;
+            const sc = l.status === 'Current' ? 'badge-success' : l.status === 'Late' ? 'badge-warning' : 'badge-danger';
+            document.getElementById('loanDetailsContent').innerHTML = `
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:var(--spacing-xl);">
+                    <div>
+                        <div style="background:var(--primary-green-ultra-light); padding:var(--spacing-xl); border-radius:var(--radius-md); text-align:center; margin-bottom:var(--spacing-lg);">
+                            <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:4px;">Outstanding Balance</div>
+                            <div style="font-size:2rem; font-weight:700; color:var(--accent-orange);">KES ${l.outstanding}</div>
+                            <span class="badge ${sc}" style="margin-top:var(--spacing-sm);">${l.status}</span>
+                        </div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);"><i class="fas fa-user-circle" style="margin-right:6px;"></i>Borrower Information</h6>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-md); margin-bottom:var(--spacing-lg);">
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Name</div><div style="font-weight:600;">${l.borrower}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Member ID</div><div style="font-family:var(--font-mono);">${l.mid}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Phone</div><div>${l.phone}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Product</div><div>${l.product}</div></div>
+                        </div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);"><i class="fas fa-file-invoice-dollar" style="margin-right:6px;"></i>Loan Details</h6>
+                        <div class="summary-box">
+                            <div class="summary-row"><span class="label">Principal Amount</span><span class="value">KES ${l.principal}</span></div>
+                            <div class="summary-row"><span class="label">Amount Paid</span><span class="value text-success">KES ${l.paid}</span></div>
+                            <div class="summary-row"><span class="label">Outstanding</span><span class="value" style="color:var(--accent-orange);">KES ${l.outstanding}</span></div>
+                            <div class="summary-row"><span class="label">Interest Rate</span><span class="value">${l.rate}</span></div>
+                            <div class="summary-row"><span class="label">Loan Term</span><span class="value">${l.term}</span></div>
+                            <div class="summary-row"><span class="label">Disbursed</span><span class="value">${l.disbursed}</span></div>
+                            <div class="summary-row total"><span class="label"><strong>Next Payment Due</strong></span><span class="value">${l.nextDue}</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);">Quick Actions</h6>
+                        <div style="display:grid; gap:var(--spacing-sm); margin-bottom:var(--spacing-lg);">
+                            <button class="btn btn-primary btn-sm" onclick="recordPayment('${l.id}')"><i class="fas fa-money-bill-wave"></i> Record Payment</button>
+                            <button class="btn btn-outline btn-sm" onclick="contactBorrower('${l.id}')"><i class="fas fa-phone"></i> Contact Borrower</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-file-alt"></i> Payment Schedule</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-print"></i> Print Statement</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-history"></i> View History</button>
+                        </div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);">Payment Timeline</h6>
+                        <div class="timeline">
+                            <div class="timeline-item completed"><div style="font-size:0.75rem; font-weight:600;">Loan Disbursed</div><div style="font-size:0.7rem; color:var(--text-secondary);">${l.disbursed}</div></div>
+                            <div class="timeline-item completed"><div style="font-size:0.75rem; font-weight:600;">First Payment Received</div><div style="font-size:0.7rem; color:var(--text-secondary);">KES ${(parseFloat(l.paid.replace(/,/g,''))/3).toLocaleString()}</div></div>
+                            <div class="timeline-item pending"><div style="font-size:0.75rem; font-weight:600;">Next Payment Due</div><div style="font-size:0.7rem; color:var(--text-secondary);">${l.nextDue}</div></div>
+                        </div>
+                    </div>
+                </div>`;
+            openModal('loanDetailsModal');
+        }
+        function recordPayment(id) {
+            closeModal('loanDetailsModal');
+            openModal('recordPaymentModal');
+        }
+        function contactBorrower(id) {
+            toast('Opening contact dialog for borrower...', 'info');
+        }
+        // ============ ACTIONS ============
+        function submitDisbursement(e) { if (e) e.preventDefault(); closeModal('disburseLoanModal'); toast('Loan disbursed successfully!', 'success'); }
+        function doExport() { closeModal('exportModal'); toast('Export started — file downloading...', 'info'); }
+        function refreshLoans() { toast('Refreshing loan portfolio...', 'info'); setTimeout(() => location.reload(), 1000); }
+        function filterByProduct(p) { toast('Filtering by: ' + p, 'info'); }
+        function applyFilter(type, val) { toast('Filter ' + type + ': ' + val, 'info'); }
+        function bulkSendReminders() { toast('Sending reminders to selected borrowers...', 'info'); }
+        function toggleSelectAll(cb) { document.querySelectorAll('tbody input[type="checkbox"]').forEach(c => c.checked = cb.checked); }
+        function viewPaidOffLoans() { toast('Loading paid off loans...', 'info'); }
+        // ============ TOAST ============
+        function toast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast ' + type;
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            t.innerHTML = '<i class="fas ' + icon + '"></i> ' + msg;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; t.style.transition = 'all 0.3s ease'; setTimeout(() => t.remove(), 300); }, 3500);
+        }
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(i => { if (!i.value) i.value = today; });
+        });
+    </script>
+</body>
+</html>

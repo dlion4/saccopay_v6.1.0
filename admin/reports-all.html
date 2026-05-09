@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Reports - Rongo SACCO | SACCOPay Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           REPORTS PAGE STYLES
+        ======================================== */
+
+        /* Report Category Cards */
+        .report-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .report-cat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .report-cat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            border-color: var(--primary-green-light);
+        }
+
+        .rcc-header {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .rcc-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .rcc-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 2px;
+        }
+
+        .rcc-header p {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
+        .rcc-count {
+            margin-left: auto;
+            background: var(--bg-tertiary);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .rcc-body {
+            padding: var(--spacing-md) var(--spacing-xl) var(--spacing-xl);
+        }
+
+        .report-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: 10px var(--spacing-md);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+        }
+
+        .report-item:hover {
+            background: var(--primary-green-ultra-light);
+            transform: translateX(4px);
+        }
+
+        .report-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .report-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .report-item-info h6 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .report-item-info p {
+            font-size: 0.68rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
+        .report-item .ri-arrow {
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .report-item:hover .ri-arrow {
+            color: var(--primary-green);
+        }
+
+        /* Recently Generated */
+        .recent-report-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        .recent-report-row:last-child {
+            border-bottom: none;
+        }
+
+        .recent-report-row:hover {
+            background: var(--primary-green-ultra-light);
+        }
+
+        .rr-file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .rr-file-icon.pdf { background: rgba(244,67,54,0.1); color: #e53935; }
+        .rr-file-icon.excel { background: rgba(76,175,80,0.1); color: #43a047; }
+        .rr-file-icon.csv { background: rgba(33,150,243,0.1); color: #1e88e5; }
+
+        .rr-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .rr-info h6 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .rr-info p {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
+        .rr-meta {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .rr-meta .rr-size {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+        }
+
+        .rr-meta .rr-date {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Scheduled Badge */
+        .schedule-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        .schedule-badge.daily { background: rgba(0,208,132,0.1); color: var(--primary-green); }
+        .schedule-badge.weekly { background: rgba(33,150,243,0.1); color: var(--accent-blue); }
+        .schedule-badge.monthly { background: rgba(156,39,176,0.1); color: var(--accent-purple); }
+        .schedule-badge.quarterly { background: rgba(255,152,0,0.1); color: var(--accent-orange); }
+        .schedule-badge.annual { background: rgba(121,85,72,0.1); color: #795548; }
+
+        /* Summary Stats */
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .rs-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .rs-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .rs-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .rs-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Preview Table in Modal */
+        .preview-table {
+            font-size: 0.82rem;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .preview-table th {
+            background: var(--bg-tertiary);
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .preview-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Modal */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .mhdr.dark { background: linear-gradient(135deg, #1a237e, #283593); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+        .mhdr.teal { background: linear-gradient(135deg, #00695c, #00897b); }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Form */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .fselect:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+
+        /* Filter Tab */
+        .ftab { padding: 8px 18px; border-radius: var(--radius-full); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .ftab:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); }
+        .ftab.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0,208,132,0.25); }
+        .ftab .cnt { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 700; }
+        .ftab:not(.active) .cnt { background: var(--bg-tertiary); color: var(--text-tertiary); }
+
+        /* Detail Row */
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        @media (max-width: 768px) {
+            .report-categories { grid-template-columns: 1fr; }
+            .report-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-logo">S</div><div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Rongo SACCO</p></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loan Disbursements</span></a></div>
+            <div class="nav-item"><a href="loan-repayments.html" class="nav-link"><i class="bi bi-arrow-counterclockwise nav-icon"></i><span>Loan Repayments</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>SACCOPay Wallet</span></a></div>
+            <div class="nav-section-title">Reports</div>
+            <div class="nav-item"><a href="reports.html" class="nav-link active"><i class="bi bi-file-earmark-text nav-icon"></i><span>All Reports</span></a></div>
+            <div class="nav-section-title">System</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell nav-icon"></i><span>Notifications</span><span class="nav-badge">3</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search reports..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i><span class="notification-badge">3</span></button>
+                    <div class="user-profile" onclick="openModal('profileModal')"><div class="user-avatar">JK</div><div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Rongo SACCO Admin</p></div></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">All Reports</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-file-earmark-text" style="color:var(--primary-green);"></i> Reports Center</h2>
+                        <p>Rongo SACCO — Generate, schedule, and download financial & operational reports</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#scheduledReportsModal"><i class="bi bi-calendar-check"></i> Scheduled <span class="badge badge-info" style="font-size:0.6rem;">4</span></button>
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#reportHistoryModal"><i class="bi bi-clock-history"></i> History</button>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#customReportModal"><i class="bi bi-plus-lg"></i> Custom Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="report-stats fade-in">
+                <div class="rs-card" data-bs-toggle="modal" data-bs-target="#reportHistoryModal">
+                    <div class="rs-value" style="color:var(--primary-green);">48</div>
+                    <div class="rs-label">Reports Generated (Month)</div>
+                </div>
+                <div class="rs-card" data-bs-toggle="modal" data-bs-target="#scheduledReportsModal">
+                    <div class="rs-value" style="color:var(--accent-blue);">4</div>
+                    <div class="rs-label">Active Schedules</div>
+                </div>
+                <div class="rs-card" onclick="showToast('28 report types available')">
+                    <div class="rs-value" style="color:var(--accent-purple);">28</div>
+                    <div class="rs-label">Report Types Available</div>
+                </div>
+                <div class="rs-card" data-bs-toggle="modal" data-bs-target="#reportHistoryModal">
+                    <div class="rs-value" style="color:var(--accent-orange);">12</div>
+                    <div class="rs-label">Pending Downloads</div>
+                </div>
+            </div>
+
+            <!-- Report Categories -->
+            <div class="report-categories fade-in">
+
+                <!-- Financial Reports -->
+                <div class="report-cat-card">
+                    <div class="rcc-header">
+                        <div class="rcc-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-currency-exchange"></i></div>
+                        <div><h5>Financial Reports</h5><p>Income, expenses, balance sheets</p></div>
+                        <span class="rcc-count">8</span>
+                    </div>
+                    <div class="rcc-body">
+                        <div class="report-item" onclick="openReportGenerator('financial-summary')">
+                            <div class="report-item-icon" style="background:rgba(0,208,132,0.08);color:var(--primary-green);"><i class="bi bi-graph-up"></i></div>
+                            <div class="report-item-info"><h6>Financial Summary</h6><p>P&L, revenue, expenses overview</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('balance-sheet')">
+                            <div class="report-item-icon" style="background:rgba(0,208,132,0.08);color:var(--primary-green);"><i class="bi bi-file-spreadsheet"></i></div>
+                            <div class="report-item-info"><h6>Balance Sheet</h6><p>Assets, liabilities, equity</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('income-statement')">
+                            <div class="report-item-icon" style="background:rgba(0,208,132,0.08);color:var(--primary-green);"><i class="bi bi-receipt-cutoff"></i></div>
+                            <div class="report-item-info"><h6>Income Statement</h6><p>Revenue & expenditure analysis</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('cash-flow')">
+                            <div class="report-item-icon" style="background:rgba(0,208,132,0.08);color:var(--primary-green);"><i class="bi bi-arrow-left-right"></i></div>
+                            <div class="report-item-info"><h6>Cash Flow Statement</h6><p>Inflows & outflows analysis</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('trial-balance')">
+                            <div class="report-item-icon" style="background:rgba(0,208,132,0.08);color:var(--primary-green);"><i class="bi bi-journal-check"></i></div>
+                            <div class="report-item-info"><h6>Trial Balance</h6><p>All ledger account balances</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Reports -->
+                <div class="report-cat-card">
+                    <div class="rcc-header">
+                        <div class="rcc-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-cash-stack"></i></div>
+                        <div><h5>Loan Reports</h5><p>Portfolio, disbursements, aging</p></div>
+                        <span class="rcc-count">6</span>
+                    </div>
+                    <div class="rcc-body">
+                        <div class="report-item" onclick="openReportGenerator('loan-portfolio')">
+                            <div class="report-item-icon" style="background:rgba(33,150,243,0.08);color:var(--accent-blue);"><i class="bi bi-pie-chart"></i></div>
+                            <div class="report-item-info"><h6>Loan Portfolio Summary</h6><p>Active loans, amounts, PAR analysis</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('loan-disbursement')">
+                            <div class="report-item-icon" style="background:rgba(33,150,243,0.08);color:var(--accent-blue);"><i class="bi bi-send"></i></div>
+                            <div class="report-item-info"><h6>Disbursement Report</h6><p>All loans disbursed by period</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('loan-aging')">
+                            <div class="report-item-icon" style="background:rgba(244,67,54,0.08);color:var(--status-danger);"><i class="bi bi-clock-history"></i></div>
+                            <div class="report-item-info"><h6>Loan Aging Report</h6><p>Overdue analysis by aging bucket</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('loan-collection')">
+                            <div class="report-item-icon" style="background:rgba(33,150,243,0.08);color:var(--accent-blue);"><i class="bi bi-cash-coin"></i></div>
+                            <div class="report-item-info"><h6>Collection & Repayment</h6><p>Repayments received, efficiency</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('loan-interest')">
+                            <div class="report-item-icon" style="background:rgba(33,150,243,0.08);color:var(--accent-blue);"><i class="bi bi-percent"></i></div>
+                            <div class="report-item-info"><h6>Interest Income Report</h6><p>Interest earned & projected</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('loan-writeoff')">
+                            <div class="report-item-icon" style="background:rgba(244,67,54,0.08);color:var(--status-danger);"><i class="bi bi-x-circle"></i></div>
+                            <div class="report-item-info"><h6>Write-Off & Provisions</h6><p>Written off loans & provisioning</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Savings Reports -->
+                <div class="report-cat-card">
+                    <div class="rcc-header">
+                        <div class="rcc-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-piggy-bank"></i></div>
+                        <div><h5>Savings Reports</h5><p>Deposits, withdrawals, interest</p></div>
+                        <span class="rcc-count">5</span>
+                    </div>
+                    <div class="rcc-body">
+                        <div class="report-item" onclick="openReportGenerator('savings-summary')">
+                            <div class="report-item-icon" style="background:rgba(156,39,176,0.08);color:var(--accent-purple);"><i class="bi bi-wallet2"></i></div>
+                            <div class="report-item-info"><h6>Savings Portfolio</h6><p>All savings by type & balance</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('deposit-report')">
+                            <div class="report-item-icon" style="background:rgba(156,39,176,0.08);color:var(--accent-purple);"><i class="bi bi-arrow-down-circle"></i></div>
+                            <div class="report-item-info"><h6>Deposit Report</h6><p>All deposits by period & channel</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('withdrawal-report')">
+                            <div class="report-item-icon" style="background:rgba(156,39,176,0.08);color:var(--accent-purple);"><i class="bi bi-arrow-up-circle"></i></div>
+                            <div class="report-item-info"><h6>Withdrawal Report</h6><p>All withdrawals by period</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('share-register')">
+                            <div class="report-item-icon" style="background:rgba(26,35,130,0.08);color:#1a237e;"><i class="bi bi-shield-lock"></i></div>
+                            <div class="report-item-info"><h6>Share Capital Register</h6><p>All shareholders & holdings</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('interest-report')">
+                            <div class="report-item-icon" style="background:rgba(156,39,176,0.08);color:var(--accent-purple);"><i class="bi bi-percent"></i></div>
+                            <div class="report-item-info"><h6>Interest & Dividends</h6><p>Interest accrued & dividends paid</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member Reports -->
+                <div class="report-cat-card">
+                    <div class="rcc-header">
+                        <div class="rcc-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-people"></i></div>
+                        <div><h5>Member Reports</h5><p>Membership, KYC, activity</p></div>
+                        <span class="rcc-count">4</span>
+                    </div>
+                    <div class="rcc-body">
+                        <div class="report-item" onclick="openReportGenerator('member-register')">
+                            <div class="report-item-icon" style="background:rgba(255,152,0,0.08);color:var(--accent-orange);"><i class="bi bi-person-lines-fill"></i></div>
+                            <div class="report-item-info"><h6>Member Register</h6><p>Complete member list with details</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('kyc-status')">
+                            <div class="report-item-icon" style="background:rgba(255,152,0,0.08);color:var(--accent-orange);"><i class="bi bi-shield-check"></i></div>
+                            <div class="report-item-info"><h6>KYC Status Report</h6><p>Verification status of all members</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('member-statement')">
+                            <div class="report-item-icon" style="background:rgba(255,152,0,0.08);color:var(--accent-orange);"><i class="bi bi-file-text"></i></div>
+                            <div class="report-item-info"><h6>Individual Member Statement</h6><p>Full financial statement per member</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('membership-growth')">
+                            <div class="report-item-icon" style="background:rgba(255,152,0,0.08);color:var(--accent-orange);"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div class="report-item-info"><h6>Membership Growth</h6><p>New, exited, active members trend</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance & Regulatory -->
+                <div class="report-cat-card">
+                    <div class="rcc-header">
+                        <div class="rcc-icon" style="background:rgba(0,105,92,0.1);color:#00695c;"><i class="bi bi-building-check"></i></div>
+                        <div><h5>Compliance & Regulatory</h5><p>SASRA, CBK, tax reports</p></div>
+                        <span class="rcc-count">3</span>
+                    </div>
+                    <div class="rcc-body">
+                        <div class="report-item" onclick="openReportGenerator('sasra-return')">
+                            <div class="report-item-icon" style="background:rgba(0,105,92,0.08);color:#00695c;"><i class="bi bi-bank2"></i></div>
+                            <div class="report-item-info"><h6>SASRA Quarterly Return</h6><p>Regulatory compliance report</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('tax-report')">
+                            <div class="report-item-icon" style="background:rgba(0,105,92,0.08);color:#00695c;"><i class="bi bi-receipt"></i></div>
+                            <div class="report-item-info"><h6>Tax & Withholding Report</h6><p>Withholding tax on interest/dividends</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('aml-report')">
+                            <div class="report-item-icon" style="background:rgba(0,105,92,0.08);color:#00695c;"><i class="bi bi-shield-exclamation"></i></div>
+                            <div class="report-item-info"><h6>AML / CTF Suspicious Activity</h6><p>Anti-money laundering flag report</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operational Reports -->
+                <div class="report-cat-card">
+                    <div class="rcc-header">
+                        <div class="rcc-icon" style="background:rgba(121,85,72,0.1);color:#795548;"><i class="bi bi-gear"></i></div>
+                        <div><h5>Operational Reports</h5><p>Transactions, audit, system</p></div>
+                        <span class="rcc-count">2</span>
+                    </div>
+                    <div class="rcc-body">
+                        <div class="report-item" onclick="openReportGenerator('transaction-report')">
+                            <div class="report-item-icon" style="background:rgba(121,85,72,0.08);color:#795548;"><i class="bi bi-arrow-left-right"></i></div>
+                            <div class="report-item-info"><h6>Transaction Report</h6><p>All transactions by type & channel</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                        <div class="report-item" onclick="openReportGenerator('audit-trail')">
+                            <div class="report-item-icon" style="background:rgba(121,85,72,0.08);color:#795548;"><i class="bi bi-journal-text"></i></div>
+                            <div class="report-item-info"><h6>Audit Trail</h6><p>Admin actions & system log</p></div>
+                            <i class="bi bi-chevron-right ri-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recently Generated & Scheduled -->
+            <div class="row g-4 fade-in">
+                <!-- Recent Downloads -->
+                <div class="col-lg-7">
+                    <div class="glass-card">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-clock-history" style="color:var(--primary-green);"></i> Recently Generated</h3>
+                            <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#reportHistoryModal"><i class="bi bi-list-ul"></i> View All</button>
+                        </div>
+                        <div class="glass-card-body" style="padding:0;">
+                            <div class="recent-report-row">
+                                <div class="rr-file-icon pdf"><i class="bi bi-file-earmark-pdf"></i></div>
+                                <div class="rr-info"><h6>Financial Summary — December 2024</h6><p>Rongo SACCO • Generated by James Kariuki</p></div>
+                                <div class="rr-meta"><div class="rr-date">Today, 2:30 PM</div><div class="rr-size">1.2 MB</div></div>
+                                <button class="btn btn-ghost btn-icon btn-sm" onclick="downloadReport('Financial Summary Dec 2024')"><i class="bi bi-download" style="color:var(--primary-green);"></i></button>
+                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="previewReport('financial-summary')"><i class="bi bi-eye me-2"></i>Preview</a></li><li><a class="dropdown-item" href="#" onclick="downloadReport('Financial Summary')"><i class="bi bi-download me-2"></i>Download</a></li><li><a class="dropdown-item" href="#" onclick="emailReport()"><i class="bi bi-envelope me-2"></i>Email</a></li><li><a class="dropdown-item" href="#" onclick="printReport()"><i class="bi bi-printer me-2"></i>Print</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-danger" href="#" onclick="deleteReport()"><i class="bi bi-trash me-2"></i>Delete</a></li></ul>
+                            </div>
+                            <div class="recent-report-row">
+                                <div class="rr-file-icon excel"><i class="bi bi-file-earmark-excel"></i></div>
+                                <div class="rr-info"><h6>Loan Portfolio Summary — Q4 2024</h6><p>Rongo SACCO • Auto-generated (Quarterly)</p></div>
+                                <div class="rr-meta"><div class="rr-date">Today, 8:00 AM</div><div class="rr-size">845 KB</div></div>
+                                <button class="btn btn-ghost btn-icon btn-sm" onclick="downloadReport('Loan Portfolio Q4')"><i class="bi bi-download" style="color:var(--primary-green);"></i></button>
+                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="previewReport('loan-portfolio')"><i class="bi bi-eye me-2"></i>Preview</a></li><li><a class="dropdown-item" href="#" onclick="downloadReport('Loan Portfolio')"><i class="bi bi-download me-2"></i>Download</a></li><li><a class="dropdown-item" href="#" onclick="emailReport()"><i class="bi bi-envelope me-2"></i>Email</a></li></ul>
+                            </div>
+                            <div class="recent-report-row">
+                                <div class="rr-file-icon csv"><i class="bi bi-file-earmark-text"></i></div>
+                                <div class="rr-info"><h6>Member Register — Full Export</h6><p>Rongo SACCO • 1,847 members</p></div>
+                                <div class="rr-meta"><div class="rr-date">Yesterday</div><div class="rr-size">2.1 MB</div></div>
+                                <button class="btn btn-ghost btn-icon btn-sm" onclick="downloadReport('Member Register')"><i class="bi bi-download" style="color:var(--primary-green);"></i></button>
+                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="previewReport('member-register')"><i class="bi bi-eye me-2"></i>Preview</a></li><li><a class="dropdown-item" href="#" onclick="downloadReport('Member Register')"><i class="bi bi-download me-2"></i>Download</a></li><li><a class="dropdown-item" href="#" onclick="emailReport()"><i class="bi bi-envelope me-2"></i>Email</a></li></ul>
+                            </div>
+                            <div class="recent-report-row">
+                                <div class="rr-file-icon pdf"><i class="bi bi-file-earmark-pdf"></i></div>
+                                <div class="rr-info"><h6>Loan Aging Report — December 2024</h6><p>Rongo SACCO • PAR analysis</p></div>
+                                <div class="rr-meta"><div class="rr-date">Dec 16</div><div class="rr-size">680 KB</div></div>
+                                <button class="btn btn-ghost btn-icon btn-sm" onclick="downloadReport('Loan Aging Dec 2024')"><i class="bi bi-download" style="color:var(--primary-green);"></i></button>
+                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="previewReport('loan-aging')"><i class="bi bi-eye me-2"></i>Preview</a></li><li><a class="dropdown-item" href="#" onclick="downloadReport('Loan Aging')"><i class="bi bi-download me-2"></i>Download</a></li><li><a class="dropdown-item" href="#" onclick="emailReport()"><i class="bi bi-envelope me-2"></i>Email</a></li></ul>
+                            </div>
+                            <div class="recent-report-row">
+                                <div class="rr-file-icon pdf"><i class="bi bi-file-earmark-pdf"></i></div>
+                                <div class="rr-info"><h6>SASRA Quarterly Return — Q3 2024</h6><p>Rongo SACCO • Regulatory submission</p></div>
+                                <div class="rr-meta"><div class="rr-date">Dec 14</div><div class="rr-size">1.5 MB</div></div>
+                                <button class="btn btn-ghost btn-icon btn-sm" onclick="downloadReport('SASRA Q3')"><i class="bi bi-download" style="color:var(--primary-green);"></i></button>
+                                <button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="previewReport('sasra-return')"><i class="bi bi-eye me-2"></i>Preview</a></li><li><a class="dropdown-item" href="#" onclick="downloadReport('SASRA Q3')"><i class="bi bi-download me-2"></i>Download</a></li><li><a class="dropdown-item" href="#" onclick="emailReport()"><i class="bi bi-envelope me-2"></i>Email</a></li></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheduled Reports -->
+                <div class="col-lg-5">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-calendar-check" style="color:var(--accent-orange);"></i> Scheduled Reports</h3>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newScheduleModal"><i class="bi bi-plus"></i></button>
+                        </div>
+                        <div class="glass-card-body" style="padding:var(--spacing-md) var(--spacing-xl);">
+                            <div class="recent-report-row" style="padding:var(--spacing-md) 0;">
+                                <div><h6 style="font-size:0.85rem;font-weight:600;margin:0;">Daily Transaction Report</h6><p style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0 0;">Every day at 6:00 AM → admin@rongosacco.co.ke</p></div>
+                                <div style="margin-left:auto;display:flex;align-items:center;gap:var(--spacing-sm);"><span class="schedule-badge daily"><i class="bi bi-arrow-repeat"></i> Daily</span><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil" style="font-size:0.7rem;"></i></button></div>
+                            </div>
+                            <div class="recent-report-row" style="padding:var(--spacing-md) 0;">
+                                <div><h6 style="font-size:0.85rem;font-weight:600;margin:0;">Weekly Loan Collection</h6><p style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0 0;">Every Monday 8:00 AM → credit@rongosacco.co.ke</p></div>
+                                <div style="margin-left:auto;display:flex;align-items:center;gap:var(--spacing-sm);"><span class="schedule-badge weekly"><i class="bi bi-arrow-repeat"></i> Weekly</span><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil" style="font-size:0.7rem;"></i></button></div>
+                            </div>
+                            <div class="recent-report-row" style="padding:var(--spacing-md) 0;">
+                                <div><h6 style="font-size:0.85rem;font-weight:600;margin:0;">Monthly Financial Summary</h6><p style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0 0;">1st of each month → board@rongosacco.co.ke</p></div>
+                                <div style="margin-left:auto;display:flex;align-items:center;gap:var(--spacing-sm);"><span class="schedule-badge monthly"><i class="bi bi-arrow-repeat"></i> Monthly</span><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil" style="font-size:0.7rem;"></i></button></div>
+                            </div>
+                            <div class="recent-report-row" style="padding:var(--spacing-md) 0;border-bottom:none;">
+                                <div><h6 style="font-size:0.85rem;font-weight:600;margin:0;">SASRA Quarterly Return</h6><p style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0 0;">Every quarter-end → compliance@rongosacco.co.ke</p></div>
+                                <div style="margin-left:auto;display:flex;align-items:center;gap:var(--spacing-sm);"><span class="schedule-badge quarterly"><i class="bi bi-arrow-repeat"></i> Quarterly</span><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil" style="font-size:0.7rem;"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- 1. REPORT GENERATOR (Universal) -->
+<div class="modal fade" id="reportGeneratorModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-file-earmark-bar-graph me-2"></i><span id="rgTitle">Generate Report</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Report Period</label><select class="form-select fselect" id="rgPeriod"><option>This Month (December 2024)</option><option>Last Month (November 2024)</option><option>This Quarter (Q4 2024)</option><option>Last Quarter (Q3 2024)</option><option>This Year (2024)</option><option>Last Year (2023)</option><option>Custom Range</option></select></div>
+            <div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect" id="rgFormat"><option value="pdf">PDF Report</option><option value="excel">Excel (.xlsx)</option><option value="csv">CSV</option></select></div>
+            <div class="col-md-6" id="rgDateFrom" style="display:none;"><label class="flbl">From Date</label><input type="date" class="form-control finput"></div>
+            <div class="col-md-6" id="rgDateTo" style="display:none;"><label class="flbl">To Date</label><input type="date" class="form-control finput"></div>
+        </div>
+
+        <!-- Preview Section -->
+        <div style="margin-top:var(--spacing-xl);border-top:1px solid var(--border-color);padding-top:var(--spacing-xl);">
+            <div class="flex-between mb-3">
+                <h6 style="font-weight:600;margin:0;"><i class="bi bi-eye me-1" style="color:var(--primary-green);"></i> Report Preview</h6>
+                <span style="font-size:0.72rem;color:var(--text-tertiary);">Showing first 5 rows</span>
+            </div>
+
+            <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+                <div style="text-align:center;margin-bottom:var(--spacing-md);">
+                    <h5 style="font-weight:700;margin:0;">RONGO SACCO SOCIETY LTD</h5>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);margin:2px 0;">P.O. Box 45-40404, Rongo, Migori County, Kenya</p>
+                    <p style="font-size:0.78rem;color:var(--text-tertiary);margin:0;">Reg No: CS/7842 | SASRA License: DT/0198</p>
+                    <hr style="margin:var(--spacing-md) 0;">
+                    <h6 style="font-weight:700;margin:0;" id="rgPreviewTitle">FINANCIAL SUMMARY REPORT</h6>
+                    <p style="font-size:0.78rem;color:var(--text-tertiary);margin:2px 0;">Period: December 1-18, 2024 | Generated: Dec 18, 2024</p>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="previewTableWrap">
+                <table class="preview-table" id="previewTable">
+                    <thead><tr><th>Description</th><th>Current Period</th><th>Previous Period</th><th>Variance</th><th>% Change</th></tr></thead>
+                    <tbody>
+                        <tr><td style="font-weight:600;">Total Income</td><td>KES 4,280,000</td><td>KES 3,950,000</td><td style="color:var(--status-success);">+330,000</td><td style="color:var(--status-success);">+8.4%</td></tr>
+                        <tr><td>&nbsp;&nbsp;Interest on Loans</td><td>KES 3,120,000</td><td>KES 2,890,000</td><td style="color:var(--status-success);">+230,000</td><td style="color:var(--status-success);">+8.0%</td></tr>
+                        <tr><td>&nbsp;&nbsp;Interest on Savings</td><td>KES 680,000</td><td>KES 620,000</td><td style="color:var(--status-success);">+60,000</td><td style="color:var(--status-success);">+9.7%</td></tr>
+                        <tr><td>&nbsp;&nbsp;Fees & Charges</td><td>KES 480,000</td><td>KES 440,000</td><td style="color:var(--status-success);">+40,000</td><td style="color:var(--status-success);">+9.1%</td></tr>
+                        <tr style="background:var(--bg-tertiary);font-weight:700;"><td>Total Expenses</td><td>KES 2,150,000</td><td>KES 2,080,000</td><td style="color:var(--status-danger);">+70,000</td><td style="color:var(--status-danger);">+3.4%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.7rem;color:var(--text-tertiary);margin-top:var(--spacing-sm);text-align:center;">...preview truncated. Full report will contain all data.</p>
+        </div>
+
+        <!-- Options -->
+        <div style="margin-top:var(--spacing-lg);padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+            <h6 style="font-size:0.82rem;font-weight:600;margin-bottom:var(--spacing-md);">Additional Options</h6>
+            <div class="row g-2">
+                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" checked id="rgHeader"><label class="form-check-label" for="rgHeader" style="font-size:0.82rem;">Include SACCO header & logo</label></div></div>
+                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" checked id="rgCharts"><label class="form-check-label" for="rgCharts" style="font-size:0.82rem;">Include charts & graphs</label></div></div>
+                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="rgComparison"><label class="form-check-label" for="rgComparison" style="font-size:0.82rem;">Include period comparison</label></div></div>
+                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="rgSignature"><label class="form-check-label" for="rgSignature" style="font-size:0.82rem;">Include signature lines</label></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-outline btn-sm" onclick="emailReportDirect()"><i class="bi bi-envelope"></i> Email</button>
+        <button class="btn btn-outline btn-sm" onclick="scheduleThisReport()"><i class="bi bi-calendar-check"></i> Schedule</button>
+        <button class="btn btn-primary" onclick="generateAndDownload()"><i class="bi bi-download"></i> Generate & Download</button>
+    </div>
+</div></div></div>
+
+<!-- 2. CUSTOM REPORT BUILDER -->
+<div class="modal fade" id="customReportModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-tools me-2"></i>Custom Report Builder</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Report Name</label><input type="text" class="form-control finput" placeholder="e.g. Board Meeting Financial Pack — Q4 2024"></div>
+            <div class="col-md-6"><label class="flbl">Data Source</label><select class="form-select fselect"><option>Financial Data</option><option>Loan Data</option><option>Savings Data</option><option>Member Data</option><option>Transaction Data</option><option>Combined (Multi-source)</option></select></div>
+            <div class="col-md-6"><label class="flbl">Period</label><select class="form-select fselect"><option>This Month</option><option>This Quarter</option><option>This Year</option><option>Custom Range</option></select></div>
+            <div class="col-12"><label class="flbl">Select Columns / Fields</label>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--spacing-sm);">
+                    <div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Member Name</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Member ID</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Savings Balance</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Loan Balance</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Share Capital</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">KYC Status</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Phone Number</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Join Date</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Last Activity</label></div>
+                </div>
+            </div>
+            <div class="col-md-6"><label class="flbl">Group By</label><select class="form-select fselect"><option>None</option><option>Branch</option><option>Loan Type</option><option>Savings Type</option><option>Month</option></select></div>
+            <div class="col-md-6"><label class="flbl">Sort By</label><select class="form-select fselect"><option>Member Name (A-Z)</option><option>Balance (Highest First)</option><option>Date (Most Recent)</option><option>Member ID</option></select></div>
+            <div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect"><option>PDF</option><option>Excel</option><option>CSV</option></select></div>
+            <div class="col-md-6"><label class="flbl">Filters</label><select class="form-select fselect"><option>All Members</option><option>Active Members Only</option><option>Members with Active Loans</option><option>Members with Overdue Loans</option><option>Dormant Accounts</option></select></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline btn-sm" onclick="previewCustomReport()"><i class="bi bi-eye"></i> Preview</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="generateCustomReport()"><i class="bi bi-download"></i> Generate</button></div>
+</div></div></div>
+
+<!-- 3. NEW SCHEDULE -->
+<div class="modal fade" id="newScheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>Schedule Auto-Report</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Report Type</label><select class="form-select fselect"><option>Financial Summary</option><option>Loan Portfolio Summary</option><option>Loan Collection Report</option><option>Savings Portfolio</option><option>Transaction Report</option><option>Member Register</option><option>SASRA Quarterly Return</option><option>Custom (select template)</option></select></div>
+        <div class="col-md-6"><label class="flbl">Frequency</label><select class="form-select fselect"><option>Daily</option><option>Weekly</option><option>Bi-weekly</option><option>Monthly</option><option>Quarterly</option><option>Annually</option></select></div>
+        <div class="col-md-6"><label class="flbl">Time</label><input type="time" class="form-control finput" value="06:00"></div>
+        <div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect"><option>PDF</option><option>Excel</option><option>CSV</option></select></div>
+        <div class="col-md-6"><label class="flbl">Delivery</label><select class="form-select fselect"><option>Email</option><option>Dashboard Only</option><option>Email + Dashboard</option></select></div>
+        <div class="col-12"><label class="flbl">Email Recipients</label><input type="text" class="form-control finput" placeholder="admin@rongosacco.co.ke, board@rongosacco.co.ke"></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="createSchedule()"><i class="bi bi-calendar-check"></i> Create Schedule</button></div>
+</div></div></div>
+
+<!-- 4. EDIT SCHEDULE -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Schedule</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-md-6"><label class="flbl">Frequency</label><select class="form-select fselect"><option>Daily</option><option selected>Weekly</option><option>Monthly</option><option>Quarterly</option></select></div><div class="col-md-6"><label class="flbl">Time</label><input type="time" class="form-control finput" value="08:00"></div><div class="col-12"><label class="flbl">Recipients</label><input type="text" class="form-control finput" value="credit@rongosacco.co.ke"></div><div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Pause this schedule</label></div></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn" style="background:var(--status-danger);color:white;" onclick="deleteSchedule()"><i class="bi bi-trash"></i> Delete</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="updateSchedule()"><i class="bi bi-check"></i> Update</button></div>
+</div></div></div>
+
+<!-- 5. SCHEDULED REPORTS LIST -->
+<div class="modal fade" id="scheduledReportsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-calendar-check me-2"></i>All Scheduled Reports</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Report</th><th>Frequency</th><th>Next Run</th><th>Recipients</th><th>Format</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+            <tr><td style="font-weight:600;">Daily Transaction Report</td><td><span class="schedule-badge daily"><i class="bi bi-arrow-repeat"></i> Daily</span></td><td>Dec 19, 6:00 AM</td><td>admin@rongosacco.co.ke</td><td>PDF</td><td><span class="badge badge-success" style="font-size:0.65rem;">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="toggleSchedule()"><i class="bi bi-pause"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Weekly Loan Collection</td><td><span class="schedule-badge weekly"><i class="bi bi-arrow-repeat"></i> Weekly</span></td><td>Dec 23, 8:00 AM</td><td>credit@rongosacco.co.ke</td><td>Excel</td><td><span class="badge badge-success" style="font-size:0.65rem;">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="toggleSchedule()"><i class="bi bi-pause"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Monthly Financial Summary</td><td><span class="schedule-badge monthly"><i class="bi bi-arrow-repeat"></i> Monthly</span></td><td>Jan 1, 7:00 AM</td><td>board@rongosacco.co.ke</td><td>PDF</td><td><span class="badge badge-success" style="font-size:0.65rem;">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="toggleSchedule()"><i class="bi bi-pause"></i></button></td></tr>
+            <tr><td style="font-weight:600;">SASRA Quarterly Return</td><td><span class="schedule-badge quarterly"><i class="bi bi-arrow-repeat"></i> Quarterly</span></td><td>Mar 31, 9:00 AM</td><td>compliance@rongosacco.co.ke</td><td>PDF</td><td><span class="badge badge-success" style="font-size:0.65rem;">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="toggleSchedule()"><i class="bi bi-pause"></i></button></td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary btn-sm" style="background:linear-gradient(135deg,#e65100,#f57c00);" data-bs-toggle="modal" data-bs-target="#newScheduleModal"><i class="bi bi-plus"></i> New Schedule</button></div>
+</div></div></div>
+
+<!-- 6. REPORT HISTORY -->
+<div class="modal fade" id="reportHistoryModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-clock-history me-2"></i>Report History — Rongo SACCO</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-3"><div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Categories</option><option>Financial</option><option>Loan</option><option>Savings</option><option>Member</option><option>Compliance</option><option>Operational</option></select></div><div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Formats</option><option>PDF</option><option>Excel</option><option>CSV</option></select></div><div class="col-md-4"><input type="text" class="form-control finput form-control-sm" placeholder="Search reports..."></div></div>
+        <div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Report</th><th>Category</th><th>Format</th><th>Size</th><th>Generated</th><th>By</th><th>Actions</th></tr></thead>
+        <tbody>
+            <tr><td style="font-weight:600;">Financial Summary — Dec 2024</td><td><span style="font-size:0.68rem;color:var(--primary-green);">Financial</span></td><td><span class="rr-file-icon pdf" style="width:24px;height:24px;font-size:0.7rem;display:inline-flex;"><i class="bi bi-file-pdf"></i></span></td><td>1.2 MB</td><td>Today, 2:30 PM</td><td>James K.</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadReport('Financial Summary')"><i class="bi bi-download"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="previewReport('financial-summary')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="emailReport()"><i class="bi bi-envelope"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Loan Portfolio — Q4 2024</td><td><span style="font-size:0.68rem;color:var(--accent-blue);">Loan</span></td><td><span class="rr-file-icon excel" style="width:24px;height:24px;font-size:0.7rem;display:inline-flex;"><i class="bi bi-file-excel"></i></span></td><td>845 KB</td><td>Today, 8:00 AM</td><td>Auto</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadReport('Loan Portfolio')"><i class="bi bi-download"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="previewReport('loan-portfolio')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="emailReport()"><i class="bi bi-envelope"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Member Register — Full</td><td><span style="font-size:0.68rem;color:var(--accent-orange);">Member</span></td><td><span class="rr-file-icon csv" style="width:24px;height:24px;font-size:0.7rem;display:inline-flex;"><i class="bi bi-file-text"></i></span></td><td>2.1 MB</td><td>Yesterday</td><td>James K.</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadReport('Member Register')"><i class="bi bi-download"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="emailReport()"><i class="bi bi-envelope"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Loan Aging — Dec 2024</td><td><span style="font-size:0.68rem;color:var(--accent-blue);">Loan</span></td><td><span class="rr-file-icon pdf" style="width:24px;height:24px;font-size:0.7rem;display:inline-flex;"><i class="bi bi-file-pdf"></i></span></td><td>680 KB</td><td>Dec 16</td><td>James K.</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadReport('Loan Aging')"><i class="bi bi-download"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="previewReport('loan-aging')"><i class="bi bi-eye"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="emailReport()"><i class="bi bi-envelope"></i></button></td></tr>
+            <tr><td style="font-weight:600;">SASRA Return — Q3 2024</td><td><span style="font-size:0.68rem;color:#00695c;">Compliance</span></td><td><span class="rr-file-icon pdf" style="width:24px;height:24px;font-size:0.7rem;display:inline-flex;"><i class="bi bi-file-pdf"></i></span></td><td>1.5 MB</td><td>Dec 14</td><td>James K.</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadReport('SASRA Q3')"><i class="bi bi-download"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="emailReport()"><i class="bi bi-envelope"></i></button></td></tr>
+            <tr><td style="font-weight:600;">Daily Transactions — Dec 17</td><td><span style="font-size:0.68rem;color:#795548;">Operational</span></td><td><span class="rr-file-icon pdf" style="width:24px;height:24px;font-size:0.7rem;display:inline-flex;"><i class="bi bi-file-pdf"></i></span></td><td>420 KB</td><td>Dec 17, 6:00 AM</td><td>Auto</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="downloadReport('Daily Tx Dec 17')"><i class="bi bi-download"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="emailReport()"><i class="bi bi-envelope"></i></button></td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="clearHistory()"><i class="bi bi-trash"></i> Clear Old</button></div>
+</div></div></div>
+
+<!-- 7. EMAIL REPORT -->
+<div class="modal fade" id="emailReportModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-envelope me-2"></i>Email Report</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">To</label><input type="text" class="form-control finput" placeholder="email@rongosacco.co.ke" value="board@rongosacco.co.ke"></div>
+        <div class="col-12"><label class="flbl">CC (Optional)</label><input type="text" class="form-control finput" placeholder="cc@rongosacco.co.ke"></div>
+        <div class="col-12"><label class="flbl">Subject</label><input type="text" class="form-control finput" value="Rongo SACCO — Financial Summary Report — December 2024"></div>
+        <div class="col-12"><label class="flbl">Message</label><textarea class="form-control finput" rows="3">Dear Board Members,
+
+Please find attached the Financial Summary Report for December 2024. Key highlights are included in the executive summary on page 1.
+
+Best regards,
+James Kariuki
+Admin, Rongo SACCO</textarea></div>
+        <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Attach report as PDF</label></div></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="sendEmail()"><i class="bi bi-send"></i> Send Email</button></div>
+</div></div></div>
+
+<!-- 8. MEMBER STATEMENT (Individual) -->
+<div class="modal fade" id="memberStatementModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-person-lines-fill me-2"></i>Generate Member Statement</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Member</label><input type="text" class="form-control finput" placeholder="Search by name or ID"></div>
+        <div class="col-md-6"><label class="flbl">Statement Type</label><select class="form-select fselect"><option>Complete Statement</option><option>Savings Only</option><option>Loan Only</option><option>Share Capital</option><option>Wallet</option></select></div>
+        <div class="col-md-6"><label class="flbl">Period</label><select class="form-select fselect"><option>This Month</option><option>Last 3 Months</option><option>Last 6 Months</option><option>This Year</option><option>Full History</option></select></div>
+        <div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect"><option>PDF</option><option>Excel</option></select></div>
+        <div class="col-md-6"><label class="flbl">Delivery</label><select class="form-select fselect"><option>Download</option><option>Email to Member</option><option>Email to Admin</option></select></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="generateMemberStatement()"><i class="bi bi-download"></i> Generate</button></div>
+</div></div></div>
+
+<!-- NOTIFICATIONS -->
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" style="max-height:350px;overflow-y:auto;">
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-success);"></span><strong style="font-size:0.82rem;">Report Ready</strong><small style="margin-left:auto;color:var(--text-tertiary);">2:30 PM</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Financial Summary Dec 2024 generated</p></div>
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-orange);"></span><strong style="font-size:0.82rem;">Scheduled Report</strong><small style="margin-left:auto;color:var(--text-tertiary);">8:00 AM</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Loan Portfolio Q4 auto-generated & emailed</p></div>
+        <div style="padding:var(--spacing-md);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-blue);"></span><strong style="font-size:0.82rem;">SASRA Reminder</strong><small style="margin-left:auto;color:var(--text-tertiary);">Yesterday</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Q4 2024 SASRA return due by Jan 15, 2025</p></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost btn-sm">Mark All Read</button><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- PROFILE -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Admin • Rongo SACCO</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<!-- ====================================================================
+     JAVASCRIPT
+==================================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+
+// Report titles mapping
+const reportTitles = {
+    'financial-summary': 'Financial Summary Report',
+    'balance-sheet': 'Balance Sheet',
+    'income-statement': 'Income Statement',
+    'cash-flow': 'Cash Flow Statement',
+    'trial-balance': 'Trial Balance',
+    'loan-portfolio': 'Loan Portfolio Summary',
+    'loan-disbursement': 'Loan Disbursement Report',
+    'loan-aging': 'Loan Aging Report',
+    'loan-collection': 'Collection & Repayment Report',
+    'loan-interest': 'Interest Income Report',
+    'loan-writeoff': 'Write-Off & Provisions Report',
+    'savings-summary': 'Savings Portfolio Report',
+    'deposit-report': 'Deposit Report',
+    'withdrawal-report': 'Withdrawal Report',
+    'share-register': 'Share Capital Register',
+    'interest-report': 'Interest & Dividends Report',
+    'member-register': 'Member Register',
+    'kyc-status': 'KYC Status Report',
+    'member-statement': 'Individual Member Statement',
+    'membership-growth': 'Membership Growth Report',
+    'sasra-return': 'SASRA Quarterly Return',
+    'tax-report': 'Tax & Withholding Report',
+    'aml-report': 'AML / CTF Report',
+    'transaction-report': 'Transaction Report',
+    'audit-trail': 'Audit Trail Report'
+};
+
+// Preview data for different report types
+const previewData = {
+    'financial-summary': {
+        title: 'FINANCIAL SUMMARY REPORT',
+        headers: ['Description', 'Current Period', 'Previous Period', 'Variance', '% Change'],
+        rows: [
+            ['Total Income', 'KES 4,280,000', 'KES 3,950,000', '+330,000', '+8.4%'],
+            ['  Interest on Loans', 'KES 3,120,000', 'KES 2,890,000', '+230,000', '+8.0%'],
+            ['  Fees & Charges', 'KES 480,000', 'KES 440,000', '+40,000', '+9.1%'],
+            ['Total Expenses', 'KES 2,150,000', 'KES 2,080,000', '+70,000', '+3.4%'],
+            ['Net Surplus', 'KES 2,130,000', 'KES 1,870,000', '+260,000', '+13.9%']
+        ]
+    },
+    'loan-portfolio': {
+        title: 'LOAN PORTFOLIO SUMMARY',
+        headers: ['Loan Type', 'Active Loans', 'Disbursed', 'Outstanding', 'PAR >30'],
+        rows: [
+            ['Personal Loans', '86', 'KES 12.5M', 'KES 8.2M', '2.3%'],
+            ['Business Loans', '68', 'KES 15.8M', 'KES 10.1M', '4.1%'],
+            ['Emergency Loans', '34', 'KES 2.1M', 'KES 0.8M', '1.5%'],
+            ['Education Loans', '51', 'KES 7.2M', 'KES 5.4M', '1.8%'],
+            ['Agriculture Loans', '51', 'KES 5.8M', 'KES 4.2M', '3.5%']
+        ]
+    },
+    'loan-aging': {
+        title: 'LOAN AGING REPORT',
+        headers: ['Aging Bucket', 'No. of Loans', 'Outstanding', '% of Portfolio', 'Provision'],
+        rows: [
+            ['Current (0 days)', '124', 'KES 42.8M', '82.3%', 'KES 0'],
+            ['1-30 Days', '8', 'KES 3.2M', '6.2%', 'KES 320,000'],
+            ['31-60 Days', '4', 'KES 2.8M', '5.4%', 'KES 700,000'],
+            ['61-90 Days', '3', 'KES 1.9M', '3.7%', 'KES 950,000'],
+            ['90+ Days', '3', 'KES 1.3M', '2.5%', 'KES 1,300,000']
+        ]
+    }
+};
+
+function openReportGenerator(type) {
+    if (type === 'member-statement') {
+        openModal('memberStatementModal');
+        return;
+    }
+    const title = reportTitles[type] || 'Report';
+    document.getElementById('rgTitle').textContent = 'Generate: ' + title;
+
+    // Update preview
+    const preview = previewData[type] || previewData['financial-summary'];
+    document.getElementById('rgPreviewTitle').textContent = preview.title;
+
+    const table = document.getElementById('previewTable');
+    let html = '<thead><tr>';
+    preview.headers.forEach(h => html += '<th>' + h + '</th>');
+    html += '</tr></thead><tbody>';
+    preview.rows.forEach((row, i) => {
+        const isTotal = i === preview.rows.length - 1;
+        html += '<tr' + (isTotal ? ' style="background:var(--bg-tertiary);font-weight:700;"' : '') + '>';
+        row.forEach((cell, j) => {
+            let style = '';
+            if (cell.startsWith('+')) style = ' style="color:var(--status-success);"';
+            if (cell.startsWith('-')) style = ' style="color:var(--status-danger);"';
+            html += '<td' + style + '>' + cell + '</td>';
+        });
+        html += '</tr>';
+    });
+    html += '</tbody>';
+    table.innerHTML = html;
+
+    // Show custom date fields
+    document.getElementById('rgPeriod').onchange = function() {
+        const custom = this.value === 'Custom Range';
+        document.getElementById('rgDateFrom').style.display = custom ? 'block' : 'none';
+        document.getElementById('rgDateTo').style.display = custom ? 'block' : 'none';
+    };
+
+    openModal('reportGeneratorModal');
+}
+
+function previewReport(type) {
+    document.querySelectorAll('.modal.show').forEach(m => { const i = bootstrap.Modal.getInstance(m); if (i) i.hide(); });
+    setTimeout(() => openReportGenerator(type), 350);
+}
+
+function generateAndDownload() {
+    const format = document.getElementById('rgFormat').value;
+    const ext = {pdf: 'PDF', excel: 'Excel', csv: 'CSV'}[format];
+    bootstrap.Modal.getInstance(document.getElementById('reportGeneratorModal')).hide();
+    showToast('Rongo SACCO report generated! Downloading as ' + ext + '...');
+    // Simulate download
+    setTimeout(() => {
+        const a = document.createElement('a');
+        a.href = '#';
+        a.download = 'RongoSACCO_Report_Dec2024.' + (format === 'excel' ? 'xlsx' : format);
+        // a.click(); // Uncomment for real download
+    }, 500);
+}
+
+function downloadReport(name) {
+    showToast('Downloading: ' + name + '...');
+}
+
+function emailReport() {
+    document.querySelectorAll('.modal.show').forEach(m => { const i = bootstrap.Modal.getInstance(m); if (i) i.hide(); });
+    setTimeout(() => openModal('emailReportModal'), 350);
+}
+
+function emailReportDirect() {
+    bootstrap.Modal.getInstance(document.getElementById('reportGeneratorModal')).hide();
+    setTimeout(() => openModal('emailReportModal'), 350);
+}
+
+function sendEmail() {
+    bootstrap.Modal.getInstance(document.getElementById('emailReportModal')).hide();
+    showToast('Report emailed successfully to recipients!');
+}
+
+function printReport() { showToast('Report sent to printer!'); }
+function deleteReport() { showToast('Report deleted from history.'); }
+
+function scheduleThisReport() {
+    bootstrap.Modal.getInstance(document.getElementById('reportGeneratorModal')).hide();
+    setTimeout(() => openModal('newScheduleModal'), 350);
+}
+
+function createSchedule() {
+    bootstrap.Modal.getInstance(document.getElementById('newScheduleModal')).hide();
+    showToast('Report schedule created for Rongo SACCO!');
+}
+
+function updateSchedule() {
+    bootstrap.Modal.getInstance(document.getElementById('editScheduleModal')).hide();
+    showToast('Schedule updated!');
+}
+
+function deleteSchedule() {
+    bootstrap.Modal.getInstance(document.getElementById('editScheduleModal')).hide();
+    showToast('Schedule deleted.');
+}
+
+function toggleSchedule() { showToast('Schedule paused/resumed.'); }
+function clearHistory() { showToast('Old reports cleared from history.'); }
+
+function generateCustomReport() {
+    bootstrap.Modal.getInstance(document.getElementById('customReportModal')).hide();
+    showToast('Custom Rongo SACCO report generated! Downloading...');
+}
+
+function previewCustomReport() {
+    showToast('Preview generated — check the preview panel below.');
+}
+
+function generateMemberStatement() {
+    bootstrap.Modal.getInstance(document.getElementById('memberStatementModal')).hide();
+    showToast('Member statement generated for Rongo SACCO member!');
+}
+
+function setFt(btn) {
+    btn.closest('div').querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Your SACCO — SACCOPay Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           ONBOARDING PAGE STYLES
+        ======================================== */
+        body { background: linear-gradient(135deg, #f8fafb 0%, #e6faf4 50%, #f0f4f7 100%); }
+
+        /* Landing Hero */
+        .onboard-hero {
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-xl);
+            max-width: 700px;
+            margin: 0 auto var(--spacing-2xl);
+        }
+
+        .onboard-hero-logo {
+            width: 72px; height: 72px;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            font-size: 2rem; font-weight: 800; color: white;
+            box-shadow: 0 8px 32px rgba(0,208,132,0.3);
+        }
+
+        .onboard-hero h1 {
+            font-size: 2.2rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: var(--spacing-sm);
+        }
+
+        .onboard-hero p { font-size: 1rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto; }
+
+        /* CTA Card */
+        .cta-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border); border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl); text-align: center;
+            max-width: 520px; margin: 0 auto var(--spacing-2xl);
+            transition: all 0.3s ease; cursor: pointer;
+        }
+        .cta-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg), var(--shadow-glow); border-color: var(--primary-green-light); }
+
+        .cta-icon {
+            width: 80px; height: 80px; border-radius: var(--radius-full);
+            background: rgba(0,208,132,0.1);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto var(--spacing-lg); font-size: 2.2rem; color: var(--primary-green);
+        }
+
+        /* Wizard Container */
+        .wizard-container {
+            max-width: 860px; margin: 0 auto; display: none;
+        }
+
+        /* Step Indicator */
+        .step-indicator {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0; margin-bottom: var(--spacing-2xl);
+            overflow-x: auto; padding: 0 var(--spacing-md);
+        }
+
+        .si-step {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 4px; min-width: 60px; cursor: pointer;
+        }
+
+        .si-dot {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; border: 2px solid;
+            transition: all 0.3s ease;
+        }
+        .si-dot.done { background: var(--primary-green); border-color: var(--primary-green); color: white; }
+        .si-dot.active { background: white; border-color: var(--primary-green); color: var(--primary-green); box-shadow: 0 0 0 4px rgba(0,208,132,0.15); }
+        .si-dot.pending { background: white; border-color: var(--border-color); color: var(--text-tertiary); }
+
+        .si-label { font-size: 0.6rem; font-weight: 600; text-align: center; max-width: 65px; line-height: 1.2; }
+        .si-label.done, .si-label.active { color: var(--primary-green); }
+        .si-label.pending { color: var(--text-tertiary); }
+
+        .si-line { width: 24px; height: 2px; flex-shrink: 0; margin-bottom: 18px; }
+        .si-line.done { background: var(--primary-green); }
+        .si-line.pending { background: var(--border-color); }
+
+        /* Wizard Card */
+        .wizard-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-xl);
+            overflow: hidden; box-shadow: var(--shadow-md);
+        }
+
+        .wizard-card-header {
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .wizard-card-header h3 { font-size: 1.15rem; font-weight: 700; margin: 0 0 4px; display: flex; align-items: center; gap: var(--spacing-sm); }
+        .wizard-card-header p { font-size: 0.82rem; color: var(--text-secondary); margin: 0; }
+
+        .wizard-card-body { padding: var(--spacing-xl) var(--spacing-2xl); }
+
+        .wizard-card-footer {
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* Form */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; width: 100%; }
+        .fselect:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+
+        /* Document Upload Card */
+        .doc-upload-card {
+            border: 2px dashed var(--border-color); border-radius: var(--radius-md);
+            padding: var(--spacing-lg); text-align: center;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .doc-upload-card:hover { border-color: var(--primary-green); background: var(--primary-green-ultra-light); }
+        .doc-upload-card.uploaded { border-color: var(--status-success); border-style: solid; background: rgba(76,175,80,0.03); }
+        .doc-upload-card .doc-icon { font-size: 1.5rem; color: var(--text-tertiary); margin-bottom: 4px; }
+        .doc-upload-card.uploaded .doc-icon { color: var(--status-success); }
+        .doc-upload-card h6 { font-size: 0.82rem; font-weight: 600; margin: 0 0 2px; }
+        .doc-upload-card p { font-size: 0.68rem; color: var(--text-tertiary); margin: 0; }
+        .doc-upload-card .mandatory { font-size: 0.6rem; color: var(--status-danger); font-weight: 700; }
+
+        /* Setting Row (Compact) */
+        .sr { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+        .sr:last-child { border-bottom: none; }
+        .sr-info h6 { font-size: 0.82rem; font-weight: 600; margin: 0 0 1px; }
+        .sr-info p { font-size: 0.68rem; color: var(--text-tertiary); margin: 0; }
+        .sr-value { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); flex-shrink: 0; }
+
+        /* Setting Card (Post-Registration) */
+        .setting-display-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            overflow: hidden; transition: all 0.3s;
+        }
+        .setting-display-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .sdc-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: var(--spacing-sm);
+        }
+        .sdc-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .sdc-header h5 { font-size: 0.9rem; font-weight: 700; margin: 0; }
+        .sdc-body { padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-lg); }
+
+        /* Checklist */
+        .check-item { display: flex; align-items: flex-start; gap: var(--spacing-sm); padding: var(--spacing-sm) 0; font-size: 0.85rem; }
+
+        /* Success Screen */
+        .success-screen { text-align: center; padding: var(--spacing-2xl); }
+        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(76,175,80,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--spacing-lg); }
+        .confetti { font-size: 2.5rem; }
+
+        /* Next Steps Cards */
+        .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .ns-card-link {
+            display: flex; align-items: center; gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s;
+            text-decoration: none; color: inherit;
+        }
+        .ns-card-link:hover { border-color: var(--primary-green); background: var(--primary-green-ultra-light); transform: translateX(4px); }
+        .ns-icon { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .ns-card-link h6 { font-size: 0.88rem; font-weight: 600; margin: 0 0 2px; }
+        .ns-card-link p { font-size: 0.7rem; color: var(--text-tertiary); margin: 0; }
+
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        /* Modal */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        @media (max-width: 768px) {
+            .onboard-hero h1 { font-size: 1.5rem; }
+            .wizard-card-body { padding: var(--spacing-lg); }
+            .wizard-card-footer { padding: var(--spacing-md) var(--spacing-lg); }
+            .si-step { min-width: 45px; }
+            .si-line { width: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Nav (Simple) -->
+<div style="background:var(--glass-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:var(--spacing-md) var(--spacing-xl);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;">
+    <div style="display:flex;align-items:center;gap:var(--spacing-sm);">
+        <div style="width:36px;height:36px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">S</div>
+        <div><span style="font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">SACCOPay</span><span style="font-size:0.72rem;color:var(--text-tertiary);margin-left:6px;">Platform</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+        <a href="#" style="font-size:0.82rem;color:var(--text-secondary);text-decoration:none;" onclick="showToast('Help Center opening...')">Help</a>
+        <div style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer;" onclick="openModal('profileModal')">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.72rem;">JK</div>
+            <span style="font-size:0.82rem;font-weight:600;">James Kariuki</span>
+        </div>
+    </div>
+</div>
+
+<div style="max-width:920px;margin:0 auto;padding:var(--spacing-xl);">
+
+    <!-- ====================================
+         LANDING STATE (Before Registration)
+    ==================================== -->
+    <div id="landingState">
+        <div class="onboard-hero fade-in">
+            <div class="onboard-hero-logo">S</div>
+            <h1>Register Your SACCO</h1>
+            <p>Join the SACCOPay platform and unlock digital banking, savings management, and loan processing for your members.</p>
+        </div>
+
+        <div class="cta-card fade-in" onclick="startWizard()">
+            <div class="cta-icon"><i class="bi bi-building-add"></i></div>
+            <h3 style="font-weight:700;margin-bottom:4px;">Register Your SACCO with SACCOPay</h3>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Complete the onboarding process to set up your SACCO on our platform. It takes about 10 minutes.</p>
+            <button class="btn btn-primary" style="padding:12px 32px;font-size:1rem;"><i class="bi bi-rocket-takeoff me-2"></i>Get Started</button>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:var(--spacing-2xl);flex-wrap:wrap;text-align:center;margin-top:var(--spacing-xl);" class="fade-in">
+            <div><i class="bi bi-shield-check" style="font-size:1.5rem;color:var(--primary-green);"></i><div style="font-size:0.82rem;font-weight:600;margin-top:4px;">SASRA Compliant</div><div style="font-size:0.7rem;color:var(--text-tertiary);">Meets all regulatory requirements</div></div>
+            <div><i class="bi bi-lightning" style="font-size:1.5rem;color:var(--accent-orange);"></i><div style="font-size:0.82rem;font-weight:600;margin-top:4px;">10 Min Setup</div><div style="font-size:0.7rem;color:var(--text-tertiary);">Quick onboarding process</div></div>
+            <div><i class="bi bi-lock" style="font-size:1.5rem;color:var(--accent-blue);"></i><div style="font-size:0.82rem;font-weight:600;margin-top:4px;">Bank-Grade Security</div><div style="font-size:0.7rem;color:var(--text-tertiary);">256-bit encryption</div></div>
+            <div><i class="bi bi-phone" style="font-size:1.5rem;color:var(--accent-purple);"></i><div style="font-size:0.82rem;font-weight:600;margin-top:4px;">M-Pesa Integrated</div><div style="font-size:0.7rem;color:var(--text-tertiary);">Instant mobile money</div></div>
+        </div>
+    </div>
+
+    <!-- ====================================
+         WIZARD STATE
+    ==================================== -->
+    <div class="wizard-container" id="wizardState">
+
+        <!-- Step Indicator -->
+        <div class="step-indicator" id="stepIndicator">
+            <!-- Generated by JS -->
+        </div>
+
+        <!-- Wizard Card -->
+        <div class="wizard-card">
+
+            <!-- STEP 1: General Info -->
+            <div class="wizard-step" id="step1">
+                <div class="wizard-card-header"><h3><i class="bi bi-building" style="color:var(--primary-green);"></i> General Information</h3><p>Basic details about your SACCO</p></div>
+                <div class="wizard-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="flbl">SACCO Name *</label><input type="text" class="form-control finput" placeholder="e.g. Rongo SACCO Society Ltd" value="Rongo SACCO Society Ltd"></div>
+                        <div class="col-md-6"><label class="flbl">Registration Number *</label><input type="text" class="form-control finput" placeholder="e.g. CS/7842" value="CS/7842"></div>
+                        <div class="col-md-6"><label class="flbl">SASRA License *</label><input type="text" class="form-control finput" placeholder="e.g. DT/0198" value="DT/0198"></div>
+                        <div class="col-md-6"><label class="flbl">Year Established</label><input type="number" class="form-control finput" placeholder="e.g. 1982" value="1982"></div>
+                        <div class="col-md-6"><label class="flbl">Official Email *</label><input type="email" class="form-control finput" placeholder="info@yoursacco.co.ke" value="info@rongosacco.co.ke"></div>
+                        <div class="col-md-6"><label class="flbl">Phone Number *</label><input type="tel" class="form-control finput" placeholder="+254 20 XXX XXXX" value="+254 20 277 1000"></div>
+                        <div class="col-md-6"><label class="flbl">County</label><select class="form-select fselect"><option>Migori County</option><option>Nairobi County</option><option>Kisumu County</option><option>Mombasa County</option><option>Nakuru County</option></select></div>
+                        <div class="col-md-6"><label class="flbl">Postal Address</label><input type="text" class="form-control finput" placeholder="P.O. Box..." value="P.O. Box 45-40404, Rongo"></div>
+                        <div class="col-md-6"><label class="flbl">Website (Optional)</label><input type="url" class="form-control finput" placeholder="www.yoursacco.co.ke" value="www.rongosacco.co.ke"></div>
+                        <div class="col-md-6"><label class="flbl">SACCO Logo (Optional)</label><input type="file" class="form-control finput" accept="image/*"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Financial Details -->
+            <div class="wizard-step" id="step2" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-currency-exchange" style="color:var(--accent-blue);"></i> Financial Details</h3><p>Share capital, savings, and interest configuration</p></div>
+                <div class="wizard-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="flbl">Share Price (KES) *</label><input type="number" class="form-control finput" value="1000"></div>
+                        <div class="col-md-6"><label class="flbl">Min. Share Purchase</label><input type="number" class="form-control finput" value="1"></div>
+                        <div class="col-md-6"><label class="flbl">Max. Share Holdings</label><input type="number" class="form-control finput" value="5000"></div>
+                        <div class="col-md-6"><label class="flbl">Min. Savings Deposit (KES)</label><input type="number" class="form-control finput" value="500"></div>
+                        <div class="col-md-6"><label class="flbl">Min. Savings Balance (KES)</label><input type="number" class="form-control finput" value="1000"></div>
+                        <div class="col-md-6"><label class="flbl">Savings Interest Rate (% p.a.)</label><input type="number" class="form-control finput" value="7" step="0.5"></div>
+                        <div class="col-md-6"><label class="flbl">Registration Fee (KES)</label><input type="number" class="form-control finput" value="1000"></div>
+                        <div class="col-md-6"><label class="flbl">Fiscal Year End</label><select class="form-select fselect"><option>December 31</option><option>June 30</option><option>March 31</option></select></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Administration -->
+            <div class="wizard-step" id="step3" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-people" style="color:var(--accent-purple);"></i> Administration & Officials</h3><p>Key management team members (at least 3 officials)</p></div>
+                <div class="wizard-card-body">
+                    <div id="officialsContainer">
+                        <div class="row g-3 mb-3 p-3" style="background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                            <div class="col-12"><span class="flbl" style="color:var(--primary-green);">Official #1 — Chairman *</span></div>
+                            <div class="col-md-4"><input type="text" class="form-control finput" placeholder="Full Name" value="William Ochieng"></div>
+                            <div class="col-md-4"><input type="tel" class="form-control finput" placeholder="Phone" value="+254 722 123 456"></div>
+                            <div class="col-md-4"><input type="email" class="form-control finput" placeholder="Email" value="william@rongosacco.co.ke"></div>
+                        </div>
+                        <div class="row g-3 mb-3 p-3" style="background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                            <div class="col-12"><span class="flbl" style="color:var(--accent-blue);">Official #2 — Secretary *</span></div>
+                            <div class="col-md-4"><input type="text" class="form-control finput" placeholder="Full Name" value="Mary Achieng"></div>
+                            <div class="col-md-4"><input type="tel" class="form-control finput" placeholder="Phone" value="+254 733 456 789"></div>
+                            <div class="col-md-4"><input type="email" class="form-control finput" placeholder="Email" value="mary@rongosacco.co.ke"></div>
+                        </div>
+                        <div class="row g-3 mb-3 p-3" style="background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                            <div class="col-12"><span class="flbl" style="color:var(--accent-orange);">Official #3 — Treasurer *</span></div>
+                            <div class="col-md-4"><input type="text" class="form-control finput" placeholder="Full Name" value="Agnes Nyaboke"></div>
+                            <div class="col-md-4"><input type="tel" class="form-control finput" placeholder="Phone" value="+254 710 789 012"></div>
+                            <div class="col-md-4"><input type="email" class="form-control finput" placeholder="Email" value="agnes@rongosacco.co.ke"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="addOfficial()"><i class="bi bi-plus"></i> Add Another Official</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Documents -->
+            <div class="wizard-step" id="step4" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-file-earmark-check" style="color:var(--accent-orange);"></i> Document Upload</h3><p>Upload required documents. At least 3 mandatory documents required.</p></div>
+                <div class="wizard-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="doc-upload-card uploaded" onclick="toggleDoc(this)">
+                                <div class="doc-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+                                <h6>Certificate of Registration <span class="mandatory">* MANDATORY</span></h6>
+                                <p>registration_cert.pdf — 1.2 MB ✓</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doc-upload-card uploaded" onclick="toggleDoc(this)">
+                                <div class="doc-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+                                <h6>SASRA License <span class="mandatory">* MANDATORY</span></h6>
+                                <p>sasra_license.pdf — 890 KB ✓</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doc-upload-card uploaded" onclick="toggleDoc(this)">
+                                <div class="doc-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+                                <h6>KRA PIN Certificate <span class="mandatory">* MANDATORY</span></h6>
+                                <p>kra_pin.pdf — 450 KB ✓</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doc-upload-card" onclick="toggleDoc(this)">
+                                <div class="doc-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <h6>Society By-Laws</h6>
+                                <p>Click to upload (PDF, max 10MB)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doc-upload-card" onclick="toggleDoc(this)">
+                                <div class="doc-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <h6>Board Resolution</h6>
+                                <p>Click to upload (PDF, max 10MB)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doc-upload-card" onclick="toggleDoc(this)">
+                                <div class="doc-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <h6>Latest Audited Accounts</h6>
+                                <p>Click to upload (PDF, max 25MB)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Membership Settings -->
+            <div class="wizard-step" id="step5" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-person-check" style="color:var(--status-success);"></i> Membership Settings</h3><p>Configure member requirements and onboarding rules</p></div>
+                <div class="wizard-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="flbl">Minimum Age</label><input type="number" class="form-control finput" value="18"></div>
+                        <div class="col-md-6"><label class="flbl">Maximum Age</label><input type="number" class="form-control finput" value="70"></div>
+                        <div class="col-md-6"><label class="flbl">Min. Shares Required to Join</label><input type="number" class="form-control finput" value="5"></div>
+                        <div class="col-md-6"><label class="flbl">Registration Fee (KES)</label><input type="number" class="form-control finput" value="1000"></div>
+                    </div>
+                    <div style="margin-top:var(--spacing-lg);">
+                        <div class="sr"><div class="sr-info"><h6>Allow Online Registration</h6><p>Members can register via SACCOPay portal</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:44px;height:22px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>Require Document Upload</h6><p>ID & KRA PIN required on registration</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:44px;height:22px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>Admin Approval Required</h6><p>New members need admin approval</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:44px;height:22px;"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6: Additional Settings -->
+            <div class="wizard-step" id="step6" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-sliders" style="color:#795548;"></i> Additional Settings</h3><p>These can be adjusted later in Settings. Set defaults now.</p></div>
+                <div class="wizard-card-body">
+                    <div class="alert alert-info" style="font-size:0.82rem;"><i class="bi bi-info-circle-fill me-1"></i>Don't worry — all of these can be changed later in <strong>SACCO Settings</strong>.</div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);"><i class="bi bi-cash-stack me-1" style="color:var(--status-danger);"></i> Loans</h6>
+                            <div class="sr"><div class="sr-info"><h6>Max. Loan Amount</h6></div><div class="sr-value">KES 5,000,000</div></div>
+                            <div class="sr"><div class="sr-info"><h6>Processing Fee</h6></div><div class="sr-value">1%</div></div>
+                            <div class="sr"><div class="sr-info"><h6>Late Penalty</h6></div><div class="sr-value">5%/month</div></div>
+                            <div class="sr"><div class="sr-info"><h6>Grace Period</h6></div><div class="sr-value">7 days</div></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);"><i class="bi bi-arrow-left-right me-1" style="color:var(--accent-orange);"></i> Withdrawals</h6>
+                            <div class="sr"><div class="sr-info"><h6>Max. Daily Withdrawal</h6></div><div class="sr-value">KES 200,000</div></div>
+                            <div class="sr"><div class="sr-info"><h6>Transfer Fee</h6></div><div class="sr-value">KES 50</div></div>
+                            <div class="sr"><div class="sr-info"><h6>OTP Required</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;"></div></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);"><i class="bi bi-wallet2 me-1" style="color:var(--accent-teal);"></i> SACCOPay Wallet</h6>
+                            <div class="sr"><div class="sr-info"><h6>Max. Wallet Balance</h6></div><div class="sr-value">KES 1,000,000</div></div>
+                            <div class="sr"><div class="sr-info"><h6>Enable M-Pesa</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;"></div></div>
+                            <div class="sr"><div class="sr-info"><h6>Enable QR Payments</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;"></div></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 style="font-weight:700;font-size:0.85rem;margin-bottom:var(--spacing-sm);"><i class="bi bi-shield-lock me-1" style="color:var(--accent-blue);"></i> Security</h6>
+                            <div class="sr"><div class="sr-info"><h6>Two-Factor Auth</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;"></div></div>
+                            <div class="sr"><div class="sr-info"><h6>Session Timeout</h6></div><div class="sr-value">15 min</div></div>
+                            <div class="sr"><div class="sr-info"><h6>SMS Notifications</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7: Confirm Details -->
+            <div class="wizard-step" id="step7" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-check2-square" style="color:var(--primary-green);"></i> Review & Confirm</h3><p>Please review all details before final submission</p></div>
+                <div class="wizard-card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="setting-display-card">
+                                <div class="sdc-header"><div class="sdc-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-building"></i></div><h5>General</h5></div>
+                                <div class="sdc-body">
+                                    <div class="sr"><div class="sr-info"><h6>SACCO Name</h6><p>Official registered name</p></div><div class="sr-value">Rongo SACCO Ltd</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Registration</h6></div><div class="sr-value">CS/7842</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>SASRA License</h6></div><div class="sr-value">DT/0198</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Email</h6></div><div class="sr-value">info@rongosacco.co.ke</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Phone</h6></div><div class="sr-value">+254 20 277 1000</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Address</h6></div><div class="sr-value">P.O. Box 45-40404</div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="setting-display-card">
+                                <div class="sdc-header"><div class="sdc-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-currency-exchange"></i></div><h5>Financial</h5></div>
+                                <div class="sdc-body">
+                                    <div class="sr"><div class="sr-info"><h6>Share Price</h6></div><div class="sr-value">KES 1,000</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Min. Savings</h6></div><div class="sr-value">KES 500</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Interest Rate</h6></div><div class="sr-value">7% p.a.</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Registration Fee</h6></div><div class="sr-value">KES 1,000</div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="setting-display-card">
+                                <div class="sdc-header"><div class="sdc-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-people"></i></div><h5>Officials (3)</h5></div>
+                                <div class="sdc-body">
+                                    <div class="sr"><div class="sr-info"><h6>Chairman</h6></div><div class="sr-value">William Ochieng</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Secretary</h6></div><div class="sr-value">Mary Achieng</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>Treasurer</h6></div><div class="sr-value">Agnes Nyaboke</div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="setting-display-card">
+                                <div class="sdc-header"><div class="sdc-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-file-earmark-check"></i></div><h5>Documents (3/6)</h5></div>
+                                <div class="sdc-body">
+                                    <div class="sr"><div class="sr-info"><h6>Certificate of Registration</h6></div><div class="sr-value" style="color:var(--status-success);">✓</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>SASRA License</h6></div><div class="sr-value" style="color:var(--status-success);">✓</div></div>
+                                    <div class="sr"><div class="sr-info"><h6>KRA PIN Certificate</h6></div><div class="sr-value" style="color:var(--status-success);">✓</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 8: Terms & Conditions -->
+            <div class="wizard-step" id="step8" style="display:none;">
+                <div class="wizard-card-header"><h3><i class="bi bi-file-earmark-text" style="color:#00695c;"></i> Terms & Agreements</h3><p>Please review and accept to complete registration</p></div>
+                <div class="wizard-card-body">
+                    <div style="max-height:200px;overflow-y:auto;padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);margin-bottom:var(--spacing-lg);font-size:0.82rem;color:var(--text-secondary);line-height:1.8;">
+                        <strong>SACCOPay Platform Terms of Service</strong><br><br>
+                        1. By registering your SACCO on the SACCOPay platform, you agree to comply with all applicable laws including the SACCO Societies Act, the Co-operative Societies Act, and regulations issued by SASRA.<br><br>
+                        2. SACCOPay provides a technology platform for digital financial management. SACCOPay is not a deposit-taking institution.<br><br>
+                        3. Your SACCO retains full ownership and responsibility for member funds, loan decisions, and regulatory compliance.<br><br>
+                        4. Data processed through SACCOPay is encrypted and stored in accordance with the Kenya Data Protection Act 2019.<br><br>
+                        5. SACCOPay reserves the right to suspend services in case of regulatory non-compliance or fraudulent activity.<br><br>
+                        6. Service fees are as per the signed service agreement and are subject to review with 30 days notice.
+                    </div>
+
+                    <div class="check-item"><input class="form-check-input" type="checkbox" id="check1" onchange="checkAllAgreed()"><label for="check1" style="cursor:pointer;">I agree to the <strong>SACCOPay Terms of Service</strong></label></div>
+                    <div class="check-item"><input class="form-check-input" type="checkbox" id="check2" onchange="checkAllAgreed()"><label for="check2" style="cursor:pointer;">I agree to the <strong>Privacy Policy</strong> and data processing terms</label></div>
+                    <div class="check-item"><input class="form-check-input" type="checkbox" id="check3" onchange="checkAllAgreed()"><label for="check3" style="cursor:pointer;">I confirm that all information provided is <strong>accurate and truthful</strong></label></div>
+                    <div class="check-item"><input class="form-check-input" type="checkbox" id="check4" onchange="checkAllAgreed()"><label for="check4" style="cursor:pointer;">I am <strong>authorized by the SACCO Board</strong> to register on this platform</label></div>
+                    <div class="check-item"><input class="form-check-input" type="checkbox" id="check5" onchange="checkAllAgreed()"><label for="check5" style="cursor:pointer;">I accept the <strong>Service Level Agreement (SLA)</strong></label></div>
+                </div>
+            </div>
+
+            <!-- Footer (shared across all steps) -->
+            <div class="wizard-card-footer">
+                <button class="btn btn-ghost" id="wizPrevBtn" onclick="wizPrev()" style="display:none;"><i class="bi bi-arrow-left"></i> Back</button>
+                <div style="flex:1;"></div>
+                <span style="font-size:0.78rem;color:var(--text-tertiary);margin-right:var(--spacing-md);" id="stepLabel">Step 1 of 8</span>
+                <button class="btn btn-primary" id="wizNextBtn" onclick="wizNext()">Next <i class="bi bi-arrow-right"></i></button>
+                <button class="btn btn-primary" id="wizSubmitBtn" onclick="completeRegistration()" style="display:none;" disabled><i class="bi bi-rocket-takeoff"></i> Complete Registration</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================
+         POST-REGISTRATION STATE
+    ==================================== -->
+    <div id="registeredState" style="display:none;">
+
+        <!-- Success -->
+        <div class="success-screen fade-in" id="successScreen">
+            <div class="success-icon"><span class="confetti">🎉</span></div>
+            <h2 style="font-weight:800;margin-bottom:4px;">Registration Complete!</h2>
+            <p style="color:var(--text-secondary);margin-bottom:var(--spacing-lg);max-width:450px;margin-left:auto;margin-right:auto;">
+                <strong>Rongo SACCO Society Ltd</strong> has been successfully registered on the SACCOPay platform. Your SACCO ID is <code style="color:var(--primary-green);font-weight:700;">SACCO-RS-2024-001</code>
+            </p>
+            <button class="btn btn-primary" onclick="showDashboard()"><i class="bi bi-grid-1x2"></i> Go to SACCO Dashboard</button>
+        </div>
+
+        <!-- Registered SACCO Dashboard -->
+        <div id="saccoDashboard" style="display:none;">
+
+            <!-- SACCO Info Card -->
+            <div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:var(--radius-xl);padding:var(--spacing-2xl);color:white;margin-bottom:var(--spacing-xl);position:relative;overflow:hidden;" class="fade-in">
+                <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,208,132,0.12),transparent);"></div>
+                <div style="position:relative;z-index:1;display:flex;align-items:center;gap:var(--spacing-xl);flex-wrap:wrap;">
+                    <div style="width:72px;height:72px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;flex-shrink:0;">R</div>
+                    <div style="flex:1;min-width:200px;">
+                        <h2 style="font-weight:700;margin:0 0 4px;">Rongo SACCO Society Ltd</h2>
+                        <p style="font-size:0.85rem;opacity:0.7;margin:0;">SASRA: DT/0198 • Reg: CS/7842 • SACCO ID: <code style="color:var(--primary-green);">SACCO-RS-2024-001</code></p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-md);flex-wrap:wrap;">
+                        <div style="text-align:center;padding:var(--spacing-sm) var(--spacing-lg);background:rgba(255,255,255,0.06);border-radius:var(--radius-md);"><div style="font-size:1.2rem;font-weight:700;">Active</div><div style="font-size:0.68rem;opacity:0.6;">Status</div></div>
+                        <div style="text-align:center;padding:var(--spacing-sm) var(--spacing-lg);background:rgba(255,255,255,0.06);border-radius:var(--radius-md);"><div style="font-size:1.2rem;font-weight:700;">Dec 18</div><div style="font-size:0.68rem;opacity:0.6;">Registered</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Setup Progress -->
+            <div class="glass-card fade-in mb-4">
+                <div style="padding:var(--spacing-xl);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-md);">
+                        <h5 style="font-weight:700;margin:0;"><i class="bi bi-check2-square me-1" style="color:var(--primary-green);"></i> Setup Progress</h5>
+                        <span style="font-size:0.85rem;font-weight:700;color:var(--primary-green);">3 of 8 complete</span>
+                    </div>
+                    <div style="height:8px;background:var(--bg-tertiary);border-radius:var(--radius-full);overflow:hidden;margin-bottom:var(--spacing-md);">
+                        <div style="width:37%;height:100%;background:linear-gradient(90deg,var(--primary-green),var(--accent-teal));border-radius:var(--radius-full);"></div>
+                    </div>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);">Complete the remaining setup steps to fully activate your SACCO on SACCOPay.</p>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <h5 style="font-weight:700;margin-bottom:var(--spacing-md);" class="fade-in"><i class="bi bi-arrow-right-circle" style="color:var(--primary-green);"></i> Next Steps — Configure Your SACCO</h5>
+            <div class="next-steps-grid fade-in" style="margin-bottom:var(--spacing-xl);">
+                <a href="settings.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-gear"></i></div>
+                    <div><h6>SACCO Settings</h6><p>Configure rates, fees, limits & preferences</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="loan-disbursements.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-cash-stack"></i></div>
+                    <div><h6>Loan Products</h6><p>Set up loan types, interest rates & terms</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="savings.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-piggy-bank"></i></div>
+                    <div><h6>Savings Accounts</h6><p>Configure savings types & interest rates</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="wallet.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(0,188,212,0.1);color:var(--accent-teal);"><i class="bi bi-wallet2"></i></div>
+                    <div><h6>SACCOPay Wallet</h6><p>Enable digital wallet for members</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="members.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-people"></i></div>
+                    <div><h6>Add Members</h6><p>Register members or import CSV</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="staff.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(121,85,72,0.1);color:#795548;"><i class="bi bi-person-badge"></i></div>
+                    <div><h6>Staff & Permissions</h6><p>Assign roles to management team</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="compliance.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(0,105,92,0.1);color:#00695c;"><i class="bi bi-building-check"></i></div>
+                    <div><h6>Compliance</h6><p>Upload policies & set up regulatory filings</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+                <a href="reports.html" class="ns-card-link">
+                    <div class="ns-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-file-earmark-bar-graph"></i></div>
+                    <div><h6>Reports</h6><p>Generate financial & operational reports</p></div>
+                    <i class="bi bi-chevron-right" style="color:var(--text-tertiary);margin-left:auto;"></i>
+                </a>
+            </div>
+
+            <!-- SACCO Summary Cards -->
+            <h5 style="font-weight:700;margin-bottom:var(--spacing-md);" class="fade-in"><i class="bi bi-grid-1x2" style="color:var(--accent-blue);"></i> Your SACCO at a Glance</h5>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--spacing-lg);" class="fade-in">
+                <!-- General -->
+                <div class="setting-display-card">
+                    <div class="sdc-header"><div class="sdc-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-building"></i></div><h5>General</h5></div>
+                    <div class="sdc-body">
+                        <div class="sr"><div class="sr-info"><h6>SACCO Name</h6><p>Official registered name</p></div><div class="sr-value">Rongo SACCO Ltd</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Registration Number</h6><p>Ministry of Cooperatives</p></div><div class="sr-value">CS/7842</div></div>
+                        <div class="sr"><div class="sr-info"><h6>SASRA License</h6><p>Deposit-taking license</p></div><div class="sr-value">DT/0198</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Official Email</h6><p>Primary contact email</p></div><div class="sr-value">info@rongosacco.co.ke</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Phone Number</h6><p>Main office line</p></div><div class="sr-value">+254 20 277 1000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Physical Address</h6><p>Head office location</p></div><div class="sr-value">P.O. Box 45-40404</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Website URL</h6><p>SACCO website address</p></div><div class="sr-value">www.rongosacco.co.ke</div></div>
+                    </div>
+                </div>
+
+                <!-- Financial -->
+                <div class="setting-display-card">
+                    <div class="sdc-header"><div class="sdc-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-currency-exchange"></i></div><h5>Financial</h5></div>
+                    <div class="sdc-body">
+                        <div class="sr"><div class="sr-info"><h6>Share Price</h6><p>Per share value</p></div><div class="sr-value">KES 1,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Min. Share Purchase</h6><p>Minimum shares per transaction</p></div><div class="sr-value">1 share</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Max. Share Holdings</h6><p>Maximum per member</p></div><div class="sr-value">5,000 shares</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Min. Savings Deposit</h6><p>Minimum deposit amount</p></div><div class="sr-value">KES 500</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Min. Savings Balance</h6><p>Minimum account balance</p></div><div class="sr-value">KES 1,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Interest Rate (Regular)</h6><p>Savings interest rate</p></div><div class="sr-value">7% p.a.</div></div>
+                    </div>
+                </div>
+
+                <!-- Membership -->
+                <div class="setting-display-card">
+                    <div class="sdc-header"><div class="sdc-icon" style="background:rgba(76,175,80,0.1);color:var(--status-success);"><i class="bi bi-person-check"></i></div><h5>Membership</h5></div>
+                    <div class="sdc-body">
+                        <div class="sr"><div class="sr-info"><h6>Minimum Age</h6><p>Age requirement for membership</p></div><div class="sr-value">18 years</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Maximum Age</h6><p>Age limit for new members</p></div><div class="sr-value">70 years</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Registration Fee</h6><p>One-time joining fee</p></div><div class="sr-value">KES 1,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Min. Shares Required</h6><p>Shares needed to become member</p></div><div class="sr-value">5 shares (KES 5,000)</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Allow Online Registration</h6><p>Members can register via portal</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>Require Document Upload</h6><p>ID & KRA PIN required on registration</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                    </div>
+                </div>
+
+                <!-- Loans -->
+                <div class="setting-display-card">
+                    <div class="sdc-header"><div class="sdc-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-cash-stack"></i></div><h5>Loans</h5></div>
+                    <div class="sdc-body">
+                        <div class="sr"><div class="sr-info"><h6>Max. Loan Amount</h6><p>Maximum loan per member</p></div><div class="sr-value">KES 5,000,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Min. Loan Amount</h6><p>Minimum loan per member</p></div><div class="sr-value">KES 5,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Processing Fee</h6><p>Loan processing fee rate</p></div><div class="sr-value">1%</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Late Payment Penalty</h6><p>Per month overdue</p></div><div class="sr-value">5%</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Grace Period</h6><p>Days before penalty applies</p></div><div class="sr-value">7 days</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Interest (Personal)</h6><p>Personal loan interest rate</p></div><div class="sr-value">14% p.a.</div></div>
+                    </div>
+                </div>
+
+                <!-- Withdrawals & Transfers -->
+                <div class="setting-display-card">
+                    <div class="sdc-header"><div class="sdc-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-arrow-left-right"></i></div><h5>Withdrawals & Transfers</h5></div>
+                    <div class="sdc-body">
+                        <div class="sr"><div class="sr-info"><h6>Max. Daily Withdrawal</h6><p>Member daily withdrawal limit</p></div><div class="sr-value">KES 200,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Max. Single Transfer</h6><p>Per transaction limit</p></div><div class="sr-value">KES 150,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Transfer Fee</h6><p>Internal transfer charge</p></div><div class="sr-value">KES 50</div></div>
+                        <div class="sr"><div class="sr-info"><h6>M-Pesa Withdrawal Fee</h6><p>Charge for M-Pesa withdrawals</p></div><div class="sr-value">KES 35</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Allow External Withdrawals</h6><p>M-Pesa/Bank withdrawals enabled</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>Auto-Save Withdrawals</h6><p>Withdrawals require OTP approval</p></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                    </div>
+                </div>
+
+                <!-- Wallet + Notifications + Security -->
+                <div class="setting-display-card">
+                    <div class="sdc-header"><div class="sdc-icon" style="background:rgba(0,188,212,0.1);color:var(--accent-teal);"><i class="bi bi-wallet2"></i></div><h5>Wallet · Notifications · Security</h5></div>
+                    <div class="sdc-body">
+                        <div class="sr"><div class="sr-info"><h6>Max. Wallet Balance</h6></div><div class="sr-value">KES 1,000,000</div></div>
+                        <div class="sr"><div class="sr-info"><h6>Enable M-Pesa</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>SMS Notifications</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>Two-Factor Auth</h6></div><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked disabled style="width:40px;height:20px;"></div></div>
+                        <div class="sr"><div class="sr-info"><h6>Session Timeout</h6></div><div class="sr-value">15 minutes</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">SACCO Administrator</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+
+// === WIZARD ===
+const totalSteps = 8;
+let curStep = 1;
+const stepNames = ['General','Financial','Officials','Documents','Membership','Settings','Review','Terms'];
+
+function startWizard(){
+    document.getElementById('landingState').style.display='none';
+    document.getElementById('wizardState').style.display='block';
+    buildStepIndicator();
+    updateWizard();
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildStepIndicator(){
+    const wrap=document.getElementById('stepIndicator');
+    wrap.innerHTML='';
+    for(let i=1;i<=totalSteps;i++){
+        const step=document.createElement('div');step.className='si-step';step.onclick=()=>{if(i<=curStep)goToStep(i);};
+        const dot=document.createElement('div');dot.className='si-dot pending';dot.id='sid'+i;dot.textContent=i;
+        const label=document.createElement('div');label.className='si-label pending';label.id='sil'+i;label.textContent=stepNames[i-1];
+        step.appendChild(dot);step.appendChild(label);wrap.appendChild(step);
+        if(i<totalSteps){const line=document.createElement('div');line.className='si-line pending';line.id='siln'+i;wrap.appendChild(line);}
+    }
+}
+
+function goToStep(s){curStep=s;updateWizard();}
+function wizNext(){if(curStep<totalSteps){curStep++;updateWizard();window.scrollTo({top:0,behavior:'smooth'});}}
+function wizPrev(){if(curStep>1){curStep--;updateWizard();window.scrollTo({top:0,behavior:'smooth'});}}
+
+function updateWizard(){
+    for(let i=1;i<=totalSteps;i++){
+        const el=document.getElementById('step'+i);
+        if(el)el.style.display=i===curStep?'block':'none';
+
+        const dot=document.getElementById('sid'+i);
+        const lbl=document.getElementById('sil'+i);
+        const ln=document.getElementById('siln'+i);
+
+        if(dot){
+            if(i<curStep){dot.className='si-dot done';dot.innerHTML='<i class="bi bi-check" style="font-size:0.8rem;"></i>';}
+            else if(i===curStep){dot.className='si-dot active';dot.textContent=i;}
+            else{dot.className='si-dot pending';dot.textContent=i;}
+        }
+        if(lbl){lbl.className='si-label '+(i<=curStep?'active':'pending');}
+        if(ln){ln.className='si-line '+(i<curStep?'done':'pending');}
+    }
+
+    document.getElementById('wizPrevBtn').style.display=curStep>1?'inline-flex':'none';
+    document.getElementById('wizNextBtn').style.display=curStep<totalSteps?'inline-flex':'none';
+    document.getElementById('wizSubmitBtn').style.display=curStep===totalSteps?'inline-flex':'none';
+    document.getElementById('stepLabel').textContent='Step '+curStep+' of '+totalSteps;
+
+    if(curStep===totalSteps)checkAllAgreed();
+}
+
+function checkAllAgreed(){
+    const all=[1,2,3,4,5].every(i=>document.getElementById('check'+i).checked);
+    document.getElementById('wizSubmitBtn').disabled=!all;
+}
+
+function completeRegistration(){
+    document.getElementById('wizardState').style.display='none';
+    document.getElementById('registeredState').style.display='block';
+    document.getElementById('successScreen').style.display='block';
+    document.getElementById('saccoDashboard').style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
+    showToast('Rongo SACCO registered successfully on SACCOPay!');
+}
+
+function showDashboard(){
+    document.getElementById('successScreen').style.display='none';
+    document.getElementById('saccoDashboard').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// === HELPERS ===
+let officialCount=3;
+function addOfficial(){
+    officialCount++;
+    const html=`<div class="row g-3 mb-3 p-3" style="background:var(--bg-tertiary);border-radius:var(--radius-md);">
+        <div class="col-12" style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="flbl">Official #${officialCount}</span>
+            <button class="btn btn-ghost btn-sm" style="font-size:0.7rem;color:var(--status-danger);" onclick="this.closest('.row').remove()"><i class="bi bi-trash"></i></button>
+        </div>
+        <div class="col-md-3"><select class="form-select fselect" style="font-size:0.82rem;"><option>Board Member</option><option>Vice Chairman</option><option>Compliance Officer</option><option>Credit Officer</option><option>Accountant</option></select></div>
+        <div class="col-md-3"><input type="text" class="form-control finput" placeholder="Full Name"></div>
+        <div class="col-md-3"><input type="tel" class="form-control finput" placeholder="Phone"></div>
+        <div class="col-md-3"><input type="email" class="form-control finput" placeholder="Email"></div>
+    </div>`;
+    document.getElementById('officialsContainer').insertAdjacentHTML('beforeend',html);
+    showToast('Official #'+officialCount+' added');
+}
+
+function toggleDoc(el){
+    if(!el.classList.contains('uploaded')){
+        el.classList.add('uploaded');
+        el.querySelector('.doc-icon').innerHTML='<i class="bi bi-file-earmark-check-fill"></i>';
+        const p=el.querySelector('p');
+        p.textContent='document_uploaded.pdf — Uploaded ✓';
+        showToast('Document uploaded successfully!');
+    }
+}
+</script>
+</body>
+</html>

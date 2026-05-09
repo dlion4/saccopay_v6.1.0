@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SACCOPay Wallet - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           WALLET PAGE STYLES
+        ======================================== */
+
+        /* Wallet Card (Hero) */
+        .wallet-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            color: white;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .wallet-hero::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,208,132,0.15) 0%, transparent 70%);
+        }
+
+        .wallet-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 70%);
+        }
+
+        .wallet-hero-inner {
+            position: relative;
+            z-index: 1;
+            padding: var(--spacing-2xl);
+        }
+
+        .wallet-hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .wallet-chip {
+            width: 48px;
+            height: 36px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #d4af37, #f5d76e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wallet-chip-lines {
+            width: 28px;
+            height: 20px;
+            border: 1.5px solid rgba(139,109,30,0.5);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .wallet-chip-lines::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1.5px;
+            background: rgba(139,109,30,0.4);
+        }
+
+        .wallet-chip-lines::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1.5px;
+            background: rgba(139,109,30,0.4);
+        }
+
+        .wallet-network {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .wallet-balance-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .wallet-balance-label {
+            font-size: 0.82rem;
+            opacity: 0.6;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .wallet-balance-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .wallet-balance-amount .currency {
+            font-size: 1.4rem;
+            font-weight: 600;
+            opacity: 0.7;
+            vertical-align: top;
+            margin-right: 4px;
+        }
+
+        .wallet-account-id {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-full);
+            padding: 6px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .wallet-account-id:hover {
+            background: rgba(255,255,255,0.14);
+            border-color: var(--primary-green);
+        }
+
+        .wallet-account-id .copy-icon {
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .wallet-account-id:hover .copy-icon {
+            opacity: 1;
+            color: var(--primary-green);
+        }
+
+        .wallet-hero-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .wallet-holder {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .wallet-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .wallet-status-pill.active {
+            background: rgba(76,175,80,0.2);
+            color: #81c784;
+        }
+
+        .wallet-status-pill.frozen {
+            background: rgba(33,150,243,0.2);
+            color: #64b5f6;
+        }
+
+        .wallet-status-pill.paused {
+            background: rgba(255,152,0,0.2);
+            color: #ffb74d;
+        }
+
+        /* Wallet Action Buttons */
+        .wallet-actions-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .wa-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-lg);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .wa-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            border-color: var(--primary-green-light);
+        }
+
+        .wa-btn-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .wa-btn h6 {
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .wa-btn p {
+            font-size: 0.68rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
+        /* Shareable Link Card */
+        .share-link-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .share-link-url {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            margin: var(--spacing-md) 0;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            word-break: break-all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-link-url:hover {
+            border-color: var(--primary-green);
+            background: var(--primary-green-ultra-light);
+        }
+
+        .share-methods {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .share-method-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+
+        .share-method-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-green);
+            background: var(--primary-green-ultra-light);
+        }
+
+        /* Limit Bars */
+        .limit-bar-wrap {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .limit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .limit-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .limit-value {
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .limit-track {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .limit-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.6s ease;
+        }
+
+        .limit-sub {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            margin-top: 3px;
+        }
+
+        /* Control Toggle Row */
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .control-row:last-child {
+            border-bottom: none;
+        }
+
+        .control-info h6 {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin: 0 0 2px;
+        }
+
+        .control-info p {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
+        /* Form */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s ease; width: 100%; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s ease; width: 100%; }
+        .fselect:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+
+        /* Modal Header */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .mhdr.blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Detail Row */
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        /* Pin Input */
+        .pin-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .pin-box {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .pin-box:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+            outline: none;
+        }
+
+        /* Channel Option */
+        .ch-opt {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .ch-opt:hover { border-color: var(--primary-green-light); background: var(--primary-green-ultra-light); }
+        .ch-opt.sel { border-color: var(--primary-green); background: var(--primary-green-ultra-light); box-shadow: 0 0 0 3px rgba(0,208,132,0.12); }
+
+        .ch-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Member Cell */
+        .m-cell { display: flex; align-items: center; gap: var(--spacing-sm); }
+        .m-av { width: 34px; height: 34px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.72rem; color: white; flex-shrink: 0; }
+        .m-av.g1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .m-av.g2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+        .m-av.g3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+        .m-av.g4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .m-av.g5 { background: linear-gradient(135deg, #f44336, #ef5350); }
+        .m-av.g6 { background: linear-gradient(135deg, #0f172a, #334155); }
+
+        /* Filter Tab */
+        .ftab { padding: 8px 18px; border-radius: var(--radius-full); background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .ftab:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); }
+        .ftab.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0,208,132,0.25); }
+        .ftab .cnt { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 700; }
+        .ftab:not(.active) .cnt { background: var(--bg-tertiary); color: var(--text-tertiary); }
+
+        /* QR Code Placeholder */
+        .qr-placeholder {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            background: white;
+            border: 3px solid var(--text-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .qr-placeholder .qr-grid {
+            width: 120px;
+            height: 120px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .qr-placeholder .qr-grid span {
+            border-radius: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .wallet-balance-amount { font-size: 2rem; }
+            .wallet-actions-row { grid-template-columns: repeat(3, 1fr); }
+            .wallet-hero-inner { padding: var(--spacing-xl); }
+        }
+        @media (max-width: 480px) {
+            .wallet-actions-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-logo">S</div><div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Admin Dashboard</p></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loan Disbursements</span></a></div>
+            <div class="nav-item"><a href="loan-repayments.html" class="nav-link"><i class="bi bi-arrow-counterclockwise nav-icon"></i><span>Loan Repayments</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link active"><i class="bi bi-wallet2 nav-icon"></i><span>SACCOPay Wallet</span></a></div>
+            <div class="nav-section-title">Vendors</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-shop nav-icon"></i><span>Vendor Management</span></a></div>
+            <div class="nav-section-title">System</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell nav-icon"></i><span>Notifications</span><span class="nav-badge">3</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search wallets, members, transactions..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i><span class="notification-badge">3</span></button>
+                    <div class="user-profile" onclick="openModal('profileModal')"><div class="user-avatar">JK</div><div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Super Admin</p></div></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">SACCOPay Wallet</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-wallet2" style="color:var(--primary-green);"></i> SACCOPay Wallet</h2>
+                        <p>Manage wallet accounts, transfers, limits & permissions</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);">
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#walletSettingsModal"><i class="bi bi-gear"></i> Settings</button>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createWalletModal"><i class="bi bi-plus-lg"></i> Create Wallet</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wallet Hero Card -->
+            <div class="wallet-hero fade-in">
+                <div class="wallet-hero-inner">
+                    <div class="wallet-hero-top">
+                        <div class="wallet-chip"><div class="wallet-chip-lines"></div></div>
+                        <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                            <span class="wallet-status-pill active" id="walletStatusPill"><i class="bi bi-circle-fill" style="font-size:0.4rem;"></i> Active</span>
+                            <div class="wallet-network"><i class="bi bi-wallet2"></i> SACCOPay</div>
+                        </div>
+                    </div>
+                    <div class="wallet-balance-section">
+                        <div class="wallet-balance-label">Available Balance</div>
+                        <div class="wallet-balance-amount"><span class="currency">KES</span>247,580<span style="font-size:1.4rem;opacity:0.5;">.00</span></div>
+                        <div class="wallet-account-id" onclick="copyWalletId()" id="walletIdDisplay" title="Click to copy">
+                            <i class="bi bi-wallet2" style="opacity:0.5;"></i>
+                            SP-WAL-2024-00158
+                            <i class="bi bi-copy copy-icon"></i>
+                        </div>
+                    </div>
+                    <div class="wallet-hero-bottom">
+                        <div class="wallet-holder">JAMES KARIUKI • ADMIN</div>
+                        <div style="display:flex;gap:var(--spacing-sm);">
+                            <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#shareWalletModal"><i class="bi bi-share"></i> Share</button>
+                            <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#qrCodeModal"><i class="bi bi-qr-code"></i> QR Code</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons Row -->
+            <div class="wallet-actions-row fade-in">
+                <div class="wa-btn" data-bs-toggle="modal" data-bs-target="#addMoneyModal">
+                    <div class="wa-btn-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-box-arrow-in-down"></i></div>
+                    <h6>Add Money</h6>
+                    <p>Top up wallet</p>
+                </div>
+                <div class="wa-btn" data-bs-toggle="modal" data-bs-target="#sendMoneyModal">
+                    <div class="wa-btn-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-send"></i></div>
+                    <h6>Send</h6>
+                    <p>To wallet or phone</p>
+                </div>
+                <div class="wa-btn" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <div class="wa-btn-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-box-arrow-up"></i></div>
+                    <h6>Withdraw</h6>
+                    <p>To M-Pesa or bank</p>
+                </div>
+                <div class="wa-btn" data-bs-toggle="modal" data-bs-target="#transferToSavingsModal">
+                    <div class="wa-btn-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-piggy-bank"></i></div>
+                    <h6>To Savings</h6>
+                    <p>Move to SACCO</p>
+                </div>
+                <div class="wa-btn" data-bs-toggle="modal" data-bs-target="#scheduledPaymentsModal">
+                    <div class="wa-btn-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-calendar-check"></i></div>
+                    <h6>Scheduled</h6>
+                    <p>Auto-send setup</p>
+                </div>
+                <div class="wa-btn" data-bs-toggle="modal" data-bs-target="#walletSettingsModal">
+                    <div class="wa-btn-icon" style="background:rgba(0,188,212,0.1);color:var(--accent-teal);"><i class="bi bi-shield-check"></i></div>
+                    <h6>Controls</h6>
+                    <p>Limits & security</p>
+                </div>
+            </div>
+
+            <!-- Main Content: Tabs -->
+            <div class="glass-card fade-in">
+                <div class="glass-card-header">
+                    <ul class="nav nav-tabs border-0" role="tablist" style="gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <li class="nav-item"><button class="ftab active" data-bs-toggle="tab" data-bs-target="#txTab" type="button">Transactions</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#limitsTab" type="button">Limits & Alerts</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#controlsTab" type="button">Account Controls</button></li>
+                        <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#membersTab" type="button">Member Wallets</button></li>
+                    </ul>
+                </div>
+                <div class="glass-card-body">
+                    <div class="tab-content">
+
+                        <!-- TRANSACTIONS TAB -->
+                        <div class="tab-pane fade show active" id="txTab">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-lg);flex-wrap:wrap;gap:var(--spacing-sm);">
+                                <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                                    <button class="ftab active" onclick="setFt(this)">All <span class="cnt">142</span></button>
+                                    <button class="ftab" onclick="setFt(this)">Received <span class="cnt">68</span></button>
+                                    <button class="ftab" onclick="setFt(this)">Sent <span class="cnt">45</span></button>
+                                    <button class="ftab" onclick="setFt(this)">Transfers <span class="cnt">29</span></button>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal"><i class="bi bi-download"></i> Export</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead><tr><th>Ref</th><th>Type</th><th>From / To</th><th>Amount</th><th>Balance</th><th>Date</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('WTX-089421')">WTX-089421</code></td>
+                                            <td><span class="badge badge-success" style="font-size:0.68rem;"><i class="bi bi-arrow-down-short"></i> Received</span></td>
+                                            <td><div class="m-cell"><div class="m-av g2">SA</div><div><div class="m-name" style="font-size:0.82rem;">Sarah Auma</div><div class="m-sub" style="font-size:0.68rem;">SP-WAL-00234</div></div></div></td>
+                                            <td style="font-weight:700;color:var(--status-success);">+KES 15,000</td>
+                                            <td style="font-size:0.82rem;">KES 247,580</td>
+                                            <td style="font-size:0.78rem;">Dec 18, 3:45 PM</td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('WTX-089421')"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code style="color:var(--accent-blue);cursor:pointer;" onclick="openTxDetail('WTX-089420')">WTX-089420</code></td>
+                                            <td><span class="badge badge-info" style="font-size:0.68rem;"><i class="bi bi-arrow-up-short"></i> Sent</span></td>
+                                            <td><div class="m-cell"><div class="m-av g4">PO</div><div><div class="m-name" style="font-size:0.82rem;">Peter Omondi</div><div class="m-sub" style="font-size:0.68rem;">SP-WAL-00145</div></div></div></td>
+                                            <td style="font-weight:700;color:var(--status-danger);">-KES 5,000</td>
+                                            <td style="font-size:0.82rem;">KES 232,580</td>
+                                            <td style="font-size:0.78rem;">Dec 18, 1:20 PM</td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('WTX-089420')"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code style="color:var(--accent-purple);cursor:pointer;" onclick="openTxDetail('WTX-089419')">WTX-089419</code></td>
+                                            <td><span class="badge" style="background:rgba(156,39,176,0.1);color:#9c27b0;font-size:0.68rem;"><i class="bi bi-arrow-right"></i> Transfer</span></td>
+                                            <td><div><div style="font-size:0.82rem;font-weight:600;">→ Regular Savings</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SACCO Account</div></div></td>
+                                            <td style="font-weight:700;color:var(--accent-purple);">-KES 50,000</td>
+                                            <td style="font-size:0.82rem;">KES 237,580</td>
+                                            <td style="font-size:0.78rem;">Dec 17, 4:10 PM</td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('WTX-089419')"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('WTX-089418')">WTX-089418</code></td>
+                                            <td><span class="badge badge-success" style="font-size:0.68rem;"><i class="bi bi-arrow-down-short"></i> Top-up</span></td>
+                                            <td><div><div style="font-size:0.82rem;font-weight:600;">M-Pesa</div><div style="font-size:0.68rem;color:var(--text-tertiary);">0722-XXX-456</div></div></td>
+                                            <td style="font-weight:700;color:var(--status-success);">+KES 100,000</td>
+                                            <td style="font-size:0.82rem;">KES 287,580</td>
+                                            <td style="font-size:0.78rem;">Dec 17, 10:00 AM</td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('WTX-089418')"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code style="color:var(--accent-blue);" onclick="openTxDetail('WTX-089417')">WTX-089417</code></td>
+                                            <td><span class="badge badge-info" style="font-size:0.68rem;"><i class="bi bi-arrow-up-short"></i> Withdraw</span></td>
+                                            <td><div><div style="font-size:0.82rem;font-weight:600;">→ KCB Bank</div><div style="font-size:0.68rem;color:var(--text-tertiary);">XXXX-1234</div></div></td>
+                                            <td style="font-weight:700;color:var(--status-danger);">-KES 30,000</td>
+                                            <td style="font-size:0.82rem;">KES 187,580</td>
+                                            <td style="font-size:0.78rem;">Dec 16, 2:30 PM</td>
+                                            <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('WTX-089417')"><i class="bi bi-eye"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:var(--spacing-lg);font-size:0.82rem;color:var(--text-secondary);">
+                                <span>Showing <strong>1-5</strong> of <strong>142</strong></span>
+                                <nav><ul class="pagination pagination-sm mb-0" style="gap:3px;"><li class="page-item active"><a class="page-link" href="#" style="border-radius:6px;background:var(--primary-green);border-color:var(--primary-green);">1</a></li><li class="page-item"><a class="page-link" href="#" style="border-radius:6px;">2</a></li><li class="page-item"><a class="page-link" href="#" style="border-radius:6px;">3</a></li></ul></nav>
+                            </div>
+                        </div>
+
+                        <!-- LIMITS & ALERTS TAB -->
+                        <div class="tab-pane fade" id="limitsTab">
+                            <div class="row g-4">
+                                <div class="col-lg-6">
+                                    <h5 style="font-weight:700;margin-bottom:var(--spacing-lg);"><i class="bi bi-speedometer2" style="color:var(--primary-green);"></i> Transaction Limits</h5>
+                                    <div class="limit-bar-wrap">
+                                        <div class="limit-header"><span class="limit-label">Daily Send Limit</span><span class="limit-value">KES 35,000 / <span style="color:var(--text-tertiary);">100,000</span></span></div>
+                                        <div class="limit-track"><div class="limit-fill" style="width:35%;background:linear-gradient(90deg,var(--primary-green),var(--accent-teal));"></div></div>
+                                        <div class="limit-sub">KES 65,000 remaining today</div>
+                                    </div>
+                                    <div class="limit-bar-wrap">
+                                        <div class="limit-header"><span class="limit-label">Daily Withdrawal Limit</span><span class="limit-value">KES 50,000 / <span style="color:var(--text-tertiary);">200,000</span></span></div>
+                                        <div class="limit-track"><div class="limit-fill" style="width:25%;background:linear-gradient(90deg,#2196f3,#42a5f5);"></div></div>
+                                        <div class="limit-sub">KES 150,000 remaining today</div>
+                                    </div>
+                                    <div class="limit-bar-wrap">
+                                        <div class="limit-header"><span class="limit-label">Monthly Transaction Volume</span><span class="limit-value">KES 480,000 / <span style="color:var(--text-tertiary);">2,000,000</span></span></div>
+                                        <div class="limit-track"><div class="limit-fill" style="width:24%;background:linear-gradient(90deg,#9c27b0,#ba68c8);"></div></div>
+                                        <div class="limit-sub">KES 1,520,000 remaining this month</div>
+                                    </div>
+                                    <div class="limit-bar-wrap">
+                                        <div class="limit-header"><span class="limit-label">Single Transaction Max</span><span class="limit-value" style="color:var(--accent-orange);">KES 150,000</span></div>
+                                        <div class="limit-track"><div class="limit-fill" style="width:100%;background:linear-gradient(90deg,#ff9800,#ffb74d);"></div></div>
+                                        <div class="limit-sub">Per transaction cap</div>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm mt-3" data-bs-toggle="modal" data-bs-target="#editLimitsModal"><i class="bi bi-pencil"></i> Edit Limits</button>
+                                </div>
+                                <div class="col-lg-6">
+                                    <h5 style="font-weight:700;margin-bottom:var(--spacing-lg);"><i class="bi bi-bell" style="color:var(--accent-orange);"></i> Balance & Activity Alerts</h5>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6>Low Balance Alert</h6><p>Notify when balance drops below threshold</p></div>
+                                        <div style="display:flex;align-items:center;gap:var(--spacing-sm);">
+                                            <span style="font-size:0.78rem;color:var(--text-tertiary);">KES 10,000</span>
+                                            <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleAlert(this,'Low balance')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6>High Balance Alert</h6><p>Notify when balance exceeds limit</p></div>
+                                        <div style="display:flex;align-items:center;gap:var(--spacing-sm);">
+                                            <span style="font-size:0.78rem;color:var(--text-tertiary);">KES 500,000</span>
+                                            <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleAlert(this,'High balance')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6>Large Transaction Alert</h6><p>Notify on transactions above threshold</p></div>
+                                        <div style="display:flex;align-items:center;gap:var(--spacing-sm);">
+                                            <span style="font-size:0.78rem;color:var(--text-tertiary);">KES 50,000</span>
+                                            <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleAlert(this,'Large transaction')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6>Login Alert</h6><p>Notify on new device login</p></div>
+                                        <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleAlert(this,'Login')"></div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6>Failed Transaction Alert</h6><p>Notify on failed or declined transactions</p></div>
+                                        <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" onchange="toggleAlert(this,'Failed transaction')"></div>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm mt-3" data-bs-toggle="modal" data-bs-target="#editAlertsModal"><i class="bi bi-bell"></i> Configure Alerts</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ACCOUNT CONTROLS TAB -->
+                        <div class="tab-pane fade" id="controlsTab">
+                            <div class="row g-4">
+                                <div class="col-lg-6">
+                                    <h5 style="font-weight:700;margin-bottom:var(--spacing-lg);"><i class="bi bi-shield-lock" style="color:var(--primary-green);"></i> Account Permissions</h5>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6><i class="bi bi-arrow-down-circle me-1" style="color:var(--status-success);"></i> Receive Payments</h6><p>Allow incoming payments to this wallet</p></div>
+                                        <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked id="receiveToggle" onchange="togglePermission(this,'Receive')"></div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6><i class="bi bi-arrow-up-circle me-1" style="color:var(--accent-blue);"></i> Send Payments</h6><p>Allow outgoing payments from this wallet</p></div>
+                                        <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked id="sendToggle" onchange="togglePermission(this,'Send')"></div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6><i class="bi bi-box-arrow-up me-1" style="color:var(--status-danger);"></i> Withdrawals</h6><p>Allow cash-out to M-Pesa / bank</p></div>
+                                        <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked id="withdrawToggle" onchange="togglePermission(this,'Withdrawal')"></div>
+                                    </div>
+                                    <div class="control-row">
+                                        <div class="control-info"><h6><i class="bi bi-arrow-left-right me-1" style="color:var(--accent-purple);"></i> Internal Transfers</h6><p>Transfer to savings / share accounts</p></div>
+                                        <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="togglePermission(this,'Transfer')"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <h5 style="font-weight:700;margin-bottom:var(--spacing-lg);"><i class="bi bi-exclamation-triangle" style="color:var(--status-danger);"></i> Account Actions</h5>
+                                    <div class="control-row" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#freezeAccountModal">
+                                        <div class="control-info"><h6 style="color:var(--accent-blue);"><i class="bi bi-snow me-1"></i> Freeze Account</h6><p>Temporarily freeze all wallet activity</p></div>
+                                        <i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i>
+                                    </div>
+                                    <div class="control-row" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#pauseAccountModal">
+                                        <div class="control-info"><h6 style="color:var(--accent-orange);"><i class="bi bi-pause-circle me-1"></i> Pause Account</h6><p>Pause sending — receiving still works</p></div>
+                                        <i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i>
+                                    </div>
+                                    <div class="control-row" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#changePinModal">
+                                        <div class="control-info"><h6><i class="bi bi-key me-1" style="color:var(--primary-green);"></i> Change Wallet PIN</h6><p>Update the transaction PIN</p></div>
+                                        <i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i>
+                                    </div>
+                                    <div class="control-row" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#closeAccountModal">
+                                        <div class="control-info"><h6 style="color:var(--status-danger);"><i class="bi bi-x-circle me-1"></i> Close Wallet</h6><p>Permanently close this wallet account</p></div>
+                                        <i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MEMBER WALLETS TAB -->
+                        <div class="tab-pane fade" id="membersTab">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-lg);flex-wrap:wrap;gap:var(--spacing-sm);">
+                                <input type="text" class="form-control form-control-sm finput" placeholder="Search member wallets..." style="max-width:300px;">
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createWalletModal"><i class="bi bi-plus"></i> Create Wallet</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead><tr><th>Member</th><th>Wallet ID</th><th>Balance</th><th>Status</th><th>Last Activity</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av g1">MW</div><div><div class="m-name" style="font-size:0.82rem;">Mary Wanjiku</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10023</div></div></div></td>
+                                            <td><code style="font-size:0.78rem;">SP-WAL-00234</code></td>
+                                            <td style="font-weight:600;">KES 85,200</td>
+                                            <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Active</span></td>
+                                            <td style="font-size:0.78rem;">Today, 3:45 PM</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#memberWalletDetailModal"><i class="bi bi-eye"></i> Manage</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av g3">JK</div><div><div class="m-name" style="font-size:0.82rem;">John Kamau</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10015</div></div></div></td>
+                                            <td><code style="font-size:0.78rem;">SP-WAL-00145</code></td>
+                                            <td style="font-weight:600;">KES 42,750</td>
+                                            <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Active</span></td>
+                                            <td style="font-size:0.78rem;">Today, 1:20 PM</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#memberWalletDetailModal"><i class="bi bi-eye"></i> Manage</button></td>
+                                        </tr>
+                                        <tr style="background:rgba(33,150,243,0.03);">
+                                            <td><div class="m-cell"><div class="m-av g5">BK</div><div><div class="m-name" style="font-size:0.82rem;">Bernard Kiprop</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10078</div></div></div></td>
+                                            <td><code style="font-size:0.78rem;">SP-WAL-00312</code></td>
+                                            <td style="font-weight:600;">KES 120,400</td>
+                                            <td><span class="badge" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);font-size:0.68rem;"><i class="bi bi-snow" style="font-size:0.3rem;"></i> Frozen</span></td>
+                                            <td style="font-size:0.78rem;">Dec 15</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#memberWalletDetailModal"><i class="bi bi-eye"></i> Manage</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="m-cell"><div class="m-av g4">GA</div><div><div class="m-name" style="font-size:0.82rem;">Grace Akinyi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10067</div></div></div></td>
+                                            <td><code style="font-size:0.78rem;">SP-WAL-00189</code></td>
+                                            <td style="font-weight:600;">KES 15,800</td>
+                                            <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Active</span></td>
+                                            <td style="font-size:0.78rem;">Dec 17</td>
+                                            <td><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#memberWalletDetailModal"><i class="bi bi-eye"></i> Manage</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- 1. ADD MONEY -->
+<div class="modal fade" id="addMoneyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-box-arrow-in-down me-2"></i>Add Money to Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount" id="addAmt"></div>
+            <div class="col-12"><label class="flbl">Source</label>
+                <div class="ch-opt sel" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(76,175,80,0.1);color:#388e3c;"><i class="bi bi-phone"></i></div><div><div style="font-weight:600;font-size:0.88rem;">M-Pesa</div><div style="font-size:0.72rem;color:var(--text-tertiary);">STK Push • Instant</div></div><input type="radio" name="addSrc" checked style="margin-left:auto;"></div>
+                <div class="ch-opt" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(0,150,136,0.1);color:#009688;"><i class="bi bi-phone"></i></div><div><div style="font-weight:600;font-size:0.88rem;">Airtel Money</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Push notification • Instant</div></div><input type="radio" name="addSrc" style="margin-left:auto;"></div>
+                <div class="ch-opt" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-bank"></i></div><div><div style="font-weight:600;font-size:0.88rem;">Bank Transfer</div><div style="font-size:0.72rem;color:var(--text-tertiary);">1-2 business days</div></div><input type="radio" name="addSrc" style="margin-left:auto;"></div>
+                <div class="ch-opt" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-credit-card"></i></div><div><div style="font-weight:600;font-size:0.88rem;">Debit / Credit Card</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Visa / Mastercard • Instant</div></div><input type="radio" name="addSrc" style="margin-left:auto;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="processAddMoney()"><i class="bi bi-check-circle"></i> Add Money</button></div>
+</div></div></div>
+
+<!-- 2. SEND MONEY -->
+<div class="modal fade" id="sendMoneyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-send me-2"></i>Send Money</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" id="sendStep1">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Send To</label><select class="form-select fselect" id="sendToType" onchange="toggleSendFields()"><option value="wallet">SACCOPay Wallet</option><option value="phone">Phone Number (M-Pesa)</option></select></div>
+            <div class="col-12" id="sendWalletField"><label class="flbl">Wallet ID or Member Name</label><input type="text" class="form-control finput" placeholder="e.g. SP-WAL-00234 or search name..."></div>
+            <div class="col-12" id="sendPhoneField" style="display:none;"><label class="flbl">Phone Number</label><input type="text" class="form-control finput" placeholder="+254 7XX XXX XXX"></div>
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount"></div>
+            <div class="col-12"><label class="flbl">Note (Optional)</label><input type="text" class="form-control finput" placeholder="What's this for?"></div>
+        </div>
+    </div>
+    <div class="modal-body" id="sendStep2" style="display:none;">
+        <h6 class="mb-3" style="font-weight:600;text-align:center;">Enter Wallet PIN</h6>
+        <div class="pin-inputs"><input type="password" class="pin-box" maxlength="1" oninput="pinFocus(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinFocus(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinFocus(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinFocus(this)"></div>
+        <div style="text-align:center;"><p style="font-size:0.78rem;color:var(--text-tertiary);">Enter your 4-digit wallet PIN to confirm</p></div>
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-top:var(--spacing-lg);">
+            <div class="drow"><span class="dl">To</span><span class="dv">Sarah Auma (SP-WAL-00234)</span></div>
+            <div class="drow"><span class="dl">Amount</span><span class="dv" style="color:var(--accent-blue);font-size:1.1rem;">KES 5,000</span></div>
+            <div class="drow"><span class="dl">Fee</span><span class="dv">KES 0</span></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" id="sendNextBtn" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="sendNext()">Continue <i class="bi bi-arrow-right"></i></button><button class="btn btn-primary" id="sendConfirmBtn" style="display:none;background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="confirmSend()"><i class="bi bi-send"></i> Send Money</button></div>
+</div></div></div>
+
+<!-- 3. WITHDRAW -->
+<div class="modal fade" id="withdrawModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr red"><h5 class="modal-title"><i class="bi bi-box-arrow-up me-2"></i>Withdraw to External</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount"></div>
+            <div class="col-12"><label class="flbl">Destination</label>
+                <div class="ch-opt sel" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(76,175,80,0.1);color:#388e3c;"><i class="bi bi-phone"></i></div><div><div style="font-weight:600;">M-Pesa</div><div style="font-size:0.72rem;color:var(--text-tertiary);">0722-XXX-456 • Instant</div></div><input type="radio" name="wdDest" checked style="margin-left:auto;"></div>
+                <div class="ch-opt" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-bank"></i></div><div><div style="font-weight:600;">Bank Account</div><div style="font-size:0.72rem;color:var(--text-tertiary);">KCB XXXX-1234 • 1-24 hrs</div></div><input type="radio" name="wdDest" style="margin-left:auto;"></div>
+                <div class="ch-opt" onclick="selCh(this)"><div class="ch-icon" style="background:rgba(0,150,136,0.1);color:#009688;"><i class="bi bi-phone"></i></div><div><div style="font-weight:600;">Airtel Money</div><div style="font-size:0.72rem;color:var(--text-tertiary);">Instant</div></div><input type="radio" name="wdDest" style="margin-left:auto;"></div>
+            </div>
+            <div class="col-12"><label class="flbl">Wallet PIN</label><input type="password" class="form-control finput" placeholder="Enter 4-digit PIN" maxlength="4"></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#c62828,#e53935);" onclick="processWithdraw()"><i class="bi bi-box-arrow-up"></i> Withdraw</button></div>
+</div></div></div>
+
+<!-- 4. TRANSFER TO SAVINGS -->
+<div class="modal fade" id="transferToSavingsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-piggy-bank me-2"></i>Transfer to SACCO Account</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Destination Account</label><select class="form-select fselect"><option>Regular Savings (Withdrawable)</option><option>Share Capital (Non-Withdrawable — Buy Shares)</option><option>Emergency Fund</option><option>Fixed Deposit</option><option>Holiday Savings</option></select></div>
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount"></div>
+            <div class="col-12"><label class="flbl">Narration</label><input type="text" class="form-control finput" placeholder="e.g. Monthly savings"></div>
+        </div>
+        <div class="alert alert-warning mt-3" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Transfers to <strong>Share Capital</strong> are <strong>non-withdrawable</strong>.</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="processTransferToSavings()"><i class="bi bi-arrow-right"></i> Transfer</button></div>
+</div></div></div>
+
+<!-- 5. SCHEDULED PAYMENTS -->
+<div class="modal fade" id="scheduledPaymentsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-calendar-check me-2"></i>Scheduled Payments</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive mb-3">
+            <table class="data-table" style="font-size:0.85rem;">
+                <thead><tr><th>Recipient</th><th>Amount</th><th>Frequency</th><th>Next Date</th><th>Destination</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td>Regular Savings</td><td style="font-weight:600;">KES 10,000</td><td>Monthly (25th)</td><td>Dec 25, 2024</td><td>SACCO</td><td><span class="badge badge-success" style="font-size:0.65rem;">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="cancelSchedule()"><i class="bi bi-x"></i></button></td></tr>
+                    <tr><td>Sarah Auma</td><td style="font-weight:600;">KES 5,000</td><td>Weekly (Mon)</td><td>Dec 23, 2024</td><td>SP-WAL-00234</td><td><span class="badge badge-success" style="font-size:0.65rem;">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#editScheduleModal"><i class="bi bi-pencil"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="cancelSchedule()"><i class="bi bi-x"></i></button></td></tr>
+                    <tr><td>M-Pesa (0722-XXX)</td><td style="font-weight:600;">KES 15,000</td><td>Monthly (1st)</td><td>Jan 1, 2025</td><td>M-Pesa</td><td><span class="badge badge-pending" style="font-size:0.65rem;">Paused</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="resumeSchedule()"><i class="bi bi-play"></i></button> <button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="cancelSchedule()"><i class="bi bi-x"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newScheduleModal"><i class="bi bi-plus"></i> New Scheduled Payment</button>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 6. NEW SCHEDULE -->
+<div class="modal fade" id="newScheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>New Scheduled Payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-md-6"><label class="flbl">Recipient Type</label><select class="form-select fselect"><option>SACCOPay Wallet</option><option>M-Pesa Number</option><option>Bank Account</option><option>Savings Account</option><option>Share Capital</option></select></div>
+        <div class="col-md-6"><label class="flbl">Recipient</label><input type="text" class="form-control finput" placeholder="Wallet ID / Phone / Account"></div>
+        <div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Amount"></div>
+        <div class="col-md-6"><label class="flbl">Frequency</label><select class="form-select fselect"><option>Daily</option><option>Weekly</option><option>Bi-weekly</option><option>Monthly</option><option>One-time (Scheduled)</option></select></div>
+        <div class="col-md-6"><label class="flbl">Start Date</label><input type="date" class="form-control finput"></div>
+        <div class="col-md-6"><label class="flbl">End Date (Optional)</label><input type="date" class="form-control finput"></div>
+        <div class="col-12"><label class="flbl">Description</label><input type="text" class="form-control finput" placeholder="e.g. Monthly rent"></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="createSchedule()"><i class="bi bi-calendar-check"></i> Create Schedule</button></div>
+</div></div></div>
+
+<!-- 7. EDIT SCHEDULE -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Schedule</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" value="10000"></div><div class="col-md-6"><label class="flbl">Frequency</label><select class="form-select fselect"><option>Monthly (25th)</option><option>Weekly</option><option>Bi-weekly</option></select></div><div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Pause this schedule</label></div></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="updateSchedule()"><i class="bi bi-check"></i> Update</button></div>
+</div></div></div>
+
+<!-- 8. SHARE WALLET LINK -->
+<div class="modal fade" id="shareWalletModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-share me-2"></i>Share Payment Link</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="share-link-card" style="border:none;padding:0;">
+            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);"><i class="bi bi-wallet2" style="font-size:1.8rem;color:white;"></i></div>
+            <h5 style="font-weight:700;">Pay James Kariuki</h5>
+            <p style="font-size:0.82rem;color:var(--text-secondary);">Share this link to receive payments directly to your SACCOPay wallet</p>
+            <div class="share-link-url" onclick="copyLink()">
+                <i class="bi bi-link-45deg" style="color:var(--primary-green);flex-shrink:0;"></i>
+                <span style="flex:1;text-align:left;">pay.saccopay.co.ke/SP-WAL-2024-00158</span>
+                <i class="bi bi-copy" style="color:var(--primary-green);flex-shrink:0;"></i>
+            </div>
+            <div class="share-methods">
+                <div class="share-method-btn" title="WhatsApp" onclick="shareVia('WhatsApp')"><i class="bi bi-whatsapp" style="color:#25d366;"></i></div>
+                <div class="share-method-btn" title="SMS" onclick="shareVia('SMS')"><i class="bi bi-chat-dots" style="color:var(--accent-blue);"></i></div>
+                <div class="share-method-btn" title="Email" onclick="shareVia('Email')"><i class="bi bi-envelope" style="color:var(--accent-orange);"></i></div>
+                <div class="share-method-btn" title="Copy" onclick="copyLink()"><i class="bi bi-clipboard" style="color:var(--accent-purple);"></i></div>
+                <div class="share-method-btn" title="QR Code" data-bs-toggle="modal" data-bs-target="#qrCodeModal"><i class="bi bi-qr-code" style="color:var(--text-primary);"></i></div>
+            </div>
+            <div style="margin-top:var(--spacing-xl);padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:left;">
+                <h6 style="font-size:0.82rem;font-weight:600;margin-bottom:var(--spacing-sm);">When someone opens your link:</h6>
+                <div style="font-size:0.78rem;color:var(--text-secondary);display:flex;flex-direction:column;gap:4px;">
+                    <span><i class="bi bi-1-circle-fill me-1" style="color:var(--primary-green);"></i> They see your name & wallet ID</span>
+                    <span><i class="bi bi-2-circle-fill me-1" style="color:var(--primary-green);"></i> Enter amount & select payment method</span>
+                    <span><i class="bi bi-3-circle-fill me-1" style="color:var(--primary-green);"></i> Confirm with their PIN</span>
+                    <span><i class="bi bi-4-circle-fill me-1" style="color:var(--primary-green);"></i> Money arrives in your wallet instantly</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 9. QR CODE -->
+<div class="modal fade" id="qrCodeModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-qr-code me-2"></i>Wallet QR Code</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" style="text-align:center;">
+        <div class="qr-placeholder"><div class="qr-grid" id="qrGrid"></div></div>
+        <p style="margin-top:var(--spacing-md);font-size:0.82rem;color:var(--text-secondary);"><strong>SP-WAL-2024-00158</strong></p>
+        <p style="font-size:0.72rem;color:var(--text-tertiary);">Scan to pay James Kariuki</p>
+    </div>
+    <div class="modal-footer justify-content-center"><button class="btn btn-outline btn-sm" onclick="showToast('QR code downloaded')"><i class="bi bi-download"></i> Download</button><button class="btn btn-outline btn-sm" onclick="showToast('QR code printed')"><i class="bi bi-printer"></i> Print</button></div>
+</div></div></div>
+
+<!-- 10. TX DETAIL -->
+<div class="modal fade" id="txDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction — <span id="txRef">WTX-089421</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="text-align:center;padding:var(--spacing-lg);border-bottom:1px dashed var(--border-color);margin-bottom:var(--spacing-lg);"><div style="width:48px;height:48px;border-radius:50%;background:rgba(76,175,80,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-sm);"><i class="bi bi-check-circle-fill" style="font-size:1.5rem;color:var(--status-success);"></i></div><div style="font-size:1.5rem;font-weight:800;color:var(--status-success);">+KES 15,000</div><div style="font-size:0.82rem;color:var(--text-secondary);">Payment Received</div></div>
+        <div class="drow"><span class="dl">Reference</span><span class="dv"><code id="txRefCode">WTX-089421</code></span></div>
+        <div class="drow"><span class="dl">From</span><span class="dv">Sarah Auma (SP-WAL-00234)</span></div>
+        <div class="drow"><span class="dl">To</span><span class="dv">James Kariuki (SP-WAL-00158)</span></div>
+        <div class="drow"><span class="dl">Date</span><span class="dv">Dec 18, 2024 • 3:45 PM</span></div>
+        <div class="drow"><span class="dl">Fee</span><span class="dv">KES 0</span></div>
+        <div class="drow"><span class="dl">Balance After</span><span class="dv" style="font-weight:700;color:var(--primary-green);">KES 247,580</span></div>
+        <div class="drow"><span class="dl">Status</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill"></i> Confirmed</span></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Receipt sent')"><i class="bi bi-envelope"></i> Send</button><button class="btn btn-outline btn-sm" onclick="showToast('PDF downloaded')"><i class="bi bi-file-pdf"></i> PDF</button></div>
+</div></div></div>
+
+<!-- 11. FREEZE ACCOUNT -->
+<div class="modal fade" id="freezeAccountModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-snow me-2"></i>Freeze Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i>Freezing will <strong>block all</strong> incoming and outgoing transactions until unfrozen.</div>
+        <div class="row g-3"><div class="col-12"><label class="flbl">Reason</label><select class="form-select fselect"><option>Suspicious activity</option><option>Member request</option><option>Compliance review</option><option>Admin action</option></select></div><div class="col-12"><label class="flbl">Notes</label><textarea class="form-control finput" rows="2" placeholder="Explain..."></textarea></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="freezeAccount()"><i class="bi bi-snow"></i> Freeze Account</button></div>
+</div></div></div>
+
+<!-- 12. PAUSE ACCOUNT -->
+<div class="modal fade" id="pauseAccountModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-pause-circle me-2"></i>Pause Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Pausing will <strong>block sending/withdrawals</strong> but incoming payments will still work.</div>
+        <div class="row g-3"><div class="col-12"><label class="flbl">Duration</label><select class="form-select fselect"><option>Until manually resumed</option><option>24 hours</option><option>48 hours</option><option>1 week</option></select></div><div class="col-12"><label class="flbl">Reason</label><input type="text" class="form-control finput" placeholder="Optional reason"></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="pauseAccount()"><i class="bi bi-pause-circle"></i> Pause Account</button></div>
+</div></div></div>
+
+<!-- 13. CHANGE PIN -->
+<div class="modal fade" id="changePinModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-key me-2"></i>Change Wallet PIN</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-12"><label class="flbl">Current PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="Enter current PIN"></div><div class="col-12"><label class="flbl">New PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="Enter new 4-digit PIN"></div><div class="col-12"><label class="flbl">Confirm New PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="Re-enter new PIN"></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="changePin()"><i class="bi bi-check"></i> Update PIN</button></div>
+</div></div></div>
+
+<!-- 14. CLOSE WALLET -->
+<div class="modal fade" id="closeAccountModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header" style="background:linear-gradient(135deg,#b71c1c,#c62828);color:white;border:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--spacing-lg) var(--spacing-xl);"><h5 class="modal-title"><i class="bi bi-x-circle me-2"></i>Close Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:brightness(0) invert(1);"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>This is <strong>permanent</strong>. The remaining balance must be withdrawn or transferred first.</div>
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Current Balance</span><span class="dv" style="font-weight:700;">KES 247,580</span></div>
+            <div class="drow"><span class="dl">Action Required</span><span class="dv" style="color:var(--status-danger);">Withdraw or transfer balance first</span></div>
+        </div>
+        <div class="row g-3"><div class="col-12"><label class="flbl">Transfer Balance To</label><select class="form-select fselect"><option>Regular Savings Account</option><option>M-Pesa (0722-XXX-456)</option><option>Bank Account (KCB)</option></select></div><div class="col-12"><label class="flbl">Reason</label><textarea class="form-control finput" rows="2" placeholder="Why are you closing this wallet?"></textarea></div><div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="closeConfirm"><label class="form-check-label" for="closeConfirm" style="font-size:0.82rem;color:var(--status-danger);">I understand this action is permanent.</label></div></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn" style="background:#c62828;color:white;" onclick="closeWallet()"><i class="bi bi-x-circle"></i> Close Wallet</button></div>
+</div></div></div>
+
+<!-- 15. EDIT LIMITS -->
+<div class="modal fade" id="editLimitsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-speedometer2 me-2"></i>Edit Transaction Limits</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-md-6"><label class="flbl">Daily Send Limit (KES)</label><input type="number" class="form-control finput" value="100000"></div><div class="col-md-6"><label class="flbl">Daily Withdrawal Limit (KES)</label><input type="number" class="form-control finput" value="200000"></div><div class="col-md-6"><label class="flbl">Monthly Volume Limit (KES)</label><input type="number" class="form-control finput" value="2000000"></div><div class="col-md-6"><label class="flbl">Single Transaction Max (KES)</label><input type="number" class="form-control finput" value="150000"></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="saveLimits()"><i class="bi bi-check"></i> Save Limits</button></div>
+</div></div></div>
+
+<!-- 16. EDIT ALERTS -->
+<div class="modal fade" id="editAlertsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Configure Alerts</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-md-6"><label class="flbl">Low Balance Threshold (KES)</label><input type="number" class="form-control finput" value="10000"></div><div class="col-md-6"><label class="flbl">High Balance Threshold (KES)</label><input type="number" class="form-control finput" value="500000"></div><div class="col-md-6"><label class="flbl">Large Transaction Threshold (KES)</label><input type="number" class="form-control finput" value="50000"></div><div class="col-md-6"><label class="flbl">Notification Channel</label><select class="form-select fselect"><option>SMS + Push</option><option>SMS Only</option><option>Email Only</option><option>Push Only</option></select></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="saveAlerts()"><i class="bi bi-check"></i> Save Alerts</button></div>
+</div></div></div>
+
+<!-- 17. WALLET SETTINGS -->
+<div class="modal fade" id="walletSettingsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-gear me-2"></i>Wallet Settings</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-sm);">
+            <div class="control-row" style="cursor:pointer;" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editLimitsModal"><div class="control-info"><h6><i class="bi bi-speedometer2 me-1"></i> Transaction Limits</h6><p>Set daily/monthly caps</p></div><i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i></div>
+            <div class="control-row" style="cursor:pointer;" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editAlertsModal"><div class="control-info"><h6><i class="bi bi-bell me-1"></i> Alerts</h6><p>Balance & activity notifications</p></div><i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i></div>
+            <div class="control-row" style="cursor:pointer;" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#changePinModal"><div class="control-info"><h6><i class="bi bi-key me-1"></i> Change PIN</h6><p>Update wallet PIN</p></div><i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i></div>
+            <div class="control-row" style="cursor:pointer;" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#freezeAccountModal"><div class="control-info"><h6 style="color:var(--accent-blue);"><i class="bi bi-snow me-1"></i> Freeze</h6><p>Block all activity</p></div><i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i></div>
+            <div class="control-row" style="cursor:pointer;" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#closeAccountModal"><div class="control-info"><h6 style="color:var(--status-danger);"><i class="bi bi-x-circle me-1"></i> Close Wallet</h6><p>Permanently close</p></div><i class="bi bi-chevron-right" style="color:var(--text-tertiary);"></i></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 18. CREATE WALLET -->
+<div class="modal fade" id="createWalletModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Create New Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-12"><label class="flbl">Member</label><input type="text" class="form-control finput" placeholder="Search member by name or ID"></div><div class="col-md-6"><label class="flbl">Initial Deposit (KES)</label><input type="number" class="form-control finput" placeholder="Optional" value="0"></div><div class="col-md-6"><label class="flbl">Wallet Tier</label><select class="form-select fselect"><option>Standard (KES 100K daily limit)</option><option>Premium (KES 500K daily limit)</option><option>Business (KES 1M daily limit)</option></select></div><div class="col-12"><label class="flbl">Set Initial PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="4-digit PIN for member"></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="createWallet()"><i class="bi bi-wallet2"></i> Create Wallet</button></div>
+</div></div></div>
+
+<!-- 19. MEMBER WALLET DETAIL -->
+<div class="modal fade" id="memberWalletDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-wallet2 me-2"></i>Member Wallet — Mary Wanjiku</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-4"><div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:0.68rem;color:var(--text-tertiary);">Balance</div><div style="font-size:1.2rem;font-weight:700;color:var(--primary-green);">KES 85,200</div></div></div><div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:0.68rem;color:var(--text-tertiary);">Wallet ID</div><div style="font-size:0.82rem;font-weight:600;"><code>SP-WAL-00234</code></div></div></div><div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:0.68rem;color:var(--text-tertiary);">Status</div><div><span class="badge badge-success" style="font-size:0.68rem;">Active</span></div></div></div><div class="col-md-3"><div style="padding:var(--spacing-md);background:var(--bg-tertiary);border-radius:var(--radius-md);text-align:center;"><div style="font-size:0.68rem;color:var(--text-tertiary);">Tier</div><div style="font-weight:600;font-size:0.82rem;">Standard</div></div></div></div>
+        <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;margin-bottom:var(--spacing-lg);">
+            <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#addMoneyModal"><i class="bi bi-plus"></i> Add Money</button>
+            <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#withdrawModal"><i class="bi bi-dash"></i> Withdraw</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--accent-blue);border-color:var(--accent-blue);" data-bs-toggle="modal" data-bs-target="#freezeAccountModal"><i class="bi bi-snow"></i> Freeze</button>
+            <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#editLimitsModal"><i class="bi bi-speedometer2"></i> Limits</button>
+        </div>
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Recent Transactions</h6>
+        <div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Ref</th><th>Type</th><th>Amount</th><th>Date</th></tr></thead><tbody>
+            <tr><td><code>WTX-089421</code></td><td><span class="badge badge-success" style="font-size:0.6rem;">Sent</span></td><td style="color:var(--status-danger);">-KES 15,000</td><td>Dec 18</td></tr>
+            <tr><td><code>WTX-089415</code></td><td><span class="badge badge-success" style="font-size:0.6rem;">Received</span></td><td style="color:var(--status-success);">+KES 8,000</td><td>Dec 17</td></tr>
+            <tr><td><code>WTX-089410</code></td><td><span class="badge" style="background:rgba(156,39,176,0.1);color:#9c27b0;font-size:0.6rem;">Transfer</span></td><td style="color:var(--accent-purple);">-KES 20,000</td><td>Dec 16</td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 20. EXPORT -->
+<div class="modal fade" id="exportModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Transactions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect"><option>CSV</option><option>Excel</option><option>PDF Statement</option></select></div><div class="col-md-6"><label class="flbl">Period</label><select class="form-select fselect"><option>This Month</option><option>Last 3 Months</option><option>This Year</option><option>Custom</option></select></div></div></div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="exportData()"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- NOTIFICATIONS -->
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" style="max-height:350px;overflow-y:auto;">
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-success);"></span><strong style="font-size:0.82rem;">Payment Received</strong><small style="margin-left:auto;color:var(--text-tertiary);">3:45 PM</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">KES 15,000 from Sarah Auma</p></div>
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-orange);"></span><strong style="font-size:0.82rem;">Scheduled Payment</strong><small style="margin-left:auto;color:var(--text-tertiary);">Tomorrow</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">KES 10,000 to Regular Savings — auto-debit</p></div>
+        <div style="padding:var(--spacing-md);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-blue);"></span><strong style="font-size:0.82rem;">Wallet Frozen</strong><small style="margin-left:auto;color:var(--text-tertiary);">Dec 15</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Bernard Kiprop's wallet frozen — suspicious activity</p></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost btn-sm">Mark All Read</button><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- PROFILE -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+    <div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Super Admin</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div>
+</div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<!-- ====================================================================
+     JAVASCRIPT
+==================================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+function selCh(el){el.closest('.modal-body').querySelectorAll('.ch-opt').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');el.querySelector('input[type=radio]').checked=true;}
+function pinFocus(el){if(el.value.length===1&&el.nextElementSibling)el.nextElementSibling.focus();}
+function setFt(btn){btn.closest('.filter-tabs, div').querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');}
+
+// Copy Wallet ID
+function copyWalletId(){navigator.clipboard.writeText('SP-WAL-2024-00158');showToast('Wallet ID copied to clipboard!');}
+function copyLink(){navigator.clipboard.writeText('pay.saccopay.co.ke/SP-WAL-2024-00158');showToast('Payment link copied!');}
+function shareVia(method){showToast('Shared via '+method+'!');}
+
+// Add Money
+function processAddMoney(){bootstrap.Modal.getInstance(document.getElementById('addMoneyModal')).hide();showToast('KES added to wallet successfully!');}
+
+// Send Money (2-step with PIN)
+let sendOnPin=false;
+function sendNext(){document.getElementById('sendStep1').style.display='none';document.getElementById('sendStep2').style.display='block';document.getElementById('sendNextBtn').style.display='none';document.getElementById('sendConfirmBtn').style.display='inline-flex';sendOnPin=true;}
+function confirmSend(){bootstrap.Modal.getInstance(document.getElementById('sendMoneyModal')).hide();showToast('KES 5,000 sent successfully!');resetSend();}
+function resetSend(){document.getElementById('sendStep1').style.display='block';document.getElementById('sendStep2').style.display='none';document.getElementById('sendNextBtn').style.display='inline-flex';document.getElementById('sendConfirmBtn').style.display='none';sendOnPin=false;}
+document.getElementById('sendMoneyModal').addEventListener('hidden.bs.modal',resetSend);
+function toggleSendFields(){const v=document.getElementById('sendToType').value;document.getElementById('sendWalletField').style.display=v==='wallet'?'block':'none';document.getElementById('sendPhoneField').style.display=v==='phone'?'block':'none';}
+
+// Withdraw
+function processWithdraw(){bootstrap.Modal.getInstance(document.getElementById('withdrawModal')).hide();showToast('Withdrawal processed! Sent to M-Pesa.');}
+
+// Transfer to Savings
+function processTransferToSavings(){bootstrap.Modal.getInstance(document.getElementById('transferToSavingsModal')).hide();showToast('Transfer to savings completed!');}
+
+// Scheduled Payments
+function createSchedule(){bootstrap.Modal.getInstance(document.getElementById('newScheduleModal')).hide();showToast('Scheduled payment created!');}
+function updateSchedule(){bootstrap.Modal.getInstance(document.getElementById('editScheduleModal')).hide();showToast('Schedule updated!');}
+function cancelSchedule(){showToast('Scheduled payment cancelled.');}
+function resumeSchedule(){showToast('Scheduled payment resumed.');}
+
+// Account Controls
+function freezeAccount(){bootstrap.Modal.getInstance(document.getElementById('freezeAccountModal')).hide();document.getElementById('walletStatusPill').className='wallet-status-pill frozen';document.getElementById('walletStatusPill').innerHTML='<i class="bi bi-snow" style="font-size:0.4rem;"></i> Frozen';showToast('Wallet frozen! All activity blocked.');}
+function pauseAccount(){bootstrap.Modal.getInstance(document.getElementById('pauseAccountModal')).hide();document.getElementById('walletStatusPill').className='wallet-status-pill paused';document.getElementById('walletStatusPill').innerHTML='<i class="bi bi-pause-fill" style="font-size:0.4rem;"></i> Paused';showToast('Wallet paused. Receiving still works.');}
+function changePin(){bootstrap.Modal.getInstance(document.getElementById('changePinModal')).hide();showToast('Wallet PIN updated successfully!');}
+function closeWallet(){bootstrap.Modal.getInstance(document.getElementById('closeAccountModal')).hide();showToast('Wallet closed. Balance transferred.');}
+function togglePermission(el,name){showToast(name+' '+(el.checked?'enabled':'disabled'));}
+function toggleAlert(el,name){showToast(name+' alert '+(el.checked?'enabled':'disabled'));}
+
+// Limits & Alerts
+function saveLimits(){bootstrap.Modal.getInstance(document.getElementById('editLimitsModal')).hide();showToast('Transaction limits updated!');}
+function saveAlerts(){bootstrap.Modal.getInstance(document.getElementById('editAlertsModal')).hide();showToast('Alert settings saved!');}
+
+// Create Wallet
+function createWallet(){bootstrap.Modal.getInstance(document.getElementById('createWalletModal')).hide();showToast('Wallet created! ID: SP-WAL-2024-00412');}
+
+// Transaction Detail
+function openTxDetail(ref){document.getElementById('txRef').textContent=ref;document.getElementById('txRefCode').textContent=ref;document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});setTimeout(()=>openModal('txDetailModal'),350);}
+
+// Export
+function exportData(){bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();showToast('Transactions exported!');}
+
+// QR Code Generation (CSS grid pattern)
+document.addEventListener('DOMContentLoaded',function(){
+    const grid=document.getElementById('qrGrid');
+    if(grid){for(let i=0;i<49;i++){const s=document.createElement('span');s.style.background=Math.random()>0.4?'#0f172a':'white';grid.appendChild(s);}}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rongo SACCO KYC Verification - Process and approve member verifications">
+    <title>KYC Verification | Rongo SACCO Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="./admin-dashboard.css">
+</head>
+<body>
+    
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>Rongo SACCO</h1>
+                    <p>Admin Portal</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                <!-- Dashboard Section -->
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="bi bi-speedometer2 nav-icon"></i>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+                
+                <!-- Member Management -->
+                <div class="nav-section-title">Members</div>
+                <div class="nav-item">
+                    <a href="members-all.html" class="nav-link">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span>All Members</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="members-kyc.html" class="nav-link active">
+                        <i class="bi bi-person-check nav-icon"></i>
+                        <span>KYC Pending</span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                        <i class="bi bi-person-plus nav-icon"></i>
+                        <span>Register Member</span>
+                    </a>
+                </div>
+                
+                <!-- Financial Operations -->
+                <div class="nav-section-title">Financial</div>
+                <div class="nav-item">
+                    <a href="transactions.html" class="nav-link">
+                        <i class="bi bi-arrow-left-right nav-icon"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="deposits.html" class="nav-link">
+                        <i class="bi bi-piggy-bank nav-icon"></i>
+                        <span>Deposits</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="withdrawals.html" class="nav-link">
+                        <i class="bi bi-cash-coin nav-icon"></i>
+                        <span>Withdrawals</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="shares.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Share Capital</span>
+                    </a>
+                </div>
+                
+                <!-- Loan Management -->
+                <div class="nav-section-title">Loans</div>
+                <div class="nav-item">
+                    <a href="loans-overview.html" class="nav-link">
+                        <i class="bi bi-clipboard-data nav-icon"></i>
+                        <span>Loan Portfolio</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-applications.html" class="nav-link">
+                        <i class="bi bi-file-earmark-text nav-icon"></i>
+                        <span>Applications</span>
+                        <span class="nav-badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-disbursements.html" class="nav-link">
+                        <i class="bi bi-send nav-icon"></i>
+                        <span>Disbursements</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-repayments.html" class="nav-link">
+                        <i class="bi bi-arrow-down-circle nav-icon"></i>
+                        <span>Repayments</span>
+                    </a>
+                </div>
+                
+                <!-- Reports -->
+                <div class="nav-section-title">Reports</div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                        <span>All Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="compliance.html" class="nav-link">
+                        <i class="bi bi-clipboard-check nav-icon"></i>
+                        <span>Compliance</span>
+                    </a>
+                </div>
+                
+                <!-- Settings -->
+                <div class="nav-section-title">Settings</div>
+                <div class="nav-item">
+                    <a href="config.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="bi bi-person-gear nav-icon"></i>
+                        <span>Staff Management</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Navigation Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <!-- Search Bar -->
+                    <div class="topbar-search">
+                        <i class="bi bi-search topbar-search-icon"></i>
+                        <input type="text" placeholder="Search members by name, ID, phone...">
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="topbar-actions">
+                        <!-- Quick Actions -->
+                        <button class="topbar-action-btn" title="Quick Actions" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="topbar-action-btn" title="Notifications" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                            <i class="bi bi-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        
+                        <!-- Messages -->
+                        <button class="topbar-action-btn" title="Messages" data-bs-toggle="modal" data-bs-target="#messagesModal">
+                            <i class="bi bi-chat-dots"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        
+                        <!-- Help -->
+                        <button class="topbar-action-btn" title="Help Center" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <i class="bi bi-question-circle"></i>
+                        </button>
+                        
+                        <!-- User Profile -->
+                        <div class="user-profile" data-bs-toggle="modal" data-bs-target="#profileModal" style="cursor: pointer;">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info">
+                                <h4>John Maina</h4>
+                                <p>General Manager</p>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="bi bi-house-door"></i>
+                        <span>Home</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item">
+                        <span>Members</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item active">
+                        <span>KYC Verification</span>
+                    </div>
+                </nav>
+                
+                <!-- Page Header with Actions -->
+                <div class="dashboard-header mb-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                        <div>
+                            <h2>KYC Verification Queue</h2>
+                            <p>Review and approve pending member verifications - You have 12 members awaiting approval</p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#kycGuidelinesModal">
+                                <i class="bi bi-book"></i> KYC Guidelines
+                            </button>
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#bulkApproveModal">
+                                <i class="bi bi-check-all"></i> Bulk Approve
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                                <i class="bi bi-person-plus"></i> Register for Member
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- KYC Statistics -->
+                <div class="stats-grid mb-4">
+                    <!-- Pending Verification -->
+                    <div class="stat-card" onclick="filterByStatus('pending')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Pending Verification</div>
+                                <div class="stat-card-value">12</div>
+                                <span class="stat-card-change negative">
+                                    <i class="bi bi-clock"></i> Needs action
+                                </span>
+                            </div>
+                            <div class="stat-card-icon warning">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>5 over 48 hours</span>
+                                <span class="text-primary">Filter →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Under Review -->
+                    <div class="stat-card" onclick="filterByStatus('reviewing')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Under Review</div>
+                                <div class="stat-card-value">7</div>
+                                <span class="stat-card-change positive">
+                                    <i class="bi bi-eye"></i> In progress
+                                </span>
+                            </div>
+                            <div class="stat-card-icon info">
+                                <i class="bi bi-search"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>Assigned to staff</span>
+                                <span class="text-primary">View →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Approved Today -->
+                    <div class="stat-card" data-bs-toggle="modal" data-bs-target="#approvedTodayModal" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Approved Today</div>
+                                <div class="stat-card-value">8</div>
+                                <span class="stat-card-change positive">
+                                    <i class="bi bi-check-circle"></i> Completed
+                                </span>
+                            </div>
+                            <div class="stat-card-icon success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>24 this week</span>
+                                <span class="text-primary">Details →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Rejected/Incomplete -->
+                    <div class="stat-card" data-bs-toggle="modal" data-bs-target="#rejectedModal" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Rejected/Incomplete</div>
+                                <div class="stat-card-value">3</div>
+                                <span class="stat-card-change negative">
+                                    <i class="bi bi-x-circle"></i> Action needed
+                                </span>
+                            </div>
+                            <div class="stat-card-icon danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>Awaiting member response</span>
+                                <span class="text-primary">Review →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter and Sort Options -->
+                <div class="glass-card mb-4">
+                    <div class="glass-card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label">Filter by Status</label>
+                                <select class="form-select" id="statusFilter" onchange="applyFilters()">
+                                    <option value="all">All Applications</option>
+                                    <option value="pending" selected>Pending Verification</option>
+                                    <option value="reviewing">Under Review</option>
+                                    <option value="incomplete">Incomplete Documents</option>
+                                    <option value="urgent">Urgent (48+ hours)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label class="form-label">Priority</label>
+                                <select class="form-select" id="priorityFilter" onchange="applyFilters()">
+                                    <option value="all">All Priority</option>
+                                    <option value="urgent">Urgent</option>
+                                    <option value="high">High</option>
+                                    <option value="normal">Normal</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label class="form-label">Submitted</label>
+                                <select class="form-select" id="dateFilter" onchange="applyFilters()">
+                                    <option value="all">All Time</option>
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label class="form-label">Assigned To</label>
+                                <select class="form-select" id="assigneeFilter" onchange="applyFilters()">
+                                    <option value="all">All Staff</option>
+                                    <option value="me">Assigned to Me</option>
+                                    <option value="unassigned">Unassigned</option>
+                                    <option value="john">John Maina</option>
+                                    <option value="jane">Jane Kamau</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline flex-fill" onclick="resetFilters()">
+                                        <i class="bi bi-x-circle"></i> Reset
+                                    </button>
+                                    <button class="btn btn-primary flex-fill" data-bs-toggle="modal" data-bs-target="#sortOptionsModal">
+                                        <i class="bi bi-sort-down"></i> Sort
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- KYC Applications List -->
+                <div class="row g-4">
+                    <!-- KYC Application Card 1 -->
+                    <div class="col-12">
+                        <div class="kyc-application-card urgent">
+                            <div class="kyc-header">
+                                <div class="d-flex align-items-start gap-3 flex-grow-1">
+                                    <div class="member-avatar">PM</div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h5 class="mb-1">Peter Mwangi</h5>
+                                                <p class="text-secondary mb-2">Application ID: <strong>KYC-2024-0089</strong> | Member ID: <strong>R-02847</strong></p>
+                                                <div class="d-flex gap-2 flex-wrap">
+                                                    <span class="badge badge-warning">Pending Verification</span>
+                                                    <span class="badge badge-danger">Urgent (72 hours)</span>
+                                                    <span class="badge" style="background: #ff6b6b; color: white;">
+                                                        <i class="bi bi-clock"></i> SLA: 24h remaining
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i> Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignToModal"><i class="bi bi-person-plus"></i> Assign to Staff</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addNoteModal"><i class="bi bi-sticky"></i> Add Note</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Contact Member</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteApplication('KYC-2024-0089')"><i class="bi bi-trash"></i> Delete Application</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Member Info Summary -->
+                                        <div class="row g-3 mt-2">
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">Phone Number</small>
+                                                <p class="mb-0"><strong>+254 755 123 456</strong></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">Email</small>
+                                                <p class="mb-0">peter.mwangi@email.com</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">National ID</small>
+                                                <p class="mb-0"><strong>12345678</strong></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">Submitted</small>
+                                                <p class="mb-0">3 days ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Document Verification Checklist -->
+                            <div class="kyc-body">
+                                <h6 class="mb-3">Document Verification Checklist</h6>
+                                <div class="row g-3">
+                                    <!-- National ID -->
+                                    <div class="col-md-3">
+                                        <div class="document-check-item verified">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-card-image"></i>
+                                                <span>National ID</span>
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('national-id', 'Peter Mwangi')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#editDocumentModal">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </button>
+                                            </div>
+                                            <small class="text-success">Verified by Admin</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Passport Photo -->
+                                    <div class="col-md-3">
+                                        <div class="document-check-item pending">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-person-badge"></i>
+                                                <span>Passport Photo</span>
+                                                <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('passport', 'Peter Mwangi')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-success" onclick="approveDocument('passport')">
+                                                    <i class="bi bi-check"></i> Approve
+                                                </button>
+                                            </div>
+                                            <small class="text-warning">Needs Review</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- KRA PIN -->
+                                    <div class="col-md-3">
+                                        <div class="document-check-item missing">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                <span>KRA PIN</span>
+                                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadForMemberModal" onclick="setUploadMember('Peter Mwangi', 'KYC-2024-0089')">
+                                                    <i class="bi bi-upload"></i> Upload
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#requestDocumentModal">
+                                                    <i class="bi bi-envelope"></i> Request
+                                                </button>
+                                            </div>
+                                            <small class="text-danger">Missing - Admin Can Upload</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Proof of Residence -->
+                                    <div class="col-md-3">
+                                        <div class="document-check-item rejected">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-house"></i>
+                                                <span>Proof of Residence</span>
+                                                <i class="bi bi-x-circle-fill text-danger"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('residence', 'Peter Mwangi')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadForMemberModal" onclick="setUploadMember('Peter Mwangi', 'KYC-2024-0089')">
+                                                    <i class="bi bi-upload"></i> Re-upload
+                                                </button>
+                                            </div>
+                                            <small class="text-danger">Rejected - Blurry image</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Member Information Edit Section -->
+                                <div class="mt-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="mb-0">Member Information</h6>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberInfoModal" onclick="loadMemberInfo('KYC-2024-0089')">
+                                            <i class="bi bi-pencil"></i> Edit Member Info
+                                        </button>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <div class="info-display-box" onclick="editField('name')">
+                                                <small>Full Name</small>
+                                                <strong>Peter Mwangi Kamau</strong>
+                                                <i class="bi bi-pencil edit-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="info-display-box" onclick="editField('phone')">
+                                                <small>Phone Number</small>
+                                                <strong>+254 755 123 456</strong>
+                                                <i class="bi bi-pencil edit-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="info-display-box" onclick="editField('email')">
+                                                <small>Email Address</small>
+                                                <strong>peter.mwangi@email.com</strong>
+                                                <i class="bi bi-pencil edit-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Notes Section -->
+                                <div class="mt-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">Verification Notes</h6>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addNoteModal" onclick="setNoteContext('KYC-2024-0089')">
+                                            <i class="bi bi-plus"></i> Add Note
+                                        </button>
+                                    </div>
+                                    <div class="notes-timeline">
+                                        <div class="note-item">
+                                            <div class="note-header">
+                                                <strong>John Maina</strong>
+                                                <span class="text-secondary">2 hours ago</span>
+                                            </div>
+                                            <p class="mb-0">KRA PIN document is missing. Sent email to member requesting submission.</p>
+                                        </div>
+                                        <div class="note-item">
+                                            <div class="note-header">
+                                                <strong>Jane Kamau</strong>
+                                                <span class="text-secondary">1 day ago</span>
+                                            </div>
+                                            <p class="mb-0">Proof of residence rejected - image quality too poor to read address.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Footer -->
+                            <div class="kyc-footer">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="confirm1">
+                                        <label class="form-check-label" for="confirm1">
+                                            I have verified all documents and member information
+                                        </label>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectKycModal" onclick="setRejectContext('KYC-2024-0089', 'Peter Mwangi')">
+                                            <i class="bi bi-x-circle"></i> Reject
+                                        </button>
+                                        <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#requestMoreInfoModal" onclick="setRequestContext('KYC-2024-0089', 'Peter Mwangi')">
+                                            <i class="bi bi-info-circle"></i> Request More Info
+                                        </button>
+                                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveKycModal" onclick="setApproveContext('KYC-2024-0089', 'Peter Mwangi')">
+                                            <i class="bi bi-check-circle"></i> Approve KYC
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- KYC Application Card 2 -->
+                    <div class="col-12">
+                        <div class="kyc-application-card">
+                            <div class="kyc-header">
+                                <div class="d-flex align-items-start gap-3 flex-grow-1">
+                                    <div class="member-avatar">AN</div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h5 class="mb-1">Alice Nyambura</h5>
+                                                <p class="text-secondary mb-2">Application ID: <strong>KYC-2024-0088</strong> | Member ID: <strong>R-02846</strong></p>
+                                                <div class="d-flex gap-2 flex-wrap">
+                                                    <span class="badge badge-info">Under Review</span>
+                                                    <span class="badge" style="background: #4caf50; color: white;">
+                                                        <i class="bi bi-person"></i> Assigned: Jane Kamau
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i> Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignToModal"><i class="bi bi-person-plus"></i> Re-assign</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addNoteModal"><i class="bi bi-sticky"></i> Add Note</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewHistoryModal"><i class="bi bi-clock-history"></i> View History</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row g-3 mt-2">
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">Phone Number</small>
+                                                <p class="mb-0"><strong>+254 722 987 654</strong></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">Email</small>
+                                                <p class="mb-0">alice.n@email.com</p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">National ID</small>
+                                                <p class="mb-0"><strong>23456789</strong></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <small class="text-secondary">Submitted</small>
+                                                <p class="mb-0">1 day ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="kyc-body">
+                                <h6 class="mb-3">Document Verification Checklist</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <div class="document-check-item verified">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-card-image"></i>
+                                                <span>National ID</span>
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('national-id', 'Alice Nyambura')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </div>
+                                            <small class="text-success">Verified</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="document-check-item verified">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-person-badge"></i>
+                                                <span>Passport Photo</span>
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('passport', 'Alice Nyambura')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </div>
+                                            <small class="text-success">Verified</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="document-check-item verified">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                <span>KRA PIN</span>
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('kra', 'Alice Nyambura')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </div>
+                                            <small class="text-success">Verified</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="document-check-item verified">
+                                            <div class="document-check-header">
+                                                <i class="bi bi-house"></i>
+                                                <span>Proof of Residence</span>
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </div>
+                                            <div class="document-check-actions">
+                                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewDocumentModal" onclick="loadDocument('residence', 'Alice Nyambura')">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </div>
+                                            <small class="text-success">Verified</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-success mt-3">
+                                    <i class="bi bi-check-circle"></i> All documents verified. Ready for final approval.
+                                </div>
+                            </div>
+                            
+                            <div class="kyc-footer">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="confirm2" checked>
+                                        <label class="form-check-label" for="confirm2">
+                                            I have verified all documents and member information
+                                        </label>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectKycModal" onclick="setRejectContext('KYC-2024-0088', 'Alice Nyambura')">
+                                            <i class="bi bi-x-circle"></i> Reject
+                                        </button>
+                                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveKycModal" onclick="setApproveContext('KYC-2024-0088', 'Alice Nyambura')">
+                                            <i class="bi bi-check-circle"></i> Approve KYC
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Compact View for Remaining Applications -->
+                    <div class="col-12">
+                        <div class="glass-card">
+                            <div class="glass-card-header flex-between">
+                                <h5 class="mb-0">More Pending Applications (10)</h5>
+                                <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#viewAllPendingModal">
+                                    View All
+                                </button>
+                            </div>
+                            <div class="glass-card-body">
+                                <div class="compact-kyc-list">
+                                    <div class="compact-kyc-item" onclick="expandApplication('KYC-2024-0087')">
+                                        <div class="compact-kyc-info">
+                                            <div class="member-avatar-sm">JO</div>
+                                            <div>
+                                                <strong>James Omondi</strong>
+                                                <p class="mb-0 text-secondary small">KYC-2024-0087 | Submitted 2 days ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="compact-kyc-status">
+                                            <span class="badge badge-warning">3/4 Documents</span>
+                                        </div>
+                                        <div class="compact-kyc-actions">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); quickView('KYC-2024-0087')">
+                                                Quick View
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="compact-kyc-item" onclick="expandApplication('KYC-2024-0086')">
+                                        <div class="compact-kyc-info">
+                                            <div class="member-avatar-sm">MW</div>
+                                            <div>
+                                                <strong>Mary Wambui</strong>
+                                                <p class="mb-0 text-secondary small">KYC-2024-0086 | Submitted 3 days ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="compact-kyc-status">
+                                            <span class="badge badge-success">4/4 Documents</span>
+                                        </div>
+                                        <div class="compact-kyc-actions">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); quickView('KYC-2024-0086')">
+                                                Quick View
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="compact-kyc-item" onclick="expandApplication('KYC-2024-0085')">
+                                        <div class="compact-kyc-info">
+                                            <div class="member-avatar-sm">DK</div>
+                                            <div>
+                                                <strong>David Kariuki</strong>
+                                                <p class="mb-0 text-secondary small">KYC-2024-0085 | Submitted 4 days ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="compact-kyc-status">
+                                            <span class="badge badge-danger">2/4 Documents</span>
+                                        </div>
+                                        <div class="compact-kyc-actions">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); quickView('KYC-2024-0085')">
+                                                Quick View
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- MODALS -->
+    
+    <!-- Approve KYC Modal -->
+    <div class="modal fade" id="approveKycModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-check-circle"></i> Approve KYC Verification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        <i class="bi bi-info-circle"></i> Approving this KYC will activate the member account and grant full access to SACCO services.
+                    </div>
+                    
+                    <h6>Member Details</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td><strong>Name:</strong></td>
+                            <td id="approveMemberName">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Application ID:</strong></td>
+                            <td id="approveApplicationId">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Documents Status:</strong></td>
+                            <td><span class="badge badge-success">All Verified</span></td>
+                        </tr>
+                    </table>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Member Tier Assignment</label>
+                        <select class="form-select">
+                            <option value="bronze">Bronze (Default)</option>
+                            <option value="silver">Silver</option>
+                            <option value="gold">Gold</option>
+                        </select>
+                        <small class="text-secondary">Tier can be upgraded later based on deposits and activity</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Initial Share Purchase</label>
+                        <input type="number" class="form-control" placeholder="KES 5,000" value="5000" min="5000">
+                        <small class="text-secondary">Minimum KES 5,000 required</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Approval Notes (Optional)</label>
+                        <textarea class="form-control" rows="3" placeholder="Add any notes about this approval..."></textarea>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="sendWelcome" checked>
+                        <label class="form-check-label" for="sendWelcome">
+                            Send welcome email and SMS to member
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmApproval" required>
+                        <label class="form-check-label" for="confirmApproval">
+                            I confirm that all documents have been verified and are authentic
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmApproval()">
+                        <i class="bi bi-check-circle"></i> Approve & Activate Member
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reject KYC Modal -->
+    <div class="modal fade" id="rejectKycModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-x-circle"></i> Reject KYC Application</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Rejecting this application will notify the member and require re-submission.
+                    </div>
+                    
+                    <h6>Member: <span id="rejectMemberName">-</span></h6>
+                    <h6>Application ID: <span id="rejectApplicationId">-</span></h6>
+                    
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Reason for Rejection *</label>
+                        <select class="form-select" id="rejectReason" onchange="toggleCustomReason()">
+                            <option value="">Select a reason</option>
+                            <option value="invalid-id">Invalid National ID</option>
+                            <option value="poor-quality">Poor Document Quality</option>
+                            <option value="mismatch">Information Mismatch</option>
+                            <option value="fake-documents">Suspected Fake Documents</option>
+                            <option value="incomplete">Incomplete Information</option>
+                            <option value="duplicate">Duplicate Application</option>
+                            <option value="underage">Underage Applicant</option>
+                            <option value="other">Other (Specify)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3" id="customReasonDiv" style="display: none;">
+                        <label class="form-label">Specify Reason *</label>
+                        <input type="text" class="form-control" placeholder="Enter custom reason">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Detailed Explanation *</label>
+                        <textarea class="form-control" rows="4" placeholder="Provide detailed explanation for the rejection..." required></textarea>
+                        <small class="text-secondary">This will be sent to the member</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Action for Member</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rejectAction" id="allowResubmit" checked>
+                            <label class="form-check-label" for="allowResubmit">
+                                Allow re-submission with corrections
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rejectAction" id="permanentReject">
+                            <label class="form-check-label" for="permanentReject">
+                                Permanent rejection (requires admin re-registration)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="notifyReject" checked>
+                        <label class="form-check-label" for="notifyReject">
+                            Send rejection notification email and SMS
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmRejection()">
+                        <i class="bi bi-x-circle"></i> Confirm Rejection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Request More Info Modal -->
+    <div class="modal fade" id="requestMoreInfoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="bi bi-info-circle"></i> Request Additional Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Member: <span id="requestMemberName">-</span></h6>
+                    <h6>Application ID: <span id="requestApplicationId">-</span></h6>
+                    
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Documents Needed</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="reqNationalId">
+                            <label class="form-check-label" for="reqNationalId">
+                                National ID (Clearer copy)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="reqPassport">
+                            <label class="form-check-label" for="reqPassport">
+                                Passport Photo
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="reqKra">
+                            <label class="form-check-label" for="reqKra">
+                                KRA PIN Certificate
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="reqResidence">
+                            <label class="form-check-label" for="reqResidence">
+                                Proof of Residence
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Additional Requirements</label>
+                        <textarea class="form-control" rows="4" placeholder="Specify what additional information or corrections are needed..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Deadline for Submission</label>
+                        <select class="form-select">
+                            <option value="3">3 days</option>
+                            <option value="7" selected>7 days</option>
+                            <option value="14">14 days</option>
+                            <option value="30">30 days</option>
+                        </select>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Member will be notified via email and SMS with details of required documents.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" onclick="sendInfoRequest()">
+                        <i class="bi bi-send"></i> Send Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Document Modal -->
+    <div class="modal fade" id="viewDocumentModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-file-image"></i> Document Viewer - <span id="docMemberName">-</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Document Preview Area -->
+                            <div class="document-preview-area">
+                                <div class="document-preview-tools">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="zoomIn()">
+                                        <i class="bi bi-zoom-in"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="zoomOut()">
+                                        <i class="bi bi-zoom-out"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="rotateDoc()">
+                                        <i class="bi bi-arrow-clockwise"></i> Rotate
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="downloadDoc()">
+                                        <i class="bi bi-download"></i> Download
+                                    </button>
+                                </div>
+                                <div class="document-display">
+                                    <!-- Placeholder image -->
+                                    <div class="placeholder-doc">
+                                        <i class="bi bi-file-earmark-image" style="font-size: 4rem;"></i>
+                                        <p>Document Preview</p>
+                                        <small class="text-secondary">National ID - Front</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <h6>Document Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Document Type:</strong></td>
+                                    <td id="docType">National ID</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Uploaded By:</strong></td>
+                                    <td>Peter Mwangi</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Upload Date:</strong></td>
+                                    <td>Jan 20, 2024</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>File Size:</strong></td>
+                                    <td>2.3 MB</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Format:</strong></td>
+                                    <td>JPEG</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td><span class="badge badge-success">Verified</span></td>
+                                </tr>
+                            </table>
+                            
+                            <h6 class="mt-4">Verification Checklist</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check1" checked>
+                                <label class="form-check-label" for="check1">
+                                    Document is clear and readable
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check2" checked>
+                                <label class="form-check-label" for="check2">
+                                    Name matches application
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check3" checked>
+                                <label class="form-check-label" for="check3">
+                                    ID number matches application
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check4" checked>
+                                <label class="form-check-label" for="check4">
+                                    Document appears authentic
+                                </label>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label class="form-label">Verification Notes</label>
+                                <textarea class="form-control" rows="3" placeholder="Add notes about this document..."></textarea>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-3">
+                                <button class="btn btn-success" onclick="approveDocument()">
+                                    <i class="bi bi-check-circle"></i> Approve Document
+                                </button>
+                                <button class="btn btn-danger" onclick="rejectDocument()">
+                                    <i class="bi bi-x-circle"></i> Reject Document
+                                </button>
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadForMemberModal">
+                                    <i class="bi bi-upload"></i> Replace Document
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Upload Document for Member Modal -->
+    <div class="modal fade" id="uploadForMemberModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-upload"></i> Upload Document for Member</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> As an admin, you can upload documents on behalf of members who cannot access their dashboard.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Member Name</label>
+                        <input type="text" class="form-control" id="uploadMemberName" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Application ID</label>
+                        <input type="text" class="form-control" id="uploadApplicationId" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Document Type *</label>
+                        <select class="form-select" required>
+                            <option value="">Select document type</option>
+                            <option value="national-id">National ID</option>
+                            <option value="passport-photo">Passport Photo</option>
+                            <option value="kra-pin">KRA PIN Certificate</option>
+                            <option value="proof-residence">Proof of Residence</option>
+                            <option value="employment-letter">Employment Letter</option>
+                            <option value="bank-statement">Bank Statement</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Upload Document *</label>
+                        <input type="file" class="form-control" accept="image/*,application/pdf" required>
+                        <small class="text-secondary">Accepted formats: JPG, PNG, PDF (Max 5MB)</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Upload Notes</label>
+                        <textarea class="form-control" rows="3" placeholder="Add notes about this upload (e.g., 'Member submitted via email')"></textarea>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="notifyMemberUpload">
+                        <label class="form-check-label" for="notifyMemberUpload">
+                            Notify member via SMS that document was uploaded
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadDocument()">
+                        <i class="bi bi-upload"></i> Upload Document
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Member Info Modal -->
+    <div class="modal fade" id="editMemberInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Member Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Changes made here will update the member's profile and be visible on their dashboard.
+                    </div>
+                    
+                    <ul class="nav nav-tabs mb-3" id="editMemberTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#editPersonal">Personal Info</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#editContact">Contact</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#editFinancial">Financial</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="editPersonal">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" value="Peter">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Middle Name</label>
+                                    <input type="text" class="form-control" value="Mwangi">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" value="Kamau">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">National ID *</label>
+                                    <input type="text" class="form-control" value="12345678">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" value="1990-05-15">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Gender *</label>
+                                    <select class="form-select">
+                                        <option value="male" selected>Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Marital Status</label>
+                                    <select class="form-select">
+                                        <option value="single" selected>Single</option>
+                                        <option value="married">Married</option>
+                                        <option value="divorced">Divorced</option>
+                                        <option value="widowed">Widowed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="editContact">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" value="+254 755 123 456">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Alternative Phone</label>
+                                    <input type="tel" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" value="peter.mwangi@email.com">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Physical Address *</label>
+                                    <textarea class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">County</label>
+                                    <select class="form-select">
+                                        <option value="migori">Migori</option>
+                                        <option value="nairobi">Nairobi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Postal Code</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="editFinancial">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Occupation *</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Employer</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Monthly Income Range</label>
+                                    <select class="form-select">
+                                        <option value="0-30k">KES 0 - 30,000</option>
+                                        <option value="30-50k">KES 30,000 - 50,000</option>
+                                        <option value="50-100k">KES 50,000 - 100,000</option>
+                                        <option value="100k+">KES 100,000+</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">KRA PIN</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveMemberInfo()">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Note Modal -->
+    <div class="modal fade" id="addNoteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-sticky"></i> Add Verification Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Note Type</label>
+                        <select class="form-select">
+                            <option value="general">General Note</option>
+                            <option value="document">Document Issue</option>
+                            <option value="contact">Member Contact</option>
+                            <option value="verification">Verification Step</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Note</label>
+                        <textarea class="form-control" rows="4" placeholder="Add your note here..."></textarea>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="visibleToMember">
+                        <label class="form-check-label" for="visibleToMember">
+                            Make this note visible to member
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNote()">
+                        <i class="bi bi-save"></i> Add Note
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Approve Modal -->
+    <div class="modal fade" id="bulkApproveModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-check-all"></i> Bulk KYC Approval</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Only applications with ALL documents verified should be bulk approved.
+                    </div>
+                    
+                    <h6>Applications Ready for Approval (4)</h6>
+                    <div class="list-group mb-3">
+                        <div class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">
+                                    <strong>Alice Nyambura</strong> - KYC-2024-0088
+                                    <span class="badge badge-success">4/4 Documents</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">
+                                    <strong>Mary Wambui</strong> - KYC-2024-0086
+                                    <span class="badge badge-success">4/4 Documents</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">
+                                    <strong>Joseph Nderitu</strong> - KYC-2024-0084
+                                    <span class="badge badge-success">4/4 Documents</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">
+                                    <strong>Grace Wanjiru</strong> - KYC-2024-0082
+                                    <span class="badge badge-success">4/4 Documents</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Default Tier Assignment</label>
+                        <select class="form-select">
+                            <option value="bronze" selected>Bronze (Recommended)</option>
+                            <option value="silver">Silver</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="bulkSendWelcome" checked>
+                        <label class="form-check-label" for="bulkSendWelcome">
+                            Send welcome email and SMS to all approved members
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="bulkConfirm" required>
+                        <label class="form-check-label" for="bulkConfirm">
+                            I confirm all selected applications have been individually verified
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmBulkApproval()">
+                        <i class="bi bi-check-all"></i> Approve 4 Applications
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions Modal -->
+    <div class="modal fade" id="quickActionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                            <i class="bi bi-person-plus"></i> Register Member (Admin)
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#bulkApproveModal">
+                            <i class="bi bi-check-all"></i> Bulk Approve KYC
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#kycGuidelinesModal">
+                            <i class="bi bi-book"></i> View KYC Guidelines
+                        </a>
+                        <a href="members-all.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> View All Members
+                        </a>
+                        <a href="analytics.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-graph-up"></i> View Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-circle"></i> Account Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar mx-auto" style="width: 80px; height: 80px; font-size: 2rem;">JM</div>
+                        <h5 class="mt-3">John Maina</h5>
+                        <p class="text-secondary">General Manager</p>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                    <div class="list-group">
+                        <a href="profile.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person"></i> Edit Profile
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-key"></i> Change Password
+                        </a>
+                        <a href="config.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action text-danger">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Filter functions
+        function filterByStatus(status) {
+            document.getElementById('statusFilter').value = status;
+            applyFilters();
+            console.log('Filtered by status:', status);
+        }
+        
+        function applyFilters() {
+            const status = document.getElementById('statusFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            const assignee = document.getElementById('assigneeFilter').value;
+            
+            console.log('Applying filters:', { status, priority, date, assignee });
+            // Backend integration would filter the list here
+        }
+        
+        function resetFilters() {
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('priorityFilter').value = 'all';
+            document.getElementById('dateFilter').value = 'all';
+            document.getElementById('assigneeFilter').value = 'all';
+            applyFilters();
+        }
+        
+        // Document management
+        function loadDocument(docType, memberName) {
+            document.getElementById('docMemberName').textContent = memberName;
+            document.getElementById('docType').textContent = formatDocType(docType);
+            console.log('Loading document:', docType, 'for', memberName);
+        }
+        
+        function formatDocType(type) {
+            const types = {
+                'national-id': 'National ID',
+                'passport': 'Passport Photo',
+                'kra': 'KRA PIN Certificate',
+                'residence': 'Proof of Residence'
+            };
+            return types[type] || type;
+        }
+        
+        function approveDocument(docType) {
+            console.log('Approving document:', docType);
+            showNotification('Document approved successfully!', 'success');
+        }
+        
+        function rejectDocument() {
+            if (confirm('Are you sure you want to reject this document?')) {
+                console.log('Document rejected');
+                showNotification('Document rejected', 'warning');
+            }
+        }
+        
+        // Upload for member
+        function setUploadMember(memberName, applicationId) {
+            document.getElementById('uploadMemberName').value = memberName;
+            document.getElementById('uploadApplicationId').value = applicationId;
+        }
+        
+        function uploadDocument() {
+            console.log('Uploading document for member');
+            showNotification('Document uploaded successfully!', 'success');
+            // Close modal and refresh
+            bootstrap.Modal.getInstance(document.getElementById('uploadForMemberModal')).hide();
+        }
+        
+        // Edit member info
+        function editField(fieldName) {
+            console.log('Editing field:', fieldName);
+            const modal = new bootstrap.Modal(document.getElementById('editMemberInfoModal'));
+            modal.show();
+        }
+        
+        function loadMemberInfo(applicationId) {
+            console.log('Loading member info for:', applicationId);
+        }
+        
+        function saveMemberInfo() {
+            console.log('Saving member information');
+            showNotification('Member information updated successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('editMemberInfoModal')).hide();
+        }
+        
+        // Notes
+        function setNoteContext(applicationId) {
+            console.log('Setting note context for:', applicationId);
+        }
+        
+        function saveNote() {
+            console.log('Saving note');
+            showNotification('Note added successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addNoteModal')).hide();
+        }
+        
+        // Approve/Reject KYC
+        function setApproveContext(applicationId, memberName) {
+            document.getElementById('approveMemberName').textContent = memberName;
+            document.getElementById('approveApplicationId').textContent = applicationId;
+        }
+        
+        function setRejectContext(applicationId, memberName) {
+            document.getElementById('rejectMemberName').textContent = memberName;
+            document.getElementById('rejectApplicationId').textContent = applicationId;
+        }
+        
+        function setRequestContext(applicationId, memberName) {
+            document.getElementById('requestMemberName').textContent = memberName;
+            document.getElementById('requestApplicationId').textContent = applicationId;
+        }
+        
+        function confirmApproval() {
+            if (!document.getElementById('confirmApproval').checked) {
+                alert('Please confirm that all documents have been verified');
+                return;
+            }
+            
+            console.log('KYC Approved');
+            showNotification('Member KYC approved! Account activated.', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('approveKycModal')).hide();
+            
+            // Remove the card from the list
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
+        
+        function confirmRejection() {
+            console.log('KYC Rejected');
+            showNotification('KYC application rejected. Member has been notified.', 'warning');
+            bootstrap.Modal.getInstance(document.getElementById('rejectKycModal')).hide();
+        }
+        
+        function sendInfoRequest() {
+            console.log('Info request sent');
+            showNotification('Request sent to member successfully!', 'info');
+            bootstrap.Modal.getInstance(document.getElementById('requestMoreInfoModal')).hide();
+        }
+        
+        function toggleCustomReason() {
+            const reason = document.getElementById('rejectReason').value;
+            document.getElementById('customReasonDiv').style.display = reason === 'other' ? 'block' : 'none';
+        }
+        
+        // Bulk approval
+        function confirmBulkApproval() {
+            if (!document.getElementById('bulkConfirm').checked) {
+                alert('Please confirm verification of all applications');
+                return;
+            }
+            
+            console.log('Bulk approval confirmed');
+            showNotification('4 members approved successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('bulkApproveModal')).hide();
+            setTimeout(() => window.location.reload(), 1500);
+        }
+        
+        // Delete application
+        function deleteApplication(applicationId) {
+            if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+                console.log('Deleting application:', applicationId);
+                showNotification('Application deleted', 'danger');
+            }
+        }
+        
+        // Compact list functions
+        function expandApplication(applicationId) {
+            console.log('Expanding application:', applicationId);
+            // In real implementation, this would load full application
+        }
+        
+        function quickView(applicationId) {
+            console.log('Quick view for:', applicationId);
+            // Show a quick preview modal
+        }
+        
+        // Document viewer functions
+        function zoomIn() {
+            console.log('Zoom in');
+        }
+        
+        function zoomOut() {
+            console.log('Zoom out');
+        }
+        
+        function rotateDoc() {
+            console.log('Rotate document');
+        }
+        
+        function downloadDoc() {
+            console.log('Download document');
+        }
+        
+        // Notification helper
+        function showNotification(message, type) {
+            const bgColor = {
+                'success': '#4caf50',
+                'warning': '#ffc107',
+                'danger': '#f44336',
+                'info': '#2196f3'
+            }[type] || '#00d084';
+            
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-' + type + ' position-fixed top-0 end-0 m-3';
+            notification.style.zIndex = '9999';
+            notification.innerHTML = `<i class="bi bi-check-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+    
+    <style>
+        /* KYC Application Card Styles */
+        .kyc-application-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.3s ease;
+        }
+        
+        .kyc-application-card.urgent {
+            border-left: 4px solid var(--status-danger);
+        }
+        
+        .kyc-application-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .kyc-header {
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+        }
+        
+        .kyc-body {
+            padding: var(--spacing-xl);
+        }
+        
+        .kyc-footer {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            background: var(--bg-tertiary);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Document Check Items */
+        .document-check-item {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .document-check-item.verified {
+            border-color: var(--status-success);
+            background: rgba(76, 175, 80, 0.05);
+        }
+        
+        .document-check-item.pending {
+            border-color: var(--status-warning);
+            background: rgba(255, 193, 7, 0.05);
+        }
+        
+        .document-check-item.missing {
+            border-color: var(--status-danger);
+            background: rgba(244, 67, 54, 0.05);
+        }
+        
+        .document-check-item.rejected {
+            border-color: var(--status-danger);
+            background: rgba(244, 67, 54, 0.1);
+        }
+        
+        .document-check-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .document-check-header i:first-child {
+            font-size: 1.25rem;
+        }
+        
+        .document-check-header i:last-child {
+            margin-left: auto;
+            font-size: 1.25rem;
+        }
+        
+        .document-check-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .document-check-item small {
+            display: block;
+            font-size: 0.75rem;
+        }
+        
+        /* Info Display Boxes (Editable) */
+        .info-display-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .info-display-box:hover {
+            background: var(--primary-green-ultra-light);
+            border-color: var(--primary-green);
+        }
+        
+        .info-display-box small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-display-box strong {
+            display: block;
+            color: var(--text-primary);
+        }
+        
+        .info-display-box .edit-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: var(--primary-green);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .info-display-box:hover .edit-icon {
+            opacity: 1;
+        }
+        
+        /* Notes Timeline */
+        .notes-timeline {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .note-item {
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.5rem;
+        }
+        
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Compact KYC List */
+        .compact-kyc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .compact-kyc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .compact-kyc-item:hover {
+            background: var(--primary-green-ultra-light);
+        }
+        
+        .compact-kyc-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .member-avatar-sm {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .compact-kyc-status {
+            min-width: 120px;
+        }
+        
+        .compact-kyc-actions {
+            min-width: 100px;
+        }
+        
+        /* Document Preview */
+        .document-preview-area {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+        }
+        
+        .document-preview-tools {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .document-display {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .placeholder-doc {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+    </style>
+</body>
+</html>
