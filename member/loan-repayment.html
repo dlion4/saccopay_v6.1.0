@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Loan Repayment — SaccoPay Member</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root{--pri:#FF6B00;--pri-l:#FF8C38;--pri-sub:rgba(255,107,0,0.06);--pri-bdr:rgba(255,107,0,0.20);--bg:#F5F6FA;--card:#fff;--inp:#F0F2F8;--tx:#1A1D2E;--tx2:rgba(26,29,46,0.72);--txm:rgba(26,29,46,0.50);--mono:'JetBrains Mono',monospace;--sh-s:0 1px 3px rgba(0,0,0,0.06);--sh-m:0 4px 12px rgba(0,0,0,0.08);--sh-o:0 4px 16px rgba(255,107,0,0.18);--grd:linear-gradient(135deg,#FF6B00,#FF8C38,#FFAA00);--sbw:260px;--grn:#00C853;--red:#E53935;--ylw:#F9A825;--blu:#0288D1;--pur:#AB00D9;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);}
+        .sp-sidebar{width:var(--sbw);min-height:100vh;background:#fff;border-right:1px solid rgba(26,29,46,0.08);position:fixed;top:0;left:0;z-index:1040;transition:transform .3s;overflow-y:auto;box-shadow:2px 0 8px rgba(0,0,0,0.03);}
+        .sp-sidebar .brand-logo{width:36px;height:36px;background:var(--grd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:var(--sh-o);}
+        .sp-sidebar .nav-link{color:var(--txm);font-size:13px;font-weight:500;padding:10px 20px;position:relative;transition:all .15s;}
+        .sp-sidebar .nav-link:hover{color:var(--tx);background:rgba(255,107,0,0.04);}
+        .sp-sidebar .nav-link.active{color:var(--pri);background:linear-gradient(90deg,rgba(255,107,0,0.08),rgba(255,107,0,0.02));font-weight:600;}
+        .sp-sidebar .nav-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grd);border-radius:0 3px 3px 0;}
+        .sp-sidebar .nav-icon{width:20px;text-align:center;margin-right:10px;font-size:15px;}
+        .sp-sidebar .section-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(26,29,46,0.30);padding:12px 20px 6px;}
+        .sp-sidebar .member-badge{padding:12px 20px;border-bottom:1px solid rgba(26,29,46,0.06);}
+        .sp-sidebar .nav-badge{background:var(--pri);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;box-shadow:0 2px 6px rgba(255,107,0,0.3);}
+        .sp-main{margin-left:var(--sbw);min-height:100vh;}
+        .sp-topbar{height:64px;background:rgba(255,255,255,0.92);border-bottom:1px solid rgba(26,29,46,0.06);backdrop-filter:blur(20px);position:sticky;top:0;z-index:1030;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+        .sp-topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.15) 30%,rgba(255,107,0,0.25) 50%,rgba(255,107,0,0.15) 70%,transparent);}
+        .topbar-btn{width:36px;height:36px;background:#fff;border:1px solid rgba(26,29,46,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--txm);transition:all .15s;position:relative;cursor:pointer;}
+        .topbar-btn:hover{background:var(--pri-sub);border-color:var(--pri-bdr);color:var(--pri);}
+        .topbar-btn .badge-dot{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--pri);color:#fff;font-size:9px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.92);}
+        .c{background:#fff;border:1px solid rgba(26,29,46,0.06);border-radius:16px;box-shadow:var(--sh-s);transition:all .25s;overflow:hidden;}
+        .c:hover{box-shadow:var(--sh-m);}
+        .c.cl{cursor:pointer;}.c.cl:hover{transform:translateY(-2px);}
+        .b{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;}
+        .pr{height:6px;border-radius:50px;background:rgba(26,29,46,0.06);overflow:hidden;}
+        .pf{height:100%;border-radius:50px;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;}
+        .pf.sh::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 2s infinite;}
+        .kpi{background:var(--inp);border:1px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;}
+        .kpi .k{font-size:11px;color:var(--txm);}.kpi .v{font-family:var(--mono);font-weight:800;}
+        .dv{height:1px;background:rgba(26,29,46,0.06);}
+        .pill{font-size:11px;border-radius:999px;padding:4px 10px;border:1px solid rgba(26,29,46,0.10);background:#fff;color:var(--tx2);cursor:pointer;transition:all .15s;}
+        .pill:hover{border-color:var(--pri-bdr);color:var(--pri);}
+        .pill.act{border-color:var(--pri);background:var(--pri-sub);color:var(--pri);font-weight:600;}
+        .hero-pay{background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 50%,#388E3C 100%);border-radius:20px;position:relative;overflow:hidden;color:#fff;}
+        .hero-pay::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:rgba(255,255,255,0.06);border-radius:50%;}
+        .hero-pay::after{content:'';position:absolute;bottom:-60px;right:60px;width:180px;height:180px;background:rgba(255,255,255,0.03);border-radius:50%;}
+        .pm{border:2px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;text-align:center;background:#fff;}
+        .pm:hover{border-color:var(--pri-bdr);background:var(--pri-sub);}
+        .pm.act{border-color:var(--pri);background:var(--pri-sub);box-shadow:0 0 0 3px rgba(255,107,0,0.10);}
+        .pm .pi{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px;}
+        .phi{position:relative;}.phi .flag{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:20px;pointer-events:none;}.phi .pfx{position:absolute;left:42px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--txm);font-size:14px;pointer-events:none;}.phi input{padding-left:82px!important;font-family:var(--mono);font-size:16px;letter-spacing:1px;}
+        .stk-loader{display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;}.stk-spinner{width:60px;height:60px;border:4px solid rgba(0,200,83,0.15);border-top-color:var(--grn);border-radius:50%;animation:spin 1s linear infinite;}
+        .toast-c{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:12px;}
+        .t{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:1px solid rgba(26,29,46,0.10);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.10);min-width:300px;max-width:420px;animation:slideInRight .3s ease;}
+        .t.success{border-left:3px solid var(--grn);}.t.warning{border-left:3px solid var(--ylw);}.t.danger{border-left:3px solid var(--red);}.t.info{border-left:3px solid var(--blu);}.t.primary{border-left:3px solid var(--pri);}
+        .loan-sel{border:2px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;}
+        .loan-sel:hover{border-color:var(--pri-bdr);}
+        .loan-sel.act{border-color:var(--pri);background:var(--pri-sub);box-shadow:0 0 0 3px rgba(255,107,0,0.10);}
+        .overdraft-card{background:linear-gradient(135deg,#311B92 0%,#4527A0 50%,#5E35B1 100%);border-radius:16px;color:#fff;position:relative;overflow:hidden;}
+        .overdraft-card::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:rgba(255,255,255,0.06);border-radius:50%;}
+        @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.8}}
+        @keyframes countDown{from{stroke-dashoffset:0}to{stroke-dashoffset:283}}
+        .fiu{animation:fadeInUp .4s ease both;}.pa{animation:pulse 2s ease-in-out infinite;}
+        @media(max-width:991px){.sp-sidebar{transform:translateX(-100%);z-index:1050;}.sp-sidebar.show{transform:translateX(0);}.sp-main{margin-left:0!important;}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1045;}.sidebar-backdrop.show{display:block;}}
+        @media(max-width:575px){.hero-pay .display-6{font-size:1.6rem!important;}}
+        ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(26,29,46,0.12);border-radius:50px;}
+    </style>
+</head>
+<body>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sp-sidebar" id="sidebar">
+    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important;min-height:64px;">
+        <div class="brand-logo">S</div>
+        <div><div style="font-size:16px;font-weight:700;">Sacco<span style="color:var(--pri);">Pay</span></div><div style="font-size:10px;color:var(--txm);letter-spacing:.04em;">Member Portal</div></div>
+    </a>
+    <div class="member-badge d-flex align-items-center gap-3">
+        <div style="width:38px;height:38px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div>
+        <div class="flex-grow-1 min-w-0"><div style="font-size:12px;font-weight:600;" class="text-truncate">John Kamau</div><div style="font-size:11px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div><div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:var(--grn);"><span style="width:5px;height:5px;background:var(--grn);border-radius:50%;box-shadow:0 0 6px var(--grn);"></span> Active</div></div>
+    </div>
+    <nav class="py-2">
+        <div class="section-label">Main</div>
+        <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <div class="section-label">Financial</div>
+        <a href="savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
+        <a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+        <a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
+        <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <div class="section-label">Loans</div>
+        <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> Loans Center</a>
+        <a href="loan-repayment.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <div class="section-label">Membership</div>
+        <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> Shares</a>
+        <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
+        <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <div class="section-label">Other</div>
+        <a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">2</span></a>
+        <a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> Profile</a>
+        <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+    </nav>
+    <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
+        <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="sp-main">
+    <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
+        <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()" style="font-size:18px;color:var(--txm);"><i class="fas fa-bars"></i></button>
+        <nav aria-label="breadcrumb" class="d-none d-md-block"><ol class="breadcrumb mb-0" style="font-size:13px;"><li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color:var(--txm);">Home</a></li><li class="breadcrumb-item"><a href="loans.html" class="text-decoration-none" style="color:var(--txm);">Loans</a></li><li class="breadcrumb-item active">Repayment</li></ol></nav>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#notifModal"><i class="fas fa-bell" style="font-size:14px;"></i><span class="badge-dot">2</span></button>
+            <div class="dropdown"><button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle" data-bs-toggle="dropdown" style="border-color:rgba(26,29,46,0.08)!important;font-size:13px;"><div style="width:28px;height:28px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">JK</div><span class="d-none d-md-inline" style="color:var(--tx2);font-weight:500;">John</span></button><ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;"><li class="px-3 py-2 border-bottom"><div style="font-weight:600;font-size:13px;">John Kamau</div><div style="font-size:11px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div></li><li><a class="dropdown-item py-2" href="profile.html"><i class="fas fa-user me-2 text-muted"></i>Profile</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item py-2 text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li></ul></div>
+        </div>
+    </header>
+
+    <div class="p-3 p-lg-4 fiu" style="max-width:1400px;">
+
+        <!-- HEADER -->
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1"><i class="fas fa-money-check-alt me-2" style="color:var(--grn);"></i>Loan <span style="color:var(--pri);">Repayment</span></h1>
+                <p class="mb-0" style="color:var(--txm);font-size:14px;">Pay now, schedule auto-payments, or use SaccoPay Overdraft to cover installments.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="fas fa-history me-1"></i> History</button>
+                <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--grn);box-shadow:0 4px 16px rgba(0,200,83,0.25);" data-bs-toggle="modal" data-bs-target="#payNowModal"><i class="fas fa-bolt me-1"></i> Pay Now</button>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero-pay p-4 p-lg-5 mb-4">
+            <div class="position-relative" style="z-index:1;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-6">
+                        <div style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;text-transform:uppercase;letter-spacing:.1em;" class="mb-2">Total Outstanding</div>
+                        <div class="display-6 fw-bold" style="font-family:var(--mono);letter-spacing:-.04em;"><span style="font-size:.55em;opacity:.7;">KES</span> 103,500</div>
+                        <div class="d-flex flex-wrap gap-3 mt-3" style="font-size:12px;">
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-calendar-day me-1"></i> Next due: <strong>Mar 1</strong> (4 days)</span>
+                            <span style="width:1px;height:14px;background:rgba(255,255,255,0.15);"></span>
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-receipt me-1"></i> Due this month: <strong>KES 8,000</strong></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-2">
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Wallet Balance</div><div class="v" style="color:var(--pri-l);">KES 12,450</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">SaccoPay Wallet</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">NWA Balance</div><div class="v" style="color:var(--ylw);">KES 35,000</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">Non-Withdrawable</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Auto-Pay</div><div class="v" style="color:var(--grn);"><i class="fas fa-check-circle"></i></div><div style="font-size:10px;color:rgba(255,255,255,0.40);">Active — Wallet</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Overdraft Available</div><div class="v" style="color:#CE93D8;">KES 21,000</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">60% of NWA</div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 REPAYMENT METHODS -->
+        <div class="row g-4 mb-4">
+
+            <!-- ═══ METHOD 1: AUTO-PAY ═══ -->
+            <div class="col-lg-4">
+                <div class="c h-100">
+                    <div class="p-3 border-bottom d-flex align-items-center gap-2" style="border-color:rgba(26,29,46,0.06)!important;background:rgba(0,200,83,0.03);">
+                        <div style="width:36px;height:36px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--grn);"><i class="fas fa-robot"></i></div>
+                        <div><div class="fw-bold" style="font-size:14px;">Auto-Pay</div><div style="font-size:11px;color:var(--txm);">Scheduled automatic deductions</div></div>
+                        <span class="b ms-auto" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Active</span>
+                    </div>
+                    <div class="p-3">
+                        <div class="d-flex flex-column gap-3">
+                            <!-- Current Auto-Pay Setup -->
+                            <div class="rounded-4 p-3" style="background:var(--inp);">
+                                <div class="fw-semibold mb-2" style="font-size:12px;"><i class="fas fa-cog me-2" style="color:var(--grn);"></i>Current Setup</div>
+                                <div class="d-flex flex-column gap-1" style="font-size:12px;">
+                                    <div class="d-flex justify-content-between"><span style="color:var(--txm);">Source</span><strong><i class="fas fa-wallet me-1" style="color:var(--pri);"></i>SaccoPay Wallet</strong></div>
+                                    <div class="d-flex justify-content-between"><span style="color:var(--txm);">Frequency</span><strong>Monthly (on due date)</strong></div>
+                                    <div class="d-flex justify-content-between"><span style="color:var(--txm);">Fallback</span><strong style="color:var(--grn);">M-Pesa STK Push</strong></div>
+                                    <div class="d-flex justify-content-between"><span style="color:var(--txm);">Covers</span><strong>All active loans</strong></div>
+                                    <div class="d-flex justify-content-between"><span style="color:var(--txm);">Next Deduction</span><strong style="color:var(--ylw);">Mar 1 — KES 3,200</strong></div>
+                                </div>
+                            </div>
+
+                            <!-- Upcoming Auto-Payments -->
+                            <div class="fw-semibold" style="font-size:12px;"><i class="fas fa-calendar-alt me-2" style="color:var(--pri);"></i>Upcoming Deductions</div>
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:rgba(249,168,37,0.06);border:1px solid rgba(249,168,37,0.15);cursor:pointer;" onclick="showToast('Emergency Loan: KES 3,200 auto-deduction on Mar 1','info')">
+                                <div><div style="font-size:12px;font-weight:600;">Emergency Loan</div><div style="font-size:10px;color:var(--txm);">Mar 1 — <strong style="color:var(--ylw);">4 days</strong></div></div>
+                                <div class="fw-bold" style="font-family:var(--mono);color:var(--red);">KES 3,200</div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:var(--inp);cursor:pointer;" onclick="showToast('Development Loan: KES 4,800 auto-deduction on Mar 15','info')">
+                                <div><div style="font-size:12px;font-weight:600;">Development Loan</div><div style="font-size:10px;color:var(--txm);">Mar 15 — 18 days</div></div>
+                                <div class="fw-bold" style="font-family:var(--mono);">KES 4,800</div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-sm btn-outline-secondary rounded-3 w-100 mt-3" data-bs-toggle="modal" data-bs-target="#autoPaySetupModal"><i class="fas fa-cog me-1"></i> Manage Auto-Pay</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ METHOD 2: PAY NOW (MANUAL) ═══ -->
+            <div class="col-lg-4">
+                <div class="c h-100">
+                    <div class="p-3 border-bottom d-flex align-items-center gap-2" style="border-color:rgba(26,29,46,0.06)!important;background:rgba(255,107,0,0.03);">
+                        <div style="width:36px;height:36px;background:var(--pri-sub);border:1px solid var(--pri-bdr);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--pri);"><i class="fas fa-bolt"></i></div>
+                        <div><div class="fw-bold" style="font-size:14px;">Pay Now</div><div style="font-size:11px;color:var(--txm);">Manual instant payment</div></div>
+                    </div>
+                    <div class="p-3">
+                        <div class="rounded-4 p-3 mb-3" style="background:var(--inp);">
+                            <div style="font-size:11px;color:var(--txm);">Choose a loan and pay any amount instantly using your preferred method.</div>
+                        </div>
+
+                        <!-- Quick Pay Buttons -->
+                        <div class="d-flex flex-column gap-2 mb-3">
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:rgba(229,57,53,0.04);border:1px solid rgba(229,57,53,0.12);cursor:pointer;" onclick="openPayNow('emergency')">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:32px;height:32px;background:rgba(229,57,53,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:14px;"><i class="fas fa-ambulance"></i></div>
+                                    <div><div style="font-size:12px;font-weight:600;">Emergency Loan</div><div style="font-size:10px;color:var(--txm);">Outstanding: KES 18,500</div></div>
+                                </div>
+                                <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--grd);font-size:11px;" onclick="event.stopPropagation();openPayNow('emergency')">Pay <i class="fas fa-arrow-right ms-1"></i></button>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:rgba(2,136,209,0.04);border:1px solid rgba(2,136,209,0.12);cursor:pointer;" onclick="openPayNow('development')">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:32px;height:32px;background:rgba(2,136,209,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--blu);font-size:14px;"><i class="fas fa-home"></i></div>
+                                    <div><div style="font-size:12px;font-weight:600;">Development Loan</div><div style="font-size:10px;color:var(--txm);">Outstanding: KES 85,000</div></div>
+                                </div>
+                                <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--grd);font-size:11px;" onclick="event.stopPropagation();openPayNow('development')">Pay <i class="fas fa-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Payment Sources -->
+                        <div class="fw-semibold mb-2" style="font-size:12px;"><i class="fas fa-credit-card me-2" style="color:var(--pri);"></i>Payment Sources</div>
+                        <div class="row g-2">
+                            <div class="col-6"><div class="rounded-3 p-2 text-center" style="background:var(--inp);font-size:11px;"><i class="fas fa-wallet d-block mb-1" style="color:var(--pri);font-size:16px;"></i><strong>Wallet</strong><div style="color:var(--txm);font-size:10px;">KES 12,450</div></div></div>
+                            <div class="col-6"><div class="rounded-3 p-2 text-center" style="background:var(--inp);font-size:11px;"><i class="fas fa-mobile-alt d-block mb-1" style="color:var(--grn);font-size:16px;"></i><strong>M-Pesa</strong><div style="color:var(--txm);font-size:10px;">STK Push</div></div></div>
+                            <div class="col-6"><div class="rounded-3 p-2 text-center" style="background:var(--inp);font-size:11px;"><i class="fas fa-credit-card d-block mb-1" style="color:var(--pur);font-size:16px;"></i><strong>Card</strong><div style="color:var(--txm);font-size:10px;">Visa/MC</div></div></div>
+                            <div class="col-6"><div class="rounded-3 p-2 text-center" style="background:var(--inp);font-size:11px;"><i class="fas fa-sim-card d-block mb-1" style="color:var(--red);font-size:16px;"></i><strong>Airtel</strong><div style="color:var(--txm);font-size:10px;">STK Push</div></div></div>
+                        </div>
+
+                        <button class="btn btn-sm text-white rounded-3 w-100 mt-3 fw-semibold" style="background:var(--grd);box-shadow:var(--sh-o);" data-bs-toggle="modal" data-bs-target="#payNowModal"><i class="fas fa-bolt me-1"></i> Open Payment</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ METHOD 3: OVERDRAFT ═══ -->
+            <div class="col-lg-4">
+                <div class="c h-100">
+                    <div class="p-3 border-bottom d-flex align-items-center gap-2" style="border-color:rgba(26,29,46,0.06)!important;background:rgba(103,58,183,0.03);">
+                        <div style="width:36px;height:36px;background:rgba(103,58,183,0.08);border:1px solid rgba(103,58,183,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#7E57C2;"><i class="fas fa-shield-alt"></i></div>
+                        <div><div class="fw-bold" style="font-size:14px;">SaccoPay Overdraft</div><div style="font-size:11px;color:var(--txm);">Borrow against your NWA</div></div>
+                    </div>
+                    <div class="p-3">
+                        <!-- Overdraft Visual -->
+                        <div class="overdraft-card p-3 mb-3">
+                            <div class="position-relative" style="z-index:1;">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div><div style="font-size:10px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.1em;">Overdraft Limit</div><div class="fw-bold" style="font-size:22px;font-family:var(--mono);">KES 21,000</div><div style="font-size:10px;color:rgba(255,255,255,0.45);">60% of NWA (KES 35,000)</div></div>
+                                    <i class="fas fa-shield-alt" style="font-size:28px;opacity:0.3;"></i>
+                                </div>
+                                <div class="pr" style="background:rgba(255,255,255,0.15);"><div class="pf" style="width:0%;background:rgba(255,255,255,0.6);"></div></div>
+                                <div class="d-flex justify-content-between mt-1" style="font-size:10px;color:rgba(255,255,255,0.45);"><span>Used: KES 0</span><span>Available: KES 21,000</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Overdraft Terms -->
+                        <div class="rounded-4 p-3 mb-3" style="background:var(--inp);">
+                            <div class="fw-semibold mb-2" style="font-size:12px;"><i class="fas fa-file-contract me-2" style="color:#7E57C2;"></i>Terms (Admin-configured)</div>
+                            <div class="d-flex flex-column gap-1" style="font-size:11px;">
+                                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Interest</span><strong style="color:var(--red);">3% per month</strong></div>
+                                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Transaction Fee</span><strong>KES 100 flat</strong></div>
+                                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Max Duration</span><strong>3 months</strong></div>
+                                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Based On</span><strong>60% of NWA (Savings + Shares)</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- NWA Recovery Warning -->
+                        <div class="alert border-0 py-2 px-3 mb-3" style="background:rgba(229,57,53,0.04);border-radius:10px;">
+                            <div style="font-size:11px;color:var(--red);">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>Default Policy:</strong> If not repaid within 3 months, your NWA (savings/shares) will be permanently transferred to SaccoPay holding account to cover the overdraft balance + accumulated interest.
+                            </div>
+                        </div>
+
+                        <button class="btn btn-sm rounded-3 w-100 fw-semibold text-white" style="background:linear-gradient(135deg,#5E35B1,#7E57C2);box-shadow:0 4px 16px rgba(103,58,183,0.25);" data-bs-toggle="modal" data-bs-target="#overdraftModal"><i class="fas fa-shield-alt me-1"></i> Use Overdraft to Pay Loan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REPAYMENT HISTORY TABLE -->
+        <div class="c mb-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-history me-2" style="color:var(--pri);"></i>Recent Payments</div>
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="fas fa-external-link-alt me-1"></i> Full History</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="font-size:12px;">
+                    <thead><tr style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--txm);background:rgba(26,29,46,0.02);"><th class="border-0 py-3 px-3">Date</th><th class="border-0">Loan</th><th class="border-0">Amount</th><th class="border-0">Source</th><th class="border-0">Status</th><th class="border-0 text-end">Action</th></tr></thead>
+                    <tbody>
+                        <tr style="cursor:pointer;" onclick="showToast('Payment KES 4,800 confirmed via Wallet deduction on Feb 15','success')">
+                            <td class="px-3">Feb 15, 2025</td>
+                            <td><span class="b" style="background:rgba(2,136,209,0.06);color:var(--blu);border:1px solid rgba(2,136,209,0.18);font-size:10px;">Development</span></td>
+                            <td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 4,800</td>
+                            <td><i class="fas fa-wallet me-1" style="color:var(--pri);"></i>Wallet</td>
+                            <td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Paid</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();showToast('Receipt downloaded','success')"><i class="fas fa-download"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="showToast('Payment KES 3,200 confirmed via M-Pesa STK on Feb 14','success')">
+                            <td class="px-3">Feb 14, 2025</td>
+                            <td><span class="b" style="background:rgba(229,57,53,0.06);color:var(--red);border:1px solid rgba(229,57,53,0.18);font-size:10px;">Emergency</span></td>
+                            <td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 3,200</td>
+                            <td><i class="fas fa-mobile-alt me-1" style="color:var(--grn);"></i>M-Pesa</td>
+                            <td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Paid</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();showToast('Receipt downloaded','success')"><i class="fas fa-download"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="showToast('Payment KES 4,800 confirmed via Card on Jan 15','success')">
+                            <td class="px-3">Jan 15, 2025</td>
+                            <td><span class="b" style="background:rgba(2,136,209,0.06);color:var(--blu);border:1px solid rgba(2,136,209,0.18);font-size:10px;">Development</span></td>
+                            <td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 4,800</td>
+                            <td><i class="fas fa-credit-card me-1" style="color:var(--pur);"></i>Card</td>
+                            <td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Paid</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();showToast('Receipt downloaded','success')"><i class="fas fa-download"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════════════ -->
+<!--                   MODALS                         -->
+<!-- ═════════════════════════════════════════════════ -->
+
+<!-- PAY NOW MODAL -->
+<div class="modal fade" id="payNowModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--grn);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <div><h5 class="modal-title fw-bold"><i class="fas fa-bolt me-2" style="color:var(--grn);"></i>Pay Now</h5><p class="mb-0 mt-1" style="font-size:12px;color:var(--txm);">Choose loan, amount, and payment source. Automated processing — no manual codes.</p></div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4 pt-3">
+                <!-- Select Loan -->
+                <div class="fw-semibold mb-2" style="font-size:13px;">Select Loan <span class="text-danger">*</span></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6"><div class="loan-sel act" onclick="selLoan(this,'emergency')" id="lsEmergency"><div class="d-flex align-items-center gap-2"><div style="width:36px;height:36px;background:rgba(229,57,53,0.06);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--red);"><i class="fas fa-ambulance"></i></div><div><div style="font-size:13px;font-weight:600;">Emergency Loan</div><div style="font-size:11px;color:var(--txm);">Outstanding: <strong style="font-family:var(--mono);color:var(--red);">KES 18,500</strong></div><div style="font-size:10px;color:var(--txm);">Installment: KES 3,200 • Due Mar 1</div></div></div></div></div>
+                    <div class="col-md-6"><div class="loan-sel" onclick="selLoan(this,'development')" id="lsDevelopment"><div class="d-flex align-items-center gap-2"><div style="width:36px;height:36px;background:rgba(2,136,209,0.06);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--blu);"><i class="fas fa-home"></i></div><div><div style="font-size:13px;font-weight:600;">Development Loan</div><div style="font-size:11px;color:var(--txm);">Outstanding: <strong style="font-family:var(--mono);color:var(--red);">KES 85,000</strong></div><div style="font-size:10px;color:var(--txm);">Installment: KES 4,800 • Due Mar 15</div></div></div></div></div>
+                </div>
+
+                <!-- Amount -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Amount (KES) <span class="text-danger">*</span></label>
+                    <div class="input-group"><span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--inp);">KES</span><input type="number" class="form-control form-control-lg" id="payAmount" value="3200" style="border-radius:0 12px 12px 0;font-family:var(--mono);font-size:18px;"></div>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <button class="pill" onclick="document.getElementById('payAmount').value=3200">Installment (3,200)</button>
+                        <button class="pill" onclick="document.getElementById('payAmount').value=6400">2× (6,400)</button>
+                        <button class="pill" onclick="document.getElementById('payAmount').value=18500">Full Balance (18,500)</button>
+                    </div>
+                </div>
+
+                <!-- Payment Source -->
+                <div class="fw-semibold mb-2" style="font-size:13px;">Pay From <span class="text-danger">*</span></div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-3"><div class="pm act" onclick="selPay(this,'wallet')"><div class="pi" style="background:var(--pri-sub);color:var(--pri);border:1px solid var(--pri-bdr);"><i class="fas fa-wallet"></i></div><div class="fw-bold" style="font-size:12px;">Wallet</div><div style="font-size:10px;color:var(--txm);">KES 12,450</div></div></div>
+                    <div class="col-6 col-md-3"><div class="pm" onclick="selPay(this,'mpesa')"><div class="pi" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-mobile-alt"></i></div><div class="fw-bold" style="font-size:12px;">M-Pesa</div><div style="font-size:10px;color:var(--txm);">STK Push</div></div></div>
+                    <div class="col-6 col-md-3"><div class="pm" onclick="selPay(this,'card')"><div class="pi" style="background:rgba(171,0,217,0.06);color:var(--pur);border:1px solid rgba(171,0,217,0.18);"><i class="fas fa-credit-card"></i></div><div class="fw-bold" style="font-size:12px;">Card</div><div style="font-size:10px;color:var(--txm);">Visa/MC</div></div></div>
+                    <div class="col-6 col-md-3"><div class="pm" onclick="selPay(this,'airtel')"><div class="pi" style="background:rgba(229,57,53,0.06);color:var(--red);border:1px solid rgba(229,57,53,0.18);"><i class="fas fa-sim-card"></i></div><div class="fw-bold" style="font-size:12px;">Airtel</div><div style="font-size:10px;color:var(--txm);">STK Push</div></div></div>
+                </div>
+
+                <!-- Phone/Card Input (dynamic) -->
+                <div id="paySourceDetails">
+                    <div class="rounded-4 p-3" style="background:rgba(0,200,83,0.04);border:1px solid rgba(0,200,83,0.12);">
+                        <div style="font-size:12px;color:var(--grn);"><i class="fas fa-wallet me-1"></i> Payment will be deducted from your SaccoPay Wallet (Balance: KES 12,450). If insufficient, the remaining will be charged via your fallback method.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn text-white rounded-3 fw-semibold px-4" style="background:var(--grn);box-shadow:0 4px 16px rgba(0,200,83,0.3);" onclick="processPayment()"><i class="fas fa-check-circle me-1"></i> Pay KES <span id="payBtnAmt">3,200</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAYMENT PROCESSING -->
+<div class="modal fade" id="processingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+            <div class="modal-body p-4">
+                <div class="stk-loader">
+                    <div class="stk-spinner"></div>
+                    <div class="text-center">
+                        <h6 class="fw-bold" style="color:var(--grn);">Processing Payment</h6>
+                        <p style="font-size:12px;color:var(--txm);" id="procMsg">Deducting from your SaccoPay Wallet...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAYMENT SUCCESS -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+            <div style="height:3px;background:var(--grn);"></div>
+            <div class="modal-body p-4 text-center">
+                <div style="width:64px;height:64px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:var(--grn);"><i class="fas fa-check-circle"></i></div>
+                <h5 class="fw-bold" style="color:var(--grn);">Payment Successful!</h5>
+                <div class="fw-bold mt-2" style="font-size:24px;font-family:var(--mono);" id="successAmt">KES 3,200</div>
+                <p style="font-size:12px;color:var(--txm);" id="successLoan">Applied to Emergency Loan</p>
+                <div class="rounded-4 p-3 text-start mt-3" style="background:var(--inp);font-size:12px;">
+                    <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">Reference</span><span class="fw-semibold" style="font-family:var(--mono);color:var(--pri);" id="successRef">PAY-2025-00XXX</span></div>
+                    <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">Source</span><span id="successSource">SaccoPay Wallet</span></div>
+                    <div class="d-flex justify-content-between"><span style="color:var(--txm);">New Outstanding</span><span class="fw-bold" style="color:var(--grn);font-family:var(--mono);" id="successBal">KES 15,300</span></div>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Receipt downloaded','success')"><i class="fas fa-download me-1"></i> Receipt</button>
+                    <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--grd);" data-bs-dismiss="modal"><i class="fas fa-check me-1"></i> Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AUTO-PAY SETUP -->
+<div class="modal fade" id="autoPaySetupModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--grn);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-robot me-2" style="color:var(--grn);"></i>Auto-Pay Settings</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="alert border-0 mb-3" style="background:rgba(0,200,83,0.04);border-radius:12px;font-size:12px;color:var(--grn);"><i class="fas fa-info-circle me-1"></i> Auto-Pay deducts your installment automatically on the due date. Configure a primary source and a fallback.</div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Primary Source</label>
+                    <select class="form-select" style="border-radius:12px;" id="apPrimary">
+                        <option value="wallet" selected>SaccoPay Wallet (KES 12,450)</option>
+                        <option value="mpesa">M-Pesa STK Push (0712***890)</option>
+                        <option value="card">Debit Card (****4242)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Fallback Source</label>
+                    <select class="form-select" style="border-radius:12px;" id="apFallback">
+                        <option value="mpesa" selected>M-Pesa STK Push (0712***890)</option>
+                        <option value="card">Debit Card (****4242)</option>
+                        <option value="overdraft">SaccoPay Overdraft (NWA-backed)</option>
+                        <option value="none">None — Notify only</option>
+                    </select>
+                    <div class="form-text" style="font-size:11px;">If primary source has insufficient funds, fallback will be used automatically.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Applies To</label>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="form-check d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--inp);"><input class="form-check-input" type="checkbox" checked style="width:20px;height:20px;"><div><div style="font-size:13px;font-weight:600;">Emergency Loan</div><div style="font-size:11px;color:var(--txm);">KES 3,200/month • Due 1st</div></div></div>
+                        <div class="form-check d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--inp);"><input class="form-check-input" type="checkbox" checked style="width:20px;height:20px;"><div><div style="font-size:13px;font-weight:600;">Development Loan</div><div style="font-size:11px;color:var(--txm);">KES 4,800/month • Due 15th</div></div></div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                    <div class="form-check form-switch d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--inp);"><input class="form-check-input" type="checkbox" checked style="width:44px;height:22px;margin:0;"><div><div style="font-size:13px;font-weight:600;">SMS Confirmation</div><div style="font-size:11px;color:var(--txm);">After each auto-deduction</div></div></div>
+                    <div class="form-check form-switch d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--inp);"><input class="form-check-input" type="checkbox" checked style="width:44px;height:22px;margin:0;"><div><div style="font-size:13px;font-weight:600;">3-Day Reminder</div><div style="font-size:11px;color:var(--txm);">Before each due date</div></div></div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-danger rounded-3 btn-sm" onclick="showToast('Auto-Pay disabled. You must pay manually.','warning')" data-bs-dismiss="modal"><i class="fas fa-pause me-1"></i> Disable</button>
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn text-white rounded-3 fw-semibold" style="background:var(--grn);" onclick="showToast('Auto-Pay settings saved! Primary: Wallet, Fallback: M-Pesa.','success')" data-bs-dismiss="modal"><i class="fas fa-save me-1"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- OVERDRAFT MODAL -->
+<div class="modal fade" id="overdraftModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:linear-gradient(90deg,#5E35B1,#7E57C2,#9575CD);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <div><h5 class="modal-title fw-bold"><i class="fas fa-shield-alt me-2" style="color:#7E57C2;"></i>SaccoPay Overdraft</h5><p class="mb-0 mt-1" style="font-size:12px;color:var(--txm);">Use your Non-Withdrawable Amount (NWA) as collateral to cover loan repayments.</p></div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+
+                <!-- Overdraft Summary -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4"><div class="kpi text-center"><div class="k">Your NWA</div><div class="v" style="color:var(--ylw);">KES 35,000</div><div style="font-size:10px;color:var(--txm);">Savings + Shares</div></div></div>
+                    <div class="col-md-4"><div class="kpi text-center"><div class="k">Overdraft Limit (60%)</div><div class="v" style="color:#7E57C2;">KES 21,000</div><div style="font-size:10px;color:var(--txm);">Max you can borrow</div></div></div>
+                    <div class="col-md-4"><div class="kpi text-center"><div class="k">Currently Used</div><div class="v" style="color:var(--grn);">KES 0</div><div style="font-size:10px;color:var(--txm);">No active overdraft</div></div></div>
+                </div>
+
+                <!-- Select Loan to Pay -->
+                <div class="fw-semibold mb-2" style="font-size:13px;">Pay Which Loan?</div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6"><div class="loan-sel act" onclick="selOdLoan(this,'emergency')"><div class="d-flex align-items-center gap-2"><div style="width:32px;height:32px;background:rgba(229,57,53,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:14px;"><i class="fas fa-ambulance"></i></div><div><div style="font-size:12px;font-weight:600;">Emergency Loan</div><div style="font-size:10px;color:var(--txm);">Installment: KES 3,200</div></div></div></div></div>
+                    <div class="col-md-6"><div class="loan-sel" onclick="selOdLoan(this,'development')"><div class="d-flex align-items-center gap-2"><div style="width:32px;height:32px;background:rgba(2,136,209,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--blu);font-size:14px;"><i class="fas fa-home"></i></div><div><div style="font-size:12px;font-weight:600;">Development Loan</div><div style="font-size:10px;color:var(--txm);">Installment: KES 4,800</div></div></div></div></div>
+                </div>
+
+                <!-- Amount -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Overdraft Amount <span class="text-danger">*</span></label>
+                    <div class="input-group"><span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--inp);">KES</span><input type="number" class="form-control" id="odAmount" value="3200" style="border-radius:0 12px 12px 0;font-family:var(--mono);" oninput="calcOverdraft()"></div>
+                    <div class="form-text" style="font-size:11px;">Max: KES 21,000 (60% of your NWA)</div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="rounded-4 p-3 mb-3" style="background:rgba(103,58,183,0.04);border:1px solid rgba(103,58,183,0.12);">
+                    <div class="fw-semibold mb-2" style="font-size:12px;color:#7E57C2;"><i class="fas fa-calculator me-2"></i>Cost Breakdown</div>
+                    <div class="d-flex flex-column gap-1" style="font-size:12px;">
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Overdraft Amount</span><strong style="font-family:var(--mono);" id="odDispAmt">KES 3,200</strong></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Interest (3%/month × 3 mo max)</span><strong style="font-family:var(--mono);color:var(--red);" id="odDispInt">KES 288</strong></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Transaction Fee</span><strong style="font-family:var(--mono);">KES 100</strong></div>
+                        <div class="dv my-1"></div>
+                        <div class="d-flex justify-content-between"><span class="fw-bold" style="color:#7E57C2;">Total to Repay (within 3 months)</span><strong style="font-family:var(--mono);color:var(--red);" id="odDispTotal">KES 3,588</strong></div>
+                    </div>
+                </div>
+
+                <!-- NWA Hold Warning -->
+                <div class="alert border-0 py-3 px-3 mb-3" style="background:rgba(229,57,53,0.04);border-radius:12px;">
+                    <div style="font-size:12px;color:var(--red);">
+                        <div class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> NWA Collateral Hold</div>
+                        <ul class="mb-0 ps-3" style="font-size:11px;">
+                            <li>SaccoPay will hold <strong id="odHoldAmt">KES 3,200</strong> of your NWA as collateral.</li>
+                            <li>You must repay the overdraft + interest within <strong>3 months</strong>.</li>
+                            <li>If you fail to repay within 3 months, the held NWA (savings/shares) will be <strong style="color:var(--red);">permanently transferred to SaccoPay holding account</strong> to cover the balance.</li>
+                            <li>Auto-deduction from your next deposits/salary will be enabled.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Repayment Schedule -->
+                <div class="rounded-4 p-3 mb-3" style="background:var(--inp);">
+                    <div class="fw-semibold mb-2" style="font-size:12px;"><i class="fas fa-calendar-alt me-2" style="color:#7E57C2;"></i>Overdraft Repayment Schedule</div>
+                    <div class="d-flex flex-column gap-1" style="font-size:12px;">
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Month 1 (Apr 1)</span><strong style="font-family:var(--mono);" id="odM1">KES 1,196</strong></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Month 2 (May 1)</span><strong style="font-family:var(--mono);" id="odM2">KES 1,196</strong></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Month 3 (Jun 1) — Final</span><strong style="font-family:var(--mono);" id="odM3">KES 1,196</strong></div>
+                    </div>
+                </div>
+
+                <!-- Consent -->
+                <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="odConsent1"><label class="form-check-label" for="odConsent1" style="font-size:12px;">I understand that KES <span id="odConsentAmt">3,200</span> of my NWA will be held as collateral and will be permanently transferred to SaccoPay if I fail to repay within 3 months.</label></div>
+                <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="odConsent2"><label class="form-check-label" for="odConsent2" style="font-size:12px;">I agree to the overdraft interest rate of <strong>3% per month</strong> and the transaction fee of <strong>KES 100</strong>.</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="odConsent3"><label class="form-check-label" for="odConsent3" style="font-size:12px;">I authorize SaccoPay to auto-deduct repayments from my future deposits, salary credits, and wallet balance.</label></div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn text-white rounded-3 fw-semibold px-4" style="background:linear-gradient(135deg,#5E35B1,#7E57C2);box-shadow:0 4px 16px rgba(103,58,183,0.3);" onclick="processOverdraft()"><i class="fas fa-shield-alt me-1"></i> Activate Overdraft & Pay Loan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HISTORY -->
+<div class="modal fade" id="historyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--grd);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-history me-2" style="color:var(--pri);"></i>Payment History</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size:12px;">
+                        <thead><tr style="font-size:10px;text-transform:uppercase;color:var(--txm);"><th>Date</th><th>Ref</th><th>Loan</th><th>Amount</th><th>Source</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Feb 15</td><td style="font-family:var(--mono);color:var(--pri);font-size:11px;">PAY-2025-0089</td><td>Development</td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 4,800</td><td><i class="fas fa-wallet me-1" style="color:var(--pri);"></i>Wallet</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td></tr>
+                            <tr><td>Feb 14</td><td style="font-family:var(--mono);color:var(--pri);font-size:11px;">PAY-2025-0088</td><td>Emergency</td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 3,200</td><td><i class="fas fa-mobile-alt me-1" style="color:var(--grn);"></i>M-Pesa</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td></tr>
+                            <tr><td>Jan 15</td><td style="font-family:var(--mono);color:var(--pri);font-size:11px;">PAY-2025-0067</td><td>Development</td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 4,800</td><td><i class="fas fa-credit-card me-1" style="color:var(--pur);"></i>Card</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td></tr>
+                            <tr><td>Jan 1</td><td style="font-family:var(--mono);color:var(--pri);font-size:11px;">PAY-2025-0045</td><td>Emergency</td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 3,200</td><td><i class="fas fa-wallet me-1" style="color:var(--pri);"></i>Wallet</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td></tr>
+                            <tr><td>Dec 15</td><td style="font-family:var(--mono);color:var(--pri);font-size:11px;">PAY-2024-0890</td><td>Development</td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 4,800</td><td><i class="fas fa-mobile-alt me-1" style="color:var(--grn);"></i>M-Pesa</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3" style="font-size:12px;color:var(--txm);">Total paid (all time): <strong style="font-family:var(--mono);color:var(--grn);">KES 46,500</strong></div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-outline-secondary rounded-3" onclick="showToast('Payment history exported as PDF','success')"><i class="fas fa-download me-1"></i> Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="modal fade" id="notifModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-bell me-2" style="color:var(--pri);"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4" style="max-height:350px;overflow:auto;">
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);" onclick="showToast('Emergency Loan: KES 3,200 due Mar 1 — 4 days away','warning');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:rgba(249,168,37,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ylw);flex-shrink:0;font-size:12px;"><i class="fas fa-calendar-day"></i></div><div><div style="font-size:13px;font-weight:600;">Payment Due Soon</div><div style="font-size:11px;color:var(--txm);">Emergency Loan • KES 3,200 • Mar 1</div></div><div style="width:6px;height:6px;background:var(--pri);border-radius:50%;margin-top:8px;flex-shrink:0;"></div></div>
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3" style="cursor:pointer;" onclick="showToast('Auto-Pay deducted KES 4,800 for Development Loan on Feb 15','success');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--grn);flex-shrink:0;font-size:12px;"><i class="fas fa-robot"></i></div><div><div style="font-size:13px;font-weight:600;">Auto-Pay Completed</div><div style="font-size:11px;color:var(--txm);">Dev Loan • KES 4,800 from Wallet • Feb 15</div></div></div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><a href="notifications.html" class="btn btn-outline-secondary rounded-3 w-100"><i class="fas fa-external-link-alt me-1"></i> All</a></div></div></div>
+</div>
+
+<!-- LOGOUT -->
+<div class="modal fade" id="logoutModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4 text-center"><div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--red);font-size:24px;"><i class="fas fa-sign-out-alt"></i></div><h5 class="fw-bold">Logout?</h5><div class="d-flex gap-2 mt-3"><button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Stay</button><a href="login.html" class="btn btn-danger rounded-3 flex-fill"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></div></div></div></div></div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m,t='info'){const c=document.getElementById('toastC');const ic={success:'fa-check-circle',danger:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle',primary:'fa-bell'};const cl={success:'var(--grn)',danger:'var(--red)',warning:'var(--ylw)',info:'var(--blu)',primary:'var(--pri)'};const e=document.createElement('div');e.className=`t ${t}`;e.innerHTML=`<i class="fas ${ic[t]||ic.info}" style="color:${cl[t]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.charAt(0).toUpperCase()+t.slice(1)}</div><div style="font-size:11px;color:var(--txm);">${m}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transition='opacity .3s';setTimeout(()=>e.remove(),300);},5000);}
+function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('show');document.getElementById('sidebarBackdrop').classList.remove('show');}
+
+// Pay Now
+let selPaySource='wallet', selPayLoan='emergency';
+function selLoan(el,loan){document.querySelectorAll('.loan-sel').forEach(l=>l.classList.remove('act'));el.classList.add('act');selPayLoan=loan;
+    const inst=loan==='emergency'?3200:4800;
+    document.getElementById('payAmount').value=inst;
+    document.getElementById('payBtnAmt').textContent=inst.toLocaleString();
+}
+function selPay(el,src){document.querySelectorAll('#payNowModal .pm').forEach(p=>p.classList.remove('act'));el.classList.add('act');selPaySource=src;
+    const details=document.getElementById('paySourceDetails');
+    const msgs={wallet:`<div class="rounded-4 p-3" style="background:rgba(0,200,83,0.04);border:1px solid rgba(0,200,83,0.12);"><div style="font-size:12px;color:var(--grn);"><i class="fas fa-wallet me-1"></i> Deducted instantly from your SaccoPay Wallet (Bal: KES 12,450).</div></div>`,
+    mpesa:`<div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">M-Pesa Number</label><div class="phi"><span class="flag">🇰🇪</span><span class="pfx">+254</span><input type="tel" class="form-control" style="border-radius:14px;" value="712345890"></div><div class="form-text" style="font-size:11px;">STK Push sent to this number. Enter PIN to confirm.</div></div>`,
+    card:`<div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Card</label><select class="form-select" style="border-radius:12px;"><option>Visa ****4242 (Expires 12/26)</option><option>+ Add new card</option></select><div class="form-text" style="font-size:11px;">Charged instantly. PCI-DSS secure.</div></div>`,
+    airtel:`<div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Airtel Number</label><div class="phi"><span class="flag">🇰🇪</span><span class="pfx">+254</span><input type="tel" class="form-control" style="border-radius:14px;" value="733456789"></div></div>`};
+    details.innerHTML=msgs[src]||msgs.wallet;
+}
+function openPayNow(loan){selPayLoan=loan;const m=new bootstrap.Modal(document.getElementById('payNowModal'));m.show();
+    setTimeout(()=>{document.querySelectorAll('.loan-sel').forEach(l=>l.classList.remove('act'));document.getElementById(loan==='emergency'?'lsEmergency':'lsDevelopment').classList.add('act');const inst=loan==='emergency'?3200:4800;document.getElementById('payAmount').value=inst;document.getElementById('payBtnAmt').textContent=inst.toLocaleString();},100);
+}
+function processPayment(){
+    const amt=+(document.getElementById('payAmount').value||0);
+    if(!amt||amt<100){showToast('Enter a valid amount','warning');return;}
+    bootstrap.Modal.getInstance(document.getElementById('payNowModal')).hide();
+    const proc=new bootstrap.Modal(document.getElementById('processingModal'));
+    const msgs={wallet:'Deducting from SaccoPay Wallet...',mpesa:'Sending M-Pesa STK Push...',card:'Processing card payment...',airtel:'Sending Airtel STK Push...'};
+    document.getElementById('procMsg').textContent=msgs[selPaySource]||msgs.wallet;
+    proc.show();
+    setTimeout(()=>{proc.hide();setTimeout(()=>{const ref='PAY-2025-00'+Math.floor(Math.random()*900+100);const outstanding=selPayLoan==='emergency'?18500-amt:85000-amt;document.getElementById('successAmt').textContent='KES '+amt.toLocaleString();document.getElementById('successLoan').textContent='Applied to '+(selPayLoan==='emergency'?'Emergency':'Development')+' Loan';document.getElementById('successRef').textContent=ref;document.getElementById('successSource').textContent={wallet:'SaccoPay Wallet',mpesa:'M-Pesa STK',card:'Debit Card',airtel:'Airtel Money'}[selPaySource];document.getElementById('successBal').textContent='KES '+Math.max(0,outstanding).toLocaleString();new bootstrap.Modal(document.getElementById('successModal')).show();},300);},3000);
+}
+
+// Overdraft
+function selOdLoan(el,loan){document.querySelectorAll('#overdraftModal .loan-sel').forEach(l=>l.classList.remove('act'));el.classList.add('act');const inst=loan==='emergency'?3200:4800;document.getElementById('odAmount').value=inst;calcOverdraft();}
+function calcOverdraft(){const a=+(document.getElementById('odAmount').value||0);const int=Math.round(a*0.03*3);const fee=100;const total=a+int+fee;const monthly=Math.round(total/3);
+    document.getElementById('odDispAmt').textContent='KES '+a.toLocaleString();
+    document.getElementById('odDispInt').textContent='KES '+int.toLocaleString();
+    document.getElementById('odDispTotal').textContent='KES '+total.toLocaleString();
+    document.getElementById('odHoldAmt').textContent='KES '+a.toLocaleString();
+    document.getElementById('odConsentAmt').textContent=a.toLocaleString();
+    document.getElementById('odM1').textContent='KES '+monthly.toLocaleString();
+    document.getElementById('odM2').textContent='KES '+monthly.toLocaleString();
+    document.getElementById('odM3').textContent='KES '+(total-monthly*2).toLocaleString();
+}
+function processOverdraft(){
+    if(!document.getElementById('odConsent1').checked||!document.getElementById('odConsent2').checked||!document.getElementById('odConsent3').checked){showToast('Please accept all terms to proceed','warning');return;}
+    const amt=+(document.getElementById('odAmount').value||0);
+    if(!amt||amt>21000){showToast('Amount must be between KES 1 and KES 21,000','warning');return;}
+    bootstrap.Modal.getInstance(document.getElementById('overdraftModal')).hide();
+    const proc=new bootstrap.Modal(document.getElementById('processingModal'));
+    document.getElementById('procMsg').textContent='Activating overdraft and applying to loan...';
+    proc.show();
+    setTimeout(()=>{proc.hide();setTimeout(()=>{const ref='OD-2025-00'+Math.floor(Math.random()*900+100);document.getElementById('successAmt').textContent='KES '+amt.toLocaleString();document.getElementById('successLoan').textContent='Paid via SaccoPay Overdraft';document.getElementById('successRef').textContent=ref;document.getElementById('successSource').textContent='Overdraft (NWA-backed)';document.getElementById('successBal').textContent='KES '+(18500-amt>0?18500-amt:0).toLocaleString();new bootstrap.Modal(document.getElementById('successModal')).show();showToast('Overdraft activated! NWA hold of KES '+amt.toLocaleString()+' applied. Repay within 3 months.','warning');},300);},3500);
+}
+
+// Init
+document.addEventListener('DOMContentLoaded',()=>{calcOverdraft();setTimeout(()=>showToast('Emergency Loan installment KES 3,200 due in 4 days (Mar 1). Auto-Pay active.','warning'),800);});
+</script>
+</body>
+</html>

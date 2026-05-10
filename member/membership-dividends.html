@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dividends & Returns — SaccoPay Member</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root{--pri:#FF6B00;--pri-l:#FF8C38;--pri-sub:rgba(255,107,0,0.06);--pri-bdr:rgba(255,107,0,0.20);--bg:#F5F6FA;--card:#fff;--inp:#F0F2F8;--tx:#1A1D2E;--tx2:rgba(26,29,46,0.72);--txm:rgba(26,29,46,0.50);--mono:'JetBrains Mono',monospace;--sh-s:0 1px 3px rgba(0,0,0,0.06);--sh-m:0 4px 12px rgba(0,0,0,0.08);--sh-o:0 4px 16px rgba(255,107,0,0.18);--grd:linear-gradient(135deg,#FF6B00,#FF8C38,#FFAA00);--sbw:260px;--grn:#00C853;--red:#E53935;--ylw:#F9A825;--blu:#0288D1;--pur:#AB00D9;--gold:#FFC107;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);}
+        .sp-sidebar{width:var(--sbw);min-height:100vh;background:#fff;border-right:1px solid rgba(26,29,46,0.08);position:fixed;top:0;left:0;z-index:1040;transition:transform .3s;overflow-y:auto;box-shadow:2px 0 8px rgba(0,0,0,0.03);}
+        .sp-sidebar .brand-logo{width:36px;height:36px;background:var(--grd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:var(--sh-o);}
+        .sp-sidebar .nav-link{color:var(--txm);font-size:13px;font-weight:500;padding:10px 20px;position:relative;transition:all .15s;}
+        .sp-sidebar .nav-link:hover{color:var(--tx);background:rgba(255,107,0,0.04);}
+        .sp-sidebar .nav-link.active{color:var(--pri);background:linear-gradient(90deg,rgba(255,107,0,0.08),rgba(255,107,0,0.02));font-weight:600;}
+        .sp-sidebar .nav-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grd);border-radius:0 3px 3px 0;}
+        .sp-sidebar .nav-icon{width:20px;text-align:center;margin-right:10px;font-size:15px;}
+        .sp-sidebar .section-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(26,29,46,0.30);padding:12px 20px 6px;}
+        .sp-sidebar .member-badge{padding:12px 20px;border-bottom:1px solid rgba(26,29,46,0.06);}
+        .sp-sidebar .nav-badge{background:var(--pri);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;box-shadow:0 2px 6px rgba(255,107,0,0.3);}
+        .sp-main{margin-left:var(--sbw);min-height:100vh;}
+        .sp-topbar{height:64px;background:rgba(255,255,255,0.92);border-bottom:1px solid rgba(26,29,46,0.06);backdrop-filter:blur(20px);position:sticky;top:0;z-index:1030;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+        .sp-topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.15) 30%,rgba(255,107,0,0.25) 50%,rgba(255,107,0,0.15) 70%,transparent);}
+        .topbar-btn{width:36px;height:36px;background:#fff;border:1px solid rgba(26,29,46,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--txm);transition:all .15s;position:relative;cursor:pointer;}
+        .topbar-btn:hover{background:var(--pri-sub);border-color:var(--pri-bdr);color:var(--pri);}
+        .topbar-btn .badge-dot{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--pri);color:#fff;font-size:9px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.92);}
+        .c{background:#fff;border:1px solid rgba(26,29,46,0.06);border-radius:16px;box-shadow:var(--sh-s);transition:all .25s;overflow:hidden;}
+        .c:hover{box-shadow:var(--sh-m);}
+        .c.cl{cursor:pointer;}.c.cl:hover{transform:translateY(-2px);}
+        .b{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;}
+        .pr{height:6px;border-radius:50px;background:rgba(26,29,46,0.06);overflow:hidden;}
+        .pf{height:100%;border-radius:50px;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;}
+        .pf.sh::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 2s infinite;}
+        .kpi{background:var(--inp);border:1px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;}
+        .kpi .k{font-size:11px;color:var(--txm);}.kpi .v{font-family:var(--mono);font-weight:800;}
+        .dv{height:1px;background:rgba(26,29,46,0.06);}
+        .hero-div{background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 40%,#388E3C 70%,#43A047 100%);border-radius:20px;position:relative;overflow:hidden;color:#fff;}
+        .hero-div::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:rgba(255,193,7,0.10);border-radius:50%;}
+        .hero-div::after{content:'';position:absolute;bottom:-60px;right:60px;width:180px;height:180px;background:rgba(255,193,7,0.05);border-radius:50%;}
+        .yr-card{border:2px solid rgba(26,29,46,0.06);border-radius:16px;padding:20px;transition:all .25s;cursor:pointer;position:relative;overflow:hidden;}
+        .yr-card:hover{border-color:var(--pri-bdr);transform:translateY(-3px);box-shadow:var(--sh-m);}
+        .yr-card.latest{border-color:rgba(0,200,83,0.20);background:rgba(0,200,83,0.02);}
+        .yr-card .yr-ribbon{position:absolute;top:10px;right:-24px;background:var(--grn);color:#fff;font-size:9px;font-weight:700;padding:2px 28px;transform:rotate(45deg);letter-spacing:.06em;}
+        .interest-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:12px;transition:background .15s;cursor:pointer;}
+        .interest-row:hover{background:rgba(255,107,0,0.03);}
+        .toast-c{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:12px;}
+        .t{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:1px solid rgba(26,29,46,0.10);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.10);min-width:300px;max-width:420px;animation:slideInRight .3s ease;}
+        .t.success{border-left:3px solid var(--grn);}.t.warning{border-left:3px solid var(--ylw);}.t.danger{border-left:3px solid var(--red);}.t.info{border-left:3px solid var(--blu);}.t.primary{border-left:3px solid var(--pri);}
+        @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        .fiu{animation:fadeInUp .4s ease both;}
+        @media(max-width:991px){.sp-sidebar{transform:translateX(-100%);z-index:1050;}.sp-sidebar.show{transform:translateX(0);}.sp-main{margin-left:0!important;}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1045;}.sidebar-backdrop.show{display:block;}}
+        @media(max-width:575px){.hero-div .display-5{font-size:1.5rem!important;}}
+        ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(26,29,46,0.12);border-radius:50px;}
+    </style>
+</head>
+<body>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sp-sidebar" id="sidebar">
+    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important;min-height:64px;"><div class="brand-logo">S</div><div><div style="font-size:16px;font-weight:700;">Sacco<span style="color:var(--pri);">Pay</span></div><div style="font-size:10px;color:var(--txm);letter-spacing:.04em;">Member Portal</div></div></a>
+    <div class="member-badge d-flex align-items-center gap-3"><div style="width:38px;height:38px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div><div class="flex-grow-1 min-w-0"><div style="font-size:12px;font-weight:600;" class="text-truncate">John Kamau</div><div style="font-size:11px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div><div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:var(--grn);"><span style="width:5px;height:5px;background:var(--grn);border-radius:50%;box-shadow:0 0 6px var(--grn);"></span> Active</div></div></div>
+    <nav class="py-2">
+        <div class="section-label">Main</div><a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <div class="section-label">Financial</div><a href="savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> Savings</a><a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a><a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a><a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <div class="section-label">Loans</div><a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> Loans</a><a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <div class="section-label">Membership</div><a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> Shares</a><a href="dividends.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a><a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a><a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <div class="section-label">Other</div><a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">3</span></a><a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> Profile</a><a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+    </nav>
+    <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;"><a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a><a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a></div>
+</aside>
+
+<!-- MAIN -->
+<div class="sp-main">
+    <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
+        <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()" style="font-size:18px;color:var(--txm);"><i class="fas fa-bars"></i></button>
+        <nav aria-label="breadcrumb" class="d-none d-md-block"><ol class="breadcrumb mb-0" style="font-size:13px;"><li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color:var(--txm);">Home</a></li><li class="breadcrumb-item active">Dividends</li></ol></nav>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#notifModal"><i class="fas fa-bell" style="font-size:14px;"></i><span class="badge-dot">3</span></button>
+            <div class="dropdown"><button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle" data-bs-toggle="dropdown" style="border-color:rgba(26,29,46,0.08)!important;font-size:13px;"><div style="width:28px;height:28px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">JK</div><span class="d-none d-md-inline" style="color:var(--tx2);font-weight:500;">John</span></button><ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;"><li class="px-3 py-2 border-bottom"><div style="font-weight:600;font-size:13px;">John Kamau</div><div style="font-size:11px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div></li><li><a class="dropdown-item py-2" href="profile.html"><i class="fas fa-user me-2 text-muted"></i>Profile</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item py-2 text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li></ul></div>
+        </div>
+    </header>
+
+    <div class="p-3 p-lg-4 fiu" style="max-width:1400px;">
+
+        <!-- HEADER -->
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+            <div><h1 class="h3 fw-bold mb-1"><i class="fas fa-coins me-2" style="color:var(--gold);"></i>Dividends <span style="color:var(--pri);">& Returns</span></h1><p class="mb-0" style="color:var(--txm);font-size:14px;">Track your dividend earnings, interest credits, and projected returns from your SACCO membership.</p></div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#policyModal"><i class="fas fa-book me-1"></i> Dividend Policy</button>
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#projectorModal"><i class="fas fa-calculator me-1"></i> Projector</button>
+                <a href="shares.html" class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--grd);box-shadow:var(--sh-o);"><i class="fas fa-chart-line me-1"></i> Buy Shares</a>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero-div p-4 p-lg-5 mb-4">
+            <div class="position-relative" style="z-index:1;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-6">
+                        <div style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;text-transform:uppercase;letter-spacing:.1em;" class="mb-2">Total Returns Earned (All Time)</div>
+                        <div class="display-5 fw-bold" style="font-family:var(--mono);letter-spacing:-.04em;"><span style="font-size:.55em;opacity:.7;">KES</span> 8,275<span style="font-size:.45em;opacity:.4;">.00</span></div>
+                        <div class="d-flex flex-wrap gap-3 mt-3" style="font-size:12px;">
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-coins me-1" style="color:var(--gold);"></i> Dividends: <strong>KES 3,400</strong></span>
+                            <span style="width:1px;height:14px;background:rgba(255,255,255,0.15);"></span>
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-percentage me-1"></i> Savings Interest: <strong>KES 4,875</strong></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-2">
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Last Dividend</div><div class="v" style="color:var(--gold);">KES 3,400</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">FY 2024 • Paid Dec 2024</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Projected (2025)</div><div class="v" style="color:var(--grn);">KES 3,600</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">Based on current shares</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Interest (YTD)</div><div class="v" style="color:rgba(255,255,255,0.85);">KES 725</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">Savings @ 7% p.a.</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Shares Held</div><div class="v" style="color:var(--pri-l);">120</div><a href="shares.html" class="text-decoration-none" style="font-size:10px;color:var(--pri-l);">Manage →</a></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <ul class="nav nav-pills mb-4 gap-2 flex-nowrap overflow-auto pb-1" role="tablist">
+            <li class="nav-item"><button class="nav-link active rounded-pill px-4 py-2" style="font-size:13px;font-weight:600;" data-bs-toggle="pill" data-bs-target="#tabDividends"><i class="fas fa-coins me-1"></i> Share Dividends</button></li>
+            <li class="nav-item"><button class="nav-link rounded-pill px-4 py-2" style="font-size:13px;font-weight:600;" data-bs-toggle="pill" data-bs-target="#tabInterest"><i class="fas fa-percentage me-1"></i> Savings Interest</button></li>
+            <li class="nav-item"><button class="nav-link rounded-pill px-4 py-2" style="font-size:13px;font-weight:600;" data-bs-toggle="pill" data-bs-target="#tabProjection"><i class="fas fa-chart-line me-1"></i> Projections</button></li>
+        </ul>
+
+        <div class="tab-content">
+
+            <!-- TAB: DIVIDENDS -->
+            <div class="tab-pane fade show active" id="tabDividends">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <!-- Dividend Chart -->
+                        <div class="c mb-4">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                                <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-chart-bar me-2" style="color:var(--gold);"></i>Dividend History</div>
+                                <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Dividend statement exported as PDF','success')"><i class="fas fa-download me-1"></i> Export</button>
+                            </div>
+                            <div class="p-3">
+                                <div style="height:280px;"><canvas id="divChart"></canvas></div>
+                            </div>
+                        </div>
+
+                        <!-- Yearly Dividend Cards -->
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold mb-0"><i class="fas fa-calendar-alt me-2" style="color:var(--pri);"></i>Annual Dividend Records</h6>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <!-- FY 2024 — Latest -->
+                            <div class="col-md-6">
+                                <div class="yr-card latest" onclick="openDivDetail('2024')">
+                                    <div class="yr-ribbon">LATEST</div>
+                                    <div class="d-flex align-items-start justify-content-between mb-3">
+                                        <div>
+                                            <div style="font-size:11px;color:var(--txm);text-transform:uppercase;letter-spacing:.08em;font-weight:600;">Financial Year 2024</div>
+                                            <div class="fw-bold" style="font-size:22px;font-family:var(--mono);color:var(--grn);">KES 3,400</div>
+                                        </div>
+                                        <span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check-circle"></i> Paid</span>
+                                    </div>
+                                    <div class="dv mb-3"></div>
+                                    <div class="row g-2" style="font-size:12px;">
+                                        <div class="col-6"><span style="color:var(--txm);">Rate Declared</span><div class="fw-bold" style="color:var(--grn);">30%</div></div>
+                                        <div class="col-6"><span style="color:var(--txm);">Shares at Declaration</span><div class="fw-bold" style="font-family:var(--mono);">100 × KES 100</div></div>
+                                        <div class="col-6"><span style="color:var(--txm);">Share Capital</span><div class="fw-bold" style="font-family:var(--mono);">KES 10,000</div></div>
+                                        <div class="col-6"><span style="color:var(--txm);">Paid On</span><div class="fw-bold">Dec 20, 2024</div></div>
+                                        <div class="col-6"><span style="color:var(--txm);">Payment Method</span><div class="fw-bold"><i class="fas fa-piggy-bank me-1" style="color:var(--grn);"></i>Savings Account</div></div>
+                                        <div class="col-6"><span style="color:var(--txm);">Withholding Tax</span><div class="fw-bold" style="color:var(--red);">KES 170 (5%)</div></div>
+                                    </div>
+                                    <div class="dv my-3"></div>
+                                    <div class="d-flex justify-content-between" style="font-size:13px;"><span style="color:var(--txm);">Net Received</span><strong style="font-family:var(--mono);color:var(--grn);font-size:16px;">KES 3,230</strong></div>
+                                </div>
+                            </div>
+
+                            <!-- FY 2023 — Member wasn't yet joined, show placeholder -->
+                            <div class="col-md-6">
+                                <div class="yr-card" style="opacity:0.6;" onclick="showToast('You joined in Jan 2024. No dividend for FY 2023.','info')">
+                                    <div class="d-flex align-items-start justify-content-between mb-3">
+                                        <div>
+                                            <div style="font-size:11px;color:var(--txm);text-transform:uppercase;letter-spacing:.08em;font-weight:600;">Financial Year 2023</div>
+                                            <div class="fw-bold" style="font-size:22px;font-family:var(--mono);color:var(--txm);">—</div>
+                                        </div>
+                                        <span class="b" style="background:rgba(26,29,46,0.04);color:var(--txm);border:1px solid rgba(26,29,46,0.10);"><i class="fas fa-ban"></i> N/A</span>
+                                    </div>
+                                    <div class="dv mb-3"></div>
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-user-clock d-block mb-2" style="font-size:28px;color:var(--txm);opacity:0.5;"></i>
+                                        <div style="font-size:13px;color:var(--txm);">Not yet a member</div>
+                                        <div style="font-size:11px;color:var(--txm);margin-top:4px;">You joined SaccoPay on Jan 15, 2024</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side Panels -->
+                    <div class="col-lg-4 d-flex flex-column gap-3">
+                        <!-- How Dividends Work -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3"><div style="width:36px;height:36px;background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.20);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);"><i class="fas fa-question-circle"></i></div><div><div style="font-size:13px;font-weight:700;">How Dividends Work</div><div style="font-size:11px;color:var(--txm);">Understanding your returns</div></div></div>
+                                <div style="font-size:12px;color:var(--tx2);">Dividends are declared annually at the AGM based on SACCO performance. Your dividend = Share Capital × Declared Rate.</div>
+                                <div style="font-size:11px;color:var(--pri);text-align:center;margin-top:8px;font-weight:600;">Tap to learn more</div>
+                            </div>
+                        </div>
+
+                        <!-- Boost Returns CTA -->
+                        <div class="c" style="background:var(--grd);border:none;color:#fff;">
+                            <div class="p-4 text-center">
+                                <i class="fas fa-rocket" style="font-size:28px;opacity:0.85;margin-bottom:8px;display:block;"></i>
+                                <div class="fw-bold" style="font-size:15px;">Boost Your Returns</div>
+                                <div style="font-size:12px;opacity:0.8;" class="mb-3">Buy 30 more shares to increase your annual dividend from <strong>KES 3,600</strong> to <strong>KES 4,500</strong>.</div>
+                                <a href="shares.html" class="btn btn-sm rounded-3 px-4 fw-semibold" style="background:#fff;color:var(--pri);"><i class="fas fa-plus-circle me-1"></i> Buy 30 Shares (KES 3,000)</a>
+                            </div>
+                        </div>
+
+                        <!-- Dividend Payout Preference -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#payoutPrefModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3"><div style="width:36px;height:36px;background:rgba(2,136,209,0.06);border:1px solid rgba(2,136,209,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--blu);"><i class="fas fa-wallet"></i></div><div><div style="font-size:13px;font-weight:700;">Payout Preference</div><div style="font-size:11px;color:var(--txm);">Where dividends are credited</div></div></div>
+                                <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--txm);">Current Setting</span><strong><i class="fas fa-piggy-bank me-1" style="color:var(--grn);"></i>Savings Account</strong></div>
+                                <div style="font-size:11px;color:var(--pri);text-align:center;margin-top:8px;font-weight:600;">Tap to change</div>
+                            </div>
+                        </div>
+
+                        <!-- Next Dividend Estimate -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#projectorModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3"><div style="width:36px;height:36px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.20);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--grn);"><i class="fas fa-calendar-check"></i></div><div><div style="font-size:13px;font-weight:700;">Next Dividend</div><div style="font-size:11px;color:var(--txm);">Estimated — FY 2025</div></div></div>
+                                <div class="text-center mb-2"><div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--grn);">~ KES 3,600</div><div style="font-size:11px;color:var(--txm);">120 shares × KES 100 × 30% rate</div></div>
+                                <div class="alert border-0 mb-0 py-2 px-3" style="background:rgba(249,168,37,0.06);border-radius:8px;font-size:11px;color:var(--ylw);text-align:center;"><i class="fas fa-info-circle me-1"></i> Projection only. Actual rate declared at AGM (March 2026).</div>
+                            </div>
+                        </div>
+
+                        <!-- Tax Info -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#taxModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2"><div style="width:36px;height:36px;background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--red);"><i class="fas fa-file-invoice-dollar"></i></div><div><div style="font-size:13px;font-weight:700;">Withholding Tax</div><div style="font-size:11px;color:var(--txm);">KRA compliance info</div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: INTEREST -->
+            <div class="tab-pane fade" id="tabInterest">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="c">
+                            <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;"><div class="fw-semibold" style="font-size:14px;"><i class="fas fa-percentage me-2" style="color:var(--blu);"></i>Monthly Savings Interest</div><button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Interest statement exported','success')"><i class="fas fa-download me-1"></i> Export</button></div>
+                            <div class="p-3">
+                                <!-- Interest Chart -->
+                                <div style="height:240px;" class="mb-4"><canvas id="intChart"></canvas></div>
+
+                                <!-- Monthly Records -->
+                                <div class="d-flex flex-column gap-1">
+                                    <div class="interest-row" style="background:rgba(255,107,0,0.03);border:1px solid rgba(255,107,0,0.10);border-radius:12px;" onclick="openIntDetail('Feb 2025','375','pending')">
+                                        <div class="d-flex align-items-center gap-3"><div style="width:32px;height:32px;background:var(--pri-sub);border:1px solid var(--pri-bdr);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--pri);font-size:12px;"><i class="fas fa-hourglass-half"></i></div><div><div style="font-size:13px;font-weight:600;">February 2025</div><div style="font-size:10px;color:var(--txm);">Pending — credits on Feb 28</div></div></div>
+                                        <div class="text-end"><div class="fw-bold" style="font-family:var(--mono);color:var(--pri);">~ KES 375</div><span class="b" style="background:var(--pri-sub);color:var(--pri);border:1px solid var(--pri-bdr);font-size:9px;"><i class="fas fa-clock"></i> Pending</span></div>
+                                    </div>
+
+                                    <div class="interest-row" onclick="openIntDetail('Jan 2025','350','credited')">
+                                        <div class="d-flex align-items-center gap-3"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--grn);font-size:12px;"><i class="fas fa-check"></i></div><div><div style="font-size:13px;font-weight:600;">January 2025</div><div style="font-size:10px;color:var(--txm);">Credited Jan 31</div></div></div>
+                                        <div class="text-end"><div class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 350</div><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i class="fas fa-check"></i></span></div>
+                                    </div>
+
+                                    <div class="interest-row" onclick="openIntDetail('Dec 2024','325','credited')">
+                                        <div class="d-flex align-items-center gap-3"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--grn);font-size:12px;"><i class="fas fa-check"></i></div><div><div style="font-size:13px;font-weight:600;">December 2024</div><div style="font-size:10px;color:var(--txm);">Credited Dec 31</div></div></div>
+                                        <div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 325</div><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i class="fas fa-check"></i></span></div>
+                                    </div>
+
+                                    <div class="interest-row" onclick="openIntDetail('Nov 2024','310','credited')">
+                                        <div class="d-flex align-items-center gap-3"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--grn);font-size:12px;"><i class="fas fa-check"></i></div><div><div style="font-size:13px;font-weight:600;">November 2024</div><div style="font-size:10px;color:var(--txm);">Credited Nov 30</div></div></div>
+                                        <div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 310</div><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i class="fas fa-check"></i></span></div>
+                                    </div>
+
+                                    <div class="interest-row" onclick="openIntDetail('Oct 2024','295','credited')">
+                                        <div class="d-flex align-items-center gap-3"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--grn);font-size:12px;"><i class="fas fa-check"></i></div><div><div style="font-size:13px;font-weight:600;">October 2024</div><div style="font-size:10px;color:var(--txm);">Credited Oct 31</div></div></div>
+                                        <div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 295</div><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i class="fas fa-check"></i></span></div>
+                                    </div>
+                                </div>
+
+                                <div class="dv my-3"></div>
+                                <div class="d-flex justify-content-between" style="font-size:14px;"><span class="fw-semibold">Lifetime Interest Earned</span><strong style="font-family:var(--mono);color:var(--grn);font-size:18px;">KES 4,875</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interest Side Panels -->
+                    <div class="col-lg-4 d-flex flex-column gap-3">
+                        <div class="c"><div class="p-3"><div class="fw-semibold mb-3" style="font-size:14px;"><i class="fas fa-cog me-2" style="color:var(--blu);"></i>Interest Settings <span style="font-size:11px;color:var(--txm);font-weight:400;">(Admin)</span></div>
+                            <div class="d-flex flex-column gap-2" style="font-size:12px;">
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Rate</span><strong style="color:var(--blu);">7% p.a.</strong></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Method</span><strong>Compound Monthly</strong></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Credit Date</span><strong>Last day of month</strong></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Calculated On</span><strong>Average daily balance</strong></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Projected Annual</span><strong style="color:var(--grn);font-family:var(--mono);">~ KES 6,913</strong></div>
+                            </div>
+                        </div></div>
+
+                        <div class="c" style="background:linear-gradient(135deg,#0D47A1,#1565C0);border:none;color:#fff;">
+                            <div class="p-4 text-center">
+                                <i class="fas fa-piggy-bank" style="font-size:28px;opacity:0.85;display:block;margin-bottom:8px;"></i>
+                                <div class="fw-bold" style="font-size:15px;">Earn More Interest</div>
+                                <div style="font-size:12px;opacity:0.8;" class="mb-3">Increase your savings balance to earn more monthly interest. Every KES 10,000 extra → ~KES 58/month.</div>
+                                <a href="deposits.html" class="btn btn-sm rounded-3 px-4 fw-semibold" style="background:#fff;color:var(--blu);"><i class="fas fa-plus me-1"></i> Deposit Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: PROJECTIONS -->
+            <div class="tab-pane fade" id="tabProjection">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="c">
+                            <div class="p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;"><div class="fw-semibold" style="font-size:14px;"><i class="fas fa-chart-line me-2" style="color:var(--grn);"></i>5-Year Return Projection</div></div>
+                            <div class="p-3">
+                                <div style="height:300px;"><canvas id="projChart"></canvas></div>
+                                <div class="alert border-0 mt-3 mb-0" style="background:rgba(249,168,37,0.06);border-radius:12px;font-size:11px;color:var(--ylw);"><i class="fas fa-exclamation-triangle me-1"></i> Projections are estimates based on current rates and shares. Actual dividends depend on SACCO performance and AGM decisions.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="c">
+                            <div class="p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;"><div class="fw-semibold" style="font-size:14px;"><i class="fas fa-table me-2" style="color:var(--pri);"></i>Projection Table</div></div>
+                            <div class="p-3 d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:rgba(0,200,83,0.04);border:1px solid rgba(0,200,83,0.12);font-size:13px;"><div><div class="fw-bold">2025</div><div style="font-size:10px;color:var(--txm);">120 shares</div></div><div class="text-end"><div class="fw-bold" style="font-family:var(--mono);color:var(--grn);">KES 3,600</div><div style="font-size:10px;color:var(--txm);">+ KES 4,400 interest</div></div></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);font-size:13px;"><div><div class="fw-bold">2026</div><div style="font-size:10px;color:var(--txm);">150 shares (est.)</div></div><div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 4,500</div><div style="font-size:10px;color:var(--txm);">+ KES 5,800 interest</div></div></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);font-size:13px;"><div><div class="fw-bold">2027</div><div style="font-size:10px;color:var(--txm);">180 shares (est.)</div></div><div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 5,400</div><div style="font-size:10px;color:var(--txm);">+ KES 7,200 interest</div></div></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);font-size:13px;"><div><div class="fw-bold">2028</div><div style="font-size:10px;color:var(--txm);">210 shares (est.)</div></div><div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 6,300</div><div style="font-size:10px;color:var(--txm);">+ KES 8,600 interest</div></div></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);font-size:13px;"><div><div class="fw-bold">2029</div><div style="font-size:10px;color:var(--txm);">250 shares (est.)</div></div><div class="text-end"><div class="fw-bold" style="font-family:var(--mono);">KES 7,500</div><div style="font-size:10px;color:var(--txm);">+ KES 10,500 interest</div></div></div>
+                                <div class="dv my-2"></div>
+                                <div class="d-flex justify-content-between p-3 rounded-3" style="background:rgba(0,200,83,0.04);border:1px solid rgba(0,200,83,0.15);font-size:14px;"><span class="fw-bold" style="color:var(--grn);">5-Year Total Returns</span><strong style="font-family:var(--mono);color:var(--grn);font-size:18px;">KES 63,800</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════ MODALS ═════════════ -->
+
+<!-- Dividend Detail -->
+<div class="modal fade" id="divDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--grn);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-coins me-2" style="color:var(--gold);"></i>Dividend Details — <span id="ddYear">FY 2024</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4" id="ddBody"></div><div class="modal-footer border-0 px-4 pb-4 pt-0" id="ddFooter"></div></div></div>
+</div>
+
+<!-- Interest Detail -->
+<div class="modal fade" id="intDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;" id="idBar"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold" id="idTitle"><i class="fas fa-percentage me-2" style="color:var(--blu);"></i>Interest</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4" id="idBody"></div></div></div>
+</div>
+
+<!-- How Dividends Work -->
+<div class="modal fade" id="howItWorksModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--gold);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-question-circle me-2" style="color:var(--gold);"></i>How Dividends Work</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex gap-3"><div style="width:36px;height:36px;background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.20);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0;">1</div><div><div class="fw-bold" style="font-size:13px;">You Buy Shares</div><div style="font-size:12px;color:var(--tx2);">Each share costs KES 100 (admin-set). The more shares you hold, the higher your dividend.</div></div></div>
+            <div class="d-flex gap-3"><div style="width:36px;height:36px;background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.20);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0;">2</div><div><div class="fw-bold" style="font-size:13px;">SACCO Earns Profits</div><div style="font-size:12px;color:var(--tx2);">From loan interest, investments, and service fees throughout the financial year.</div></div></div>
+            <div class="d-flex gap-3"><div style="width:36px;height:36px;background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.20);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0;">3</div><div><div class="fw-bold" style="font-size:13px;">Board Declares Dividend</div><div style="font-size:12px;color:var(--tx2);">At the AGM, the board declares a dividend rate (e.g., 30% of share capital) based on performance.</div></div></div>
+            <div class="d-flex gap-3"><div style="width:36px;height:36px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--grn);font-weight:700;flex-shrink:0;">4</div><div><div class="fw-bold" style="font-size:13px;">You Receive Payment</div><div style="font-size:12px;color:var(--tx2);">Dividend = Your Share Capital × Rate. Paid to your preferred account after withholding tax (5%) deduction.</div></div></div>
+        </div>
+        <div class="dv my-3"></div>
+        <div class="rounded-4 p-3" style="background:var(--inp);">
+            <div class="fw-semibold mb-2" style="font-size:13px;"><i class="fas fa-calculator me-2" style="color:var(--pri);"></i>Your Example</div>
+            <div class="d-flex flex-column gap-1" style="font-size:12px;">
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Shares Held</span><strong style="font-family:var(--mono);">120 × KES 100 = KES 12,000</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Last Rate</span><strong style="color:var(--grn);">30%</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Gross Dividend</span><strong style="font-family:var(--mono);">KES 12,000 × 30% = KES 3,600</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Tax (5%)</span><strong style="color:var(--red);font-family:var(--mono);">- KES 180</strong></div>
+                <div class="dv my-1"></div>
+                <div class="d-flex justify-content-between"><span class="fw-bold" style="color:var(--grn);">Net Dividend</span><strong style="font-family:var(--mono);color:var(--grn);font-size:16px;">KES 3,420</strong></div>
+            </div>
+        </div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Got It</button><a href="shares.html" class="btn text-white rounded-3 fw-semibold" style="background:var(--grd);"><i class="fas fa-chart-line me-1"></i> Buy More Shares</a></div></div></div>
+</div>
+
+<!-- Payout Preference -->
+<div class="modal fade" id="payoutPrefModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--blu);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-wallet me-2" style="color:var(--blu);"></i>Dividend Payout Preference</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div style="font-size:12px;color:var(--tx2);margin-bottom:16px;">Choose where your future dividends should be credited. This applies to all declared dividends.</div>
+        <div class="d-flex flex-column gap-2">
+            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:rgba(0,200,83,0.04);border:2px solid rgba(0,200,83,0.20);cursor:pointer;" onclick="selPayout(this,'savings')"><div class="d-flex align-items-center gap-2"><i class="fas fa-piggy-bank" style="color:var(--grn);"></i><div><div style="font-size:13px;font-weight:600;">SaccoPay Savings</div><div style="font-size:11px;color:var(--txm);">Compounds with interest</div></div></div><i class="fas fa-check-circle" style="color:var(--grn);font-size:18px;"></i></div>
+            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:var(--inp);border:2px solid rgba(26,29,46,0.06);cursor:pointer;" onclick="selPayout(this,'wallet')"><div class="d-flex align-items-center gap-2"><i class="fas fa-wallet" style="color:var(--pri);"></i><div><div style="font-size:13px;font-weight:600;">SaccoPay Wallet</div><div style="font-size:11px;color:var(--txm);">For immediate spending</div></div></div><i class="far fa-circle" style="color:var(--txm);font-size:18px;"></i></div>
+            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:var(--inp);border:2px solid rgba(26,29,46,0.06);cursor:pointer;" onclick="selPayout(this,'mpesa')"><div class="d-flex align-items-center gap-2"><i class="fas fa-mobile-alt" style="color:var(--grn);"></i><div><div style="font-size:13px;font-weight:600;">M-Pesa (0712***890)</div><div style="font-size:11px;color:var(--txm);">Direct to phone</div></div></div><i class="far fa-circle" style="color:var(--txm);font-size:18px;"></i></div>
+            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:var(--inp);border:2px solid rgba(26,29,46,0.06);cursor:pointer;" onclick="selPayout(this,'reinvest')"><div class="d-flex align-items-center gap-2"><i class="fas fa-redo" style="color:var(--pur);"></i><div><div style="font-size:13px;font-weight:600;">Reinvest in Shares</div><div style="font-size:11px;color:var(--txm);">Auto-buy more shares</div></div></div><i class="far fa-circle" style="color:var(--txm);font-size:18px;"></i></div>
+        </div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button><button class="btn text-white rounded-3 fw-semibold" style="background:var(--grd);" onclick="showToast('Payout preference saved!','success')" data-bs-dismiss="modal"><i class="fas fa-save me-1"></i> Save</button></div></div></div>
+</div>
+
+<!-- Tax Info -->
+<div class="modal fade" id="taxModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--red);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-file-invoice-dollar me-2" style="color:var(--red);"></i>Withholding Tax</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="rounded-4 p-3 mb-3" style="background:rgba(229,57,53,0.03);border:1px solid rgba(229,57,53,0.12);">
+            <div class="d-flex flex-column gap-1" style="font-size:13px;">
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Tax Rate on Dividends</span><strong style="color:var(--red);">5%</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Withheld by</span><strong>SaccoPay (at source)</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Remitted to</span><strong>KRA</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Your KRA PIN</span><strong style="font-family:var(--mono);">A123456789B</strong></div>
+            </div>
+        </div>
+        <div class="fw-semibold mb-2" style="font-size:13px;">Tax Deducted History</div>
+        <div class="d-flex flex-column gap-1">
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);font-size:12px;"><span>FY 2024 Dividend</span><strong style="font-family:var(--mono);color:var(--red);">KES 170</strong></div>
+        </div>
+        <div class="dv my-3"></div>
+        <div style="font-size:11px;color:var(--txm);">Tax certificates can be used for your annual KRA tax returns. SaccoPay automatically remits withholding tax on your behalf as required by the Income Tax Act.</div>
+        <button class="btn btn-sm btn-outline-secondary rounded-3 w-100 mt-3" onclick="showToast('Tax certificate FY 2024 downloaded','success')"><i class="fas fa-download me-1"></i> Download Tax Certificate (FY 2024)</button>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button></div></div></div>
+</div>
+
+<!-- Policy -->
+<div class="modal fade" id="policyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--gold);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-book me-2" style="color:var(--gold);"></i>Dividend Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="d-flex flex-column gap-2" style="font-size:13px;">
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Declaration</span><strong>Annual (at AGM)</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Basis</span><strong>Share capital held</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Last Rate</span><strong style="color:var(--grn);">30% of capital</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Qualification</span><strong>Hold shares 6+ months</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Payment</span><strong>Within 30 days of AGM</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Tax</span><strong style="color:var(--red);">5% WHT deducted at source</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:var(--inp);"><span style="color:var(--txm);">Payout Options</span><strong>Savings / Wallet / M-Pesa / Reinvest</strong></div>
+        </div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button></div></div></div>
+</div>
+
+<!-- Projector -->
+<div class="modal fade" id="projectorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--grd);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-calculator me-2" style="color:var(--pri);"></i>Dividend Projector</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="row g-3 mb-3">
+            <div class="col-6"><label class="form-label fw-semibold" style="font-size:13px;">Shares</label><input type="number" class="form-control" id="pjShares" value="120" style="border-radius:12px;font-family:var(--mono);" oninput="calcProj()"></div>
+            <div class="col-6"><label class="form-label fw-semibold" style="font-size:13px;">Dividend Rate (%)</label><input type="number" class="form-control" id="pjRate" value="30" style="border-radius:12px;font-family:var(--mono);" oninput="calcProj()"></div>
+        </div>
+        <div class="rounded-4 p-3" style="background:var(--inp);">
+            <div class="d-flex flex-column gap-1" style="font-size:13px;">
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Share Capital</span><strong style="font-family:var(--mono);" id="pjCapital">KES 12,000</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Gross Dividend</span><strong style="font-family:var(--mono);color:var(--grn);" id="pjGross">KES 3,600</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Tax (5%)</span><strong style="font-family:var(--mono);color:var(--red);" id="pjTax">- KES 180</strong></div>
+                <div class="dv my-1"></div>
+                <div class="d-flex justify-content-between"><span class="fw-bold" style="color:var(--grn);">Net Dividend</span><strong style="font-family:var(--mono);color:var(--grn);font-size:18px;" id="pjNet">KES 3,420</strong></div>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="document.getElementById('pjShares').value=150;calcProj()">150 shares</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="document.getElementById('pjShares').value=200;calcProj()">200 shares</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="document.getElementById('pjShares').value=300;calcProj()">300 shares</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="document.getElementById('pjShares').value=500;calcProj()">500 shares</button>
+        </div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button><a href="shares.html" class="btn text-white rounded-3 fw-semibold" style="background:var(--grd);"><i class="fas fa-plus me-1"></i> Buy Shares</a></div></div></div>
+</div>
+
+<!-- Notifications -->
+<div class="modal fade" id="notifModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-bell me-2" style="color:var(--pri);"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4" style="max-height:350px;overflow:auto;">
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);" onclick="showToast('AGM 2025 on March 15. Dividend for FY 2025 to be declared.','info');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:rgba(255,193,7,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;font-size:12px;"><i class="fas fa-bullhorn"></i></div><div><div style="font-size:13px;font-weight:600;">AGM Notice</div><div style="font-size:11px;color:var(--txm);">March 15 — Dividend declaration • 2d ago</div></div><div style="width:6px;height:6px;background:var(--pri);border-radius:50%;margin-top:8px;flex-shrink:0;"></div></div>
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);" onclick="showToast('January interest KES 350 credited to your savings.','success');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--grn);flex-shrink:0;font-size:12px;"><i class="fas fa-percentage"></i></div><div><div style="font-size:13px;font-weight:600;">Interest Credited</div><div style="font-size:11px;color:var(--txm);">KES 350 for January • 3d ago</div></div><div style="width:6px;height:6px;background:var(--pri);border-radius:50%;margin-top:8px;flex-shrink:0;"></div></div>
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3" style="cursor:pointer;" onclick="showToast('New share purchase option: Buy up to 380 more shares at KES 100.','info');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:var(--pri-sub);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--pri);flex-shrink:0;font-size:12px;"><i class="fas fa-chart-line"></i></div><div><div style="font-size:13px;font-weight:500;color:var(--tx2);">Grow Your Shares</div><div style="font-size:11px;color:var(--txm);">380 more shares available at KES 100 • 1w</div></div></div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><a href="notifications.html" class="btn btn-outline-secondary rounded-3 w-100"><i class="fas fa-external-link-alt me-1"></i> All</a></div></div></div>
+</div>
+
+<!-- Logout -->
+<div class="modal fade" id="logoutModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4 text-center"><div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--red);font-size:24px;"><i class="fas fa-sign-out-alt"></i></div><h5 class="fw-bold">Logout?</h5><div class="d-flex gap-2 mt-3"><button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Stay</button><a href="login.html" class="btn btn-danger rounded-3 flex-fill"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></div></div></div></div></div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function showToast(m,t='info'){const c=document.getElementById('toastC');const ic={success:'fa-check-circle',danger:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle',primary:'fa-bell'};const cl={success:'var(--grn)',danger:'var(--red)',warning:'var(--ylw)',info:'var(--blu)',primary:'var(--pri)'};const e=document.createElement('div');e.className=`t ${t}`;e.innerHTML=`<i class="fas ${ic[t]||ic.info}" style="color:${cl[t]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.charAt(0).toUpperCase()+t.slice(1)}</div><div style="font-size:11px;color:var(--txm);">${m}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transition='opacity .3s';setTimeout(()=>e.remove(),300);},5000);}
+function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('show');document.getElementById('sidebarBackdrop').classList.remove('show');}
+
+// Dividend Detail
+function openDivDetail(year){
+    document.getElementById('ddYear').textContent='FY '+year;
+    document.getElementById('ddBody').innerHTML=`
+    <div class="text-center mb-4"><div style="width:64px;height:64px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:var(--grn);"><i class="fas fa-coins"></i></div><div style="font-size:11px;color:var(--grn);font-weight:600;text-transform:uppercase;">Paid</div><div class="fw-bold mt-1" style="font-size:28px;font-family:var(--mono);color:var(--grn);">KES 3,400</div><div style="font-size:12px;color:var(--txm);">Financial Year ${year}</div></div>
+    <div class="rounded-4 overflow-hidden" style="background:var(--inp);">
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Shares at Declaration</span><strong style="font-family:var(--mono);">100</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Share Capital</span><strong style="font-family:var(--mono);">KES 10,000</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Declared Rate</span><strong style="color:var(--grn);">30%</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Gross Dividend</span><strong style="font-family:var(--mono);">KES 3,000</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Interest on Savings</span><strong style="font-family:var(--mono);">+ KES 400</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Withholding Tax (5%)</span><strong style="font-family:var(--mono);color:var(--red);">- KES 170</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Net Paid</span><strong style="font-family:var(--mono);color:var(--grn);font-size:16px;">KES 3,230</strong></div>
+        <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--txm);">Payment Date</span><strong>Dec 20, 2024</strong></div>
+        <div class="d-flex justify-content-between p-3" style="font-size:13px;"><span style="color:var(--txm);">Credited To</span><strong><i class="fas fa-piggy-bank me-1" style="color:var(--grn);"></i>Savings Account</strong></div>
+    </div>`;
+    document.getElementById('ddFooter').innerHTML=`<button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button><button class="btn btn-outline-secondary rounded-3" onclick="showToast('Dividend certificate FY ${year} downloaded','success')"><i class="fas fa-download me-1"></i> Certificate</button><button class="btn btn-outline-secondary rounded-3" onclick="showToast('Tax certificate downloaded','success')"><i class="fas fa-file-invoice-dollar me-1"></i> Tax Cert</button>`;
+    new bootstrap.Modal(document.getElementById('divDetailModal')).show();
+}
+
+// Interest Detail
+function openIntDetail(month,amount,status){
+    const isPending=status==='pending';
+    document.getElementById('idBar').style.background=isPending?'var(--pri)':'var(--grn)';
+    document.getElementById('idTitle').innerHTML=`<i class="fas fa-percentage me-2" style="color:${isPending?'var(--pri)':'var(--grn)'}"></i>${month} Interest`;
+    document.getElementById('idBody').innerHTML=`
+    <div class="text-center mb-3"><div style="width:56px;height:56px;background:${isPending?'var(--pri-sub)':'rgba(0,200,83,0.08)'};border:2px solid ${isPending?'var(--pri-bdr)':'rgba(0,200,83,0.2)'};border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:22px;color:${isPending?'var(--pri)':'var(--grn)'};"><i class="fas fa-${isPending?'clock':'check-circle'}"></i></div><div style="font-size:10px;color:${isPending?'var(--pri)':'var(--grn)'};font-weight:600;text-transform:uppercase;">${isPending?'Pending':'Credited'}</div><div class="fw-bold mt-1" style="font-size:24px;font-family:var(--mono);color:${isPending?'var(--pri)':'var(--grn)'};">${isPending?'~':''}KES ${amount}</div></div>
+    <div class="rounded-4 p-3" style="background:var(--inp);font-size:12px;">
+        <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">Month</span><strong>${month}</strong></div>
+        <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">Rate</span><strong>7% p.a. (compound)</strong></div>
+        <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">Avg. Balance</span><strong style="font-family:var(--mono);">~KES 97,000</strong></div>
+        <div class="d-flex justify-content-between"><span style="color:var(--txm);">${isPending?'Expected Credit':'Credited On'}</span><strong>${isPending?'Feb 28, 2025':'Jan 31, 2025'}</strong></div>
+    </div>
+    ${isPending?'<div class="alert border-0 mt-3 mb-0 py-2" style="background:rgba(249,168,37,0.06);border-radius:8px;font-size:11px;color:var(--ylw);text-align:center;"><i class="fas fa-info-circle me-1"></i> Interest will be auto-credited on the last day of the month.</div>':''}`;
+    new bootstrap.Modal(document.getElementById('intDetailModal')).show();
+}
+
+// Payout selector
+function selPayout(el,type){el.parentElement.querySelectorAll('div[style]').forEach(d=>{d.style.borderColor='rgba(26,29,46,0.06)';d.style.background='var(--inp)';const ic=d.querySelector('i:last-child');if(ic){ic.className='far fa-circle';ic.style.color='var(--txm)';}});el.style.borderColor='rgba(0,200,83,0.20)';el.style.background='rgba(0,200,83,0.04)';const ic=el.querySelector('i:last-child');if(ic){ic.className='fas fa-check-circle';ic.style.color='var(--grn)';}}
+
+// Projector calculator
+function calcProj(){const s=+(document.getElementById('pjShares').value||0);const r=+(document.getElementById('pjRate').value||0);const cap=s*100;const gross=Math.round(cap*r/100);const tax=Math.round(gross*0.05);const net=gross-tax;document.getElementById('pjCapital').textContent='KES '+cap.toLocaleString();document.getElementById('pjGross').textContent='KES '+gross.toLocaleString();document.getElementById('pjTax').textContent='- KES '+tax.toLocaleString();document.getElementById('pjNet').textContent='KES '+net.toLocaleString();}
+
+// Charts
+const dctx=document.getElementById('divChart');
+if(dctx){new Chart(dctx.getContext('2d'),{type:'bar',data:{labels:['FY 2024','FY 2025 (est.)'],datasets:[{label:'Dividend',data:[3400,3600],backgroundColor:['rgba(0,200,83,0.6)','rgba(0,200,83,0.25)'],borderRadius:8,borderSkipped:false},{label:'Interest',data:[4100,4400],backgroundColor:['rgba(2,136,209,0.5)','rgba(2,136,209,0.20)'],borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.5)',font:{size:11},usePointStyle:true,boxWidth:10,padding:16}},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'var(--pri)',bodyColor:'#1A1D2E',borderColor:'rgba(255,107,0,0.2)',borderWidth:1,padding:12,cornerRadius:10,callbacks:{label(c){return c.dataset.label+': KES '+c.raw.toLocaleString();}}}},scales:{x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:12,weight:600}}},y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback:v=>'KES '+(v/1000)+'K'},beginAtZero:true}}}});}
+
+const ictx=document.getElementById('intChart');
+if(ictx){new Chart(ictx.getContext('2d'),{type:'line',data:{labels:['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'],datasets:[{label:'Monthly Interest',data:[125,180,220,250,270,290,300,310,325,350,375,0],borderColor:'var(--blu)',backgroundColor:'rgba(2,136,209,0.06)',borderWidth:2,fill:true,tension:0.4,pointRadius:3,pointBackgroundColor:'var(--blu)',pointHoverRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'var(--blu)',bodyColor:'#1A1D2E',borderColor:'rgba(2,136,209,0.2)',borderWidth:1,padding:12,cornerRadius:10,callbacks:{label(c){return'Interest: KES '+c.raw;}}}},scales:{x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11}}},y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback:v=>'KES '+v},beginAtZero:true}}}});}
+
+const pctx=document.getElementById('projChart');
+if(pctx){new Chart(pctx.getContext('2d'),{type:'bar',data:{labels:['2025','2026','2027','2028','2029'],datasets:[{label:'Dividends',data:[3600,4500,5400,6300,7500],backgroundColor:'rgba(255,193,7,0.6)',borderRadius:6,borderSkipped:false},{label:'Interest',data:[4400,5800,7200,8600,10500],backgroundColor:'rgba(0,200,83,0.5)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.5)',font:{size:11},usePointStyle:true,boxWidth:10,padding:16}},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'var(--pri)',bodyColor:'#1A1D2E',borderColor:'rgba(255,107,0,0.2)',borderWidth:1,padding:12,cornerRadius:10,callbacks:{label(c){return c.dataset.label+': KES '+c.raw.toLocaleString();}}}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:12,weight:600}}},y:{stacked:true,grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback:v=>'KES '+(v/1000)+'K'},beginAtZero:true}}}});}
+
+calcProj();
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>showToast('AGM 2025 on March 15. FY 2025 dividend to be declared. Your current projection: KES 3,600.','info'),800);});
+</script>
+</body>
+</html>

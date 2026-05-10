@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Shares — SaccoPay Member</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root{--pri:#FF6B00;--pri-l:#FF8C38;--pri-sub:rgba(255,107,0,0.06);--pri-bdr:rgba(255,107,0,0.20);--bg:#F5F6FA;--card:#fff;--inp:#F0F2F8;--tx:#1A1D2E;--tx2:rgba(26,29,46,0.72);--txm:rgba(26,29,46,0.50);--mono:'JetBrains Mono',monospace;--sh-s:0 1px 3px rgba(0,0,0,0.06);--sh-m:0 4px 12px rgba(0,0,0,0.08);--sh-o:0 4px 16px rgba(255,107,0,0.18);--grd:linear-gradient(135deg,#FF6B00,#FF8C38,#FFAA00);--sbw:260px;--grn:#00C853;--red:#E53935;--ylw:#F9A825;--blu:#0288D1;--pur:#AB00D9;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);}
+        .sp-sidebar{width:var(--sbw);min-height:100vh;background:#fff;border-right:1px solid rgba(26,29,46,0.08);position:fixed;top:0;left:0;z-index:1040;transition:transform .3s;overflow-y:auto;box-shadow:2px 0 8px rgba(0,0,0,0.03);}
+        .sp-sidebar .brand-logo{width:36px;height:36px;background:var(--grd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:var(--sh-o);}
+        .sp-sidebar .nav-link{color:var(--txm);font-size:13px;font-weight:500;padding:10px 20px;position:relative;transition:all .15s;}
+        .sp-sidebar .nav-link:hover{color:var(--tx);background:rgba(255,107,0,0.04);}
+        .sp-sidebar .nav-link.active{color:var(--pri);background:linear-gradient(90deg,rgba(255,107,0,0.08),rgba(255,107,0,0.02));font-weight:600;}
+        .sp-sidebar .nav-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grd);border-radius:0 3px 3px 0;}
+        .sp-sidebar .nav-icon{width:20px;text-align:center;margin-right:10px;font-size:15px;}
+        .sp-sidebar .section-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(26,29,46,0.30);padding:12px 20px 6px;}
+        .sp-sidebar .member-badge{padding:12px 20px;border-bottom:1px solid rgba(26,29,46,0.06);}
+        .sp-sidebar .nav-badge{background:var(--pri);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;box-shadow:0 2px 6px rgba(255,107,0,0.3);}
+        .sp-main{margin-left:var(--sbw);min-height:100vh;}
+        .sp-topbar{height:64px;background:rgba(255,255,255,0.92);border-bottom:1px solid rgba(26,29,46,0.06);backdrop-filter:blur(20px);position:sticky;top:0;z-index:1030;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+        .sp-topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.15) 30%,rgba(255,107,0,0.25) 50%,rgba(255,107,0,0.15) 70%,transparent);}
+        .topbar-btn{width:36px;height:36px;background:#fff;border:1px solid rgba(26,29,46,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--txm);transition:all .15s;position:relative;cursor:pointer;}
+        .topbar-btn:hover{background:var(--pri-sub);border-color:var(--pri-bdr);color:var(--pri);}
+        .topbar-btn .badge-dot{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--pri);color:#fff;font-size:9px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.92);}
+        .c{background:#fff;border:1px solid rgba(26,29,46,0.06);border-radius:16px;box-shadow:var(--sh-s);transition:all .25s;overflow:hidden;}
+        .c:hover{box-shadow:var(--sh-m);}
+        .c.cl{cursor:pointer;}.c.cl:hover{transform:translateY(-2px);}
+        .b{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;}
+        .pr{height:6px;border-radius:50px;background:rgba(26,29,46,0.06);overflow:hidden;}
+        .pf{height:100%;border-radius:50px;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;}
+        .pf.sh::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 2s infinite;}
+        .kpi{background:var(--inp);border:1px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;}
+        .kpi .k{font-size:11px;color:var(--txm);}.kpi .v{font-family:var(--mono);font-weight:800;}
+        .dv{height:1px;background:rgba(26,29,46,0.06);}
+        .pm{border:2px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;text-align:center;background:#fff;}
+        .pm:hover{border-color:var(--pri-bdr);background:var(--pri-sub);}
+        .pm.act{border-color:var(--pri);background:var(--pri-sub);box-shadow:0 0 0 3px rgba(255,107,0,0.10);}
+        .pm .pi{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px;}
+        .phi{position:relative;}.phi .flag{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:20px;pointer-events:none;}.phi .pfx{position:absolute;left:42px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--txm);font-size:14px;pointer-events:none;}.phi input{padding-left:82px!important;font-family:var(--mono);font-size:16px;letter-spacing:1px;}
+        .hero-shares{background:linear-gradient(135deg,#1A237E 0%,#283593 50%,#3949AB 100%);border-radius:20px;position:relative;overflow:hidden;color:#fff;}
+        .hero-shares::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:rgba(255,193,7,0.08);border-radius:50%;}
+        .hero-shares::after{content:'';position:absolute;bottom:-60px;right:60px;width:180px;height:180px;background:rgba(255,193,7,0.04);border-radius:50%;}
+        .share-cert{background:linear-gradient(135deg,#FFF8E1 0%,#FFFDE7 50%,#FFF9C4 100%);border:2px solid rgba(255,193,7,0.30);border-radius:16px;padding:24px;position:relative;overflow:hidden;}
+        .share-cert::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#FFC107,#FF9800,#FF6F00);}
+        .share-cert .watermark{position:absolute;bottom:-10px;right:-10px;font-size:120px;opacity:0.04;color:#1A237E;transform:rotate(-15deg);}
+        .stk-loader{display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;}.stk-spinner{width:60px;height:60px;border:4px solid rgba(255,107,0,0.15);border-top-color:var(--pri);border-radius:50%;animation:spin 1s linear infinite;}
+        .toast-c{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:12px;}
+        .t{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:1px solid rgba(26,29,46,0.10);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.10);min-width:300px;max-width:420px;animation:slideInRight .3s ease;}
+        .t.success{border-left:3px solid var(--grn);}.t.warning{border-left:3px solid var(--ylw);}.t.danger{border-left:3px solid var(--red);}.t.info{border-left:3px solid var(--blu);}.t.primary{border-left:3px solid var(--pri);}
+        @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+        @keyframes countDown{from{stroke-dashoffset:0}to{stroke-dashoffset:283}}
+        .fiu{animation:fadeInUp .4s ease both;}.pa{animation:pulse 2s ease-in-out infinite;}
+        @media(max-width:991px){.sp-sidebar{transform:translateX(-100%);z-index:1050;}.sp-sidebar.show{transform:translateX(0);}.sp-main{margin-left:0!important;}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1045;}.sidebar-backdrop.show{display:block;}}
+        @media(max-width:575px){.hero-shares .display-5{font-size:1.6rem!important;}}
+        ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(26,29,46,0.12);border-radius:50px;}
+    </style>
+</head>
+<body>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sp-sidebar" id="sidebar">
+    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important;min-height:64px;"><div class="brand-logo">S</div><div><div style="font-size:16px;font-weight:700;">Sacco<span style="color:var(--pri);">Pay</span></div><div style="font-size:10px;color:var(--txm);letter-spacing:.04em;">Member Portal</div></div></a>
+    <div class="member-badge d-flex align-items-center gap-3"><div style="width:38px;height:38px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div><div class="flex-grow-1 min-w-0"><div style="font-size:12px;font-weight:600;" class="text-truncate">John Kamau</div><div style="font-size:11px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div><div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:var(--grn);"><span style="width:5px;height:5px;background:var(--grn);border-radius:50%;box-shadow:0 0 6px var(--grn);"></span> Active</div></div></div>
+    <nav class="py-2">
+        <div class="section-label">Main</div><a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <div class="section-label">Financial</div><a href="savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a><a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a><a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a><a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <div class="section-label">Loans</div><a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> Loans Center</a><a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <div class="section-label">Membership</div><a href="shares.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> My Shares</a><a href="dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a><a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a><a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <div class="section-label">Other</div><a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">2</span></a><a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> Profile</a><a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+    </nav>
+    <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;"><a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a><a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a></div>
+</aside>
+
+<!-- MAIN -->
+<div class="sp-main">
+    <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
+        <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()" style="font-size:18px;color:var(--txm);"><i class="fas fa-bars"></i></button>
+        <nav aria-label="breadcrumb" class="d-none d-md-block"><ol class="breadcrumb mb-0" style="font-size:13px;"><li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color:var(--txm);">Home</a></li><li class="breadcrumb-item active">My Shares</li></ol></nav>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#notifModal"><i class="fas fa-bell" style="font-size:14px;"></i><span class="badge-dot">2</span></button>
+            <div class="dropdown"><button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle" data-bs-toggle="dropdown" style="border-color:rgba(26,29,46,0.08)!important;font-size:13px;"><div style="width:28px;height:28px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">JK</div><span class="d-none d-md-inline" style="color:var(--tx2);font-weight:500;">John</span></button><ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;"><li class="px-3 py-2 border-bottom"><div style="font-weight:600;font-size:13px;">John Kamau</div><div style="font-size:11px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div></li><li><a class="dropdown-item py-2" href="profile.html"><i class="fas fa-user me-2 text-muted"></i>Profile</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item py-2 text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li></ul></div>
+        </div>
+    </header>
+
+    <div class="p-3 p-lg-4 fiu" style="max-width:1400px;">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+            <div><h1 class="h3 fw-bold mb-1"><i class="fas fa-chart-pie me-2" style="color:var(--pri);"></i>My <span style="color:var(--pri);">Shares</span></h1><p class="mb-0" style="color:var(--txm);font-size:14px;">View your share holdings, buy additional shares, track dividends, and download certificates.</p></div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#certModal"><i class="fas fa-certificate me-1"></i> Certificate</button>
+                <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--grd);box-shadow:var(--sh-o);" data-bs-toggle="modal" data-bs-target="#buySharesModal"><i class="fas fa-plus-circle me-1"></i> Buy Shares</button>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero-shares p-4 p-lg-5 mb-4">
+            <div class="position-relative" style="z-index:1;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-6">
+                        <div style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:500;text-transform:uppercase;letter-spacing:.1em;" class="mb-2">Total Share Capital</div>
+                        <div class="display-5 fw-bold" style="font-family:var(--mono);letter-spacing:-.04em;"><span style="font-size:.55em;opacity:.7;">KES</span> 12,000<span style="font-size:.45em;opacity:.4;">.00</span></div>
+                        <div class="d-flex flex-wrap gap-3 mt-3" style="font-size:12px;">
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-cubes me-1"></i> <strong>120</strong> shares held</span>
+                            <span style="width:1px;height:14px;background:rgba(255,255,255,0.15);"></span>
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-tag me-1"></i> KES <strong>100</strong>/share</span>
+                            <span style="width:1px;height:14px;background:rgba(255,255,255,0.15);"></span>
+                            <span style="color:rgba(255,255,255,0.7);"><i class="fas fa-lock me-1"></i> <strong>20</strong> locked (guarantorship)</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-2">
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Available Shares</div><div class="v" style="color:var(--grn);">100</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">Transferable</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Last Dividend</div><div class="v" style="color:#FFC107;">KES 3,400</div><a href="dividends.html" class="text-decoration-none" style="font-size:10px;color:#FFC107;">View dividends →</a></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Ownership</div><div class="v" style="color:rgba(255,255,255,0.85);">0.024%</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">of total SACCO shares</div></div></div>
+                            <div class="col-6"><div class="kpi" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.10);"><div class="k" style="color:rgba(255,255,255,0.50);">Max Purchasable</div><div class="v" style="color:var(--pri-l);">380</div><div style="font-size:10px;color:rgba(255,255,255,0.40);">Admin limit: 500 total</div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <ul class="nav nav-pills mb-4 gap-2 flex-nowrap overflow-auto pb-1" role="tablist">
+            <li class="nav-item"><button class="nav-link active rounded-pill px-4 py-2" style="font-size:13px;font-weight:600;" data-bs-toggle="pill" data-bs-target="#tabOverview"><i class="fas fa-chart-pie me-1"></i> Overview</button></li>
+            <li class="nav-item"><button class="nav-link rounded-pill px-4 py-2" style="font-size:13px;font-weight:600;" data-bs-toggle="pill" data-bs-target="#tabHistory"><i class="fas fa-history me-1"></i> Transaction History</button></li>
+            <li class="nav-item"><button class="nav-link rounded-pill px-4 py-2" style="font-size:13px;font-weight:600;" data-bs-toggle="pill" data-bs-target="#tabRules"><i class="fas fa-book me-1"></i> Share Rules</button></li>
+        </ul>
+
+        <div class="tab-content">
+
+            <!-- TAB: OVERVIEW -->
+            <div class="tab-pane fade show active" id="tabOverview">
+                <div class="row g-4">
+                    <!-- Left: Chart + Certificate -->
+                    <div class="col-lg-8">
+                        <!-- Growth Chart -->
+                        <div class="c mb-4">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                                <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-chart-area me-2" style="color:var(--pri);"></i>Share Growth</div>
+                                <div class="btn-group btn-group-sm"><button class="btn btn-outline-secondary btn-sm rounded-start-3" onclick="chartPd(this)">6M</button><button class="btn btn-sm text-white rounded-0" style="background:var(--pri);" onclick="chartPd(this)">1Y</button><button class="btn btn-outline-secondary btn-sm rounded-end-3" onclick="chartPd(this)">All</button></div>
+                            </div>
+                            <div class="p-3">
+                                <div style="height:260px;"><canvas id="shareChart"></canvas></div>
+                                <div class="row g-2 mt-3">
+                                    <div class="col-md-3"><div class="kpi text-center"><div class="k">Started With</div><div class="v">10</div><div style="font-size:10px;color:var(--txm);">Jan 2024</div></div></div>
+                                    <div class="col-md-3"><div class="kpi text-center"><div class="k">Current</div><div class="v" style="color:var(--pri);">120</div><div style="font-size:10px;color:var(--txm);">+1,100% growth</div></div></div>
+                                    <div class="col-md-3"><div class="kpi text-center"><div class="k">Total Invested</div><div class="v" style="color:var(--blu);">KES 12K</div><div style="font-size:10px;color:var(--txm);">All time</div></div></div>
+                                    <div class="col-md-3"><div class="kpi text-center"><div class="k">Dividends Earned</div><div class="v" style="color:var(--grn);">KES 3.4K</div><a href="dividends.html" class="text-decoration-none" style="font-size:10px;color:var(--pri);">View →</a></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Share Certificate -->
+                        <div class="c mb-4">
+                            <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;"><div class="fw-semibold" style="font-size:14px;"><i class="fas fa-certificate me-2" style="color:#FFC107;"></i>Share Certificate</div><button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#certModal"><i class="fas fa-download me-1"></i> Download</button></div>
+                            <div class="p-4">
+                                <div class="share-cert">
+                                    <div class="watermark"><i class="fas fa-certificate"></i></div>
+                                    <div class="position-relative" style="z-index:1;">
+                                        <div class="text-center mb-3">
+                                            <div style="font-size:11px;color:rgba(26,29,46,0.50);text-transform:uppercase;letter-spacing:.15em;font-weight:700;">SaccoPay SACCO Ltd</div>
+                                            <div style="font-size:20px;font-weight:800;color:#1A237E;margin-top:4px;">Share Certificate</div>
+                                        </div>
+                                        <div class="dv mb-3"></div>
+                                        <div class="row g-3" style="font-size:13px;">
+                                            <div class="col-md-6"><div style="color:var(--txm);font-size:11px;">Certificate Number</div><div class="fw-bold" style="font-family:var(--mono);color:#1A237E;">SC-2024-0045</div></div>
+                                            <div class="col-md-6"><div style="color:var(--txm);font-size:11px;">Member Name</div><div class="fw-bold">John Kamau Mwangi</div></div>
+                                            <div class="col-md-6"><div style="color:var(--txm);font-size:11px;">Total Shares</div><div class="fw-bold" style="font-family:var(--mono);color:var(--pri);font-size:18px;">120 shares</div></div>
+                                            <div class="col-md-6"><div style="color:var(--txm);font-size:11px;">Share Value (per unit)</div><div class="fw-bold" style="font-family:var(--mono);">KES 100.00</div></div>
+                                            <div class="col-md-6"><div style="color:var(--txm);font-size:11px;">Total Capital</div><div class="fw-bold" style="font-family:var(--mono);color:var(--grn);font-size:18px;">KES 12,000.00</div></div>
+                                            <div class="col-md-6"><div style="color:var(--txm);font-size:11px;">Date Issued</div><div class="fw-bold">January 15, 2024</div></div>
+                                        </div>
+                                        <div class="dv my-3"></div>
+                                        <div class="d-flex justify-content-between align-items-end" style="font-size:11px;color:var(--txm);">
+                                            <div><div>Authorized by</div><div class="fw-bold" style="color:var(--tx);">SaccoPay Board of Directors</div></div>
+                                            <div class="text-end"><div>Seal & Signature</div><div style="font-family:var(--mono);color:#1A237E;font-weight:700;font-size:16px;"><i class="fas fa-stamp"></i> OFFICIAL</div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Side Panels -->
+                    <div class="col-lg-4 d-flex flex-column gap-3">
+                        <!-- Buy Shares Quick -->
+                        <div class="c" style="background:var(--grd);border:none;color:#fff;">
+                            <div class="p-4 text-center">
+                                <i class="fas fa-chart-line" style="font-size:28px;opacity:0.85;margin-bottom:8px;display:block;"></i>
+                                <div class="fw-bold" style="font-size:15px;">Grow Your Portfolio</div>
+                                <div style="font-size:12px;opacity:0.8;" class="mb-3">Buy more shares to increase dividends and voting power. Current price: <strong>KES 100/share</strong></div>
+                                <button class="btn btn-sm rounded-3 px-4 fw-semibold" style="background:#fff;color:var(--pri);" data-bs-toggle="modal" data-bs-target="#buySharesModal"><i class="fas fa-plus-circle me-1"></i> Buy Shares</button>
+                            </div>
+                        </div>
+
+                        <!-- Share Breakdown -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#breakdownModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3"><div style="width:36px;height:36px;background:rgba(26,71,130,0.06);border:1px solid rgba(26,71,130,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#1A237E;"><i class="fas fa-chart-pie"></i></div><div><div style="font-size:13px;font-weight:700;">Share Breakdown</div><div style="font-size:11px;color:var(--txm);">Available vs Locked</div></div></div>
+                                <div class="d-flex flex-column gap-2">
+                                    <div><div class="d-flex justify-content-between mb-1" style="font-size:12px;"><span>Available (Transferable)</span><span class="fw-bold" style="color:var(--grn);">100</span></div><div class="pr"><div class="pf" style="width:83%;background:var(--grn);"></div></div></div>
+                                    <div><div class="d-flex justify-content-between mb-1" style="font-size:12px;"><span>Locked (Guarantorship)</span><span class="fw-bold" style="color:var(--ylw);">20</span></div><div class="pr"><div class="pf" style="width:17%;background:var(--ylw);"></div></div></div>
+                                </div>
+                                <div style="font-size:11px;color:var(--pri);text-align:center;margin-top:8px;font-weight:600;">Tap for details</div>
+                            </div>
+                        </div>
+
+                        <!-- Share Impact on Loans -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#impactModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3"><div style="width:36px;height:36px;background:var(--pri-sub);border:1px solid var(--pri-bdr);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--pri);"><i class="fas fa-hand-holding-usd"></i></div><div><div style="font-size:13px;font-weight:700;">Shares & Loan Limit</div><div style="font-size:11px;color:var(--txm);">How shares affect eligibility</div></div></div>
+                                <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--txm);">Share Capital</span><strong style="font-family:var(--mono);">KES 12,000</strong></div>
+                                <div class="d-flex justify-content-between mt-1" style="font-size:12px;"><span style="color:var(--txm);">Adds to Loan Limit</span><strong style="font-family:var(--mono);color:var(--pri);">+ KES 36,000</strong></div>
+                                <div style="font-size:10px;color:var(--txm);margin-top:4px;">Shares are counted at 3× for loan eligibility alongside savings.</div>
+                            </div>
+                        </div>
+
+                        <!-- Dividend Projection -->
+                        <div class="c cl" onclick="window.location.href='dividends.html'">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3"><div style="width:36px;height:36px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--grn);"><i class="fas fa-coins"></i></div><div><div style="font-size:13px;font-weight:700;">Dividend Projection</div><div style="font-size:11px;color:var(--txm);">Based on last declared rate</div></div></div>
+                                <div class="text-center"><div style="font-size:11px;color:var(--txm);">Projected Annual Dividend</div><div style="font-size:24px;font-weight:800;font-family:var(--mono);color:var(--grn);">KES 3,600</div><div style="font-size:11px;color:var(--txm);">At 30% rate on 120 shares × KES 100</div></div>
+                                <div class="alert border-0 mt-2 mb-0 py-2 px-3" style="background:rgba(0,200,83,0.04);border-radius:8px;font-size:11px;color:var(--grn);text-align:center;"><i class="fas fa-lightbulb me-1"></i> Buy 30 more shares → projected dividend becomes <strong>KES 4,500</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Transfer Shares -->
+                        <div class="c cl" data-bs-toggle="modal" data-bs-target="#transferModal">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center gap-2"><div style="width:36px;height:36px;background:rgba(171,0,217,0.06);border:1px solid rgba(171,0,217,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--pur);"><i class="fas fa-exchange-alt"></i></div><div><div style="font-size:13px;font-weight:700;">Transfer Shares</div><div style="font-size:11px;color:var(--txm);">Transfer to another member (admin approval required)</div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: TRANSACTION HISTORY -->
+            <div class="tab-pane fade" id="tabHistory">
+                <div class="c">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                        <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-history me-2" style="color:var(--pri);"></i>Share Transactions</div>
+                        <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Share history exported as PDF','success')"><i class="fas fa-download me-1"></i> Export</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" style="font-size:12px;">
+                            <thead><tr style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--txm);background:rgba(26,29,46,0.02);"><th class="border-0 py-3 px-3">Date</th><th class="border-0">Type</th><th class="border-0">Shares</th><th class="border-0">Price/Share</th><th class="border-0">Total</th><th class="border-0">Cumulative</th><th class="border-0">Status</th></tr></thead>
+                            <tbody>
+                                <tr style="cursor:pointer;" onclick="showToast('Purchase: 20 shares @ KES 100 = KES 2,000 via M-Pesa STK on Feb 10, 2025','success')">
+                                    <td class="px-3">Feb 10, 2025</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-plus"></i> Buy</span></td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">+20</td><td style="font-family:var(--mono);">KES 100</td><td class="fw-bold" style="font-family:var(--mono);">KES 2,000</td><td style="font-family:var(--mono);">120</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td>
+                                </tr>
+                                <tr style="cursor:pointer;" onclick="showToast('Purchase: 30 shares @ KES 100 = KES 3,000 via Wallet on Oct 5, 2024','success')">
+                                    <td class="px-3">Oct 5, 2024</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-plus"></i> Buy</span></td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">+30</td><td style="font-family:var(--mono);">KES 100</td><td class="fw-bold" style="font-family:var(--mono);">KES 3,000</td><td style="font-family:var(--mono);">100</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td>
+                                </tr>
+                                <tr style="cursor:pointer;" onclick="showToast('Purchase: 40 shares @ KES 100 = KES 4,000 via Bank on Jul 15, 2024','success')">
+                                    <td class="px-3">Jul 15, 2024</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-plus"></i> Buy</span></td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">+40</td><td style="font-family:var(--mono);">KES 100</td><td class="fw-bold" style="font-family:var(--mono);">KES 4,000</td><td style="font-family:var(--mono);">70</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td>
+                                </tr>
+                                <tr style="cursor:pointer;" onclick="showToast('Purchase: 20 shares @ KES 100 = KES 2,000 via M-Pesa on Apr 10, 2024','success')">
+                                    <td class="px-3">Apr 10, 2024</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-plus"></i> Buy</span></td><td class="fw-bold" style="font-family:var(--mono);color:var(--grn);">+20</td><td style="font-family:var(--mono);">KES 100</td><td class="fw-bold" style="font-family:var(--mono);">KES 2,000</td><td style="font-family:var(--mono);">30</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td>
+                                </tr>
+                                <tr style="cursor:pointer;" onclick="showToast('Initial share purchase: 10 shares on registration','info')">
+                                    <td class="px-3">Jan 15, 2024</td><td><span class="b" style="background:rgba(2,136,209,0.06);color:var(--blu);border:1px solid rgba(2,136,209,0.18);"><i class="fas fa-flag"></i> Initial</span></td><td class="fw-bold" style="font-family:var(--mono);color:var(--blu);">+10</td><td style="font-family:var(--mono);">KES 100</td><td class="fw-bold" style="font-family:var(--mono);">KES 1,000</td><td style="font-family:var(--mono);">10</td><td><span class="b" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:rgba(26,29,46,0.06)!important;font-size:12px;color:var(--txm);"><span>5 transactions • Total invested: <strong style="font-family:var(--mono);color:var(--pri);">KES 12,000</strong></span><button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--grd);" data-bs-toggle="modal" data-bs-target="#buySharesModal"><i class="fas fa-plus me-1"></i> Buy More</button></div>
+                </div>
+            </div>
+
+            <!-- TAB: SHARE RULES -->
+            <div class="tab-pane fade" id="tabRules">
+                <div class="c">
+                    <div class="p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;"><div class="fw-semibold" style="font-size:14px;"><i class="fas fa-book me-2" style="color:var(--pri);"></i>Share Rules & Policy <span style="font-size:12px;color:var(--txm);font-weight:400;">(Admin-configured)</span></div></div>
+                    <div class="p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6"><div class="rounded-4 p-3" style="background:var(--inp);"><div class="fw-semibold mb-2" style="font-size:13px;color:var(--pri);"><i class="fas fa-tag me-2"></i>Pricing</div><div class="d-flex flex-column gap-1" style="font-size:12px;"><div class="d-flex justify-content-between"><span style="color:var(--txm);">Share Price</span><strong style="font-family:var(--mono);">KES 100/share</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Minimum Purchase</span><strong>1 share</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Max per Transaction</span><strong>500 shares</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Max Total Holding</span><strong>500 shares</strong></div></div></div></div>
+                            <div class="col-md-6"><div class="rounded-4 p-3" style="background:var(--inp);"><div class="fw-semibold mb-2" style="font-size:13px;color:var(--grn);"><i class="fas fa-coins me-2"></i>Dividends</div><div class="d-flex flex-column gap-1" style="font-size:12px;"><div class="d-flex justify-content-between"><span style="color:var(--txm);">Declaration</span><strong>Annual (AGM)</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Last Rate</span><strong style="color:var(--grn);">30% of capital</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Payment</span><strong>Credited to savings</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Qualification</span><strong>Hold 6+ months</strong></div></div></div></div>
+                            <div class="col-md-6"><div class="rounded-4 p-3" style="background:rgba(171,0,217,0.03);border:1px solid rgba(171,0,217,0.12);"><div class="fw-semibold mb-2" style="font-size:13px;color:var(--pur);"><i class="fas fa-exchange-alt me-2"></i>Transfers</div><div class="d-flex flex-column gap-1" style="font-size:12px;"><div class="d-flex justify-content-between"><span style="color:var(--txm);">Transfer Allowed</span><strong>Yes (admin approval)</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Transfer Fee</span><strong style="color:var(--red);">KES 200</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Processing Time</span><strong>3-5 days</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Min. Retain</span><strong>10 shares</strong></div></div></div></div>
+                            <div class="col-md-6"><div class="rounded-4 p-3" style="background:rgba(229,57,53,0.03);border:1px solid rgba(229,57,53,0.12);"><div class="fw-semibold mb-2" style="font-size:13px;color:var(--red);"><i class="fas fa-exclamation-triangle me-2"></i>Restrictions</div><div class="d-flex flex-column gap-1" style="font-size:12px;"><div class="d-flex justify-content-between"><span style="color:var(--txm);">Locked Shares</span><strong>Cannot sell while guaranteeing loans</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Refund on Exit</span><strong>At par value (KES 100)</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Exit Notice</span><strong>90 days</strong></div><div class="d-flex justify-content-between"><span style="color:var(--txm);">Voting Rights</span><strong style="color:var(--grn);">1 vote per share</strong></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /tab-content -->
+    </div><!-- /page -->
+</div><!-- /main -->
+
+
+<!-- ═════════════════════════════════════════════ -->
+<!--                MODALS                        -->
+<!-- ═════════════════════════════════════════════ -->
+
+<!-- BUY SHARES -->
+<div class="modal fade" id="buySharesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--grd);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><div><h5 class="modal-title fw-bold"><i class="fas fa-chart-line me-2" style="color:var(--pri);"></i>Buy Shares</h5><p class="mb-0 mt-1" style="font-size:12px;color:var(--txm);">Purchase additional shares to grow dividends and increase loan eligibility.</p></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4 pt-3">
+                <!-- Current Holdings -->
+                <div class="row g-3 mb-4">
+                    <div class="col-4"><div class="kpi text-center"><div class="k">Current</div><div class="v" style="color:var(--pri);">120</div><div style="font-size:10px;color:var(--txm);">shares</div></div></div>
+                    <div class="col-4"><div class="kpi text-center"><div class="k">Price</div><div class="v">KES 100</div><div style="font-size:10px;color:var(--txm);">per share</div></div></div>
+                    <div class="col-4"><div class="kpi text-center"><div class="k">Can Buy</div><div class="v" style="color:var(--grn);">380</div><div style="font-size:10px;color:var(--txm);">remaining</div></div></div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Number of Shares <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control form-control-lg" id="buyQty" value="10" min="1" max="380" style="border-radius:12px;font-family:var(--mono);font-size:18px;" oninput="calcBuy()">
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setBuyQty(5)">5</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setBuyQty(10)">10</button>
+                        <button class="btn btn-sm rounded-pill fw-semibold" style="border:1px solid var(--pri-bdr);color:var(--pri);background:var(--pri-sub);" onclick="setBuyQty(20)">20</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setBuyQty(50)">50</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setBuyQty(100)">100</button>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="fw-semibold mb-2" style="font-size:13px;">Pay From <span class="text-danger">*</span></div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-3"><div class="pm act" onclick="selBuyPay(this,'wallet')"><div class="pi" style="background:var(--pri-sub);color:var(--pri);border:1px solid var(--pri-bdr);"><i class="fas fa-wallet"></i></div><div class="fw-bold" style="font-size:12px;">Wallet</div><div style="font-size:10px;color:var(--txm);">KES 12,450</div></div></div>
+                    <div class="col-6 col-md-3"><div class="pm" onclick="selBuyPay(this,'mpesa')"><div class="pi" style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-mobile-alt"></i></div><div class="fw-bold" style="font-size:12px;">M-Pesa</div><div style="font-size:10px;color:var(--txm);">STK Push</div></div></div>
+                    <div class="col-6 col-md-3"><div class="pm" onclick="selBuyPay(this,'card')"><div class="pi" style="background:rgba(171,0,217,0.06);color:var(--pur);border:1px solid rgba(171,0,217,0.18);"><i class="fas fa-credit-card"></i></div><div class="fw-bold" style="font-size:12px;">Card</div><div style="font-size:10px;color:var(--txm);">Visa/MC</div></div></div>
+                    <div class="col-6 col-md-3"><div class="pm" onclick="selBuyPay(this,'savings')"><div class="pi" style="background:rgba(2,136,209,0.06);color:var(--blu);border:1px solid rgba(2,136,209,0.18);"><i class="fas fa-piggy-bank"></i></div><div class="fw-bold" style="font-size:12px;">Savings</div><div style="font-size:10px;color:var(--txm);">Deduct</div></div></div>
+                </div>
+
+                <!-- Summary -->
+                <div class="rounded-4 p-3" style="background:var(--inp);">
+                    <div class="fw-semibold mb-2" style="font-size:12px;"><i class="fas fa-receipt me-2" style="color:var(--pri);"></i>Purchase Summary</div>
+                    <div class="d-flex flex-column gap-1" style="font-size:13px;">
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Shares</span><strong id="buyDispQty" style="font-family:var(--mono);">10 shares</strong></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">Price/Share</span><strong style="font-family:var(--mono);">KES 100</strong></div>
+                        <div class="dv my-1"></div>
+                        <div class="d-flex justify-content-between"><span class="fw-semibold" style="color:var(--pri);">Total Cost</span><strong id="buyDispTotal" style="font-family:var(--mono);color:var(--pri);font-size:18px;">KES 1,000</strong></div>
+                        <div class="dv my-1"></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">New Total Shares</span><strong id="buyDispNew" style="font-family:var(--mono);color:var(--grn);">130 (KES 13,000)</strong></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--txm);">New Projected Dividend</span><strong id="buyDispDiv" style="font-family:var(--mono);color:var(--grn);">KES 3,900</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn text-white rounded-3 fw-semibold px-4" style="background:var(--grd);box-shadow:var(--sh-o);" onclick="processBuyShares()"><i class="fas fa-shopping-cart me-1"></i> Buy <span id="buyBtnQty">10</span> Shares</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PROCESSING -->
+<div class="modal fade" id="procModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4"><div class="stk-loader"><div class="stk-spinner"></div><div class="text-center"><h6 class="fw-bold" style="color:var(--pri);">Processing Purchase</h6><p style="font-size:12px;color:var(--txm);" id="procMsg">Deducting from your wallet...</p></div></div></div></div></div>
+</div>
+
+<!-- SUCCESS -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div style="height:3px;background:var(--grn);"></div><div class="modal-body p-4 text-center">
+        <div style="width:64px;height:64px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:var(--grn);"><i class="fas fa-check-circle"></i></div>
+        <h5 class="fw-bold" style="color:var(--grn);">Shares Purchased!</h5>
+        <div class="fw-bold mt-2" style="font-size:24px;font-family:var(--mono);" id="sucQty">10 shares</div>
+        <p style="font-size:12px;color:var(--txm);" id="sucMsg">Added to your portfolio</p>
+        <div class="rounded-4 p-3 text-start mt-3" style="background:var(--inp);font-size:12px;">
+            <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">Reference</span><span class="fw-semibold" style="font-family:var(--mono);color:var(--pri);" id="sucRef">SH-2025-00XXX</span></div>
+            <div class="d-flex justify-content-between mb-1"><span style="color:var(--txm);">New Total</span><span class="fw-bold" style="font-family:var(--mono);color:var(--grn);" id="sucTotal">130 shares</span></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--txm);">Capital</span><span class="fw-bold" style="font-family:var(--mono);" id="sucCapital">KES 13,000</span></div>
+        </div>
+        <div class="d-flex gap-2 mt-3"><button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Certificate updated & ready to download','success')"><i class="fas fa-certificate me-1"></i> Certificate</button><button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--grd);" data-bs-dismiss="modal"><i class="fas fa-check me-1"></i> Done</button></div>
+    </div></div></div>
+</div>
+
+<!-- TRANSFER SHARES -->
+<div class="modal fade" id="transferModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--pur);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-exchange-alt me-2" style="color:var(--pur);"></i>Transfer Shares</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="alert border-0 mb-3" style="background:rgba(171,0,217,0.04);border-radius:12px;font-size:12px;color:var(--pur);"><i class="fas fa-info-circle me-1"></i> Transfers require admin approval. Processing takes 3-5 business days. Fee: KES 200. You must retain a minimum of 10 shares.</div>
+        <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Transfer To (Member ID or Name) <span class="text-danger">*</span></label><input type="text" class="form-control" style="border-radius:12px;" placeholder="Search member..." id="transferTo"></div>
+        <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Number of Shares <span class="text-danger">*</span></label><input type="number" class="form-control" style="border-radius:12px;font-family:var(--mono);" id="transferQty" value="10" min="1" max="100" oninput="calcTransfer()"><div class="form-text" style="font-size:11px;">Available: 100 shares (20 locked). Max transferable: 90 (must keep 10).</div></div>
+        <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Reason</label><textarea class="form-control" style="border-radius:12px;font-size:13px;" rows="2" placeholder="Optional: reason for transfer"></textarea></div>
+        <div class="rounded-4 p-3" style="background:rgba(171,0,217,0.04);border:1px solid rgba(171,0,217,0.12);font-size:12px;">
+            <div class="d-flex justify-content-between"><span style="color:var(--txm);">Shares to Transfer</span><strong style="font-family:var(--mono);" id="trDispQty">10</strong></div>
+            <div class="d-flex justify-content-between mt-1"><span style="color:var(--txm);">Transfer Fee</span><strong style="color:var(--red);font-family:var(--mono);">KES 200</strong></div>
+            <div class="d-flex justify-content-between mt-1"><span style="color:var(--txm);">Your Remaining</span><strong style="font-family:var(--mono);" id="trDispRemain">110 shares</strong></div>
+        </div>
+        <div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="trConsent"><label class="form-check-label" for="trConsent" style="font-size:12px;">I understand this transfer is irreversible once admin-approved. Fee of KES 200 will be deducted.</label></div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button><button class="btn text-white rounded-3 fw-semibold" style="background:linear-gradient(135deg,#7B1FA2,#9C27B0);" onclick="submitTransfer()"><i class="fas fa-paper-plane me-1"></i> Submit Transfer</button></div></div></div>
+</div>
+
+<!-- BREAKDOWN -->
+<div class="modal fade" id="breakdownModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:#1A237E;"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-chart-pie me-2" style="color:#1A237E;"></i>Share Breakdown</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="text-center mb-4">
+            <div style="width:120px;height:120px;position:relative;display:inline-block;"><svg width="120" height="120" viewBox="0 0 120 120" style="transform:rotate(-90deg);"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(26,29,46,0.06)" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--grn)" stroke-width="12" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="53"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--ylw)" stroke-width="12" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="261" style="transform:rotate(0deg);transform-origin:center;"/></svg><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-size:24px;font-weight:800;font-family:var(--mono);color:var(--tx);">120</div><div style="font-size:10px;color:var(--txm);">shares</div></div></div>
+        </div>
+        <div class="d-flex flex-column gap-2">
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:rgba(0,200,83,0.04);border:1px solid rgba(0,200,83,0.12);font-size:13px;"><div class="d-flex align-items-center gap-2"><div style="width:10px;height:10px;background:var(--grn);border-radius:50%;"></div><span>Available (Transferable)</span></div><strong style="font-family:var(--mono);">100 shares</strong></div>
+            <div class="d-flex justify-content-between p-3 rounded-3" style="background:rgba(249,168,37,0.04);border:1px solid rgba(249,168,37,0.12);font-size:13px;"><div class="d-flex align-items-center gap-2"><div style="width:10px;height:10px;background:var(--ylw);border-radius:50%;"></div><span>Locked (Guarantorship)</span></div><strong style="font-family:var(--mono);color:var(--ylw);">20 shares</strong></div>
+        </div>
+        <div class="alert border-0 mt-3 mb-0" style="background:var(--inp);border-radius:12px;font-size:11px;color:var(--txm);"><i class="fas fa-info-circle me-1" style="color:var(--blu);"></i> 20 shares locked as collateral for guaranteeing Mary Wanjiku's Development Loan. Released when her loan is fully repaid.</div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button><a href="guarantors.html" class="btn btn-outline-primary rounded-3"><i class="fas fa-handshake me-1"></i> Guarantorship</a></div></div></div>
+</div>
+
+<!-- IMPACT -->
+<div class="modal fade" id="impactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:var(--grd);"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-hand-holding-usd me-2" style="color:var(--pri);"></i>Shares & Loan Impact</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="rounded-4 p-3 mb-3" style="background:var(--inp);">
+            <div class="d-flex flex-column gap-1" style="font-size:13px;">
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Share Capital</span><strong style="font-family:var(--mono);">KES 12,000</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Savings Balance</span><strong style="font-family:var(--mono);">KES 158,750</strong></div>
+                <div class="dv my-1"></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Combined (for loan calc)</span><strong style="font-family:var(--mono);color:var(--blu);">KES 170,750</strong></div>
+                <div class="d-flex justify-content-between"><span style="color:var(--txm);">Multiplier (Admin-set)</span><strong style="color:var(--pri);">3×</strong></div>
+                <div class="dv my-1"></div>
+                <div class="d-flex justify-content-between"><span class="fw-bold" style="color:var(--grn);">Gross Loan Limit</span><strong style="font-family:var(--mono);color:var(--grn);">KES 512,250</strong></div>
+            </div>
+        </div>
+        <div class="alert border-0 mb-0" style="background:rgba(0,200,83,0.04);border-radius:12px;font-size:11px;color:var(--grn);"><i class="fas fa-lightbulb me-1"></i> <strong>Tip:</strong> Each additional share (KES 100) increases your loan limit by KES 300. Buy 30 more shares to add KES 9,000 to your limit.</div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button><button class="btn text-white rounded-3 fw-semibold" style="background:var(--grd);" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#buySharesModal"><i class="fas fa-plus me-1"></i> Buy Shares</button></div></div></div>
+</div>
+
+<!-- CERTIFICATE DOWNLOAD -->
+<div class="modal fade" id="certModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;"><div style="height:3px;background:#FFC107;"></div><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-certificate me-2" style="color:#FFC107;"></i>Share Certificate</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4">
+        <div class="text-center p-3 rounded-4 mb-3" style="background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.20);">
+            <i class="fas fa-certificate d-block mb-2" style="font-size:40px;color:#FFC107;"></i>
+            <div style="font-size:12px;font-family:var(--mono);color:var(--txm);">SC-2024-0045</div>
+            <div class="fw-bold mt-1" style="font-size:20px;">120 Shares</div>
+            <div style="font-size:12px;color:var(--txm);">KES 12,000 Capital</div>
+        </div>
+        <div class="d-flex flex-column gap-2">
+            <button class="btn btn-outline-danger rounded-3 w-100" onclick="showToast('Share certificate downloaded as PDF','success')" data-bs-dismiss="modal"><i class="fas fa-file-pdf me-1"></i> Download PDF</button>
+            <button class="btn btn-outline-secondary rounded-3 w-100" onclick="showToast('Certificate sent to j.kamau@email.com','success')" data-bs-dismiss="modal"><i class="fas fa-envelope me-1"></i> Email Certificate</button>
+            <button class="btn btn-outline-secondary rounded-3 w-100" onclick="showToast('Certificate shared','success')" data-bs-dismiss="modal"><i class="fas fa-share-alt me-1"></i> Share</button>
+        </div>
+    </div></div></div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="modal fade" id="notifModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-bell me-2" style="color:var(--pri);"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4" style="max-height:300px;overflow:auto;">
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);" onclick="showToast('AGM 2025 scheduled for March 15. Your voting power: 120 votes (1 per share).','info');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:rgba(255,193,7,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FFC107;flex-shrink:0;font-size:12px;"><i class="fas fa-bullhorn"></i></div><div><div style="font-size:13px;font-weight:600;">AGM Notice</div><div style="font-size:11px;color:var(--txm);">March 15, 2025 • Dividend declaration • 2d ago</div></div><div style="width:6px;height:6px;background:var(--pri);border-radius:50%;margin-top:8px;flex-shrink:0;"></div></div>
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3" style="cursor:pointer;" onclick="showToast('Share price review: Board confirmed KES 100/share for 2025.','success');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--grn);flex-shrink:0;font-size:12px;"><i class="fas fa-chart-line"></i></div><div><div style="font-size:13px;font-weight:600;">Share Price Confirmed</div><div style="font-size:11px;color:var(--txm);">KES 100/share maintained • 5d ago</div></div></div>
+    </div><div class="modal-footer border-0 px-4 pb-4 pt-0"><a href="notifications.html" class="btn btn-outline-secondary rounded-3 w-100"><i class="fas fa-external-link-alt me-1"></i> All</a></div></div></div>
+</div>
+
+<!-- LOGOUT -->
+<div class="modal fade" id="logoutModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4 text-center"><div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--red);font-size:24px;"><i class="fas fa-sign-out-alt"></i></div><h5 class="fw-bold">Logout?</h5><div class="d-flex gap-2 mt-3"><button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Stay</button><a href="login.html" class="btn btn-danger rounded-3 flex-fill"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></div></div></div></div></div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function showToast(m,t='info'){const c=document.getElementById('toastC');const ic={success:'fa-check-circle',danger:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle',primary:'fa-bell'};const cl={success:'var(--grn)',danger:'var(--red)',warning:'var(--ylw)',info:'var(--blu)',primary:'var(--pri)'};const e=document.createElement('div');e.className=`t ${t}`;e.innerHTML=`<i class="fas ${ic[t]||ic.info}" style="color:${cl[t]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.charAt(0).toUpperCase()+t.slice(1)}</div><div style="font-size:11px;color:var(--txm);">${m}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transition='opacity .3s';setTimeout(()=>e.remove(),300);},5000);}
+function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('show');document.getElementById('sidebarBackdrop').classList.remove('show');}
+
+// Chart
+function chartPd(btn){btn.parentElement.querySelectorAll('.btn').forEach(b=>{b.classList.remove('text-white');b.style.background='';b.classList.add('btn-outline-secondary');});btn.classList.remove('btn-outline-secondary');btn.classList.add('text-white');btn.style.background='var(--pri)';showToast('Chart updated','info');}
+const sctx=document.getElementById('shareChart');
+if(sctx){new Chart(sctx.getContext('2d'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'],datasets:[{label:'Shares Held',data:[10,10,10,30,30,30,70,70,70,100,100,100,100,120],borderColor:'#1A237E',backgroundColor:'rgba(26,35,126,0.06)',borderWidth:2.5,fill:true,tension:0.4,pointRadius:0,pointHoverRadius:6,pointHoverBackgroundColor:'#1A237E',stepped:'after'},{label:'Capital (KES)',data:[1000,1000,1000,3000,3000,3000,7000,7000,7000,10000,10000,10000,10000,12000],borderColor:'var(--pri)',backgroundColor:'transparent',borderWidth:1.5,fill:false,tension:0.4,pointRadius:0,borderDash:[4,3],yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.5)',font:{size:11},usePointStyle:true,boxWidth:12,padding:16}},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'#1A237E',bodyColor:'#1A1D2E',borderColor:'rgba(26,35,126,0.2)',borderWidth:1,padding:12,cornerRadius:10}},scales:{x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11}}},y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback:v=>v+' sh'},beginAtZero:true,position:'left'},y1:{grid:{display:false},ticks:{color:'rgba(255,107,0,0.5)',font:{size:11},callback:v=>'KES '+(v/1000)+'K'},beginAtZero:true,position:'right'}}}});}
+
+// Buy Shares
+let buyPaySource='wallet';
+function setBuyQty(q){document.getElementById('buyQty').value=q;calcBuy();}
+function calcBuy(){const q=+(document.getElementById('buyQty').value||0);const cost=q*100;const newTotal=120+q;const newDiv=Math.round(newTotal*100*0.30);document.getElementById('buyDispQty').textContent=q+' shares';document.getElementById('buyDispTotal').textContent='KES '+cost.toLocaleString();document.getElementById('buyDispNew').textContent=newTotal+' (KES '+(newTotal*100).toLocaleString()+')';document.getElementById('buyDispDiv').textContent='KES '+newDiv.toLocaleString();document.getElementById('buyBtnQty').textContent=q;}
+function selBuyPay(el,src){document.querySelectorAll('#buySharesModal .pm').forEach(p=>p.classList.remove('act'));el.classList.add('act');buyPaySource=src;}
+function processBuyShares(){const q=+(document.getElementById('buyQty').value||0);if(!q||q<1){showToast('Enter at least 1 share','warning');return;}if(q>380){showToast('Maximum purchasable is 380 shares','danger');return;}bootstrap.Modal.getInstance(document.getElementById('buySharesModal')).hide();const msgs={wallet:'Deducting from SaccoPay Wallet...',mpesa:'Sending M-Pesa STK Push...',card:'Processing card payment...',savings:'Deducting from savings...'};document.getElementById('procMsg').textContent=msgs[buyPaySource]||msgs.wallet;new bootstrap.Modal(document.getElementById('procModal')).show();setTimeout(()=>{bootstrap.Modal.getInstance(document.getElementById('procModal')).hide();setTimeout(()=>{const ref='SH-2025-00'+Math.floor(Math.random()*900+100);const newTotal=120+q;document.getElementById('sucQty').textContent=q+' shares';document.getElementById('sucMsg').textContent='KES '+(q*100).toLocaleString()+' from '+buyPaySource;document.getElementById('sucRef').textContent=ref;document.getElementById('sucTotal').textContent=newTotal+' shares';document.getElementById('sucCapital').textContent='KES '+(newTotal*100).toLocaleString();new bootstrap.Modal(document.getElementById('successModal')).show();},300);},3000);}
+
+// Transfer
+function calcTransfer(){const q=+(document.getElementById('transferQty').value||0);document.getElementById('trDispQty').textContent=q;document.getElementById('trDispRemain').textContent=(120-q)+' shares';}
+function submitTransfer(){if(!document.getElementById('trConsent').checked){showToast('Please accept the transfer terms','warning');return;}const to=document.getElementById('transferTo').value;const q=+(document.getElementById('transferQty').value||0);if(!to){showToast('Enter a recipient member','warning');return;}if(!q||q<1){showToast('Enter at least 1 share','warning');return;}if(q>90){showToast('Cannot transfer more than 90 shares (must keep 10)','danger');return;}const ref='TR-2025-00'+Math.floor(Math.random()*900+100);showToast(`Transfer request submitted! ${q} shares to ${to}. Ref: ${ref}. Awaiting admin approval.`,'success');bootstrap.Modal.getInstance(document.getElementById('transferModal')).hide();}
+
+calcBuy();calcTransfer();
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>showToast('AGM 2025 on March 15. Your voting power: 120 votes. Dividend declaration expected.','info'),800);});
+</script>
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Withdrawals — SaccoPay Member</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        :root {
+            --primary:#FF6B00;--primary-light:#FF8C38;--primary-dark:#CC5500;
+            --primary-subtle:rgba(255,107,0,0.06);--primary-border:rgba(255,107,0,0.20);
+            --bg-base:#F5F6FA;--bg-card:#FFFFFF;--bg-input:#F0F2F8;
+            --text-primary:#1A1D2E;--text-secondary:rgba(26,29,46,0.72);--text-muted:rgba(26,29,46,0.50);
+            --font-mono:'JetBrains Mono',monospace;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 12px rgba(0,0,0,0.08);
+            --shadow-orange:0 4px 16px rgba(255,107,0,0.18);
+            --gradient-primary:linear-gradient(135deg,#FF6B00 0%,#FF8C38 50%,#FFAA00 100%);
+            --sidebar-width:260px;
+        }
+        body{font-family:'Inter',sans-serif;background:var(--bg-base);color:var(--text-primary);}
+
+        /* Sidebar */
+        .sp-sidebar{width:var(--sidebar-width);min-height:100vh;background:#fff;border-right:1px solid rgba(26,29,46,0.08);position:fixed;top:0;left:0;z-index:1040;transition:transform .3s;overflow-y:auto;box-shadow:2px 0 8px rgba(0,0,0,0.03);}
+        .sp-sidebar .brand-logo{width:36px;height:36px;background:var(--gradient-primary);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:var(--shadow-orange);}
+        .sp-sidebar .nav-link{color:var(--text-muted);font-size:13px;font-weight:500;padding:10px 20px;border-radius:0;position:relative;transition:all .15s;}
+        .sp-sidebar .nav-link:hover{color:var(--text-primary);background:rgba(255,107,0,0.04);}
+        .sp-sidebar .nav-link.active{color:var(--primary);background:linear-gradient(90deg,rgba(255,107,0,0.08),rgba(255,107,0,0.02));font-weight:600;}
+        .sp-sidebar .nav-link.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gradient-primary);border-radius:0 3px 3px 0;}
+        .sp-sidebar .nav-icon{width:20px;text-align:center;margin-right:10px;font-size:15px;}
+        .sp-sidebar .section-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(26,29,46,0.30);padding:12px 20px 6px;}
+        .sp-sidebar .member-badge{padding:12px 20px;border-bottom:1px solid rgba(26,29,46,0.06);}
+        .sp-sidebar .nav-badge{background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;min-width:18px;text-align:center;box-shadow:0 2px 6px rgba(255,107,0,0.3);}
+
+        /* Main */
+        .sp-main{margin-left:var(--sidebar-width);min-height:100vh;transition:margin-left .3s;}
+
+        /* Topbar */
+        .sp-topbar{height:64px;background:rgba(255,255,255,0.92);border-bottom:1px solid rgba(26,29,46,0.06);backdrop-filter:blur(20px);position:sticky;top:0;z-index:1030;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+        .sp-topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.15) 30%,rgba(255,107,0,0.25) 50%,rgba(255,107,0,0.15) 70%,transparent);}
+        .topbar-btn{width:36px;height:36px;background:#fff;border:1px solid rgba(26,29,46,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;position:relative;cursor:pointer;}
+        .topbar-btn:hover{background:var(--primary-subtle);border-color:var(--primary-border);color:var(--primary);}
+        .topbar-btn .badge-dot{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--primary);color:#fff;font-size:9px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.92);}
+
+        /* Cards */
+        .sp-card{background:#fff;border:1px solid rgba(26,29,46,0.06);border-radius:16px;box-shadow:var(--shadow-sm);transition:all .25s;overflow:hidden;}
+        .sp-card:hover{box-shadow:var(--shadow-md);border-color:rgba(26,29,46,0.10);}
+        .sp-card.clickable{cursor:pointer;}
+        .sp-card.clickable:hover{transform:translateY(-2px);}
+
+        /* Hero */
+        .hero-withdraw{background:linear-gradient(135deg,#1A1D2E 0%,#2D3048 50%,#3A3E5C 100%);border-radius:20px;position:relative;overflow:hidden;color:#fff;}
+        .hero-withdraw::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,107,0,0.12);border-radius:50%;}
+        .hero-withdraw::after{content:'';position:absolute;bottom:-60px;right:80px;width:160px;height:160px;background:rgba(255,107,0,0.06);border-radius:50%;}
+
+        /* Badges */
+        .sp-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;}
+
+        /* Progress */
+        .sp-progress{height:6px;border-radius:50px;background:rgba(26,29,46,0.06);overflow:hidden;}
+        .sp-progress-fill{height:100%;border-radius:50px;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;}
+        .sp-progress-fill.shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 2s infinite;}
+
+        /* Pay method */
+        .pay-method{border:2px solid rgba(26,29,46,0.08);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;background:#fff;}
+        .pay-method:hover{border-color:var(--primary-border);background:var(--primary-subtle);}
+        .pay-method.active{border-color:var(--primary);background:var(--primary-subtle);box-shadow:0 0 0 3px rgba(255,107,0,0.10);}
+        .pay-method .pay-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:24px;}
+
+        /* Phone */
+        .phone-input-group{position:relative;}
+        .phone-input-group .flag{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:20px;pointer-events:none;}
+        .phone-input-group .prefix{position:absolute;left:42px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--text-muted);font-size:14px;pointer-events:none;}
+        .phone-input-group input{padding-left:82px!important;font-family:var(--font-mono);font-size:16px;letter-spacing:1px;}
+
+        /* Status stepper */
+        .stepper{display:flex;align-items:flex-start;gap:0;position:relative;}
+        .stepper-step{flex:1;text-align:center;position:relative;}
+        .stepper-step .s-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:13px;font-weight:700;position:relative;z-index:2;transition:all .3s;}
+        .stepper-step .s-dot.done{background:rgba(0,200,83,0.1);color:#00C853;border:2px solid rgba(0,200,83,0.25);}
+        .stepper-step .s-dot.active{background:var(--gradient-primary);color:#fff;box-shadow:var(--shadow-orange);border:none;}
+        .stepper-step .s-dot.pending{background:rgba(26,29,46,0.04);color:var(--text-muted);border:2px solid rgba(26,29,46,0.10);}
+        .stepper-step .s-label{font-size:11px;font-weight:600;}
+        .stepper-line{position:absolute;top:18px;left:calc(50% + 18px);right:calc(-50% + 18px);height:2px;z-index:1;}
+        .stepper-line.done{background:#00C853;}
+        .stepper-line.active{background:var(--gradient-primary);}
+        .stepper-line.pending{background:rgba(26,29,46,0.08);}
+
+        /* Mini KPI */
+        .mini-kpi{background:var(--bg-input);border:1px solid rgba(26,29,46,0.08);border-radius:14px;padding:14px;}
+        .mini-kpi .k{font-size:11px;color:var(--text-muted);}
+        .mini-kpi .v{font-family:var(--font-mono);font-weight:800;}
+
+        /* Toast */
+        .sp-toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:12px;}
+        .sp-toast{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:1px solid rgba(26,29,46,0.10);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.10);min-width:300px;max-width:420px;animation:slideInRight .3s ease;}
+        .sp-toast.success{border-left:3px solid #00C853;}
+        .sp-toast.warning{border-left:3px solid #F9A825;}
+        .sp-toast.danger{border-left:3px solid #E53935;}
+        .sp-toast.info{border-left:3px solid #0288D1;}
+        .sp-toast.primary{border-left:3px solid var(--primary);}
+
+        .soft-divider{height:1px;background:rgba(26,29,46,0.06);}
+
+        /* Stk */
+        .stk-loader{display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;}
+        .stk-spinner{width:60px;height:60px;border:4px solid rgba(255,107,0,0.15);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
+
+        /* Pill */
+        .pill-mini{font-size:11px;border-radius:999px;padding:4px 10px;border:1px solid rgba(26,29,46,0.10);background:#fff;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+        .pill-mini:hover{border-color:var(--primary-border);color:var(--primary);}
+
+        /* Withdrawal Card */
+        .wd-card{border-left:4px solid transparent;transition:all .25s;cursor:pointer;}
+        .wd-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)!important;}
+        .wd-card.status-approved{border-left-color:#00C853;}
+        .wd-card.status-pending{border-left-color:#F9A825;}
+        .wd-card.status-processing{border-left-color:#0288D1;}
+        .wd-card.status-completed{border-left-color:#00C853;}
+        .wd-card.status-rejected{border-left-color:#E53935;}
+
+        /* Countdown ring */
+        .countdown-ring{position:relative;width:100px;height:100px;}
+        .countdown-ring svg{transform:rotate(-90deg);}
+        .countdown-ring .ring-value{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+
+        @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes countDown{from{stroke-dashoffset:0}to{stroke-dashoffset:283}}
+        @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.8}}
+        .fade-in-up{animation:fadeInUp .4s ease both;}
+        .pulse-anim{animation:pulse 2s ease-in-out infinite;}
+
+        @media(max-width:991px){.sp-sidebar{transform:translateX(-100%);z-index:1050;}.sp-sidebar.show{transform:translateX(0);}.sp-main{margin-left:0!important;}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1045;}.sidebar-backdrop.show{display:block;}}
+        @media(max-width:575px){.hero-withdraw .display-5{font-size:2rem!important;}}
+        ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(26,29,46,0.12);border-radius:50px;}::-webkit-scrollbar-thumb:hover{background:var(--primary);}
+    </style>
+</head>
+<body>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sp-sidebar" id="sidebar">
+    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important;min-height:64px;">
+        <div class="brand-logo">S</div>
+        <div><div style="font-size:16px;font-weight:700;color:var(--text-primary);">Sacco<span style="color:var(--primary);">Pay</span></div><div style="font-size:10px;color:var(--text-muted);letter-spacing:0.04em;">Member Portal</div></div>
+    </a>
+    <div class="member-badge d-flex align-items-center gap-3">
+        <div style="width:38px;height:38px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div>
+        <div class="flex-grow-1 min-w-0"><div style="font-size:12px;font-weight:600;" class="text-truncate">John Kamau</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">MEM-2024-0045</div><div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:#00C853;"><span style="width:5px;height:5px;background:#00C853;border-radius:50%;box-shadow:0 0 6px #00C853;"></span> Active</div></div>
+    </div>
+    <nav class="py-2">
+        <div class="section-label">Main</div>
+        <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <div class="section-label">Financial</div>
+        <a href="savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
+        <a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+        <a href="withdrawals.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
+        <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <div class="section-label">Loans</div>
+        <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
+        <a href="loan-apply.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span> Apply for Loan</a>
+        <a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <div class="section-label">Membership</div>
+        <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> My Shares</a>
+        <a href="dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
+        <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
+        <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <div class="section-label">Other</div>
+        <a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">2</span></a>
+        <a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
+        <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+    </nav>
+    <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
+        <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
+    </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="sp-main" id="mainContent">
+
+    <!-- Topbar -->
+    <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
+        <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()" style="font-size:18px;color:var(--text-muted);"><i class="fas fa-bars"></i></button>
+        <nav aria-label="breadcrumb" class="d-none d-md-block"><ol class="breadcrumb mb-0" style="font-size:13px;"><li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color:var(--text-muted);">Home</a></li><li class="breadcrumb-item active">Withdrawals</li></ol></nav>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm d-none d-lg-flex" style="max-width:240px;"><span class="input-group-text border-0" style="background:var(--bg-input);"><i class="fas fa-search" style="font-size:12px;color:var(--text-muted);"></i></span><input type="text" class="form-control border-0" placeholder="Search withdrawals..." style="background:var(--bg-input);font-size:13px;"></div>
+            <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#notificationsModal"><i class="fas fa-bell" style="font-size:14px;"></i><span class="badge-dot">2</span></button>
+            <div class="dropdown"><button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle" data-bs-toggle="dropdown" style="border-color:rgba(26,29,46,0.08)!important;font-size:13px;cursor:pointer;"><div style="width:28px;height:28px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">JK</div><span class="d-none d-md-inline" style="color:var(--text-secondary);font-weight:500;">John</span></button><ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;min-width:200px;"><li class="px-3 py-2 border-bottom"><div style="font-weight:600;font-size:13px;">John Kamau</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">MEM-2024-0045</div></li><li><a class="dropdown-item py-2" href="profile.html"><i class="fas fa-user-circle me-2 text-muted"></i>Profile</a></li><li><a class="dropdown-item py-2" href="settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item py-2 text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li></ul></div>
+        </div>
+    </header>
+
+    <!-- ═══ PAGE CONTENT ═══ -->
+    <div class="p-3 p-lg-4 fade-in-up" style="max-width:1400px;">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1"><i class="fas fa-arrow-circle-up me-2" style="color:var(--primary);"></i>My <span style="color:var(--primary);">Withdrawals</span></h1>
+                <p class="mb-0" style="color:var(--text-muted);font-size:14px;">Request withdrawals, track status in real-time, and receive funds directly to M-Pesa, Bank, or Wallet.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#policyModal"><i class="fas fa-shield-alt me-1"></i> Policy</button>
+                <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);box-shadow:var(--shadow-orange);" data-bs-toggle="modal" data-bs-target="#newWithdrawModal"><i class="fas fa-paper-plane me-1"></i> Request Withdrawal</button>
+            </div>
+        </div>
+
+        <!-- ═══ HERO CARD ═══ -->
+        <div class="hero-withdraw p-4 p-lg-5 mb-4">
+            <div class="position-relative" style="z-index:1;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-7">
+                        <div style="font-size:13px;color:rgba(255,255,255,0.60);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;" class="mb-2">Available for Withdrawal</div>
+                        <div class="display-5 fw-bold mb-2" style="font-family:var(--font-mono);letter-spacing:-0.04em;">
+                            <span style="font-size:0.6em;opacity:0.7;">KES</span> 123,750<span style="font-size:0.5em;opacity:0.4;">.00</span>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:13px;">
+                            <span style="color:rgba(255,255,255,0.75);"><i class="fas fa-wallet me-1"></i> Total: <strong>KES 158,750</strong></span>
+                            <span style="width:1px;height:16px;background:rgba(255,255,255,0.15);"></span>
+                            <a href="#" class="text-decoration-none" style="color:var(--primary-light);" data-bs-toggle="modal" data-bs-target="#lockedFundsModal"><i class="fas fa-lock me-1"></i> Locked: <strong>KES 35,000</strong></a>
+                            <span style="width:1px;height:16px;background:rgba(255,255,255,0.15);"></span>
+                            <span style="color:rgba(255,255,255,0.65);"><i class="fas fa-clock me-1"></i> Notice: <strong>14 days</strong></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                            <button class="btn btn-sm rounded-pill px-3 fw-semibold" style="background:rgba(255,255,255,0.10);color:#fff;border:1px solid rgba(255,255,255,0.20);backdrop-filter:blur(10px);" data-bs-toggle="modal" data-bs-target="#newWithdrawModal"><i class="fas fa-paper-plane me-1"></i> New Request</button>
+                            <button class="btn btn-sm rounded-pill px-3 fw-semibold" style="background:rgba(255,255,255,0.10);color:#fff;border:1px solid rgba(255,255,255,0.20);" data-bs-toggle="modal" data-bs-target="#eligibilityCalcModal"><i class="fas fa-calculator me-1"></i> Calculator</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini KPIs -->
+                <div class="row g-3 mt-3">
+                    <div class="col-6 col-lg-3">
+                        <div class="mini-kpi">
+                            <div class="k">Pending Requests</div>
+                            <div class="v" style="color:#F9A825;">1</div>
+                            <a href="#" class="text-decoration-none" style="font-size:11px;color:#F9A825;" onclick="event.preventDefault();scrollToRequests();">View details <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="mini-kpi">
+                            <div class="k">Withdrawn (2025)</div>
+                            <div class="v" style="color:var(--primary);">KES 25,000</div>
+                            <div style="font-size:11px;color:var(--text-muted);">2 withdrawals</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="mini-kpi">
+                            <div class="k">Last Withdrawal</div>
+                            <div class="v">KES 10,000</div>
+                            <div style="font-size:11px;color:var(--text-muted);">Jan 15, 2025 • M-Pesa</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="mini-kpi">
+                            <div class="k">Disbursement Methods</div>
+                            <div class="d-flex gap-2 mt-1">
+                                <span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:10px;"><i class="fas fa-mobile-alt"></i> M-Pesa</span>
+                                <span class="sp-badge" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);font-size:10px;"><i class="fas fa-university"></i> Bank</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ACTIVE WITHDRAWAL REQUESTS ═══ -->
+        <div id="requestsSection" class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="fw-bold mb-0"><i class="fas fa-hourglass-half me-2" style="color:var(--primary);"></i>Active Requests</h5>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width:auto;font-size:12px;border-radius:8px;" onchange="filterRequests(this.value)">
+                        <option value="all" selected>All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-3" id="requestCards">
+
+                <!-- Pending Request -->
+                <div class="col-12" data-status="pending">
+                    <div class="sp-card wd-card status-pending p-0" onclick="openRequestDetail('WDR-2025-0045','pending')">
+                        <div class="p-3 p-lg-4">
+                            <div class="row align-items-center g-3">
+                                <div class="col-lg-5">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div style="width:48px;height:48px;background:rgba(249,168,37,0.10);border:1px solid rgba(249,168,37,0.20);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#F9A825;font-size:20px;flex-shrink:0;">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold" style="font-size:15px;">KES 20,000</div>
+                                            <div style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono);">WDR-2025-0045</div>
+                                            <span class="sp-badge mt-1" style="background:rgba(249,168,37,0.10);color:#F9A825;border:1px solid rgba(249,168,37,0.20);"><i class="fas fa-clock"></i> Pending Approval</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <!-- Stepper -->
+                                    <div class="stepper">
+                                        <div class="stepper-step">
+                                            <div class="s-dot done"><i class="fas fa-check" style="font-size:10px;"></i></div>
+                                            <div class="s-label" style="color:#00C853;">Submitted</div>
+                                            <div class="stepper-line done"></div>
+                                        </div>
+                                        <div class="stepper-step">
+                                            <div class="s-dot active pulse-anim"><i class="fas fa-user-shield" style="font-size:11px;"></i></div>
+                                            <div class="s-label" style="color:var(--primary);">Admin Review</div>
+                                            <div class="stepper-line pending"></div>
+                                        </div>
+                                        <div class="stepper-step">
+                                            <div class="s-dot pending">3</div>
+                                            <div class="s-label" style="color:var(--text-muted);">Disburse</div>
+                                            <div class="stepper-line pending"></div>
+                                        </div>
+                                        <div class="stepper-step">
+                                            <div class="s-dot pending">4</div>
+                                            <div class="s-label" style="color:var(--text-muted);">Done</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 text-lg-end">
+                                    <div class="d-flex flex-column gap-1 align-items-lg-end" style="font-size:12px;">
+                                        <div><span style="color:var(--text-muted);">Submitted:</span> <strong>Feb 25, 2025</strong></div>
+                                        <div><span style="color:var(--text-muted);">Via:</span> <strong><i class="fas fa-mobile-alt" style="color:#00C853;"></i> M-Pesa</strong></div>
+                                        <div><span style="color:var(--text-muted);">Reason:</span> <strong>School Fees</strong></div>
+                                        <div><span style="color:var(--text-muted);">Est. Complete:</span> <strong style="color:#F9A825;">Mar 11, 2025</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notice countdown -->
+                            <div class="d-flex flex-wrap align-items-center gap-3 mt-3 pt-3 border-top" style="border-color:rgba(26,29,46,0.06)!important;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="countdown-ring" style="width:48px;height:48px;">
+                                        <svg width="48" height="48" viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(26,29,46,0.06)" stroke-width="8"/>
+                                            <circle cx="50" cy="50" r="42" fill="none" stroke="#F9A825" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="113"/>
+                                        </svg>
+                                        <div class="ring-value" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">
+                                            <div class="fw-bold" style="font-size:14px;font-family:var(--font-mono);color:#F9A825;">8</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size:12px;font-weight:600;">8 days remaining</div>
+                                        <div style="font-size:11px;color:var(--text-muted);">of 14-day notice period (Admin policy)</div>
+                                    </div>
+                                </div>
+                                <div class="ms-auto d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-danger rounded-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#cancelRequestModal"><i class="fas fa-times me-1"></i> Cancel</button>
+                                    <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="event.stopPropagation();openRequestDetail('WDR-2025-0045','pending')"><i class="fas fa-eye me-1"></i> Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Request -->
+                <div class="col-12" data-status="completed">
+                    <div class="sp-card wd-card status-completed p-0" onclick="openRequestDetail('WDR-2025-0031','completed')">
+                        <div class="p-3 p-lg-4">
+                            <div class="row align-items-center g-3">
+                                <div class="col-lg-5">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div style="width:48px;height:48px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.20);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#00C853;font-size:20px;flex-shrink:0;"><i class="fas fa-check-circle"></i></div>
+                                        <div>
+                                            <div class="fw-bold" style="font-size:15px;">KES 10,000</div>
+                                            <div style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono);">WDR-2025-0031</div>
+                                            <span class="sp-badge mt-1" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Completed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="stepper">
+                                        <div class="stepper-step"><div class="s-dot done"><i class="fas fa-check" style="font-size:10px;"></i></div><div class="s-label" style="color:#00C853;">Submitted</div><div class="stepper-line done"></div></div>
+                                        <div class="stepper-step"><div class="s-dot done"><i class="fas fa-check" style="font-size:10px;"></i></div><div class="s-label" style="color:#00C853;">Approved</div><div class="stepper-line done"></div></div>
+                                        <div class="stepper-step"><div class="s-dot done"><i class="fas fa-check" style="font-size:10px;"></i></div><div class="s-label" style="color:#00C853;">Disbursed</div><div class="stepper-line done"></div></div>
+                                        <div class="stepper-step"><div class="s-dot done"><i class="fas fa-check" style="font-size:10px;"></i></div><div class="s-label" style="color:#00C853;">Done</div></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 text-lg-end">
+                                    <div class="d-flex flex-column gap-1 align-items-lg-end" style="font-size:12px;">
+                                        <div><span style="color:var(--text-muted);">Completed:</span> <strong style="color:#00C853;">Jan 29, 2025</strong></div>
+                                        <div><span style="color:var(--text-muted);">Via:</span> <strong><i class="fas fa-mobile-alt" style="color:#00C853;"></i> M-Pesa</strong></div>
+                                        <div><span style="color:var(--text-muted);">Fee:</span> <strong>KES 50</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejected Request -->
+                <div class="col-12" data-status="rejected">
+                    <div class="sp-card wd-card status-rejected p-0" onclick="openRequestDetail('WDR-2024-0089','rejected')">
+                        <div class="p-3 p-lg-4">
+                            <div class="row align-items-center g-3">
+                                <div class="col-lg-5">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div style="width:48px;height:48px;background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.18);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#E53935;font-size:20px;flex-shrink:0;"><i class="fas fa-times-circle"></i></div>
+                                        <div>
+                                            <div class="fw-bold" style="font-size:15px;color:var(--text-muted);text-decoration:line-through;">KES 50,000</div>
+                                            <div style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono);">WDR-2024-0089</div>
+                                            <span class="sp-badge mt-1" style="background:rgba(229,57,53,0.06);color:#E53935;border:1px solid rgba(229,57,53,0.18);"><i class="fas fa-times"></i> Rejected</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="alert border-0 mb-0 py-2 px-3" style="background:rgba(229,57,53,0.06);border-radius:10px;">
+                                        <div style="font-size:12px;color:#E53935;"><i class="fas fa-exclamation-triangle me-1"></i> <strong>Reason:</strong> Amount exceeds available balance after loan collateral deductions.</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 text-lg-end">
+                                    <div style="font-size:12px;color:var(--text-muted);">Dec 10, 2024</div>
+                                    <button class="btn btn-sm text-white rounded-3 mt-2 fw-semibold" style="background:var(--primary);" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#newWithdrawModal"><i class="fas fa-redo me-1"></i> Re-submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ═══ WITHDRAWAL CHART + SIDE PANELS ═══ -->
+        <div class="row g-4 mb-4">
+            <!-- Chart -->
+            <div class="col-lg-8">
+                <div class="sp-card">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                        <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-chart-line me-2" style="color:var(--primary);"></i> Withdrawal History</div>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary btn-sm rounded-start-3" onclick="chartRange(this)">6M</button>
+                            <button class="btn btn-sm text-white rounded-0" style="background:var(--primary);" onclick="chartRange(this)">1Y</button>
+                            <button class="btn btn-outline-secondary btn-sm rounded-end-3" onclick="chartRange(this)">All</button>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <div style="height:260px;"><canvas id="withdrawChart"></canvas></div>
+                        <div class="row g-2 mt-3">
+                            <div class="col-md-4"><div class="mini-kpi"><div class="k">Total Withdrawn (All Time)</div><div class="v" style="color:var(--primary);">KES 85,000</div></div></div>
+                            <div class="col-md-4"><div class="mini-kpi"><div class="k">Avg. Withdrawal</div><div class="v">KES 12,143</div></div></div>
+                            <div class="col-md-4"><div class="mini-kpi"><div class="k">Total Fees Paid</div><div class="v" style="color:#E53935;">KES 350</div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Panels -->
+            <div class="col-lg-4 d-flex flex-column gap-3">
+                <!-- Withdrawal Rules (Admin-Synced) -->
+                <div class="sp-card clickable" data-bs-toggle="modal" data-bs-target="#policyModal">
+                    <div class="p-3">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div style="width:36px;height:36px;background:rgba(2,136,209,0.06);border:1px solid rgba(2,136,209,0.18);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#0288D1;"><i class="fas fa-shield-alt"></i></div>
+                            <div><div style="font-size:13px;font-weight:700;">Withdrawal Rules</div><div style="font-size:11px;color:var(--text-muted);">Admin-configured</div></div>
+                        </div>
+                        <div class="d-flex flex-column gap-2" style="font-size:12px;">
+                            <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Notice Period</span><strong>14 days</strong></div>
+                            <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Min. Amount</span><strong style="font-family:var(--font-mono);">KES 1,000</strong></div>
+                            <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Max. per Month</span><strong style="font-family:var(--font-mono);">KES 100,000</strong></div>
+                            <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Processing Fee</span><strong style="color:#E53935;font-family:var(--font-mono);">KES 50</strong></div>
+                            <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Disbursement</span><strong>M-Pesa / Bank EFT</strong></div>
+                        </div>
+                        <div class="text-center mt-2" style="font-size:11px;color:var(--primary);font-weight:600;"><i class="fas fa-arrow-right me-1"></i> Tap for full policy</div>
+                    </div>
+                </div>
+
+                <!-- Impact Calculator -->
+                <div class="sp-card clickable" data-bs-toggle="modal" data-bs-target="#eligibilityCalcModal">
+                    <div class="p-3">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div style="width:36px;height:36px;background:var(--primary-subtle);border:1px solid var(--primary-border);border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--primary);"><i class="fas fa-calculator"></i></div>
+                            <div><div style="font-size:13px;font-weight:700;">Impact Calculator</div><div style="font-size:11px;color:var(--text-muted);">See how withdrawal affects you</div></div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text-secondary);">Check how a withdrawal impacts your loan eligibility, dividends, and savings goals before you request.</div>
+                        <div class="text-center mt-2" style="font-size:11px;color:var(--primary);font-weight:600;"><i class="fas fa-calculator me-1"></i> Open Calculator</div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="sp-card">
+                    <div class="p-3">
+                        <div class="fw-semibold mb-3" style="font-size:13px;"><i class="fas fa-chart-pie me-2" style="color:var(--primary);"></i> Withdrawal Methods Used</div>
+                        <div class="d-flex flex-column gap-2">
+                            <div><div class="d-flex justify-content-between mb-1" style="font-size:12px;"><div class="d-flex align-items-center gap-2"><span style="width:8px;height:8px;background:#00C853;border-radius:50%;display:inline-block;"></span> M-Pesa</div><span class="fw-bold">71% (5)</span></div><div class="sp-progress"><div class="sp-progress-fill shimmer" style="width:71%;background:#00C853;"></div></div></div>
+                            <div><div class="d-flex justify-content-between mb-1" style="font-size:12px;"><div class="d-flex align-items-center gap-2"><span style="width:8px;height:8px;background:#0288D1;border-radius:50%;display:inline-block;"></span> Bank EFT</div><span class="fw-bold">29% (2)</span></div><div class="sp-progress"><div class="sp-progress-fill" style="width:29%;background:#0288D1;"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ FULL HISTORY TABLE ═══ -->
+        <div class="sp-card mb-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-list-alt me-2" style="color:var(--primary);"></i> All Withdrawals</div>
+                <div class="d-flex flex-wrap gap-2">
+                    <select class="form-select form-select-sm" style="width:auto;font-size:12px;border-radius:8px;"><option>All Time</option><option>Last 3 Months</option><option selected>Last 6 Months</option><option>This Year</option></select>
+                    <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#exportModal"><i class="fas fa-download"></i></button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="font-size:13px;">
+                    <thead><tr style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);background:rgba(26,29,46,0.02);"><th class="border-0 py-3 px-3">Date</th><th class="border-0">Reference</th><th class="border-0">Account</th><th class="border-0">Amount</th><th class="border-0">Fee</th><th class="border-0">Method</th><th class="border-0">Status</th><th class="border-0 text-end">Action</th></tr></thead>
+                    <tbody>
+                        <tr style="cursor:pointer;" onclick="openRequestDetail('WDR-2025-0045','pending')"><td class="px-3">Feb 25, 2025</td><td style="font-family:var(--font-mono);font-size:11px;color:var(--primary);">WDR-2025-0045</td><td>Ordinary</td><td style="font-family:var(--font-mono);font-weight:800;color:#E53935;">- KES 20,000</td><td style="font-family:var(--font-mono);">KES 50</td><td><i class="fas fa-mobile-alt me-1" style="color:#00C853;"></i>M-Pesa</td><td><span class="sp-badge" style="background:rgba(249,168,37,0.10);color:#F9A825;border:1px solid rgba(249,168,37,0.20);"><i class="fas fa-clock"></i> Pending</span></td><td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();openRequestDetail('WDR-2025-0045','pending')"><i class="fas fa-eye"></i></button></td></tr>
+                        <tr style="cursor:pointer;" onclick="openRequestDetail('WDR-2025-0031','completed')"><td class="px-3">Jan 15, 2025</td><td style="font-family:var(--font-mono);font-size:11px;color:#00C853;">WDR-2025-0031</td><td>Ordinary</td><td style="font-family:var(--font-mono);font-weight:800;color:#E53935;">- KES 10,000</td><td style="font-family:var(--font-mono);">KES 50</td><td><i class="fas fa-mobile-alt me-1" style="color:#00C853;"></i>M-Pesa</td><td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Completed</span></td><td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();showToast('Receipt downloaded','success')"><i class="fas fa-download"></i></button></td></tr>
+                        <tr style="cursor:pointer;opacity:0.7;" onclick="openRequestDetail('WDR-2024-0089','rejected')"><td class="px-3">Dec 10, 2024</td><td style="font-family:var(--font-mono);font-size:11px;color:#E53935;">WDR-2024-0089</td><td>Ordinary</td><td style="font-family:var(--font-mono);font-weight:800;color:var(--text-muted);text-decoration:line-through;">- KES 50,000</td><td>—</td><td><i class="fas fa-university me-1" style="color:#0288D1;"></i>Bank</td><td><span class="sp-badge" style="background:rgba(229,57,53,0.06);color:#E53935;border:1px solid rgba(229,57,53,0.18);"><i class="fas fa-times"></i> Rejected</span></td><td class="text-end"><button class="btn btn-sm btn-outline-danger border-0" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#newWithdrawModal"><i class="fas fa-redo"></i></button></td></tr>
+                        <tr style="cursor:pointer;" onclick="openRequestDetail('WDR-2024-0072','completed')"><td class="px-3">Nov 20, 2024</td><td style="font-family:var(--font-mono);font-size:11px;color:#00C853;">WDR-2024-0072</td><td>Education</td><td style="font-family:var(--font-mono);font-weight:800;color:#E53935;">- KES 5,000</td><td style="font-family:var(--font-mono);">KES 50</td><td><i class="fas fa-university me-1" style="color:#0288D1;"></i>Bank</td><td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Completed</span></td><td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();showToast('Receipt downloaded','success')"><i class="fas fa-download"></i></button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-top" style="border-color:rgba(26,29,46,0.06)!important;font-size:12px;color:var(--text-muted);"><span>Showing 4 of 7 withdrawals</span><nav><ul class="pagination pagination-sm mb-0"><li class="page-item"><a class="page-link rounded-2" href="#" onclick="event.preventDefault();showToast('Previous','info')"><i class="fas fa-chevron-left"></i></a></li><li class="page-item active"><a class="page-link rounded-2" href="#" style="background:var(--primary);border-color:var(--primary);">1</a></li><li class="page-item"><a class="page-link rounded-2" href="#" onclick="event.preventDefault();showToast('Page 2','info')">2</a></li><li class="page-item"><a class="page-link rounded-2" href="#" onclick="event.preventDefault();showToast('Next','info')"><i class="fas fa-chevron-right"></i></a></li></ul></nav></div>
+        </div>
+
+    </div><!-- /page-content -->
+</div><!-- /sp-main -->
+
+
+<!-- ════════════════════════════════════════════ -->
+<!--                 MODALS                      -->
+<!-- ════════════════════════════════════════════ -->
+
+<!-- ═══ NEW WITHDRAWAL REQUEST ═══ -->
+<div class="modal fade" id="newWithdrawModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--gradient-primary);"></div>
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div><h5 class="modal-title fw-bold"><i class="fas fa-paper-plane me-2" style="color:var(--primary);"></i>Request Withdrawal</h5><p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">Funds will be disbursed automatically to your selected method after admin approval.</p></div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4 pt-3">
+                <!-- Available -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4"><div class="mini-kpi text-center"><div class="k">Total Balance</div><div class="v">KES 158,750</div></div></div>
+                    <div class="col-md-4"><div class="mini-kpi text-center" style="background:rgba(229,57,53,0.04);border-color:rgba(229,57,53,0.12);"><div class="k" style="color:#E53935;">Locked</div><div class="v" style="color:#E53935;">KES 35,000</div></div></div>
+                    <div class="col-md-4"><div class="mini-kpi text-center" style="background:rgba(0,200,83,0.04);border-color:rgba(0,200,83,0.15);"><div class="k" style="color:#00C853;">Withdrawable</div><div class="v" style="color:#00C853;">KES 123,750</div></div></div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size:13px;">Withdraw From <span class="text-danger">*</span></label>
+                        <select class="form-select" style="border-radius:12px;" id="wdFromAccount">
+                            <option value="ordinary" selected>Ordinary Savings — Avail: KES 73,750</option>
+                            <option value="education">Education Fund — Avail: KES 5,000</option>
+                            <option disabled>Holiday Savings — Locked (Seasonal)</option>
+                            <option disabled>Fixed Deposit — Locked (Maturity)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size:13px;">Amount (KES) <span class="text-danger">*</span></label>
+                        <div class="input-group"><span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--bg-input);">KES</span><input type="number" class="form-control" placeholder="0.00" id="wdAmount" style="border-radius:0 12px 12px 0;font-family:var(--font-mono);font-size:16px;" oninput="updateWdPreview()"></div>
+                        <div class="form-text" style="font-size:11px;">Min: KES 1,000 • Max: KES 100,000/month • Fee: KES 50</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Reason <span class="text-danger">*</span></label>
+                    <select class="form-select" style="border-radius:12px;" id="wdReason">
+                        <option value="">Select reason...</option>
+                        <option>School Fees</option>
+                        <option>Medical Emergency</option>
+                        <option>Home Construction</option>
+                        <option>Business Investment</option>
+                        <option>Personal Needs</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <!-- Disbursement Method -->
+                <label class="form-label fw-semibold" style="font-size:13px;">Receive Via <span class="text-danger">*</span></label>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="pay-method active" onclick="selectWdMethod(this,'mpesa')" id="wdmMpesa">
+                            <div class="pay-icon" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-mobile-alt"></i></div>
+                            <div class="fw-bold" style="font-size:13px;">M-Pesa</div>
+                            <div style="font-size:11px;color:var(--text-muted);">Auto-disbursement</div>
+                            <span class="sp-badge mt-2" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i class="fas fa-bolt"></i> Instant on approval</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="pay-method" onclick="selectWdMethod(this,'bank')" id="wdmBank">
+                            <div class="pay-icon" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);"><i class="fas fa-university"></i></div>
+                            <div class="fw-bold" style="font-size:13px;">Bank EFT</div>
+                            <div style="font-size:11px;color:var(--text-muted);">Auto-transfer</div>
+                            <span class="sp-badge mt-2" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);font-size:9px;"><i class="fas fa-clock"></i> 1-2 business days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone/Bank details -->
+                <div id="wdMpesaDetails">
+                    <label class="form-label fw-semibold" style="font-size:13px;">M-Pesa Number</label>
+                    <div class="phone-input-group mb-3"><span class="flag">🇰🇪</span><span class="prefix">+254</span><input type="tel" class="form-control" style="border-radius:14px;border-color:rgba(26,29,46,0.10);" placeholder="712 345 890" id="wdPhone" value="712345890"></div>
+                    <div class="alert border-0 p-2" style="background:rgba(0,200,83,0.06);border-radius:10px;font-size:11px;color:#00C853;">
+                        <i class="fas fa-bolt me-1"></i> Funds sent automatically to your M-Pesa once admin approves. No action needed from you.
+                    </div>
+                </div>
+                <div id="wdBankDetails" style="display:none;">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Bank</label><select class="form-select" style="border-radius:12px;"><option>Co-operative Bank</option><option>Equity Bank</option><option>KCB Bank</option><option>ABSA Bank</option><option>NCBA Bank</option></select></div>
+                        <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Account No.</label><input type="text" class="form-control" style="border-radius:12px;font-family:var(--font-mono);" placeholder="Account number" value="01100287654321"></div>
+                    </div>
+                    <div class="alert border-0 p-2" style="background:rgba(2,136,209,0.06);border-radius:10px;font-size:11px;color:#0288D1;">
+                        <i class="fas fa-university me-1"></i> EFT transfer processed within 1-2 business days after approval.
+                    </div>
+                </div>
+
+                <!-- Impact Preview -->
+                <div class="rounded-4 p-3 mt-3" id="wdPreview" style="background:var(--bg-input);display:none;">
+                    <div class="fw-semibold mb-2" style="font-size:13px;"><i class="fas fa-eye me-2" style="color:var(--primary);"></i>Impact Preview</div>
+                    <div class="row g-2" style="font-size:12px;">
+                        <div class="col-6"><span style="color:var(--text-muted);">Withdrawal:</span> <strong id="wdPrevAmt" style="font-family:var(--font-mono);">KES 0</strong></div>
+                        <div class="col-6"><span style="color:var(--text-muted);">Fee:</span> <strong style="color:#E53935;">KES 50</strong></div>
+                        <div class="col-6"><span style="color:var(--text-muted);">New Balance:</span> <strong id="wdPrevBal" style="font-family:var(--font-mono);color:#00C853;">—</strong></div>
+                        <div class="col-6"><span style="color:var(--text-muted);">New Loan Limit:</span> <strong id="wdPrevLoan" style="font-family:var(--font-mono);color:#0288D1;">—</strong></div>
+                        <div class="col-6"><span style="color:var(--text-muted);">Expected Date:</span> <strong id="wdPrevDate">—</strong></div>
+                        <div class="col-6"><span style="color:var(--text-muted);">Notice:</span> <strong>14 days</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn text-white rounded-3 fw-semibold px-4" style="background:var(--gradient-primary);box-shadow:var(--shadow-orange);" onclick="submitWithdrawal()"><i class="fas fa-paper-plane me-1"></i> Submit Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ REQUEST DETAIL ═══ -->
+<div class="modal fade" id="requestDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;" id="detailTopBar"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2" style="color:var(--primary);"></i>Withdrawal Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4" id="detailBody"><!-- Dynamic --></div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0" id="detailFooter"><!-- Dynamic --></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ CANCEL REQUEST ═══ -->
+<div class="modal fade" id="cancelRequestModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+            <div class="modal-body p-4 text-center">
+                <div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#E53935;font-size:24px;"><i class="fas fa-exclamation-triangle"></i></div>
+                <h5 class="fw-bold">Cancel Request?</h5>
+                <p style="font-size:13px;color:var(--text-muted);">This will cancel withdrawal <strong style="font-family:var(--font-mono);">WDR-2025-0045</strong> for KES 20,000. This action cannot be undone.</p>
+                <div class="mb-3"><label class="form-label fw-semibold" style="font-size:12px;">Reason (optional)</label><textarea class="form-control" rows="2" style="border-radius:12px;font-size:12px;" placeholder="Why are you cancelling?"></textarea></div>
+                <div class="d-flex gap-2"><button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Keep Request</button><button class="btn btn-danger rounded-3 flex-fill" onclick="cancelRequest()" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel It</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ POLICY ═══ -->
+<div class="modal fade" id="policyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:#0288D1;"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-shield-alt me-2" style="color:#0288D1;"></i>Withdrawal Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="alert border-0" style="background:rgba(2,136,209,0.06);border-radius:12px;">
+                    <div style="font-size:12px;color:#0288D1;"><i class="fas fa-info-circle me-1"></i> These rules are set by your SACCO administrator and apply to all withdrawal requests.</div>
+                </div>
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0" style="font-size:13px;">
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-clock me-2" style="color:#0288D1;"></i>Notice Period</span><strong>14 days</strong></li>
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-arrow-down me-2" style="color:#0288D1;"></i>Min. Withdrawal</span><strong style="font-family:var(--font-mono);">KES 1,000</strong></li>
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-arrow-up me-2" style="color:#0288D1;"></i>Max. per Month</span><strong style="font-family:var(--font-mono);">KES 100,000</strong></li>
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-receipt me-2" style="color:#E53935;"></i>Processing Fee</span><strong style="color:#E53935;font-family:var(--font-mono);">KES 50 per request</strong></li>
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-ban me-2" style="color:#F9A825;"></i>Min. Balance After</span><strong style="font-family:var(--font-mono);">KES 1,000</strong></li>
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-mobile-alt me-2" style="color:#00C853;"></i>Disbursement</span><strong>M-Pesa / Bank (Auto)</strong></li>
+                    <li class="d-flex justify-content-between p-3 rounded-3" style="background:var(--bg-input);"><span style="color:var(--text-muted);"><i class="fas fa-user-shield me-2" style="color:var(--primary);"></i>Approval</span><strong>Admin review required</strong></li>
+                </ul>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+                <button class="btn text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#newWithdrawModal"><i class="fas fa-paper-plane me-1"></i> Request Withdrawal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ IMPACT CALCULATOR ═══ -->
+<div class="modal fade" id="eligibilityCalcModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--gradient-primary);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-calculator me-2" style="color:var(--primary);"></i>Withdrawal Impact Calculator</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Withdrawal Amount</label><div class="input-group"><span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--bg-input);">KES</span><input type="number" class="form-control" id="calcAmount" value="20000" style="border-radius:0 12px 12px 0;font-family:var(--font-mono);" oninput="calculateImpact()"></div></div>
+                <div class="d-flex flex-wrap gap-2 mb-3"><button class="pill-mini" onclick="document.getElementById('calcAmount').value=5000;calculateImpact()">5K</button><button class="pill-mini" onclick="document.getElementById('calcAmount').value=10000;calculateImpact()">10K</button><button class="pill-mini" onclick="document.getElementById('calcAmount').value=20000;calculateImpact()">20K</button><button class="pill-mini" onclick="document.getElementById('calcAmount').value=50000;calculateImpact()">50K</button></div>
+                <div class="rounded-4 p-3" style="background:var(--bg-input);" id="calcResults">
+                    <div class="d-flex flex-column gap-2" style="font-size:13px;">
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Current Savings</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 158,750</span></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">After Withdrawal</span><span class="fw-bold" style="font-family:var(--font-mono);color:#00C853;" id="calcNewBal">KES 138,750</span></div>
+                        <div class="soft-divider my-1"></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Current Loan Limit (3×)</span><span class="fw-bold" style="font-family:var(--font-mono);color:#0288D1;">KES 476,250</span></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">New Loan Limit</span><span class="fw-bold" style="font-family:var(--font-mono);" id="calcNewLoan">KES 416,250</span></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Loan Limit Change</span><span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;" id="calcLoanDrop">↓ KES 60,000</span></div>
+                        <div class="soft-divider my-1"></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Goal Impact</span><span class="fw-bold" id="calcGoalImpact" style="color:#F9A825;">56% (was 63%)</span></div>
+                        <div class="d-flex justify-content-between"><span style="color:var(--text-muted);">Monthly Interest Impact</span><span class="fw-bold" style="color:#E53935;" id="calcIntImpact">↓ ~KES 117/mo</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+                <button class="btn text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#newWithdrawModal"><i class="fas fa-paper-plane me-1"></i> Proceed to Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ LOCKED FUNDS ═══ -->
+<div class="modal fade" id="lockedFundsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:#F9A825;"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-lock me-2" style="color:#F9A825;"></i>Locked Funds</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="text-center p-3 rounded-4 mb-3" style="background:rgba(249,168,37,0.08);border:1px solid rgba(249,168,37,0.18);"><div style="font-size:12px;color:var(--text-muted);">Total Locked</div><div style="font-size:28px;font-weight:800;font-family:var(--font-mono);color:#F9A825;">KES 35,000</div></div>
+                <div class="d-flex flex-column gap-2">
+                    <div class="p-3 rounded-4" style="background:var(--bg-input);"><div class="d-flex justify-content-between" style="font-size:13px;"><span class="fw-semibold">Loan Collateral (LN-2025-0042)</span><span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;">KES 25,000</span></div><div class="sp-progress mt-2"><div class="sp-progress-fill" style="width:38%;background:var(--primary);"></div></div><div style="font-size:11px;color:var(--text-muted);" class="mt-1">38% repaid • Est. release Oct 2025</div></div>
+                    <div class="p-3 rounded-4" style="background:var(--bg-input);"><div class="d-flex justify-content-between" style="font-size:13px;"><span class="fw-semibold">Guarantorship (Mary Wanjiku)</span><span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;">KES 10,000</span></div><div class="sp-progress mt-2"><div class="sp-progress-fill" style="width:60%;background:#0288D1;"></div></div><div style="font-size:11px;color:var(--text-muted);" class="mt-1">Borrower 60% repaid</div></div>
+                </div>
+                <div class="d-flex gap-2 mt-3"><a href="loans.html" class="btn btn-outline-secondary rounded-3 flex-fill"><i class="fas fa-file-contract me-1"></i> Loans</a><a href="guarantors.html" class="btn btn-outline-secondary rounded-3 flex-fill"><i class="fas fa-handshake me-1"></i> Guarantorship</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ EXPORT ═══ -->
+<div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-download me-2" style="color:var(--primary);"></i>Export</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Period</label><select class="form-select" style="border-radius:12px;"><option>This Month</option><option selected>Last 6 Months</option><option>This Year</option><option>All Time</option></select></div>
+                <div class="d-flex gap-2"><button class="btn btn-outline-danger rounded-3 flex-fill" onclick="showToast('PDF exported','success')" data-bs-dismiss="modal"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-outline-success rounded-3 flex-fill" onclick="showToast('Excel exported','success')" data-bs-dismiss="modal"><i class="fas fa-file-excel"></i> Excel</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ NOTIFICATIONS ═══ -->
+<div class="modal fade" id="notificationsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+            <div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4" style="max-height:350px;overflow:auto;">
+                <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);" onclick="bootstrap.Modal.getInstance(document.getElementById('notificationsModal')).hide();openRequestDetail('WDR-2025-0045','pending');"><div style="width:32px;height:32px;background:rgba(249,168,37,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#F9A825;flex-shrink:0;font-size:12px;"><i class="fas fa-clock"></i></div><div><div style="font-size:13px;font-weight:600;">Withdrawal Pending</div><div style="font-size:11px;color:var(--text-muted);">WDR-2025-0045 • KES 20,000 awaiting admin • 2h ago</div></div><div style="width:6px;height:6px;background:var(--primary);border-radius:50%;margin-top:8px;flex-shrink:0;"></div></div>
+                <div class="d-flex align-items-start gap-3 p-2 rounded-3" style="cursor:pointer;" onclick="showToast('Policy updated: max per month increased to KES 100,000','info');bootstrap.Modal.getInstance(document.getElementById('notificationsModal')).hide();"><div style="width:32px;height:32px;background:rgba(2,136,209,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0288D1;flex-shrink:0;font-size:12px;"><i class="fas fa-shield-alt"></i></div><div><div style="font-size:13px;font-weight:500;color:var(--text-secondary);">Policy Update</div><div style="font-size:11px;color:var(--text-muted);">Max withdrawal increased to KES 100K/mo • 1d ago</div></div></div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0"><a href="notifications.html" class="btn btn-outline-secondary rounded-3 w-100"><i class="fas fa-external-link-alt me-1"></i> All Notifications</a></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ LOGOUT ═══ -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4 text-center"><div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#E53935;font-size:24px;"><i class="fas fa-sign-out-alt"></i></div><h5 class="fw-bold">Logout?</h5><p style="font-size:13px;color:var(--text-muted);">Are you sure?</p><div class="d-flex gap-2"><button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Stay</button><a href="login.html" class="btn btn-danger rounded-3 flex-fill"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></div></div></div></div>
+</div>
+
+<!-- Toast -->
+<div class="sp-toast-container" id="toastContainer"></div>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Toast
+function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#FF6B00'};const t=document.createElement('div');t.className=`sp-toast ${type}`;t.innerHTML=`<i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${msg}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300);},5000);}
+
+// Sidebar
+function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('show');document.getElementById('sidebarBackdrop').classList.remove('show');}
+
+// Scroll
+function scrollToRequests(){document.getElementById('requestsSection').scrollIntoView({behavior:'smooth'});}
+
+// Filter
+function filterRequests(status){document.querySelectorAll('#requestCards > div').forEach(c=>{c.style.display=(status==='all'||c.getAttribute('data-status')===status)?'':'none';});showToast('Filtered to: '+status,'info');}
+
+// Withdrawal method
+let wdMethod='mpesa';
+function selectWdMethod(el,method){document.querySelectorAll('#newWithdrawModal .pay-method').forEach(c=>c.classList.remove('active'));el.classList.add('active');wdMethod=method;document.getElementById('wdMpesaDetails').style.display=method==='mpesa'?'block':'none';document.getElementById('wdBankDetails').style.display=method==='bank'?'block':'none';}
+
+// Preview
+function updateWdPreview(){const a=Number(document.getElementById('wdAmount').value||0);const p=document.getElementById('wdPreview');if(a>0){p.style.display='block';document.getElementById('wdPrevAmt').textContent='KES '+a.toLocaleString();const newBal=158750-a;document.getElementById('wdPrevBal').textContent='KES '+newBal.toLocaleString();document.getElementById('wdPrevLoan').textContent='KES '+(newBal*3).toLocaleString();const d=new Date();d.setDate(d.getDate()+14);document.getElementById('wdPrevDate').textContent=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}else{p.style.display='none';}}
+
+// Submit
+function submitWithdrawal(){const a=Number(document.getElementById('wdAmount').value||0);const r=document.getElementById('wdReason').value;if(!a||a<1000){showToast('Amount must be at least KES 1,000','warning');return;}if(!r){showToast('Please select a reason','warning');return;}if(a>123750){showToast('Amount exceeds available balance of KES 123,750','danger');return;}const ref='WDR-2025-00'+Math.floor(Math.random()*900+100);showToast(`Withdrawal request submitted!\nRef: ${ref} • KES ${a.toLocaleString()} via ${wdMethod.toUpperCase()}\nAdmin will review within 1-3 business days.`,'success');bootstrap.Modal.getInstance(document.getElementById('newWithdrawModal')).hide();}
+
+// Cancel
+function cancelRequest(){showToast('Withdrawal WDR-2025-0045 has been cancelled.','warning');}
+
+// Request Detail
+function openRequestDetail(ref,status){const body=document.getElementById('detailBody');const footer=document.getElementById('detailFooter');const bar=document.getElementById('detailTopBar');const map={pending:{color:'#F9A825',bg:'rgba(249,168,37,0.10)',icon:'fa-clock',label:'Pending Approval',amount:'KES 20,000',date:'Feb 25, 2025',method:'M-Pesa',reason:'School Fees',fee:'KES 50',account:'Ordinary Savings'},completed:{color:'#00C853',bg:'rgba(0,200,83,0.08)',icon:'fa-check-circle',label:'Completed',amount:'KES 10,000',date:'Jan 15, 2025',method:'M-Pesa',reason:'Personal',fee:'KES 50',account:'Ordinary Savings'},rejected:{color:'#E53935',bg:'rgba(229,57,53,0.06)',icon:'fa-times-circle',label:'Rejected',amount:'KES 50,000',date:'Dec 10, 2024',method:'Bank EFT',reason:'Home Construction',fee:'—',account:'Ordinary Savings'}};const d=map[status]||map.completed;
+bar.style.background=d.color;
+body.innerHTML=`
+<div class="text-center mb-4">
+  <div style="width:64px;height:64px;background:${d.bg};border:2px solid ${d.color}40;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:${d.color};"><i class="fas ${d.icon}"></i></div>
+  <div style="font-size:11px;color:${d.color};font-weight:600;text-transform:uppercase;letter-spacing:.1em;">${d.label}</div>
+  <div class="fw-bold mt-1" style="font-size:28px;font-family:var(--font-mono);${status==='rejected'?'color:var(--text-muted);text-decoration:line-through;':'color:#E53935;'}">${d.amount}</div>
+</div>
+<div class="rounded-4 overflow-hidden" style="background:var(--bg-input);">
+  <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--text-muted);">Reference</span><span class="fw-semibold" style="font-family:var(--font-mono);color:var(--primary);">${ref}</span></div>
+  <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--text-muted);">Date</span><span>${d.date}</span></div>
+  <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--text-muted);">Account</span><span>${d.account}</span></div>
+  <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--text-muted);">Reason</span><span>${d.reason}</span></div>
+  <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;"><span style="color:var(--text-muted);">Method</span><span>${d.method}</span></div>
+  <div class="d-flex justify-content-between p-3" style="font-size:13px;"><span style="color:var(--text-muted);">Fee</span><span class="fw-semibold">${d.fee}</span></div>
+</div>
+${status==='rejected'?'<div class="alert border-0 mt-3 mb-0" style="background:rgba(229,57,53,0.06);border-radius:12px;"><div style="font-size:12px;color:#E53935;"><i class="fas fa-exclamation-triangle me-1"></i><strong>Rejection Reason:</strong> Amount exceeds available balance after loan collateral deductions. Maximum available was KES 73,750.</div></div>':''}
+${status==='pending'?'<div class="alert border-0 mt-3 mb-0" style="background:rgba(249,168,37,0.08);border-radius:12px;"><div style="font-size:12px;color:#F9A825;"><i class="fas fa-clock me-1"></i> Waiting for admin approval. 8 days remaining on 14-day notice. Estimated completion: Mar 11, 2025.</div></div>':''}
+${status==='completed'?'<div class="alert border-0 mt-3 mb-0" style="background:rgba(0,200,83,0.06);border-radius:12px;"><div style="font-size:12px;color:#00C853;"><i class="fas fa-check-circle me-1"></i> Funds disbursed to M-Pesa (0712***890) on Jan 29, 2025. M-Pesa code: SHL4KM7QR2.</div></div>':''}`;
+
+footer.innerHTML=`<button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button>`;
+if(status==='completed') footer.innerHTML+=`<button class="btn btn-outline-secondary rounded-3" onclick="showToast('Receipt downloaded','success')"><i class="fas fa-download me-1"></i> Receipt</button>`;
+if(status==='rejected') footer.innerHTML+=`<button class="btn text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="setTimeout(()=>new bootstrap.Modal(document.getElementById('newWithdrawModal')).show(),350)"><i class="fas fa-redo me-1"></i> Re-submit</button>`;
+if(status==='pending') footer.innerHTML+=`<button class="btn btn-outline-danger rounded-3" data-bs-dismiss="modal" onclick="setTimeout(()=>new bootstrap.Modal(document.getElementById('cancelRequestModal')).show(),350)"><i class="fas fa-times me-1"></i> Cancel</button><a href="support.html" class="btn btn-outline-secondary rounded-3"><i class="fas fa-headset me-1"></i> Support</a>`;
+
+bootstrap.Modal.getOrCreateInstance(document.getElementById('requestDetailModal')).show();}
+
+// Calculator
+function calculateImpact(){const a=Number(document.getElementById('calcAmount').value||0);const newBal=158750-a;const newLoan=newBal*3;const loanDrop=a*3;const goalPct=Math.round((newBal/250000)*100);const intImpact=Math.round(a*0.07/12);document.getElementById('calcNewBal').textContent='KES '+newBal.toLocaleString();document.getElementById('calcNewLoan').textContent='KES '+newLoan.toLocaleString();document.getElementById('calcLoanDrop').textContent='↓ KES '+loanDrop.toLocaleString();document.getElementById('calcGoalImpact').textContent=goalPct+'% (was 63%)';document.getElementById('calcIntImpact').textContent='↓ ~KES '+intImpact+'/mo';}
+
+// Chart period
+function chartRange(btn){btn.parentElement.querySelectorAll('.btn').forEach(b=>{b.classList.remove('text-white');b.style.background='';b.classList.add('btn-outline-secondary');});btn.classList.remove('btn-outline-secondary');btn.classList.add('text-white');btn.style.background='var(--primary)';showToast('Chart updated','info');}
+
+// Chart.js
+const wctx=document.getElementById('withdrawChart');
+if(wctx){new Chart(wctx.getContext('2d'),{type:'bar',data:{labels:['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'],datasets:[{label:'Withdrawals',data:[0,5000,0,10000,0,0,15000,0,5000,0,10000,20000],backgroundColor(c){return c.raw>0?'rgba(229,57,53,0.65)':'rgba(26,29,46,0.04)';},borderRadius:6,borderSkipped:false,hoverBackgroundColor:'rgba(229,57,53,0.85)'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'#E53935',bodyColor:'#1A1D2E',borderColor:'rgba(229,57,53,0.2)',borderWidth:1,padding:12,cornerRadius:10,callbacks:{label(c){return c.raw>0?'Withdrawn: KES '+c.raw.toLocaleString():'No withdrawal';}}}},scales:{x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11}}},y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback(v){return v>0?'KES '+(v/1000)+'K':'';}},beginAtZero:true}}}});}
+
+// Init
+document.addEventListener('DOMContentLoaded',()=>{calculateImpact();setTimeout(()=>showToast('1 withdrawal pending admin review.','primary'),800);});
+</script>
+
+</body>
+</html>

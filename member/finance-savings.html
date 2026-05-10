@@ -1,0 +1,2581 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Savings — SaccoPay Member</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="./desposit.css"/>
+  <!--
+    IMPORTANT:
+    Paste/retain the SAME custom theme CSS block you used in the Bootstrap deposits page here.
+    This savings page reuses those classes/variables:
+      - sp-sidebar, sp-main, sp-topbar, sp-card, hero-deposit, pay-method
+      - sp-toast, sp-toast-container, sp-progress, etc.
+  -->
+
+  <style>
+    /* Few page-specific helpers only (kept minimal) */
+    .pill-mini {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(26,29,46,0.10);
+      background: #fff;
+      color: rgba(26,29,46,0.72);
+    }
+    .account-tile { cursor: pointer; }
+    .account-tile:hover { transform: translateY(-2px); }
+    .soft-divider { height:1px; background: rgba(26,29,46,0.06); }
+    .mini-kpi { background: var(--bg-input); border: 1px solid rgba(26,29,46,0.08); border-radius: 14px; padding: 14px; }
+    .mini-kpi .k { font-size: 11px; color: var(--text-muted); }
+    .mini-kpi .v { font-family: var(--font-mono); font-weight: 800; }
+  </style>
+</head>
+
+<body>
+
+<!-- Sidebar Backdrop (mobile) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SIDEBAR (reusing deposits page sidebar style/classes) -->
+<!-- ═══════════════════════════════════════════════ -->
+<aside class="sp-sidebar" id="sidebar">
+  <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom"
+     style="border-color:rgba(26,29,46,0.06)!important; min-height:64px;">
+    <div class="brand-logo">S</div>
+    <div>
+      <div style="font-size:16px;font-weight:700;color:var(--text-primary);">Sacco<span style="color:var(--primary);">Pay</span></div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:0.04em;">Member Portal</div>
+    </div>
+  </a>
+
+  <div class="member-badge d-flex align-items-center gap-3">
+    <div style="width:38px;height:38px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div>
+    <div class="flex-grow-1 min-w-0">
+      <div style="font-size:12px;font-weight:600;color:var(--text-primary);" class="text-truncate">John Kamau</div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">MEM-2024-0045</div>
+      <div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:#00C853;">
+        <span style="width:5px;height:5px;background:#00C853;border-radius:50%;box-shadow:0 0 6px #00C853;"></span> Active
+      </div>
+    </div>
+  </div>
+
+  <nav class="py-2">
+    <div class="section-label">Main</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+
+    <div class="section-label">Financial</div>
+    <a href="savings.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
+    <a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+    <a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
+    <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+
+    <div class="section-label">Loans</div>
+    <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
+    <a href="loan-apply.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span> Apply for Loan</a>
+    <a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+
+    <div class="section-label">Membership</div>
+    <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> My Shares</a>
+    <a href="dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
+    <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
+    <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+
+    <div class="section-label">Other</div>
+    <a href="notifications.html" class="nav-link d-flex align-items-center">
+      <span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">3</span>
+    </a>
+    <a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
+    <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+  </nav>
+
+  <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
+    <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
+  </div>
+</aside>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MAIN CONTENT -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sp-main" id="mainContent">
+
+  <!-- TOPBAR -->
+  <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
+    <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()" style="font-size:18px;color:var(--text-muted);">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <nav aria-label="breadcrumb" class="d-none d-md-block">
+      <ol class="breadcrumb mb-0" style="font-size:13px;">
+        <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color:var(--text-muted);">Home</a></li>
+        <li class="breadcrumb-item active" style="color:var(--text-primary);">My Savings</li>
+      </ol>
+    </nav>
+
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <div class="input-group input-group-sm d-none d-lg-flex" style="max-width:260px;">
+        <span class="input-group-text border-0" style="background:var(--bg-input);"><i class="fas fa-search" style="font-size:12px;color:var(--text-muted);"></i></span>
+        <input type="text" class="form-control border-0" placeholder="Search accounts / transactions..." style="background:var(--bg-input);font-size:13px;">
+      </div>
+
+      <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#notificationsModal" title="Notifications">
+        <i class="fas fa-bell" style="font-size:14px;"></i><span class="badge-dot">3</span>
+      </button>
+
+      <div class="dropdown">
+        <button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle"
+                data-bs-toggle="dropdown"
+                style="border-color:rgba(26,29,46,0.08)!important;font-size:13px;cursor:pointer;">
+          <div style="width:28px;height:28px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">JK</div>
+          <span class="d-none d-md-inline" style="color:var(--text-secondary);font-weight:500;">John</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;min-width:220px;">
+          <li class="px-3 py-2 border-bottom">
+            <div style="font-weight:600;font-size:13px;">John Kamau Mwangi</div>
+            <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">MEM-2024-0045</div>
+          </li>
+          <li><a class="dropdown-item py-2" href="profile.html"><i class="fas fa-user-circle me-2 text-muted"></i>Profile</a></li>
+          <li><a class="dropdown-item py-2" href="settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+          <li><a class="dropdown-item py-2" href="statements.html"><i class="fas fa-file-alt me-2 text-muted"></i>Statements</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item py-2 text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- PAGE CONTENT -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="p-3 p-lg-4 fade-in-up" style="max-width:1400px;">
+
+    <!-- Header -->
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1"><i class="fas fa-piggy-bank me-2" style="color:var(--primary);"></i>My <span style="color:var(--primary);">Savings</span></h1>
+        <p class="mb-0" style="color:var(--text-muted);font-size:14px;">
+          View balances, interest and goals. Deposit instantly via STK Push/Card/Bank — fully automated.
+        </p>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#statementModal">
+          <i class="fas fa-download me-1"></i> Statement
+        </button>
+        <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#openAccountModal">
+          <i class="fas fa-plus me-1"></i> Open Account
+        </button>
+        <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);box-shadow:var(--shadow-orange);"
+                data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+          <i class="fas fa-bolt me-1"></i> Deposit Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-deposit p-4 p-lg-5 mb-4">
+      <div class="position-relative" style="z-index:1;">
+        <div class="row align-items-center g-3">
+          <div class="col-lg-7">
+            <div style="font-size:13px;color:rgba(255,255,255,0.75);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;" class="mb-2">
+              Total Savings Balance
+            </div>
+
+            <div class="display-5 fw-bold mb-2" style="font-family:var(--font-mono);letter-spacing:-0.04em;">
+              <span style="font-size:0.6em;opacity:0.8;">KES</span> 158,750<span style="font-size:0.5em;opacity:0.5;">.00</span>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:13px;">
+              <span class="d-flex align-items-center gap-1" style="color:rgba(255,255,255,0.85);">
+                <i class="fas fa-arrow-up" style="font-size:10px;"></i>
+                <strong>+KES 12,500</strong> <span style="opacity:0.65;">this month</span>
+              </span>
+              <span style="width:1px;height:16px;background:rgba(255,255,255,0.2);"></span>
+              <span style="color:rgba(255,255,255,0.75);">
+                <i class="fas fa-percentage me-1"></i> Interest YTD: <strong>KES 725</strong>
+              </span>
+              <span style="width:1px;height:16px;background:rgba(255,255,255,0.2);"></span>
+              <a href="#" class="text-white text-decoration-none" style="opacity:0.9;"
+                 data-bs-toggle="modal" data-bs-target="#lockedFundsModal">
+                <i class="fas fa-lock me-1"></i> Locked: <strong>KES 35,000</strong>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+              <button class="btn btn-sm rounded-pill px-3 fw-semibold"
+                      style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);backdrop-filter:blur(10px);"
+                      data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                      onclick="prepDepositFromContext('All Savings Accounts (Smart routing)','all')">
+                <i class="fas fa-plus me-1"></i> Add Money
+              </button>
+
+              <button class="btn btn-sm rounded-pill px-3 fw-semibold"
+                      style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);"
+                      data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                <i class="fas fa-arrow-up me-1"></i> Withdraw
+              </button>
+
+              <button class="btn btn-sm rounded-pill px-3 fw-semibold"
+                      style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);"
+                      data-bs-toggle="modal" data-bs-target="#goalModal">
+                <i class="fas fa-bullseye me-1"></i> Goal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-3">
+          <div class="col-6 col-lg-3">
+            <div class="mini-kpi">
+              <div class="k">Available</div>
+              <div class="v" style="color:#00C853;">KES 123,750</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;"><i class="fas fa-shield-alt me-1"></i>Withdrawable</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="mini-kpi">
+              <div class="k">Locked</div>
+              <div class="v" style="color:#F9A825;">KES 35,000</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;"><i class="fas fa-lock me-1"></i>Collateral/Guarantee</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="mini-kpi">
+              <div class="k">Interest (Lifetime)</div>
+              <div class="v" style="color:var(--primary);">KES 4,875</div>
+              <a href="#" class="text-decoration-none" style="font-size:11px;color:var(--primary);" data-bs-toggle="modal" data-bs-target="#interestModal">
+                View breakdown <i class="fas fa-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="mini-kpi">
+              <div class="k">Loan Limit</div>
+              <div class="v" style="color:#0288D1;">KES 476,250</div>
+              <a href="#" class="text-decoration-none" style="font-size:11px;color:#0288D1;" data-bs-toggle="modal" data-bs-target="#loanEligibilityModal">
+                View eligibility <i class="fas fa-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Accounts + Side Panels -->
+    <div class="row g-4 mb-4">
+      <!-- Accounts -->
+      <div class="col-lg-8">
+        <div class="sp-card">
+          <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2"
+               style="border-color:rgba(26,29,46,0.06)!important;">
+            <div class="fw-semibold" style="font-size:14px;">
+              <i class="fas fa-layer-group me-2" style="color:var(--primary);"></i> Savings Accounts
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#accountCompareModal">
+                <i class="fas fa-sliders-h me-1"></i> Compare
+              </button>
+              <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);"
+                      data-bs-toggle="modal" data-bs-target="#openAccountModal">
+                <i class="fas fa-plus me-1"></i> New Account
+              </button>
+            </div>
+          </div>
+
+          <div class="p-3">
+            <div class="row g-3">
+              <!-- Ordinary -->
+              <div class="col-md-6">
+                <div class="sp-card clickable account-tile p-3"
+                     onclick="openAccountDetail('ordinary')"
+                     style="border-radius:16px;">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                      <div style="width:44px;height:44px;border-radius:14px;background:var(--gradient-primary);color:#fff;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-piggy-bank"></i>
+                      </div>
+                      <div>
+                        <div class="fw-bold" style="font-size:14px;">Ordinary Savings</div>
+                        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">SAV-001-ORD</div>
+                        <span class="sp-badge mt-1" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:10px;">
+                          <i class="fas fa-check-circle"></i> Active
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="text-end">
+                      <div style="font-size:11px;color:var(--text-muted);">Rate</div>
+                      <div class="fw-bold" style="color:var(--primary);">7% <span style="font-size:11px;color:var(--text-muted);font-weight:500;">p.a.</span></div>
+                    </div>
+                  </div>
+
+                  <div class="soft-divider my-3"></div>
+
+                  <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                      <div style="font-size:11px;color:var(--text-muted);">Balance</div>
+                      <div style="font-size:20px;font-weight:800;font-family:var(--font-mono);">KES 98,750</div>
+                      <div style="font-size:11px;color:var(--text-muted);">Available: <strong style="color:#00C853;">KES 73,750</strong></div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-secondary rounded-3"
+                              onclick="event.stopPropagation();prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary');openDepositFlow();">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary rounded-3"
+                              onclick="event.stopPropagation();prepWithdrawFromContext('ordinary');openWithdrawFlow();">
+                        <i class="fas fa-arrow-up"></i>
+                      </button>
+                      <button class="btn btn-sm rounded-3 text-white"
+                              style="background:var(--primary);"
+                              onclick="event.stopPropagation();openAccountDetail('ordinary')">
+                        Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fixed Deposit -->
+              <div class="col-md-6">
+                <div class="sp-card clickable account-tile p-3"
+                     onclick="openAccountDetail('fixed')"
+                     style="border-radius:16px;">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                      <div style="width:44px;height:44px;border-radius:14px;background:rgba(2,136,209,0.08);color:#0288D1;border:1px solid rgba(2,136,209,0.18);display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-vault"></i>
+                      </div>
+                      <div>
+                        <div class="fw-bold" style="font-size:14px;">Fixed Deposit</div>
+                        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">FD-001-FXD</div>
+                        <span class="sp-badge mt-1" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);font-size:10px;">
+                          <i class="fas fa-lock"></i> Locked
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="text-end">
+                      <div style="font-size:11px;color:var(--text-muted);">Matures</div>
+                      <div class="fw-bold" style="color:#F9A825;">Jul 15, 2025</div>
+                    </div>
+                  </div>
+
+                  <div class="soft-divider my-3"></div>
+
+                  <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                      <div style="font-size:11px;color:var(--text-muted);">Principal</div>
+                      <div style="font-size:20px;font-weight:800;font-family:var(--font-mono);">KES 40,000</div>
+                      <div style="font-size:11px;color:var(--text-muted);">Rate: <strong style="color:#0288D1;">10% p.a.</strong></div>
+                    </div>
+                    <div class="text-end" style="min-width:180px;">
+                      <div class="d-flex justify-content-between" style="font-size:11px;color:var(--text-muted);">
+                        <span>Maturity</span><span class="fw-semibold" style="color:#0288D1;">58%</span>
+                      </div>
+                      <div class="sp-progress mt-1">
+                        <div class="sp-progress-fill" style="width:58%;background:#0288D1;"></div>
+                      </div>
+                      <div class="d-flex gap-2 mt-2 justify-content-end">
+                        <button class="btn btn-sm btn-outline-secondary rounded-3"
+                                onclick="event.stopPropagation();openFixedDepositManage();">
+                          Manage
+                        </button>
+                        <button class="btn btn-sm rounded-3 text-white"
+                                style="background:var(--primary);"
+                                onclick="event.stopPropagation();openAccountDetail('fixed')">
+                          Details
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Holiday -->
+              <div class="col-md-6">
+                <div class="sp-card clickable account-tile p-3"
+                     onclick="openAccountDetail('holiday')"
+                     style="border-radius:16px;">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                      <div style="width:44px;height:44px;border-radius:14px;background:rgba(171,0,217,0.06);color:#AB00D9;border:1px solid rgba(171,0,217,0.18);display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-umbrella-beach"></i>
+                      </div>
+                      <div>
+                        <div class="fw-bold" style="font-size:14px;">Holiday Savings</div>
+                        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">HS-001-HOL</div>
+                        <span class="sp-badge mt-1" style="background:rgba(171,0,217,0.06);color:#AB00D9;border:1px solid rgba(171,0,217,0.18);font-size:10px;">
+                          <i class="fas fa-calendar-check"></i> Seasonal Window
+                        </span>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <div style="font-size:11px;color:var(--text-muted);">Window</div>
+                      <div class="fw-bold" style="color:#F9A825;">Nov–Dec</div>
+                    </div>
+                  </div>
+
+                  <div class="soft-divider my-3"></div>
+
+                  <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                      <div style="font-size:11px;color:var(--text-muted);">Balance</div>
+                      <div style="font-size:20px;font-weight:800;font-family:var(--font-mono);">KES 15,000</div>
+                      <div style="font-size:11px;color:var(--text-muted);">Rate: <strong style="color:#AB00D9;">5% p.a.</strong></div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-secondary rounded-3"
+                              onclick="event.stopPropagation();prepDepositFromContext('Holiday Savings (HS-001) — Bal: KES 15,000','holiday');openDepositFlow();">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary rounded-3"
+                              onclick="event.stopPropagation();openHolidayRules();">
+                        Rules
+                      </button>
+                      <button class="btn btn-sm rounded-3 text-white" style="background:var(--primary);"
+                              onclick="event.stopPropagation();openAccountDetail('holiday')">
+                        Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Education -->
+              <div class="col-md-6">
+                <div class="sp-card clickable account-tile p-3"
+                     onclick="openAccountDetail('education')"
+                     style="border-radius:16px;">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                      <div style="width:44px;height:44px;border-radius:14px;background:rgba(249,168,37,0.10);color:#F9A825;border:1px solid rgba(249,168,37,0.20);display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-graduation-cap"></i>
+                      </div>
+                      <div>
+                        <div class="fw-bold" style="font-size:14px;">Education Fund</div>
+                        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">ED-001-EDU</div>
+                        <span class="sp-badge mt-1" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:10px;">
+                          <i class="fas fa-check-circle"></i> Active
+                        </span>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <div style="font-size:11px;color:var(--text-muted);">Flexible</div>
+                      <div class="fw-bold" style="color:#00C853;">Withdraw</div>
+                    </div>
+                  </div>
+
+                  <div class="soft-divider my-3"></div>
+
+                  <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                      <div style="font-size:11px;color:var(--text-muted);">Balance</div>
+                      <div style="font-size:20px;font-weight:800;font-family:var(--font-mono);">KES 5,000</div>
+                      <div style="font-size:11px;color:var(--text-muted);">Rate: <strong style="color:#F9A825;">6% p.a.</strong></div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-secondary rounded-3"
+                              onclick="event.stopPropagation();prepDepositFromContext('Education Fund (ED-001) — Bal: KES 5,000','education');openDepositFlow();">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary rounded-3"
+                              onclick="event.stopPropagation();openEducationPlan();">
+                        Plan
+                      </button>
+                      <button class="btn btn-sm rounded-3 text-white" style="background:var(--primary);"
+                              onclick="event.stopPropagation();openAccountDetail('education')">
+                        Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- row -->
+          </div><!-- p -->
+        </div><!-- card -->
+      </div>
+
+      <!-- Side Panels -->
+      <div class="col-lg-4 d-flex flex-column gap-3">
+
+        <!-- Savings Goal -->
+        <div class="sp-card clickable" data-bs-toggle="modal" data-bs-target="#goalModal">
+          <div class="p-3">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:36px;height:36px;background:var(--primary-subtle);border:1px solid var(--primary-border);border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--primary);">
+                  <i class="fas fa-bullseye"></i>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;">Savings Goal</div>
+                  <div style="font-size:11px;color:var(--text-muted);">Dec 31, 2025 target</div>
+                </div>
+              </div>
+              <span class="pill-mini" style="border-color:rgba(255,107,0,0.25);background:rgba(255,107,0,0.06);color:var(--primary);">63%</span>
+            </div>
+
+            <div class="sp-progress mb-2">
+              <div class="sp-progress-fill shimmer" style="width:63%;background:var(--gradient-primary);"></div>
+            </div>
+
+            <div class="d-flex justify-content-between" style="font-size:12px;">
+              <span style="color:var(--text-muted);">KES 158,750 saved</span>
+              <span style="font-weight:700;color:var(--text-primary);">KES 250,000 target</span>
+            </div>
+
+            <div class="mt-2" style="font-size:11px;color:var(--text-muted);">
+              Monthly needed: <strong style="color:var(--primary);font-family:var(--font-mono);">KES 9,125</strong>
+              <span class="ms-1">•</span>
+              <a href="#" class="text-decoration-none" style="color:var(--primary);" onclick="event.preventDefault();bootstrap.Modal.getOrCreateInstance(document.getElementById('goalModal')).show();">
+                Edit goal
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interest Summary -->
+        <div class="sp-card clickable" data-bs-toggle="modal" data-bs-target="#interestModal">
+          <div class="p-3">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:36px;height:36px;background:rgba(2,136,209,0.06);border:1px solid rgba(2,136,209,0.18);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#0288D1;">
+                  <i class="fas fa-percentage"></i>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;">Interest Summary</div>
+                  <div style="font-size:11px;color:var(--text-muted);">Compound monthly</div>
+                </div>
+              </div>
+              <span class="pill-mini" style="border-color:rgba(2,136,209,0.20);background:rgba(2,136,209,0.06);color:#0288D1;">7% p.a.</span>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <div class="mini-kpi">
+                  <div class="k">This Month</div>
+                  <div class="v" style="color:#00C853;">+ KES 375</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mini-kpi">
+                  <div class="k">Lifetime</div>
+                  <div class="v" style="color:var(--primary);">KES 4,875</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2" style="font-size:11px;color:var(--text-muted);">
+              Projected annual interest: <strong style="color:#00C853;">~ KES 6,913</strong>
+              <span class="ms-1">•</span>
+              <span style="color:#0288D1;font-weight:600;">Tap for history</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loan Limit Panel -->
+        <div class="sp-card clickable" data-bs-toggle="modal" data-bs-target="#loanEligibilityModal">
+          <div class="p-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:36px;height:36px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#00C853;">
+                  <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;">Loan Eligibility</div>
+                  <div style="font-size:11px;color:var(--text-muted);">Savings × 3 multiplier</div>
+                </div>
+              </div>
+              <span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:10px;">
+                <i class="fas fa-check-circle"></i> Eligible
+              </span>
+            </div>
+
+            <div class="fw-bold" style="font-size:26px;font-family:var(--font-mono);color:#0288D1;">KES 476,250</div>
+            <div class="sp-progress mt-2">
+              <div class="sp-progress-fill shimmer" style="width:22%;background:#0288D1;"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-2" style="font-size:11px;color:var(--text-muted);">
+              <span>Used: KES 103,500</span>
+              <span>Available: <strong style="color:#00C853;">KES 372,750</strong></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <a href="loan-apply.html" class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--primary);">
+                Apply Loan
+              </a>
+              <button class="btn btn-sm btn-outline-secondary rounded-3"
+                      onclick="event.stopPropagation();showToast('Tip: Save +KES 1,000 to increase loan limit by +KES 3,000','info');">
+                Tips
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Growth + Contributions + Transactions -->
+    <div class="row g-4 mb-4">
+      <!-- Growth chart -->
+      <div class="col-lg-8">
+        <div class="sp-card">
+          <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2"
+               style="border-color:rgba(26,29,46,0.06)!important;">
+            <div class="fw-semibold" style="font-size:14px;">
+              <i class="fas fa-chart-area me-2" style="color:var(--primary);"></i> Savings Growth
+            </div>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-secondary btn-sm rounded-start-3" onclick="setGrowthRange(this,'3M')">3M</button>
+              <button class="btn btn-outline-secondary btn-sm rounded-0" onclick="setGrowthRange(this,'6M')">6M</button>
+              <button class="btn btn-sm text-white rounded-0" style="background:var(--primary);" onclick="setGrowthRange(this,'1Y')">1Y</button>
+              <button class="btn btn-outline-secondary btn-sm rounded-end-3" onclick="setGrowthRange(this,'ALL')">All</button>
+            </div>
+          </div>
+          <div class="p-3">
+            <div style="height:280px;"><canvas id="growthChart"></canvas></div>
+
+            <div class="row g-2 mt-3">
+              <div class="col-md-4">
+                <div class="mini-kpi">
+                  <div class="k">Best Month</div>
+                  <div class="v" style="color:#00C853;">KES 15,000</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Dec 2024</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mini-kpi">
+                  <div class="k">Avg. Monthly</div>
+                  <div class="v" style="color:var(--primary);">KES 8,750</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Contribution trend</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mini-kpi">
+                  <div class="k">Next Interest</div>
+                  <div class="v" style="color:#0288D1;">Feb 29</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Monthly credit</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);"
+                      data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                      onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+                <i class="fas fa-bolt me-1"></i> Deposit to Grow
+              </button>
+              <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#goalModal">
+                <i class="fas fa-bullseye me-1"></i> Adjust Goal
+              </button>
+              <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#statementModal">
+                <i class="fas fa-file-alt me-1"></i> Generate Statement
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contributions -->
+      <div class="col-lg-4">
+        <div class="sp-card">
+          <div class="d-flex align-items-center justify-content-between p-3 border-bottom"
+               style="border-color:rgba(26,29,46,0.06)!important;">
+            <div class="fw-semibold" style="font-size:14px;">
+              <i class="fas fa-calendar-check me-2" style="color:var(--primary);"></i> Contribution Tracker
+            </div>
+            <span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:10px;">
+              <i class="fas fa-check"></i> On track
+            </span>
+          </div>
+          <div class="p-3">
+            <div class="d-flex justify-content-between mb-2" style="font-size:12px;">
+              <span style="color:var(--text-muted);">Minimum (Admin-set)</span>
+              <span class="fw-bold" style="font-family:var(--font-mono);">KES 5,000</span>
+            </div>
+
+            <div class="sp-progress mb-3">
+              <div class="sp-progress-fill shimmer" style="width:100%;background:#00C853;"></div>
+            </div>
+
+            <div class="rounded-4 p-3 mb-3" style="background:var(--bg-input);">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div style="font-size:12px;color:var(--text-muted);">This month deposited</div>
+                  <div style="font-size:20px;font-weight:800;font-family:var(--font-mono);color:#00C853;">KES 12,500</div>
+                </div>
+                <button class="btn btn-sm rounded-3 text-white fw-semibold" style="background:var(--primary);"
+                        data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                        onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+                  Top up
+                </button>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);" class="mt-2">
+                You deposited <strong style="color:#00C853;">250%</strong> of minimum.
+              </div>
+            </div>
+
+            <div class="fw-semibold mb-2" style="font-size:13px;">Quick Months</div>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="pill-mini" onclick="openMonthDetail('Jan 2025',5000,'Met')">Jan ✓</button>
+              <button class="pill-mini" onclick="openMonthDetail('Feb 2025',12500,'Exceeded')">Feb ✓✓</button>
+              <button class="pill-mini" style="border-color:rgba(249,168,37,0.25);background:rgba(249,168,37,0.08);color:#F9A825;"
+                      onclick="openMonthDetail('Mar 2025',0,'Due')">Mar Due</button>
+              <button class="pill-mini" onclick="showToast('April is upcoming. Set a reminder from Auto-Deposit settings.','info');bootstrap.Modal.getOrCreateInstance(document.getElementById('recurringModal')).show();">Apr →</button>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-sm btn-outline-secondary rounded-3 flex-fill" data-bs-toggle="modal" data-bs-target="#recurringModal">
+                <i class="fas fa-robot me-1"></i> Auto-Deposit
+              </button>
+              <button class="btn btn-sm btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Rule: Interest credited monthly. Withdrawal notice: 14 days.','info');bootstrap.Modal.getOrCreateInstance(document.getElementById('rulesModal')).show();">
+                <i class="fas fa-book me-1"></i> Rules
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="sp-card mb-4">
+      <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2"
+           style="border-color:rgba(26,29,46,0.06)!important;">
+        <div class="fw-semibold" style="font-size:14px;">
+          <i class="fas fa-history me-2" style="color:var(--primary);"></i> Savings Transactions
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <select class="form-select form-select-sm" style="width:auto;font-size:12px;border-radius:8px;" id="txnAccountFilter" onchange="filterTxns()">
+            <option value="all" selected>All Accounts</option>
+            <option value="ordinary">Ordinary</option>
+            <option value="fixed">Fixed Deposit</option>
+            <option value="holiday">Holiday</option>
+            <option value="education">Education</option>
+          </select>
+
+          <select class="form-select form-select-sm" style="width:auto;font-size:12px;border-radius:8px;" id="txnTypeFilter" onchange="filterTxns()">
+            <option value="all" selected>All Types</option>
+            <option value="deposit">Deposit</option>
+            <option value="withdrawal">Withdrawal</option>
+            <option value="interest">Interest</option>
+          </select>
+
+          <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#statementModal">
+            <i class="fas fa-download me-1"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" style="font-size:13px;">
+          <thead>
+            <tr style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);background:rgba(26,29,46,0.02);">
+              <th class="border-0 py-3 px-3">Date</th>
+              <th class="border-0">Ref</th>
+              <th class="border-0">Account</th>
+              <th class="border-0">Type</th>
+              <th class="border-0">Amount</th>
+              <th class="border-0">Status</th>
+              <th class="border-0 text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody id="txnBody">
+            <tr style="cursor:pointer;" onclick="openTxnDetail('DEP-2025-00189','deposit','Ordinary','+KES 7,500','Confirmed')"
+                data-account="ordinary" data-type="deposit">
+              <td class="px-3">Feb 25, 2025</td>
+              <td><span style="font-family:var(--font-mono);font-size:11px;color:var(--primary);">DEP-2025-00189</span></td>
+              <td>Ordinary</td>
+              <td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-arrow-down"></i> Deposit</span></td>
+              <td><span style="font-family:var(--font-mono);font-weight:800;color:#00C853;">+ KES 7,500</span></td>
+              <td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Confirmed</span></td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();openTxnDetail('DEP-2025-00189','deposit','Ordinary','+KES 7,500','Confirmed')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+
+            <tr style="cursor:pointer;" onclick="openTxnDetail('INT-2025-00012','interest','Ordinary','+KES 350','Credited')"
+                data-account="ordinary" data-type="interest">
+              <td class="px-3">Jan 31, 2025</td>
+              <td><span style="font-family:var(--font-mono);font-size:11px;color:#0288D1;">INT-2025-00012</span></td>
+              <td>Ordinary</td>
+              <td><span class="sp-badge" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);"><i class="fas fa-percentage"></i> Interest</span></td>
+              <td><span style="font-family:var(--font-mono);font-weight:800;color:#0288D1;">+ KES 350</span></td>
+              <td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Credited</span></td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();openTxnDetail('INT-2025-00012','interest','Ordinary','+KES 350','Credited')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+
+            <tr style="cursor:pointer;" onclick="openTxnDetail('WDR-2025-00031','withdrawal','Ordinary','-KES 10,000','Completed')"
+                data-account="ordinary" data-type="withdrawal">
+              <td class="px-3">Jan 15, 2025</td>
+              <td><span style="font-family:var(--font-mono);font-size:11px;color:#E53935;">WDR-2025-00031</span></td>
+              <td>Ordinary</td>
+              <td><span class="sp-badge" style="background:rgba(229,57,53,0.06);color:#E53935;border:1px solid rgba(229,57,53,0.18);"><i class="fas fa-arrow-up"></i> Withdrawal</span></td>
+              <td><span style="font-family:var(--font-mono);font-weight:800;color:#E53935;">- KES 10,000</span></td>
+              <td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Completed</span></td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary border-0" onclick="event.stopPropagation();openTxnDetail('WDR-2025-00031','withdrawal','Ordinary','-KES 10,000','Completed')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-top"
+           style="border-color:rgba(26,29,46,0.06)!important;font-size:12px;color:var(--text-muted);">
+        <span>Showing 3 of 48 transactions</span>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Previous page loaded','info')"><i class="fas fa-chevron-left"></i></button>
+          <button class="btn btn-sm rounded-3 text-white" style="background:var(--primary);" onclick="showToast('Page 1','info')">1</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Page 2 loaded','info')">2</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Next page loaded','info')"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /sp-main -->
+
+
+<!-- ========================================================= -->
+<!-- MODALS (No dead ends: every action routes to something)   -->
+<!-- ========================================================= -->
+
+<!-- Deposit Gateway (reused from deposits bootstrap version) -->
+<div class="modal fade" id="depositMethodModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <div>
+          <h5 class="modal-title fw-bold"><i class="fas fa-bolt me-2" style="color:var(--primary);"></i>Instant Deposit</h5>
+          <p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">
+            Fully automated payments (STK Push/Card/Bank). No manual reference entry.
+          </p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4 pt-3">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Deposit To <span class="text-danger">*</span></label>
+          <select class="form-select" style="border-radius:12px;" id="depositToAccount">
+            <option value="all">All Savings Accounts (Smart routing)</option>
+            <option value="ordinary" selected>Ordinary Savings (SAV-001) — Bal: KES 98,750</option>
+            <option value="fixed">Fixed Deposit (FD-001) — Bal: KES 40,000</option>
+            <option value="holiday">Holiday Savings (HS-001) — Bal: KES 15,000</option>
+            <option value="education">Education Fund (ED-001) — Bal: KES 5,000</option>
+          </select>
+          <div class="form-text" style="font-size:11px;">
+            Smart routing will apply deposits to minimum requirements first, then your selected goal.
+          </div>
+        </div>
+
+        <label class="form-label fw-semibold" style="font-size:13px;">Payment Method</label>
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-md-3">
+            <div class="pay-method active" onclick="selectDepositMethod(this,'mpesa')" id="pmMpesa">
+              <div class="pay-icon" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <div class="fw-bold" style="font-size:13px;">M-Pesa</div>
+              <div style="font-size:11px;color:var(--text-muted);">STK Push</div>
+              <span class="sp-badge mt-2" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i class="fas fa-bolt"></i> Instant</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="pay-method" onclick="selectDepositMethod(this,'card')" id="pmCard">
+              <div class="pay-icon" style="background:rgba(171,0,217,0.06);color:#AB00D9;border:1px solid rgba(171,0,217,0.18);">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <div class="fw-bold" style="font-size:13px;">Card</div>
+              <div style="font-size:11px;color:var(--text-muted);">Visa/Mastercard</div>
+              <span class="sp-badge mt-2" style="background:rgba(171,0,217,0.06);color:#AB00D9;border:1px solid rgba(171,0,217,0.18);font-size:9px;"><i class="fas fa-shield-alt"></i> Secure</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="pay-method" onclick="selectDepositMethod(this,'bank')" id="pmBank">
+              <div class="pay-icon" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);">
+                <i class="fas fa-university"></i>
+              </div>
+              <div class="fw-bold" style="font-size:13px;">Bank</div>
+              <div style="font-size:11px;color:var(--text-muted);">EFT/RTGS</div>
+              <span class="sp-badge mt-2" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);font-size:9px;"><i class="fas fa-clock"></i> 1-24h</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="pay-method" onclick="selectDepositMethod(this,'airtel')" id="pmAirtel">
+              <div class="pay-icon" style="background:rgba(229,57,53,0.06);color:#E53935;border:1px solid rgba(229,57,53,0.18);">
+                <i class="fas fa-sim-card"></i>
+              </div>
+              <div class="fw-bold" style="font-size:13px;">Airtel</div>
+              <div style="font-size:11px;color:var(--text-muted);">STK Push</div>
+              <span class="sp-badge mt-2" style="background:rgba(229,57,53,0.06);color:#E53935;border:1px solid rgba(229,57,53,0.18);font-size:9px;"><i class="fas fa-bolt"></i> Instant</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label fw-semibold" style="font-size:13px;">Amount (KES) <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--bg-input);border-color:rgba(26,29,46,0.10);font-size:14px;">KES</span>
+            <input type="number" class="form-control form-control-lg" placeholder="0.00" id="depositAmountInput"
+                   style="border-radius:0 12px 12px 0;border-color:rgba(26,29,46,0.10);font-family:var(--font-mono);font-size:18px;"
+                   oninput="updateMethodPreview()">
+          </div>
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setAmt(1000)">1K</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setAmt(2000)">2K</button>
+            <button class="btn btn-sm rounded-pill fw-semibold" style="border:1px solid var(--primary-border);color:var(--primary);background:var(--primary-subtle);" onclick="setAmt(5000)">5K</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setAmt(10000)">10K</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setAmt(20000)">20K</button>
+          </div>
+        </div>
+
+        <div class="mt-3 d-flex align-items-center justify-content-between p-3 rounded-4" style="background:var(--bg-input);">
+          <div style="font-size:12px;color:var(--text-muted);">
+            <div class="fw-semibold" style="color:var(--text-primary);">Smart Summary</div>
+            <div>Min monthly requirement will be satisfied first (KES 5,000).</div>
+          </div>
+          <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="showToast('Smart routing: min requirement → goal → remaining to selected account','info')">
+            How it works
+          </button>
+        </div>
+
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-0">
+        <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn text-white rounded-3 fw-semibold px-4" style="background:var(--gradient-primary);box-shadow:var(--shadow-orange);"
+                onclick="proceedToPayment()">
+          <i class="fas fa-arrow-right me-1"></i> Proceed to Pay
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STK modal (same structure as deposits bootstrap version) -->
+<div class="modal fade" id="mpesaStkModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#00C853;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-mobile-alt me-2" style="color:#00C853;"></i>STK Push</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetSTK()"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div id="stkPhase1">
+          <div class="alert border-0 mb-4" style="background:rgba(0,200,83,0.06);color:#00C853;border-radius:12px;">
+            <div class="d-flex align-items-start gap-2">
+              <i class="fas fa-info-circle mt-1"></i>
+              <div style="font-size:12px;">You’ll receive a payment prompt on your phone. Enter your PIN to complete.</div>
+            </div>
+          </div>
+
+          <div class="text-center mb-4 p-3 rounded-4" style="background:var(--bg-input);">
+            <div style="font-size:12px;color:var(--text-muted);">You are depositing</div>
+            <div class="fw-bold mt-1" style="font-size:28px;font-family:var(--font-mono);color:var(--primary);" id="stkAmountDisplay">KES 0</div>
+            <div style="font-size:12px;color:var(--text-muted);" id="stkAccountDisplay">to Selected Account</div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold" style="font-size:13px;">Phone Number <span class="text-danger">*</span></label>
+            <div class="phone-input-group">
+              <span class="flag">🇰🇪</span>
+              <span class="prefix">+254</span>
+              <input type="tel" class="form-control form-control-lg" style="border-radius:14px;border-color:rgba(26,29,46,0.10);"
+                     placeholder="712 345 890" id="stkPhoneInput" maxlength="10" value="712345890">
+            </div>
+            <div class="form-text" style="font-size:11px;">Supported: Safaricom STK & Airtel STK (where enabled)</div>
+          </div>
+
+          <button class="btn btn-lg w-100 text-white fw-semibold rounded-3"
+                  style="background:#00C853;box-shadow:0 4px 16px rgba(0,200,83,0.3);"
+                  onclick="initiateSTKPush()">
+            <i class="fas fa-paper-plane me-2"></i> Send Prompt
+          </button>
+        </div>
+
+        <div id="stkPhase2" style="display:none;">
+          <div class="stk-loader">
+            <div class="stk-spinner"></div>
+            <div class="text-center">
+              <h5 class="fw-bold mb-2" style="color:#00C853;">Check Your Phone</h5>
+              <p style="font-size:13px;color:var(--text-muted);max-width:320px;margin:0 auto;">
+                Payment prompt sent. Enter your PIN to approve.
+              </p>
+            </div>
+
+            <div class="position-relative" style="width:80px;height:80px;">
+              <svg width="80" height="80" viewBox="0 0 100 100" style="transform:rotate(-90deg);">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(26,29,46,0.06)" stroke-width="6"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#00C853" stroke-width="6" stroke-linecap="round"
+                        stroke-dasharray="283" id="stkTimerCircle" style="animation: countDown 60s linear forwards;"/>
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle text-center">
+                <div class="fw-bold" style="font-size:20px;font-family:var(--font-mono);color:var(--text-primary);" id="stkCountdown">60</div>
+                <div style="font-size:9px;color:var(--text-muted);">seconds</div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 w-100 mt-2">
+              <button class="btn btn-outline-secondary btn-sm rounded-3 flex-fill" onclick="resetSTK()">
+                <i class="fas fa-redo me-1"></i> Resend
+              </button>
+              <button class="btn btn-outline-secondary btn-sm rounded-3 flex-fill" data-bs-dismiss="modal" onclick="resetSTK()">
+                <i class="fas fa-times me-1"></i> Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="stkPhase3" style="display:none;">
+          <div class="text-center py-3">
+            <div style="width:72px;height:72px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:#00C853;">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h5 class="fw-bold" style="color:#00C853;">Deposit Successful!</h5>
+            <div class="fw-bold mt-2" style="font-size:28px;font-family:var(--font-mono);color:var(--text-primary);" id="stkSuccessAmount">KES 0.00</div>
+            <p class="mt-2 mb-3" style="font-size:13px;color:var(--text-muted);" id="stkSuccessAccount">Credited to your account</p>
+
+            <div class="p-3 rounded-4 text-start" style="background:var(--bg-input);">
+              <div class="d-flex justify-content-between mb-2" style="font-size:12px;"><span style="color:var(--text-muted);">Reference</span><span class="fw-semibold" style="font-family:var(--font-mono);color:var(--primary);" id="stkRef">DEP-2025-00XXX</span></div>
+              <div class="d-flex justify-content-between mb-2" style="font-size:12px;"><span style="color:var(--text-muted);">Channel</span><span class="fw-semibold" id="stkChannel">STK Push</span></div>
+              <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--text-muted);">New Balance</span><span class="fw-bold" style="color:#00C853;font-family:var(--font-mono);" id="stkNewBal">KES —</span></div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+              <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Receipt downloaded','success')">
+                <i class="fas fa-download me-1"></i> Receipt
+              </button>
+              <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="resetSTK();">
+                <i class="fas fa-check me-1"></i> Done
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- body -->
+    </div>
+  </div>
+</div>
+
+<!-- Card modal -->
+<div class="modal fade" id="cardPayModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:linear-gradient(90deg,#AB00D9,#7B1FA2);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-credit-card me-2" style="color:#AB00D9;"></i>Card Payment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetCard()"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+
+        <div id="cardPhase1">
+          <div class="text-center mb-4 p-3 rounded-4" style="background:var(--bg-input);">
+            <div style="font-size:12px;color:var(--text-muted);">Depositing</div>
+            <div class="fw-bold" style="font-size:24px;font-family:var(--font-mono);color:var(--primary);" id="cardAmountDisplay">KES 0</div>
+          </div>
+
+          <div class="card-visual mb-4">
+            <div style="font-size:11px;opacity:0.7;">DEBIT/CREDIT CARD</div>
+            <div class="card-number" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+            <div class="d-flex justify-content-between align-items-end">
+              <div><div style="font-size:9px;opacity:0.5;">CARD HOLDER</div><div style="font-size:13px;font-weight:600;" id="cardHolderDisplay">YOUR NAME</div></div>
+              <div><div style="font-size:9px;opacity:0.5;">EXPIRES</div><div style="font-size:13px;font-weight:600;" id="cardExpiryDisplay">MM/YY</div></div>
+            </div>
+            <div class="card-brand"><i class="fab fa-cc-visa"></i></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold" style="font-size:13px;">Card Number <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19"
+                     style="border-radius:12px 0 0 12px;font-family:var(--font-mono);letter-spacing:2px;"
+                     id="cardNumberInput" oninput="formatCardNumber(this)">
+              <span class="input-group-text" style="border-radius:0 12px 12px 0;background:#fff;">
+                <i class="fab fa-cc-visa" style="color:#1A1F71;"></i>
+                <i class="fab fa-cc-mastercard ms-1" style="color:#EB001B;"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label fw-semibold" style="font-size:13px;">Expiry <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" placeholder="MM/YY" maxlength="5"
+                     style="border-radius:12px;font-family:var(--font-mono);"
+                     id="cardExpiryInput" oninput="formatExpiry(this)">
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-semibold" style="font-size:13px;">CVV <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" placeholder="•••" maxlength="4" style="border-radius:12px;font-family:var(--font-mono);">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold" style="font-size:13px;">Cardholder Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" placeholder="JOHN KAMAU" style="border-radius:12px;text-transform:uppercase;"
+                   id="cardNameInput" oninput="document.getElementById('cardHolderDisplay').textContent=this.value||'YOUR NAME'">
+          </div>
+
+          <div class="d-flex align-items-center gap-2 p-3 rounded-3 mb-3" style="background:rgba(171,0,217,0.04);border:1px solid rgba(171,0,217,0.12);">
+            <i class="fas fa-shield-alt" style="color:#AB00D9;"></i>
+            <span style="font-size:11px;color:var(--text-secondary);">Encrypted + PCI-DSS compliant processing. We never store your card details.</span>
+          </div>
+
+          <button class="btn btn-lg w-100 text-white fw-semibold rounded-3"
+                  style="background:linear-gradient(135deg,#AB00D9,#7B1FA2);box-shadow:0 4px 16px rgba(171,0,217,0.3);"
+                  onclick="processCardPayment()">
+            <i class="fas fa-lock me-2"></i> Pay <span id="cardPayBtnAmount">KES 0</span>
+          </button>
+        </div>
+
+        <div id="cardPhase2" style="display:none;">
+          <div class="stk-loader">
+            <div class="stk-spinner" style="border-top-color:#AB00D9;"></div>
+            <div class="text-center">
+              <h5 class="fw-bold" style="color:#AB00D9;">Processing</h5>
+              <p style="font-size:13px;color:var(--text-muted);">Securely processing card payment...</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="cardPhase3" style="display:none;">
+          <div class="text-center py-3">
+            <div style="width:72px;height:72px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:#00C853;">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h5 class="fw-bold" style="color:#00C853;">Payment Successful!</h5>
+            <div class="fw-bold mt-2" style="font-size:28px;font-family:var(--font-mono);" id="cardSuccessAmount">KES 0.00</div>
+            <p class="mt-2" style="font-size:13px;color:var(--text-muted);" id="cardSuccessAccount">Credited to savings</p>
+
+            <div class="d-flex gap-2 mt-4">
+              <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Receipt downloaded','success')"><i class="fas fa-download me-1"></i> Receipt</button>
+              <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="resetCard()"><i class="fas fa-check me-1"></i> Done</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- body -->
+    </div>
+  </div>
+</div>
+
+<!-- Bank Transfer modal -->
+<div class="modal fade" id="bankTransferModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#0288D1;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-university me-2" style="color:#0288D1;"></i>Bank Transfer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="alert border-0 mb-4" style="background:rgba(2,136,209,0.06);color:#0288D1;border-radius:12px;">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fas fa-info-circle mt-1"></i>
+            <div style="font-size:12px;">Transfer from your bank using your <strong>Member Number</strong> as reference. Confirmed within 1–24 hours.</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-4 mb-4" style="background:var(--bg-input);">
+          <div class="row g-3" style="font-size:13px;">
+            <div class="col-6"><div style="color:var(--text-muted);font-size:11px;">Bank</div><div class="fw-bold">Co-operative Bank</div></div>
+            <div class="col-6"><div style="color:var(--text-muted);font-size:11px;">Branch</div><div class="fw-bold">Nairobi Main</div></div>
+            <div class="col-6"><div style="color:var(--text-muted);font-size:11px;">Account No.</div><div class="fw-bold" style="font-family:var(--font-mono);">01100287654321</div></div>
+            <div class="col-6"><div style="color:var(--text-muted);font-size:11px;">Account Name</div><div class="fw-bold">SaccoPay SACCO Ltd</div></div>
+            <div class="col-12 mt-2"><div style="color:var(--text-muted);font-size:11px;">Your Reference</div><div class="fw-bold fs-5" style="color:var(--primary);font-family:var(--font-mono);">MEM-2024-0045</div></div>
+          </div>
+          <button class="btn btn-sm btn-outline-primary rounded-pill mt-3 w-100" onclick="copyBankDetails()"><i class="fas fa-copy me-1"></i> Copy Details</button>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Amount Transferred (KES)</label>
+          <input type="number" class="form-control" placeholder="Enter amount" style="border-radius:12px;font-family:var(--font-mono);" id="bankAmountInput">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Transfer Date</label>
+          <input type="date" class="form-control" style="border-radius:12px;" id="bankDate" value="2025-02-25">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Upload Proof (optional)</label>
+          <div class="border rounded-3 p-3 text-center"
+               style="border-style:dashed!important;border-color:rgba(26,29,46,0.15)!important;cursor:pointer;"
+               onclick="document.getElementById('bankProof').click()">
+            <i class="fas fa-cloud-upload-alt d-block mb-1" style="font-size:20px;color:var(--text-muted);"></i>
+            <span style="font-size:12px;color:var(--text-muted);">Drop receipt or click to upload</span>
+            <input type="file" id="bankProof" style="display:none;" onchange="showToast('File selected: '+this.files[0].name,'success')">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-0">
+        <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn text-white rounded-3 fw-semibold" style="background:#0288D1;box-shadow:0 4px 16px rgba(2,136,209,0.25);" onclick="submitBankTransfer()">
+          <i class="fas fa-paper-plane me-1"></i> Notify SACCO
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Withdraw Request modal (no dead ends) -->
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#F9A825;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <div>
+          <h5 class="modal-title fw-bold"><i class="fas fa-arrow-up me-2" style="color:#F9A825;"></i>Request Withdrawal</h5>
+          <p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">
+            Withdrawals follow SACCO policy (notice + verification). Submit digitally—no paperwork.
+          </p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4 pt-3">
+        <div class="alert border-0 mb-4" style="background:rgba(249,168,37,0.08);color:#F9A825;border-radius:12px;">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fas fa-info-circle mt-1"></i>
+            <div style="font-size:12px;">
+              Policy: 14 days notice • Min KES 1,000 • Fee KES 50 • Some accounts may be locked.
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Withdraw From <span class="text-danger">*</span></label>
+            <select class="form-select" style="border-radius:12px;" id="withdrawFrom">
+              <option value="ordinary" selected>Ordinary Savings — Available: KES 73,750</option>
+              <option value="education">Education Fund — Available: KES 5,000</option>
+              <option value="holiday" disabled>Holiday Savings — Locked (Seasonal)</option>
+              <option value="fixed" disabled>Fixed Deposit — Locked (Maturity)</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Amount (KES) <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--bg-input);">KES</span>
+              <input type="number" class="form-control" placeholder="0.00" style="border-radius:0 12px 12px 0;font-family:var(--font-mono);" id="withdrawAmount" min="1000">
+            </div>
+            <div class="form-text" style="font-size:11px;">Min: KES 1,000</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Reason <span class="text-danger">*</span></label>
+          <select class="form-select" style="border-radius:12px;" id="withdrawReason">
+            <option value="">Select reason...</option>
+            <option>School Fees</option>
+            <option>Medical Emergency</option>
+            <option>Business</option>
+            <option>Personal</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <label class="form-label fw-semibold" style="font-size:13px;">Receive Via</label>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="pay-method active" onclick="selectWithdrawMethod(this,'mpesa')" id="wdMpesa">
+              <div class="pay-icon" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <div class="fw-bold" style="font-size:13px;">M-Pesa</div>
+              <div style="font-size:11px;color:var(--text-muted);">0712***890</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="pay-method" onclick="selectWithdrawMethod(this,'bank')" id="wdBank">
+              <div class="pay-icon" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);">
+                <i class="fas fa-university"></i>
+              </div>
+              <div class="fw-bold" style="font-size:13px;">Bank</div>
+              <div style="font-size:11px;color:var(--text-muted);">Co-op ***4321</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-4 p-3" style="background:var(--bg-input);">
+          <div class="fw-semibold mb-2" style="font-size:13px;color:var(--text-primary);"><i class="fas fa-exclamation-circle me-1" style="color:var(--primary);"></i>Impact Preview</div>
+          <div class="row g-2" style="font-size:12px;">
+            <div class="col-6"><span style="color:var(--text-muted);">Processing fee:</span> <strong style="color:#F9A825;">KES 50</strong></div>
+            <div class="col-6"><span style="color:var(--text-muted);">Expected date:</span> <strong>Mar 11, 2025</strong></div>
+            <div class="col-12"><span style="color:var(--text-muted);">Loan limit impact:</span> <strong style="color:#E53935;">May reduce</strong></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-0">
+        <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);"
+                onclick="submitWithdrawalRequest()">
+          <i class="fas fa-paper-plane me-1"></i> Submit Request
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Goal modal -->
+<div class="modal fade" id="goalModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-bullseye me-2" style="color:var(--primary);"></i>Savings Goal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="p-3 rounded-4 mb-3" style="background:var(--bg-input);">
+          <div class="d-flex justify-content-between" style="font-size:12px;">
+            <span style="color:var(--text-muted);">Target</span><strong style="font-family:var(--font-mono);">KES 250,000</strong>
+          </div>
+          <div class="d-flex justify-content-between mt-1" style="font-size:12px;">
+            <span style="color:var(--text-muted);">Saved</span><strong style="font-family:var(--font-mono);color:#00C853;">KES 158,750</strong>
+          </div>
+          <div class="sp-progress mt-2">
+            <div class="sp-progress-fill shimmer" style="width:63%;background:var(--gradient-primary);"></div>
+          </div>
+          <div class="mt-2" style="font-size:11px;color:var(--text-muted);">63% complete • Monthly needed: <strong style="color:var(--primary);">KES 9,125</strong></div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Update Target (KES)</label>
+          <div class="input-group">
+            <span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--bg-input);">KES</span>
+            <input type="number" class="form-control" style="border-radius:0 12px 12px 0;font-family:var(--font-mono);" value="250000" id="goalTarget">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Target Date</label>
+          <input type="date" class="form-control" style="border-radius:12px;" value="2025-12-31" id="goalDate">
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Goal tips: deposit consistently + increase shares for better dividends','info')">Tips</button>
+          <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--primary);" onclick="saveGoal()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Interest modal -->
+<div class="modal fade" id="interestModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#0288D1;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-percentage me-2" style="color:#0288D1;"></i>Interest Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="text-center p-3 rounded-4 mb-3" style="background:var(--bg-input);">
+          <div style="font-size:12px;color:var(--text-muted);">Lifetime Interest</div>
+          <div style="font-size:28px;font-weight:800;font-family:var(--font-mono);color:var(--primary);">KES 4,875</div>
+          <div style="font-size:12px;color:var(--text-muted);">Rate: 7% p.a. compound monthly</div>
+        </div>
+
+        <div class="fw-semibold mb-2" style="font-size:13px;">Recent Credits</div>
+        <div class="d-flex flex-column gap-2" style="max-height:240px;overflow:auto;">
+          <div class="p-3 rounded-4" style="background:rgba(255,107,0,0.06);border:1px solid rgba(255,107,0,0.18);">
+            <div class="d-flex justify-content-between" style="font-size:12px;">
+              <span class="fw-semibold" style="color:var(--primary);">Feb 2025 (projected)</span>
+              <span class="fw-bold" style="font-family:var(--font-mono);color:var(--primary);">~ KES 375</span>
+            </div>
+          </div>
+          <div class="p-3 rounded-4" style="background:var(--bg-input);">
+            <div class="d-flex justify-content-between" style="font-size:12px;">
+              <span style="color:var(--text-muted);">Jan 2025</span>
+              <span class="fw-bold" style="font-family:var(--font-mono);">KES 350</span>
+            </div>
+          </div>
+          <div class="p-3 rounded-4" style="background:var(--bg-input);">
+            <div class="d-flex justify-content-between" style="font-size:12px;">
+              <span style="color:var(--text-muted);">Dec 2024</span>
+              <span class="fw-bold" style="font-family:var(--font-mono);">KES 325</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="soft-divider my-3"></div>
+        <button class="btn text-white rounded-3 fw-semibold w-100" style="background:var(--gradient-primary);"
+                data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+          <i class="fas fa-bolt me-1"></i> Deposit More (Boost Interest)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Locked funds modal -->
+<div class="modal fade" id="lockedFundsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#F9A825;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-lock me-2" style="color:#F9A825;"></i>Locked Funds</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="text-center p-3 rounded-4 mb-3" style="background:rgba(249,168,37,0.08);border:1px solid rgba(249,168,37,0.18);">
+          <div style="font-size:12px;color:var(--text-muted);">Total Locked</div>
+          <div style="font-size:28px;font-weight:800;font-family:var(--font-mono);color:#F9A825;">KES 35,000</div>
+          <div style="font-size:12px;color:var(--text-muted);">Released after obligations are cleared</div>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <div class="p-3 rounded-4" style="background:var(--bg-input);">
+            <div class="d-flex justify-content-between" style="font-size:13px;">
+              <span class="fw-semibold">Loan Collateral (LN-2025-0042)</span>
+              <span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;">KES 25,000</span>
+            </div>
+            <div class="sp-progress mt-2">
+              <div class="sp-progress-fill" style="width:38%;background:var(--primary);"></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);" class="mt-1">Loan repaid: 38% • Est. release Oct 2025</div>
+          </div>
+
+          <div class="p-3 rounded-4" style="background:var(--bg-input);">
+            <div class="d-flex justify-content-between" style="font-size:13px;">
+              <span class="fw-semibold">Guarantorship (Mary Wanjiku)</span>
+              <span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;">KES 10,000</span>
+            </div>
+            <div class="sp-progress mt-2">
+              <div class="sp-progress-fill" style="width:60%;background:#0288D1;"></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);" class="mt-1">Borrower repaid: 60%</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <a href="loans.html" class="btn btn-outline-secondary rounded-3 flex-fill"><i class="fas fa-file-contract me-1"></i> Loan Details</a>
+          <a href="guarantors.html" class="btn btn-outline-secondary rounded-3 flex-fill"><i class="fas fa-handshake me-1"></i> Guarantorship</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rules modal -->
+<div class="modal fade" id="rulesModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-book me-2" style="color:var(--primary);"></i>Savings Rules</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="p-3 rounded-4" style="background:var(--bg-input);">
+          <div class="fw-semibold mb-2" style="font-size:13px;">Ordinary Savings (Admin-configured)</div>
+          <ul class="mb-0" style="font-size:12px;color:var(--text-secondary);">
+            <li>Minimum monthly deposit: <strong>KES 5,000</strong></li>
+            <li>Interest: <strong>7% p.a.</strong> compounded monthly</li>
+            <li>Withdrawal notice: <strong>14 days</strong></li>
+            <li>Minimum balance: <strong>KES 1,000</strong></li>
+            <li>Loan multiplier: <strong>3× savings</strong></li>
+          </ul>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Close</button>
+          <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--primary);"
+                  data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                  onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+            Deposit to comply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Statement modal -->
+<div class="modal fade" id="statementModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-download me-2" style="color:var(--primary);"></i>Statement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Account</label>
+          <select class="form-select" style="border-radius:12px;">
+            <option selected>All Savings Accounts</option>
+            <option>Ordinary Savings (SAV-001)</option>
+            <option>Fixed Deposit (FD-001)</option>
+            <option>Holiday Savings (HS-001)</option>
+            <option>Education Fund (ED-001)</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Period</label>
+          <select class="form-select" style="border-radius:12px;">
+            <option>This Month</option>
+            <option selected>Last 3 Months</option>
+            <option>Last 6 Months</option>
+            <option>This Year</option>
+            <option>All Time</option>
+          </select>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-danger rounded-3 flex-fill" onclick="showToast('Statement exported PDF','success')" data-bs-dismiss="modal"><i class="fas fa-file-pdf"></i> PDF</button>
+          <button class="btn btn-outline-success rounded-3 flex-fill" onclick="showToast('Statement exported Excel','success')" data-bs-dismiss="modal"><i class="fas fa-file-excel"></i> Excel</button>
+        </div>
+
+        <button class="btn text-white rounded-3 w-100 fw-semibold mt-2" style="background:var(--gradient-primary);"
+                onclick="showToast('Statement generated and downloading...','success')" data-bs-dismiss="modal">
+          <i class="fas fa-download me-1"></i> Generate
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Open account modal -->
+<div class="modal fade" id="openAccountModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <div>
+          <h5 class="modal-title fw-bold"><i class="fas fa-plus me-2" style="color:var(--primary);"></i>Open New Savings Account</h5>
+          <p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">Choose a product configured by your SACCO admin.</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4 pt-3">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="sp-card clickable p-3" onclick="selectNewProduct('Emergency Fund','8% p.a. • Min 500/mo','emergency')">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:44px;height:44px;border-radius:14px;background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.18);display:flex;align-items:center;justify-content:center;color:#E53935;">
+                  <i class="fas fa-fire"></i>
+                </div>
+                <div>
+                  <div class="fw-bold" style="font-size:14px;">Emergency Fund</div>
+                  <div style="font-size:11px;color:var(--text-muted);">8% p.a. • Flexible</div>
+                </div>
+              </div>
+              <div class="soft-divider my-2"></div>
+              <div style="font-size:12px;color:var(--text-secondary);">Min deposit: <strong>KES 500/month</strong></div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="sp-card clickable p-3" onclick="selectNewProduct('Junior Savings','6% p.a. • Child account','junior')">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:44px;height:44px;border-radius:14px;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.20);display:flex;align-items:center;justify-content:center;color:#00C853;">
+                  <i class="fas fa-seedling"></i>
+                </div>
+                <div>
+                  <div class="fw-bold" style="font-size:14px;">Junior Savings</div>
+                  <div style="font-size:11px;color:var(--text-muted);">6% p.a. • Locked</div>
+                </div>
+              </div>
+              <div class="soft-divider my-2"></div>
+              <div style="font-size:12px;color:var(--text-secondary);">Great for education planning.</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="sp-card clickable p-3" onclick="selectNewProduct('Home Ownership','9% p.a. • 24 months lock','home')">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:44px;height:44px;border-radius:14px;background:var(--primary-subtle);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);">
+                  <i class="fas fa-home"></i>
+                </div>
+                <div>
+                  <div class="fw-bold" style="font-size:14px;">Home Ownership</div>
+                  <div style="font-size:11px;color:var(--text-muted);">9% p.a. • Locked</div>
+                </div>
+              </div>
+              <div class="soft-divider my-2"></div>
+              <div style="font-size:12px;color:var(--text-secondary);">Min deposit: <strong>KES 3,000/month</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-4 mt-3" style="background:var(--bg-input);">
+          <div class="fw-semibold" style="font-size:13px;">Selected Product</div>
+          <div style="font-size:12px;color:var(--text-muted);" id="selectedProductText">Select a product above to proceed.</div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-0">
+        <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);"
+                onclick="submitOpenAccount()">
+          <i class="fas fa-check me-1"></i> Submit Request
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Account compare -->
+<div class="modal fade" id="accountCompareModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-sliders-h me-2" style="color:var(--primary);"></i>Account Comparison</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">
+                <th>Account</th><th>Rate</th><th>Liquidity</th><th>Min Monthly</th><th>Best Use</th><th></th>
+              </tr>
+            </thead>
+            <tbody style="font-size:13px;">
+              <tr>
+                <td class="fw-semibold">Ordinary Savings</td>
+                <td><span class="sp-badge" style="background:var(--primary-subtle);color:var(--primary);border:1px solid var(--primary-border);">7% p.a.</span></td>
+                <td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);">High</span></td>
+                <td style="font-family:var(--font-mono);">KES 5,000</td>
+                <td>General savings + Loan eligibility</td>
+                <td class="text-end">
+                  <button class="btn btn-sm text-white rounded-3" style="background:var(--primary);"
+                          data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                          onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+                    Deposit
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Fixed Deposit</td>
+                <td><span class="sp-badge" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);">10% p.a.</span></td>
+                <td><span class="sp-badge" style="background:rgba(249,168,37,0.08);color:#F9A825;border:1px solid rgba(249,168,37,0.18);">Low</span></td>
+                <td style="font-family:var(--font-mono);">KES 0</td>
+                <td>Long-term growth</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-dismiss="modal" onclick="openFixedDepositManage()">Manage</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Holiday Savings</td>
+                <td><span class="sp-badge" style="background:rgba(171,0,217,0.06);color:#AB00D9;border:1px solid rgba(171,0,217,0.18);">5% p.a.</span></td>
+                <td><span class="sp-badge" style="background:rgba(249,168,37,0.08);color:#F9A825;border:1px solid rgba(249,168,37,0.18);">Seasonal</span></td>
+                <td style="font-family:var(--font-mono);">KES 1,000</td>
+                <td>Holiday budget</td>
+                <td class="text-end">
+                  <button class="btn btn-sm text-white rounded-3" style="background:var(--primary);" data-bs-dismiss="modal" onclick="openHolidayRules()">Rules</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Education Fund</td>
+                <td><span class="sp-badge" style="background:rgba(249,168,37,0.10);color:#F9A825;border:1px solid rgba(249,168,37,0.18);">6% p.a.</span></td>
+                <td><span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);">Medium</span></td>
+                <td style="font-family:var(--font-mono);">KES 500</td>
+                <td>School fees planning</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-dismiss="modal" onclick="openEducationPlan()">Plan</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rounded-4 p-3" style="background:var(--bg-input);font-size:12px;color:var(--text-muted);">
+          Tip: If your goal is loan eligibility, prioritize Ordinary Savings and maintain consistent monthly deposits.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loan Eligibility modal -->
+<div class="modal fade" id="loanEligibilityModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#0288D1;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-hand-holding-usd me-2" style="color:#0288D1;"></i>Loan Eligibility</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="text-center p-3 rounded-4 mb-3" style="background:var(--bg-input);">
+          <div style="font-size:12px;color:var(--text-muted);">Maximum Borrowable</div>
+          <div style="font-size:28px;font-weight:800;font-family:var(--font-mono);color:#0288D1;">KES 476,250</div>
+          <span class="sp-badge mt-2" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);">
+            <i class="fas fa-check-circle"></i> Eligible
+          </span>
+        </div>
+
+        <div class="p-3 rounded-4" style="background:rgba(2,136,209,0.06);border:1px solid rgba(2,136,209,0.18);">
+          <div class="fw-semibold mb-2" style="color:#0288D1;font-size:13px;">Calculation</div>
+          <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--text-muted);">Savings</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 158,750</span></div>
+          <div class="d-flex justify-content-between mt-1" style="font-size:12px;"><span style="color:var(--text-muted);">Multiplier</span><span class="fw-bold">3×</span></div>
+          <div class="soft-divider my-2"></div>
+          <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--text-muted);">Gross limit</span><span class="fw-bold" style="font-family:var(--font-mono);color:#0288D1;">KES 476,250</span></div>
+
+          <div class="soft-divider my-2"></div>
+          <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--text-muted);">Outstanding loans</span><span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;">- KES 103,500</span></div>
+          <div class="d-flex justify-content-between mt-1" style="font-size:12px;"><span style="color:var(--text-muted);">Net available</span><span class="fw-bold" style="font-family:var(--font-mono);color:#00C853;">KES 372,750</span></div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <a href="loan-apply.html" class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--primary);"><i class="fas fa-file-invoice-dollar me-1"></i> Apply</a>
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Boost savings to increase eligibility. Every +KES 1,000 = +KES 3,000 limit.','info')">Tip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Month detail modal -->
+<div class="modal fade" id="monthDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-calendar-check me-2" style="color:var(--primary);"></i><span id="monthTitle">Month</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="text-center p-3 rounded-4 mb-3" style="background:var(--bg-input);">
+          <div style="font-size:12px;color:var(--text-muted);">Deposited</div>
+          <div style="font-size:28px;font-weight:800;font-family:var(--font-mono);color:var(--primary);" id="monthAmount">KES 0</div>
+          <div style="font-size:12px;color:var(--text-muted);" id="monthStatus">Status</div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Close</button>
+          <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--primary);"
+                  data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                  onclick="prepDepositFromContext('Ordinary Savings (SAV-001) — Bal: KES 98,750','ordinary')">
+            Deposit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Txn detail modal -->
+<div class="modal fade" id="txnDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-receipt me-2" style="color:var(--primary);"></i>Transaction Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div class="text-center mb-3">
+          <div id="txnBadge" class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"></div>
+          <div class="fw-bold mt-2" style="font-size:26px;font-family:var(--font-mono);" id="txnAmount">KES 0</div>
+          <div style="font-size:12px;color:var(--text-muted);" id="txnMeta">—</div>
+        </div>
+
+        <div class="rounded-4 overflow-hidden" style="background:var(--bg-input);">
+          <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;">
+            <span style="color:var(--text-muted);">Reference</span>
+            <span class="fw-semibold" style="font-family:var(--font-mono);color:var(--primary);" id="txnRef">—</span>
+          </div>
+          <div class="d-flex justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;font-size:13px;">
+            <span style="color:var(--text-muted);">Account</span>
+            <span id="txnAccount">—</span>
+          </div>
+          <div class="d-flex justify-content-between p-3" style="font-size:13px;">
+            <span style="color:var(--text-muted);">Status</span>
+            <span class="fw-semibold" id="txnStatus">—</span>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Receipt downloaded','success')"><i class="fas fa-download me-1"></i>Receipt</button>
+          <button class="btn btn-outline-warning rounded-3 flex-fill" onclick="showToast('Reported to support. Ticket: TKT-2025-0104','info')" data-bs-dismiss="modal"><i class="fas fa-flag me-1"></i>Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fixed deposit manage modal -->
+<div class="modal fade" id="fixedManageModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#0288D1;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <div>
+          <h5 class="modal-title fw-bold"><i class="fas fa-vault me-2" style="color:#0288D1;"></i>Fixed Deposit Management</h5>
+          <p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">Top up, view projected returns or request early break (penalty applies).</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4 pt-3">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="sp-card p-3">
+              <div class="fw-semibold" style="font-size:13px;"><i class="fas fa-chart-line me-2" style="color:#0288D1;"></i>Projected Returns</div>
+              <div class="soft-divider my-2"></div>
+              <div style="font-size:12px;color:var(--text-muted);">At maturity (Jul 15, 2025)</div>
+              <div style="font-size:26px;font-weight:800;font-family:var(--font-mono);color:#00C853;">KES 44,000</div>
+              <div style="font-size:12px;color:var(--text-muted);">Principal 40,000 + Interest 4,000</div>
+              <button class="btn btn-sm btn-outline-secondary rounded-3 mt-3 w-100" onclick="showToast('PDF projection downloaded','success')"><i class="fas fa-download me-1"></i> Download Projection</button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="sp-card p-3">
+              <div class="fw-semibold" style="font-size:13px;"><i class="fas fa-plus-circle me-2" style="color:var(--primary);"></i>Top Up Deposit</div>
+              <div class="soft-divider my-2"></div>
+              <label class="form-label fw-semibold" style="font-size:12px;">Top Up Amount</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text fw-bold" style="background:var(--bg-input);border-radius:12px 0 0 12px;">KES</span>
+                <input type="number" class="form-control" style="border-radius:0 12px 12px 0;font-family:var(--font-mono);" id="fdTopupAmt" placeholder="5000">
+              </div>
+              <button class="btn btn-sm text-white rounded-3 w-100 fw-semibold" style="background:var(--gradient-primary);"
+                      data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                      onclick="prepDepositFromContext('Fixed Deposit (FD-001) — Bal: KES 40,000','fixed');setTimeout(()=>{document.getElementById('depositAmountInput').value=document.getElementById('fdTopupAmt').value||5000;updateMethodPreview();},350);">
+                <i class="fas fa-bolt me-1"></i> Pay Top Up (Auto)
+              </button>
+
+              <div class="soft-divider my-3"></div>
+              <button class="btn btn-sm btn-outline-danger rounded-3 w-100" onclick="showToast('Early break request initiated. Penalty summary will be shown next.','warning');openEarlyBreakFlow();">
+                <i class="fas fa-unlock me-1"></i> Request Early Break
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-0">
+        <button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Early break modal -->
+<div class="modal fade" id="earlyBreakModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:#E53935;"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-exclamation-triangle me-2" style="color:#E53935;"></i>Early Break — Penalty</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div class="alert border-0" style="background:rgba(229,57,53,0.06);color:#E53935;border-radius:12px;">
+          <div style="font-size:12px;"><strong>Penalty:</strong> 30% of earned interest will be deducted if you break before maturity.</div>
+        </div>
+
+        <div class="rounded-4 p-3" style="background:var(--bg-input);">
+          <div class="d-flex justify-content-between" style="font-size:12px;">
+            <span style="color:var(--text-muted);">Principal</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 40,000</span>
+          </div>
+          <div class="d-flex justify-content-between mt-1" style="font-size:12px;">
+            <span style="color:var(--text-muted);">Interest earned</span><span class="fw-bold" style="font-family:var(--font-mono);color:#00C853;">KES 1,200</span>
+          </div>
+          <div class="d-flex justify-content-between mt-1" style="font-size:12px;">
+            <span style="color:#E53935;">Penalty (30%)</span><span class="fw-bold" style="font-family:var(--font-mono);color:#E53935;">- KES 360</span>
+          </div>
+          <div class="soft-divider my-2"></div>
+          <div class="d-flex justify-content-between" style="font-size:13px;">
+            <span class="fw-bold" style="color:#00C853;">You receive</span><span class="fw-bold" style="font-family:var(--font-mono);color:#00C853;">KES 40,840</span>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Reason <span class="text-danger">*</span></label>
+          <textarea class="form-control" rows="2" style="border-radius:12px;" placeholder="Explain why you need early break..."></textarea>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger rounded-3 flex-fill fw-semibold" data-bs-dismiss="modal"
+                  onclick="showToast('Early break request submitted. Processing 3–5 business days.','warning');">
+            Submit Request
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Account detail modal (dynamic) -->
+<div class="modal fade" id="accountDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <div>
+          <h5 class="modal-title fw-bold"><i class="fas fa-wallet me-2" style="color:var(--primary);"></i><span id="acctTitle">Account</span></h5>
+          <p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);" id="acctSub">—</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4 pt-3">
+        <div class="row g-3">
+          <div class="col-md-7">
+            <div class="p-3 rounded-4" style="background:var(--bg-input);">
+              <div class="row g-2" style="font-size:12px;">
+                <div class="col-6"><div style="color:var(--text-muted);">Balance</div><div class="fw-bold" style="font-family:var(--font-mono);" id="acctBalance">—</div></div>
+                <div class="col-6"><div style="color:var(--text-muted);">Available</div><div class="fw-bold" style="font-family:var(--font-mono);color:#00C853;" id="acctAvailable">—</div></div>
+                <div class="col-6"><div style="color:var(--text-muted);">Rate</div><div class="fw-bold" id="acctRate">—</div></div>
+                <div class="col-6"><div style="color:var(--text-muted);">Status</div><div class="fw-bold" id="acctStatus">—</div></div>
+                <div class="col-12"><div style="color:var(--text-muted);">Rules</div><div id="acctRules" style="color:var(--text-secondary);">—</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-5">
+            <div class="sp-card p-3">
+              <div class="fw-semibold" style="font-size:13px;"><i class="fas fa-bolt me-2" style="color:var(--primary);"></i>Quick Actions</div>
+              <div class="soft-divider my-2"></div>
+
+              <button class="btn text-white rounded-3 w-100 fw-semibold mb-2" style="background:var(--gradient-primary);"
+                      data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositMethodModal"
+                      onclick="prepDepositFromDetail()">
+                <i class="fas fa-plus-circle me-1"></i> Deposit (Auto)
+              </button>
+
+              <button class="btn btn-outline-secondary rounded-3 w-100 fw-semibold mb-2"
+                      data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#withdrawModal"
+                      onclick="prepWithdrawFromDetail()">
+                <i class="fas fa-arrow-up me-1"></i> Request Withdrawal
+              </button>
+
+              <button class="btn btn-outline-secondary rounded-3 w-100 fw-semibold"
+                      data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#statementModal">
+                <i class="fas fa-download me-1"></i> Statement
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="soft-divider my-3"></div>
+        <button class="btn btn-outline-secondary rounded-3 w-100" onclick="showToast('Account performance insights loaded','info')">
+          <i class="fas fa-chart-line me-1"></i> View Account Insights
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications modal (compact) -->
+<div class="modal fade" id="notificationsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+      <div class="modal-header border-0 px-4 pt-4 pb-2">
+        <h5 class="modal-title fw-bold"><i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4" style="max-height:350px;overflow:auto;">
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);"
+             onclick="showToast('Deposit confirmed: KES 7,500 credited to Ordinary Savings','success');">
+          <div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#00C853;flex-shrink:0;font-size:12px;">
+            <i class="fas fa-check"></i>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;">Deposit Confirmed</div>
+            <div style="font-size:11px;color:var(--text-muted);">KES 7,500 via STK • 2h ago</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;"
+             onclick="bootstrap.Modal.getInstance(document.getElementById('notificationsModal')).hide();bootstrap.Modal.getOrCreateInstance(document.getElementById('interestModal')).show();">
+          <div style="width:32px;height:32px;background:rgba(2,136,209,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0288D1;flex-shrink:0;font-size:12px;">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;">Interest Credited</div>
+            <div style="font-size:11px;color:var(--text-muted);">KES 350 for Jan • 3d ago</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3 p-2 rounded-3" style="cursor:pointer;"
+             onclick="bootstrap.Modal.getInstance(document.getElementById('notificationsModal')).hide();bootstrap.Modal.getOrCreateInstance(document.getElementById('recurringModal')).show();">
+          <div style="width:32px;height:32px;background:var(--primary-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0;font-size:12px;">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:500;color:var(--text-secondary);">Auto-Deposit Reminder</div>
+            <div style="font-size:11px;color:var(--text-muted);">Next: Mar 25 • KES 5,000</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-0">
+        <a href="notifications.html" class="btn btn-outline-secondary rounded-3 w-100">
+          <i class="fas fa-external-link-alt me-1"></i> All Notifications
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Auto-deposit modal (reused concept) -->
+<div class="modal fade" id="recurringModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+      <div style="height:3px;background:var(--gradient-primary);"></div>
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-robot me-2" style="color:var(--primary);"></i>Auto-Deposit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <div class="alert border-0 mb-3" style="background:var(--primary-subtle);border-radius:12px;">
+          <div class="d-flex align-items-start gap-2" style="font-size:12px;color:var(--primary);">
+            <i class="fas fa-sparkles mt-1"></i>
+            <div>Enable automated monthly STK prompt. Your phone receives a prompt on schedule; you approve with PIN.</div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Amount</label>
+            <div class="input-group">
+              <span class="input-group-text fw-bold" style="background:var(--bg-input);border-radius:12px 0 0 12px;">KES</span>
+              <input type="number" class="form-control" style="border-radius:0 12px 12px 0;font-family:var(--font-mono);" value="5000">
+            </div>
+          </div>
+          <div class="col-6">
+            <label class="form-label fw-semibold" style="font-size:13px;">Day</label>
+            <select class="form-select" style="border-radius:12px;">
+              <option>5th</option><option>10th</option><option>15th</option><option selected>25th</option><option>Last day</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold" style="font-size:13px;">Deposit To</label>
+            <select class="form-select" style="border-radius:12px;">
+              <option selected>Ordinary Savings</option>
+              <option>Holiday Savings</option>
+              <option>Education Fund</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold" style="font-size:13px;">Phone</label>
+            <div class="phone-input-group">
+              <span class="flag">🇰🇪</span><span class="prefix">+254</span>
+              <input type="tel" class="form-control" style="border-radius:14px;" value="712345890">
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-danger rounded-3 btn-sm" onclick="showToast('Auto-deposit disabled','warning')" data-bs-dismiss="modal"><i class="fas fa-pause me-1"></i> Disable</button>
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="showToast('Auto-deposit saved! Next: Mar 25, 2025','success')">
+            <i class="fas fa-save me-1"></i> Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout -->
+<div class="modal fade" id="logoutModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:20px;">
+      <div class="modal-body p-4 text-center">
+        <div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#E53935;font-size:24px;">
+          <i class="fas fa-sign-out-alt"></i>
+        </div>
+        <h5 class="fw-bold">Logout?</h5>
+        <p style="font-size:13px;color:var(--text-muted);">Are you sure you want to log out?</p>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Stay</button>
+          <a href="login.html" class="btn btn-danger rounded-3 flex-fill"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="sp-toast-container" id="toastContainer"></div>
+
+
+<!-- ========================================================= -->
+<!-- SCRIPTS -->
+<!-- ========================================================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+/* ===========================
+   Reused utilities (from deposits bootstrap version)
+   =========================== */
+
+function showToast(msg,type='info'){
+  const c=document.getElementById('toastContainer');
+  const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};
+  const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#FF6B00'};
+  const t=document.createElement('div');
+  t.className=`sp-toast ${type}`;
+  t.innerHTML=`
+    <i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div>
+      <div style="font-size:11px;color:var(--text-muted);">${msg}</div>
+    </div>
+    <button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},5000);
+}
+
+function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('show');document.getElementById('sidebarBackdrop').classList.remove('show');}
+
+/* ===========================
+   Deposit automation flow
+   =========================== */
+let selectedMethod = 'mpesa';
+let depositContext = { accountLabel: 'Ordinary Savings', accountKey: 'ordinary' };
+
+function selectDepositMethod(el, method) {
+  document.querySelectorAll('.pay-method').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedMethod = method;
+}
+
+function setAmt(a) {
+  document.getElementById('depositAmountInput').value = a;
+  updateMethodPreview();
+}
+
+function updateMethodPreview() {
+  const a = document.getElementById('depositAmountInput').value || 0;
+  const pretty = 'KES ' + Number(a).toLocaleString();
+  const ids = ['stkAmountDisplay','cardAmountDisplay','cardPayBtnAmount'];
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = pretty; });
+}
+
+function prepDepositFromContext(label, key) {
+  depositContext.accountLabel = label;
+  depositContext.accountKey = key;
+  const sel = document.getElementById('depositToAccount');
+  // try to set selection if exists
+  if (sel) {
+    const option = Array.from(sel.options).find(o => o.value === key);
+    if(option) sel.value = key;
+  }
+}
+
+function openDepositFlow(){
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('depositMethodModal')).show();
+}
+
+function proceedToPayment() {
+  const amt = Number(document.getElementById('depositAmountInput').value || 0);
+  if(!amt || amt <= 0) { showToast('Please enter a valid amount','warning'); return; }
+
+  const acctSel = document.getElementById('depositToAccount');
+  const acctText = acctSel.options[acctSel.selectedIndex].text.split('—')[0].trim();
+
+  bootstrap.Modal.getInstance(document.getElementById('depositMethodModal')).hide();
+
+  updateMethodPreview();
+  document.getElementById('stkAccountDisplay').textContent = 'to ' + acctText;
+
+  setTimeout(() => {
+    if(selectedMethod === 'mpesa' || selectedMethod === 'airtel') {
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('mpesaStkModal')).show();
+    } else if(selectedMethod === 'card') {
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('cardPayModal')).show();
+    } else if(selectedMethod === 'bank') {
+      document.getElementById('bankAmountInput').value = amt;
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('bankTransferModal')).show();
+    }
+  }, 350);
+}
+
+/* STK flow (simulated) */
+let stkTimer;
+function initiateSTKPush() {
+  const phone = document.getElementById('stkPhoneInput').value;
+  if(!phone || phone.length < 9) { showToast('Enter a valid phone number','warning'); return; }
+
+  document.getElementById('stkPhase1').style.display='none';
+  document.getElementById('stkPhase2').style.display='block';
+  document.getElementById('stkPhase3').style.display='none';
+
+  showToast('STK prompt sent. Approve on your phone.','success');
+
+  let countdown = 60;
+  document.getElementById('stkCountdown').textContent = countdown;
+
+  clearInterval(stkTimer);
+  stkTimer = setInterval(() => {
+    countdown--;
+    document.getElementById('stkCountdown').textContent = countdown;
+    if(countdown <= 0) { clearInterval(stkTimer); showToast('STK timed out. Try again.','warning'); resetSTK(); }
+  }, 1000);
+
+  // simulate success after 5 seconds
+  setTimeout(() => {
+    clearInterval(stkTimer);
+    const amt = Number(document.getElementById('depositAmountInput').value || 0);
+    document.getElementById('stkPhase2').style.display='none';
+    document.getElementById('stkPhase3').style.display='block';
+
+    document.getElementById('stkSuccessAmount').textContent = 'KES ' + amt.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+    document.getElementById('stkSuccessAccount').textContent = 'Credited to ' + document.getElementById('depositToAccount').options[document.getElementById('depositToAccount').selectedIndex].text.split('—')[0].trim();
+    document.getElementById('stkRef').textContent = 'DEP-2025-00' + Math.floor(Math.random()*900+100);
+    document.getElementById('stkChannel').textContent = (selectedMethod === 'airtel') ? 'Airtel STK' : 'M-Pesa STK';
+    document.getElementById('stkNewBal').textContent = 'KES ' + (98750 + amt).toLocaleString();
+
+    showToast('Deposit confirmed automatically!','success');
+  }, 5000);
+}
+
+function resetSTK() {
+  clearInterval(stkTimer);
+  document.getElementById('stkPhase1').style.display='block';
+  document.getElementById('stkPhase2').style.display='none';
+  document.getElementById('stkPhase3').style.display='none';
+  document.getElementById('stkCountdown').textContent='60';
+
+  const circle = document.getElementById('stkTimerCircle');
+  if(circle){
+    circle.style.animation='none';
+    setTimeout(()=> circle.style.animation='countDown 60s linear forwards', 10);
+  }
+}
+
+/* Card flow (simulated) */
+function formatCardNumber(el) {
+  let v = el.value.replace(/\s/g,'').replace(/\D/g,'');
+  v = v.match(/.{1,4}/g)?.join(' ') || v;
+  el.value = v;
+  document.getElementById('cardNumberDisplay').textContent = v || '•••• •••• •••• ••••';
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'');
+  if(v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+  el.value = v;
+  document.getElementById('cardExpiryDisplay').textContent = v || 'MM/YY';
+}
+function processCardPayment() {
+  document.getElementById('cardPhase1').style.display='none';
+  document.getElementById('cardPhase2').style.display='block';
+  document.getElementById('cardPhase3').style.display='none';
+
+  setTimeout(() => {
+    const amt = Number(document.getElementById('depositAmountInput').value || 0);
+    document.getElementById('cardPhase2').style.display='none';
+    document.getElementById('cardPhase3').style.display='block';
+    document.getElementById('cardSuccessAmount').textContent = 'KES ' + amt.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+    document.getElementById('cardSuccessAccount').textContent = 'Credited to ' + document.getElementById('depositToAccount').options[document.getElementById('depositToAccount').selectedIndex].text.split('—')[0].trim();
+    showToast('Card payment successful!','success');
+  }, 2800);
+}
+function resetCard(){
+  document.getElementById('cardPhase1').style.display='block';
+  document.getElementById('cardPhase2').style.display='none';
+  document.getElementById('cardPhase3').style.display='none';
+}
+
+/* Bank */
+function copyBankDetails() {
+  const details = 'Bank: Co-operative Bank\nAccount: 01100287654321\nName: SaccoPay SACCO Ltd\nRef: MEM-2024-0045';
+  navigator.clipboard.writeText(details).then(()=>showToast('Bank details copied!','success')).catch(()=>showToast(details,'info'));
+}
+function submitBankTransfer() {
+  const amt = Number(document.getElementById('bankAmountInput').value || 0);
+  if(!amt) { showToast('Enter the transferred amount','warning'); return; }
+  showToast('Bank transfer notification sent. Verification within 24h. Ref: DEP-2025-00'+Math.floor(Math.random()*900+100),'success');
+  bootstrap.Modal.getInstance(document.getElementById('bankTransferModal')).hide();
+}
+
+/* ===========================
+   Withdraw flow
+   =========================== */
+let withdrawMethod = 'mpesa';
+function selectWithdrawMethod(el, method){
+  document.querySelectorAll('#withdrawModal .pay-method').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  withdrawMethod = method;
+}
+function submitWithdrawalRequest(){
+  const amt = Number(document.getElementById('withdrawAmount').value || 0);
+  const reason = document.getElementById('withdrawReason').value;
+  if(!amt || amt < 1000){ showToast('Withdrawal amount must be at least KES 1,000','warning'); return; }
+  if(!reason){ showToast('Please select a reason','warning'); return; }
+  const acct = document.getElementById('withdrawFrom').options[document.getElementById('withdrawFrom').selectedIndex].text;
+  showToast(`Withdrawal request submitted: ${acct} • KES ${amt.toLocaleString()} • via ${withdrawMethod.toUpperCase()} • Ref: WDR-2025-00${Math.floor(Math.random()*900+100)}`,'success');
+  bootstrap.Modal.getInstance(document.getElementById('withdrawModal')).hide();
+}
+
+/* ===========================
+   Account details dynamic
+   =========================== */
+let currentAccountKey = 'ordinary';
+function openAccountDetail(key){
+  currentAccountKey = key;
+
+  const map = {
+    ordinary: { title:'Ordinary Savings', sub:'SAV-001-ORD • Min KES 5,000/mo • Notice 14 days', balance:'KES 98,750', available:'KES 73,750', rate:'7% p.a.', status:'Active', rules:'Compound monthly interest • Loan multiplier 3× • Min balance KES 1,000' },
+    fixed: { title:'Fixed Deposit', sub:'FD-001-FXD • Locked until maturity • Penalty on early break', balance:'KES 40,000', available:'KES 0 (locked)', rate:'10% p.a.', status:'Locked', rules:'Maturity Jul 15, 2025 • Early break penalty 30% of earned interest' },
+    holiday: { title:'Holiday Savings', sub:'HS-001-HOL • Withdrawals only in Nov–Dec window', balance:'KES 15,000', available:'KES 0 (seasonal lock)', rate:'5% p.a.', status:'Seasonal lock', rules:'Withdrawal window Nov 1 – Dec 31 • Deposits anytime' },
+    education: { title:'Education Fund', sub:'ED-001-EDU • Plan school fees and track terms', balance:'KES 5,000', available:'KES 5,000', rate:'6% p.a.', status:'Active', rules:'Flexible withdrawals • Recommended monthly deposit KES 500+' }
+  };
+
+  const d = map[key] || map.ordinary;
+  document.getElementById('acctTitle').textContent = d.title;
+  document.getElementById('acctSub').textContent = d.sub;
+  document.getElementById('acctBalance').textContent = d.balance;
+  document.getElementById('acctAvailable').textContent = d.available;
+  document.getElementById('acctRate').textContent = d.rate;
+  document.getElementById('acctStatus').textContent = d.status;
+  document.getElementById('acctRules').textContent = d.rules;
+
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('accountDetailModal')).show();
+}
+
+function prepDepositFromDetail(){
+  const acctSel = document.getElementById('depositToAccount');
+  if(acctSel){
+    acctSel.value = currentAccountKey;
+  }
+  document.getElementById('depositAmountInput').value = '';
+  updateMethodPreview();
+}
+function prepWithdrawFromDetail(){
+  const wd = document.getElementById('withdrawFrom');
+  if(wd){
+    if(currentAccountKey === 'holiday' || currentAccountKey === 'fixed'){
+      showToast('This account is locked for withdrawals. Choose Ordinary or Education.','warning');
+      wd.value = 'ordinary';
+    } else {
+      wd.value = currentAccountKey;
+    }
+  }
+}
+
+/* quick open functions */
+function openWithdrawFlow(){ bootstrap.Modal.getOrCreateInstance(document.getElementById('withdrawModal')).show(); }
+function prepWithdrawFromContext(key){ currentAccountKey = key; }
+function openFixedDepositManage(){ bootstrap.Modal.getOrCreateInstance(document.getElementById('fixedManageModal')).show(); }
+function openEarlyBreakFlow(){ bootstrap.Modal.getOrCreateInstance(document.getElementById('earlyBreakModal')).show(); }
+
+function openHolidayRules(){
+  showToast('Holiday withdrawals available only in Nov–Dec window','info');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('rulesModal')).show();
+}
+function openEducationPlan(){
+  showToast('Education plan module opens next. (Next page: Education planner)','info');
+  // Follow-up action (no dead end): go to profile or support as placeholder
+  window.location.href = 'savings.html#'; // you can replace with future education-plan page
+}
+
+/* Goal save */
+function saveGoal(){
+  const t = Number(document.getElementById('goalTarget').value||0);
+  const d = document.getElementById('goalDate').value;
+  if(!t || t < 1000){ showToast('Enter a valid target','warning'); return; }
+  showToast(`Goal updated: KES ${t.toLocaleString()} • Target date: ${d}`,'success');
+  bootstrap.Modal.getInstance(document.getElementById('goalModal')).hide();
+}
+
+/* Month detail */
+function openMonthDetail(title, amount, status){
+  document.getElementById('monthTitle').textContent = title;
+  document.getElementById('monthAmount').textContent = 'KES ' + Number(amount).toLocaleString();
+  document.getElementById('monthStatus').textContent = status === 'Due'
+    ? 'Due — deposit to meet minimum'
+    : (status === 'Exceeded' ? 'Exceeded minimum requirement' : 'Requirement met');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('monthDetailModal')).show();
+}
+
+/* Txn filter + detail */
+function filterTxns(){
+  const acct = document.getElementById('txnAccountFilter').value;
+  const type = document.getElementById('txnTypeFilter').value;
+  let shown = 0;
+  document.querySelectorAll('#txnBody tr').forEach(row=>{
+    const ra = row.getAttribute('data-account');
+    const rt = row.getAttribute('data-type');
+    const ok = (acct==='all'||ra===acct) && (type==='all'||rt===type);
+    row.style.display = ok ? '' : 'none';
+    if(ok) shown++;
+  });
+  showToast(`Showing ${shown} transactions`,'info');
+}
+
+function openTxnDetail(ref, type, account, amount, status){
+  const badge = document.getElementById('txnBadge');
+  const isDeposit = type==='deposit';
+  const isWithdrawal = type==='withdrawal';
+  const isInterest = type==='interest';
+
+  let bg='rgba(0,200,83,0.08)', col='#00C853', br='rgba(0,200,83,0.2)', icon='fa-check';
+  if(isWithdrawal){ bg='rgba(229,57,53,0.06)'; col='#E53935'; br='rgba(229,57,53,0.18)'; icon='fa-arrow-up'; }
+  if(isInterest){ bg='rgba(2,136,209,0.06)'; col='#0288D1'; br='rgba(2,136,209,0.18)'; icon='fa-percentage'; }
+
+  badge.style.background = bg;
+  badge.style.color = col;
+  badge.style.border = '1px solid ' + br;
+  badge.innerHTML = `<i class="fas ${icon}"></i> ${type.toUpperCase()}`;
+
+  document.getElementById('txnRef').textContent = ref;
+  document.getElementById('txnAmount').textContent = amount;
+  document.getElementById('txnMeta').textContent = account + ' • ' + new Date().toLocaleString();
+  document.getElementById('txnAccount').textContent = account;
+  document.getElementById('txnStatus').textContent = status;
+
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('txnDetailModal')).show();
+}
+
+/* Growth range */
+function setGrowthRange(btn, range){
+  const grp = btn.parentElement;
+  grp.querySelectorAll('.btn').forEach(b=>{
+    b.classList.remove('text-white');
+    b.style.background='';
+    b.classList.add('btn-outline-secondary');
+  });
+  btn.classList.remove('btn-outline-secondary');
+  btn.classList.add('text-white');
+  btn.style.background='var(--primary)';
+  showToast('Growth chart updated: '+range,'info');
+}
+
+/* Open account product */
+let selectedProduct = null;
+function selectNewProduct(name, desc, key){
+  selectedProduct = {name, desc, key};
+  document.getElementById('selectedProductText').innerHTML =
+    `<strong style="color:var(--text-primary);">${name}</strong> — <span style="color:var(--text-muted);">${desc}</span>`;
+  showToast(`Selected: ${name}`,'info');
+}
+function submitOpenAccount(){
+  if(!selectedProduct){
+    showToast('Select a savings product first','warning');
+    return;
+  }
+  showToast(`Account opening request submitted for ${selectedProduct.name}. Activation within 24h.`,'success');
+  bootstrap.Modal.getInstance(document.getElementById('openAccountModal')).hide();
+}
+
+/* Helper quick calls from buttons */
+function prepDepositFromContext(label,key){ // override defined earlier to ensure exists
+  depositContext.accountLabel = label;
+  depositContext.accountKey = key;
+  const sel = document.getElementById('depositToAccount');
+  if(sel){
+    const option = Array.from(sel.options).find(o => o.value === key);
+    if(option) sel.value = key;
+  }
+}
+function openDepositFlow(){ bootstrap.Modal.getOrCreateInstance(document.getElementById('depositMethodModal')).show(); }
+
+/* Chart.js: Growth */
+const gctx = document.getElementById('growthChart');
+if(gctx){
+  new Chart(gctx.getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'],
+      datasets:[
+        {
+          label:'Total Savings',
+          data:[45000,52000,60000,68000,76000,84000,95000,108000,120000,135000,148000,158750],
+          borderColor:'#FF6B00',
+          backgroundColor:'rgba(255,107,0,0.08)',
+          borderWidth:2.5,
+          fill:true,
+          tension:0.35,
+          pointRadius:0,
+          pointHoverRadius:5
+        },
+        {
+          label:'Deposits',
+          data:[5000,7000,8000,8000,8000,8000,11000,13000,12000,15000,13000,12500],
+          borderColor:'#00C853',
+          borderWidth:2,
+          fill:false,
+          tension:0.35,
+          pointRadius:0,
+          borderDash:[5,3]
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.5)',font:{size:11},usePointStyle:true,boxWidth:12,boxHeight:2,padding:16}},
+        tooltip:{
+          backgroundColor:'rgba(255,255,255,0.97)',
+          titleColor:'#FF6B00',
+          bodyColor:'#1A1D2E',
+          borderColor:'rgba(255,107,0,0.2)',
+          borderWidth:1,
+          padding:12,
+          cornerRadius:10,
+          callbacks:{label:(c)=>`${c.dataset.label}: KES ${c.raw.toLocaleString()}`}
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.45)',font:{size:11}}},
+        y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.45)',font:{size:11},callback:(v)=>`KES ${(v/1000)}K`},beginAtZero:true}
+      }
+    }
+  });
+}
+
+/* Init */
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => showToast('Savings loaded. Deposit instantly via STK Push/Card/Bank.', 'primary'), 800);
+});
+</script>
+
+</body>
+</html>
+```

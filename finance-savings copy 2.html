@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Savings — SaccoPay Member</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --primary-light: #FF8C38;
+            --primary-dark: #CC5500;
+            --primary-subtle: rgba(255,107,0,0.06);
+            --primary-border: rgba(255,107,0,0.20);
+            --bg-base: #F5F6FA;
+            --bg-card: #FFFFFF;
+            --bg-input: #F0F2F8;
+            --text-primary: #1A1D2E;
+            --text-secondary: rgba(26,29,46,0.72);
+            --text-muted: rgba(26,29,46,0.50);
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-orange: 0 4px 16px rgba(255,107,0,0.18);
+            --gradient-primary: linear-gradient(135deg, #FF6B00 0%, #FF8C38 50%, #FFAA00 100%);
+            --sidebar-width: 260px;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-base); color: var(--text-primary); }
+
+        /* Sidebar */
+        .sp-sidebar { width: var(--sidebar-width); min-height: 100vh; background: #fff; border-right: 1px solid rgba(26,29,46,0.08); position: fixed; top: 0; left: 0; z-index: 1040; transition: transform 0.3s; overflow-y: auto; box-shadow: 2px 0 8px rgba(0,0,0,0.03); }
+        .sp-sidebar .brand-logo { width: 36px; height: 36px; background: var(--gradient-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #fff; box-shadow: var(--shadow-orange); }
+        .sp-sidebar .nav-link { color: var(--text-muted); font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 0; position: relative; transition: all 0.15s; }
+        .sp-sidebar .nav-link:hover { color: var(--text-primary); background: rgba(255,107,0,0.04); }
+        .sp-sidebar .nav-link.active { color: var(--primary); background: linear-gradient(90deg, rgba(255,107,0,0.08) 0%, rgba(255,107,0,0.02) 100%); font-weight: 600; }
+        .sp-sidebar .nav-link.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gradient-primary); border-radius: 0 3px 3px 0; }
+        .sp-sidebar .nav-icon { width: 20px; text-align: center; margin-right: 10px; font-size: 15px; }
+        .sp-sidebar .section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(26,29,46,0.30); padding: 12px 20px 6px; }
+        .sp-sidebar .member-badge { padding: 12px 20px; border-bottom: 1px solid rgba(26,29,46,0.06); }
+        .sp-sidebar .nav-badge { background: var(--primary); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 50px; min-width: 18px; text-align: center; box-shadow: 0 2px 6px rgba(255,107,0,0.3); }
+
+        /* Main Content */
+        .sp-main { margin-left: var(--sidebar-width); min-height: 100vh; transition: margin-left 0.3s; }
+
+        /* Topbar */
+        .sp-topbar { height: 64px; background: rgba(255,255,255,0.92); border-bottom: 1px solid rgba(26,29,46,0.06); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1030; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .sp-topbar::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,107,0,0.15) 30%, rgba(255,107,0,0.25) 50%, rgba(255,107,0,0.15) 70%, transparent); }
+        .topbar-btn { width: 36px; height: 36px; background: #fff; border: 1px solid rgba(26,29,46,0.08); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.15s; position: relative; cursor: pointer; }
+        .topbar-btn:hover { background: var(--primary-subtle); border-color: var(--primary-border); color: var(--primary); }
+        .topbar-btn .badge-dot { position: absolute; top: -2px; right: -2px; width: 16px; height: 16px; background: var(--primary); color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.92); }
+
+        /* Cards */
+        .sp-card { background: #fff; border: 1px solid rgba(26,29,46,0.06); border-radius: 16px; box-shadow: var(--shadow-sm); transition: all 0.25s; overflow: hidden; }
+        .sp-card:hover { box-shadow: var(--shadow-md); border-color: rgba(26,29,46,0.10); }
+        .sp-card.clickable { cursor: pointer; }
+        .sp-card.clickable:hover { transform: translateY(-2px); }
+
+        /* Stat Cards */
+        .stat-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .stat-value { font-size: 24px; font-weight: 800; font-family: var(--font-mono); letter-spacing: -0.03em; line-height: 1; }
+
+        /* Hero Wealth Card */
+        .hero-wealth { background: var(--gradient-primary); border-radius: 20px; position: relative; overflow: hidden; color: #fff; box-shadow: var(--shadow-orange); }
+        .hero-wealth::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+        .hero-wealth::after { content: ''; position: absolute; bottom: -60px; right: 80px; width: 160px; height: 160px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+
+        /* Automated Gateway Selection */
+        .auto-pay-method { border: 2px solid rgba(26,29,46,0.08); border-radius: 14px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center; background: #fff; }
+        .auto-pay-method:hover { border-color: var(--primary-border); background: var(--primary-subtle); }
+        .auto-pay-method.active { border-color: var(--primary); background: var(--primary-subtle); box-shadow: 0 0 0 3px rgba(255,107,0,0.10); }
+        .auto-pay-method .pay-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px; }
+
+        /* Custom Tabs for Savings */
+        .nav-pills-sp .nav-link { color: var(--text-muted); font-weight: 600; font-size: 13px; padding: 8px 16px; border-radius: 10px; margin-right: 4px; transition: all 0.2s; }
+        .nav-pills-sp .nav-link:hover { color: var(--text-primary); background: rgba(26,29,46,0.03); }
+        .nav-pills-sp .nav-link.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(255,107,0,0.25); }
+
+        /* Custom Progress Bars */
+        .sp-progress { height: 6px; border-radius: 50px; background: rgba(26,29,46,0.06); overflow: hidden; }
+        .sp-progress-fill { height: 100%; border-radius: 50px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); position: relative; }
+        .sp-progress-fill.shimmer::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite; }
+
+        /* Custom Badges */
+        .sp-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 600; }
+
+        /* Toast */
+        .sp-toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
+        .sp-toast { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: #fff; border: 1px solid rgba(26,29,46,0.10); border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.10); min-width: 300px; max-width: 420px; animation: slideInRight 0.3s ease; }
+        .sp-toast.success { border-left: 3px solid #00C853; }
+        .sp-toast.warning { border-left: 3px solid #F9A825; }
+        .sp-toast.danger { border-left: 3px solid #E53935; }
+        .sp-toast.info { border-left: 3px solid #0288D1; }
+        .sp-toast.primary { border-left: 3px solid var(--primary); }
+
+        /* Gateway Loaders */
+        .stk-loader { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 40px 20px; }
+        .stk-spinner { width: 60px; height: 60px; border: 4px solid rgba(255,107,0,0.15); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .stk-pulse { animation: stkPulse 2s ease-in-out infinite; }
+
+        /* Automated Inputs */
+        .phone-input-group { position: relative; }
+        .phone-input-group .flag { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 20px; pointer-events: none; }
+        .phone-input-group .prefix { position: absolute; left: 42px; top: 50%; transform: translateY(-50%); font-weight: 600; color: var(--text-muted); font-size: 14px; pointer-events: none; }
+        .phone-input-group input { padding-left: 82px !important; font-family: var(--font-mono); font-size: 16px; letter-spacing: 1px; }
+
+        /* Visual Card Interface */
+        .card-visual { background: linear-gradient(135deg, #1A1D2E 0%, #2D3048 100%); border-radius: 14px; padding: 24px; color: #fff; position: relative; overflow: hidden; }
+        .card-visual::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .card-visual .card-number { font-family: var(--font-mono); font-size: 18px; letter-spacing: 3px; margin: 16px 0; }
+        .card-visual .card-brand { position: absolute; top: 16px; right: 20px; font-size: 28px; }
+
+        /* Animations */
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes stkPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
+        @keyframes countDown { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 283; } }
+        .fade-in-up { animation: fadeInUp 0.4s ease both; }
+
+        /* Responsive */
+        @media (max-width: 991px) { .sp-sidebar { transform: translateX(-100%); z-index: 1050; } .sp-sidebar.show { transform: translateX(0); } .sp-main { margin-left: 0 !important; } .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1045; } .sidebar-backdrop.show { display: block; } }
+        @media (max-width: 575px) { .stat-value { font-size: 20px !important; } .hero-wealth .display-5 { font-size: 2rem !important; } }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(26,29,46,0.12); border-radius: 50px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar Backdrop (mobile) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SIDEBAR -->
+<!-- ═══════════════════════════════════════════════ -->
+<aside class="sp-sidebar" id="sidebar">
+    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important; min-height:64px;">
+        <div class="brand-logo">S</div>
+        <div>
+            <div style="font-size:16px;font-weight:700;color:var(--text-primary);">Sacco<span style="color:var(--primary);">Pay</span></div>
+            <div style="font-size:10px;color:var(--text-muted);letter-spacing:0.04em;">Member Portal</div>
+        </div>
+    </a>
+    <div class="member-badge d-flex align-items-center gap-3">
+        <div style="width:38px;height:38px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div>
+        <div class="flex-grow-1 min-w-0">
+            <div style="font-size:12px;font-weight:600;color:var(--text-primary);" class="text-truncate">John Kamau</div>
+            <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">MEM-2024-0045</div>
+            <div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:#00C853;"><span style="width:5px;height:5px;background:#00C853;border-radius:50%;box-shadow:0 0 6px #00C853;"></span> Active</div>
+        </div>
+    </div>
+    <nav class="py-2">
+        <div class="section-label">Main</div>
+        <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <div class="section-label">Financial</div>
+        <a href="savings.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
+        <a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+        <a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
+        <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <div class="section-label">Loans</div>
+        <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
+        <a href="loan-apply.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span> Apply for Loan</a>
+        <a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <div class="section-label">Membership</div>
+        <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> My Shares</a>
+        <a href="dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
+        <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
+        <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <div class="section-label">Other</div>
+        <a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">3</span></a>
+        <a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
+        <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+    </nav>
+    <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
+        <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
+    </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MAIN CONTENT -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="sp-main" id="mainContent">
+
+    <!-- TOPBAR -->
+    <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
+        <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()" style="font-size:18px;color:var(--text-muted);"><i class="fas fa-bars"></i></button>
+        <nav aria-label="breadcrumb" class="d-none d-md-block">
+            <ol class="breadcrumb mb-0" style="font-size:13px;">
+                <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color:var(--text-muted);">Home</a></li>
+                <li class="breadcrumb-item active" style="color:var(--text-primary);">My Savings</li>
+            </ol>
+        </nav>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm d-none d-lg-flex" style="max-width:220px;">
+                <span class="input-group-text border-0" style="background:var(--bg-input);"><i class="fas fa-search" style="font-size:12px;color:var(--text-muted);"></i></span>
+                <input type="text" class="form-control border-0" placeholder="Search accounts..." style="background:var(--bg-input);font-size:13px;">
+            </div>
+            <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#notificationsModal"><i class="fas fa-bell" style="font-size:14px;"></i><span class="badge-dot">3</span></button>
+            <button class="topbar-btn" data-bs-toggle="modal" data-bs-target="#messagesModal"><i class="fas fa-envelope" style="font-size:14px;"></i><span class="badge-dot" style="background:#0288D1;">2</span></button>
+            <div class="dropdown">
+                <button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle" data-bs-toggle="dropdown" style="border-color:rgba(26,29,46,0.08)!important;font-size:13px;cursor:pointer;">
+                    <div style="width:28px;height:28px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">JK</div>
+                    <span class="d-none d-md-inline" style="color:var(--text-secondary);font-weight:500;">John</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;min-width:200px;">
+                    <li class="px-3 py-2 border-bottom"><div style="font-weight:600;font-size:13px;">John Kamau</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">MEM-2024-0045</div></li>
+                    <li><a class="dropdown-item py-2" href="profile.html"><i class="fas fa-user-circle me-2 text-muted"></i>Profile</a></li>
+                    <li><a class="dropdown-item py-2" href="settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item py-2 text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- PAGE CONTENT -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="p-3 p-lg-4 fade-in-up" style="max-width:1400px;">
+
+        <!-- Page Header -->
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1"><i class="fas fa-piggy-bank me-2" style="color:var(--primary);"></i>My <span style="color:var(--primary);">Savings</span></h1>
+                <p class="mb-0" style="color:var(--text-muted);font-size:14px;">Manage multiple accounts, watch your wealth accumulate, and easily automate contributions.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#statementModal"><i class="fas fa-file-alt me-1"></i> Statement</button>
+                <button class="btn btn-sm text-white rounded-3 fw-semibold" style="background:var(--gradient-primary);box-shadow:var(--shadow-orange);" data-bs-toggle="modal" data-bs-target="#savingsDepositGatewayModal"><i class="fas fa-plus-circle me-1"></i> Deposit Wealth</button>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- HERO WEALTH CARD -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="hero-wealth p-4 p-lg-5 mb-4">
+            <div class="position-relative" style="z-index:1;">
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <div style="font-size:13px;color:rgba(255,255,255,0.75);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;" class="mb-2">Total Accumulated Wealth</div>
+                        <div class="display-5 fw-bold mb-2" style="font-family:var(--font-mono);letter-spacing:-0.04em;">
+                            <span style="font-size:0.6em;opacity:0.8;">KES</span> 158,750<span style="font-size:0.5em;opacity:0.5;">.00</span>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center gap-3" style="font-size:13px;">
+                            <span class="d-flex align-items-center gap-1" style="color:rgba(255,255,255,0.85);"><i class="fas fa-chart-line" style="font-size:10px;"></i> <strong>+KES 12,875</strong> <span style="opacity:0.65;">this month</span></span>
+                            <span style="width:1px;height:16px;background:rgba(255,255,255,0.2);"></span>
+                            <span style="color:rgba(255,255,255,0.65);"><i class="fas fa-check-circle me-1"></i> Fully compounding</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 mt-3 mt-lg-0">
+                        <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                            <button class="btn btn-sm rounded-pill px-3 fw-semibold" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);backdrop-filter:blur(10px);" data-bs-toggle="modal" data-bs-target="#savingsDepositGatewayModal"><i class="fas fa-bolt me-1"></i> Add Funds</button>
+                            <button class="btn btn-sm rounded-pill px-3 fw-semibold" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);" data-bs-toggle="modal" data-bs-target="#automatedWithdrawalModal"><i class="fas fa-arrow-up me-1"></i> Withdraw</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- CORE STATS CARDS ROW -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="sp-card clickable p-3" data-bs-toggle="modal" data-bs-target="#availableBreakdownModal">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-size:12px;color:var(--text-muted);font-weight:500;">Available to Withdraw</span>
+                        <div class="stat-icon" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-wallet"></i></div>
+                    </div>
+                    <div class="stat-value" style="color:#00C853;">KES 123.7K</div>
+                    <div class="d-flex align-items-center gap-1 mt-2" style="font-size:12px;color:var(--text-muted);font-weight:500;"><i class="fas fa-shield-alt text-success" style="font-size:10px;"></i> Liquid savings</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sp-card clickable p-3" data-bs-toggle="modal" data-bs-target="#lockedFundsModal">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-size:12px;color:var(--text-muted);font-weight:500;">Locked Balance</span>
+                        <div class="stat-icon" style="background:rgba(249,168,37,0.08);color:#F9A825;border:1px solid rgba(249,168,37,0.2);"><i class="fas fa-lock"></i></div>
+                    </div>
+                    <div class="stat-value">KES 35.0K</div>
+                    <div style="font-size:12px;color:var(--text-muted);font-weight:500;margin-top:8px;"><i class="fas fa-link me-1 text-warning"></i> Loan commitments</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sp-card clickable p-3" data-bs-toggle="modal" data-bs-target="#interestAccruedModal">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-size:12px;color:var(--text-muted);font-weight:500;">Interest Accrued</span>
+                        <div class="stat-icon" style="background:var(--primary-subtle);color:var(--primary);border:1px solid var(--primary-border);"><i class="fas fa-percentage"></i></div>
+                    </div>
+                    <div class="stat-value" style="color:var(--primary);">KES 4,875</div>
+                    <div class="d-flex align-items-center gap-1 mt-2" style="font-size:12px;color:#00C853;font-weight:500;"><i class="fas fa-arrow-up" style="font-size:10px;"></i> +KES 375 this month</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sp-card clickable p-3" data-bs-toggle="modal" data-bs-target="#goalEditModal">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-size:12px;color:var(--text-muted);font-weight:500;">Wealth Goal</span>
+                        <div class="stat-icon" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);"><i class="fas fa-bullseye"></i></div>
+                    </div>
+                    <div class="stat-value" style="color:#0288D1;">63%</div>
+                    <div class="sp-progress mt-2"><div class="sp-progress-fill" style="width:63%;background:#0288D1;"></div></div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">KES 158K of KES 250K target</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SAVINGS ACCOUNTS / PRODUCT TABS MODULE -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="sp-card mb-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-3" style="border-color:rgba(26,29,46,0.06)!important;">
+                <ul class="nav nav-pills-sp flex-wrap m-0" role="tablist" id="savingsAccountTabs">
+                    <li class="nav-item" role="presentation"><button class="nav-link active border-0 bg-transparent" data-bs-toggle="pill" data-bs-target="#ordSavingsTab" type="button" role="tab">Ordinary Savings</button></li>
+                    <li class="nav-item" role="presentation"><button class="nav-link border-0 bg-transparent" data-bs-toggle="pill" data-bs-target="#fixedDepTab" type="button" role="tab">Fixed Deposit</button></li>
+                    <li class="nav-item" role="presentation"><button class="nav-link border-0 bg-transparent" data-bs-toggle="pill" data-bs-target="#holSavingsTab" type="button" role="tab">Holiday Savings</button></li>
+                    <li class="nav-item" role="presentation"><button class="nav-link border-0 bg-transparent" data-bs-toggle="pill" data-bs-target="#eduFundTab" type="button" role="tab">Education Fund</button></li>
+                </ul>
+                <button class="btn btn-sm btn-outline-primary rounded-3" data-bs-toggle="modal" data-bs-target="#openAccountModal"><i class="fas fa-plus me-1"></i> Open New Product</button>
+            </div>
+
+            <div class="tab-content p-4">
+                <!-- ORDINARY SAVINGS -->
+                <div class="tab-pane fade show active" id="ordSavingsTab" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="p-4 rounded-4" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width:42px;height:42px;background:var(--gradient-primary);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;"><i class="fas fa-piggy-bank"></i></div>
+                                        <div><div class="fw-bold" style="font-size:14px;">Ordinary Savings</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">SAV-001-ORD</div></div>
+                                    </div>
+                                    <span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i> Active</span>
+                                </div>
+                                <hr style="border-color:rgba(26,29,46,0.06);">
+                                <div class="row g-3 mb-4" style="font-size:13px;">
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Total Balance</span><div class="fw-bold fs-5" style="font-family:var(--font-mono);">KES 98,750</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Available Liquid</span><div class="fw-bold fs-5 text-success" style="font-family:var(--font-mono);">KES 73,750</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;">Interest Yield</span><div class="fw-bold" style="color:var(--primary);">7% p.a.</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;">Earned So Far</span><div class="fw-bold text-success">KES 3,450</div></div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm text-white flex-fill fw-semibold rounded-3" style="background:var(--gradient-primary);" onclick="triggerGatewayFor('ordinary')"><i class="fas fa-plus-circle me-1"></i> Add Funds</button>
+                                    <button class="btn btn-sm btn-outline-secondary flex-fill rounded-3" data-bs-toggle="modal" data-bs-target="#automatedWithdrawalModal"><i class="fas fa-arrow-up me-1"></i> Withdraw</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Contribution Automation Tracker -->
+                        <div class="col-lg-6">
+                            <div class="p-4 rounded-4 h-100 d-flex flex-column justify-content-between" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                <div>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-calendar-check me-2" style="color:var(--primary);"></i>Auto-Contribution Tracker</div>
+                                        <span class="sp-badge" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);">Fully Hands-Free</span>
+                                    </div>
+                                    <p style="font-size:12px;color:var(--text-muted);" class="mb-3">Monthly commitments are auto-processed via standing automated triggers.</p>
+                                    
+                                    <!-- Visual Status Grid -->
+                                    <div class="row g-2 mb-3 text-center" style="font-size:11px;">
+                                        <div class="col-2"><div class="p-2 rounded-3 mb-1 fw-bold" style="background:rgba(0,200,83,0.1);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></div><span class="text-muted">Jan</span></div>
+                                        <div class="col-2"><div class="p-2 rounded-3 mb-1 fw-bold" style="background:rgba(0,200,83,0.1);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-check"></i></div><span class="text-muted">Feb</span></div>
+                                        <div class="col-2"><div class="p-2 rounded-3 mb-1 fw-bold stkPulse" style="background:rgba(249,168,37,0.1);color:#F9A825;border:1px solid rgba(249,168,37,0.2);"><i class="fas fa-hourglass-half"></i></div><span class="text-warning fw-bold">Mar</span></div>
+                                        <div class="col-2"><div class="p-2 rounded-3 mb-1 text-muted" style="background:rgba(26,29,46,0.03);border:1px dashed rgba(26,29,46,0.1);">—</div><span class="text-muted">Apr</span></div>
+                                        <div class="col-2"><div class="p-2 rounded-3 mb-1 text-muted" style="background:rgba(26,29,46,0.03);border:1px dashed rgba(26,29,46,0.1);">—</div><span class="text-muted">May</span></div>
+                                        <div class="col-2"><div class="p-2 rounded-3 mb-1 text-muted" style="background:rgba(26,29,46,0.03);border:1px dashed rgba(26,29,46,0.1);">—</div><span class="text-muted">Jun</span></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background:rgba(255,107,0,0.04);border:1px solid var(--primary-border);font-size:12px;">
+                                    <span>Auto-standing alert: <strong style="color:var(--text-primary);">25th monthly</strong></span>
+                                    <button class="btn btn-sm btn-outline-primary py-1 px-2 rounded-2" data-bs-toggle="modal" data-bs-target="#editAutoDepositModal" style="font-size:11px;">Configure</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Operational Rules -->
+                        <div class="col-12">
+                            <div class="alert alert-secondary border-0 m-0 d-flex gap-3 align-items-center rounded-4 p-3" style="background:var(--bg-input);">
+                                <i class="fas fa-info-circle text-muted fs-4"></i>
+                                <div style="font-size:12px;">
+                                    <strong>Admin Verified Core Rules:</strong> Compounding applied monthly • Min continuous contribution: KES 5,000 • Borrowing multiplier active at 3× total cumulative balance.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FIXED DEPOSIT -->
+                <div class="tab-pane fade" id="fixedDepTab" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="p-4 rounded-4" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width:42px;height:42px;background:#0288D1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;"><i class="fas fa-vault"></i></div>
+                                        <div><div class="fw-bold" style="font-size:14px;">Fixed Deposit Fund</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">FD-001-FXD</div></div>
+                                    </div>
+                                    <span class="sp-badge" style="background:rgba(2,136,209,0.1);color:#0288D1;border:1px solid rgba(2,136,209,0.2);"><i class="fas fa-lock"></i> Term Lock Active</span>
+                                </div>
+                                <hr style="border-color:rgba(26,29,46,0.06);">
+                                <div class="row g-3 mb-3" style="font-size:13px;">
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Principal Committed</span><div class="fw-bold fs-5" style="font-family:var(--font-mono);">KES 40,000</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Accrued Payout</span><div class="fw-bold fs-5 text-success" style="font-family:var(--font-mono);">KES 41,200</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;">Fixed Premium Rate</span><div class="fw-bold" style="color:#0288D1;">10% p.a.</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;">Maturity Trigger</span><div class="fw-bold text-warning">Jul 15, 2025</div></div>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-1" style="font-size:12px;"><span class="text-muted">Maturity Horizon</span><span class="fw-bold" style="color:#0288D1;">58% Complete</span></div>
+                                    <div class="sp-progress"><div class="sp-progress-fill" style="width:58%;background:#0288D1;"></div></div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary flex-fill rounded-3" style="border-color:rgba(2,136,209,0.3);color:#0288D1;" onclick="triggerGatewayFor('fixed')"><i class="fas fa-plus-circle me-1"></i> Add Principal</button>
+                                    <button class="btn btn-sm btn-outline-danger flex-fill rounded-3" data-bs-toggle="modal" data-bs-target="#fdEarlyBreakModal"><i class="fas fa-unlock me-1"></i> Premature Break</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Automated Return Projection Breakdown -->
+                        <div class="col-lg-6">
+                            <div class="p-4 rounded-4 h-100 d-flex flex-column justify-content-between" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                <div>
+                                    <div class="fw-semibold mb-3" style="font-size:14px;"><i class="fas fa-magic me-2" style="color:#0288D1;"></i>Automated Term Projections</div>
+                                    <div class="d-flex flex-column gap-2" style="font-size:12px;">
+                                        <div class="d-flex justify-content-between p-2 rounded-3 bg-white"><span class="text-muted">Initial Baseline</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 40,000</span></div>
+                                        <div class="d-flex justify-content-between p-2 rounded-3 bg-white"><span class="text-muted">Compounded Interest (Est.)</span><span class="fw-bold text-success" style="font-family:var(--font-mono);">+ KES 4,000</span></div>
+                                        <div class="d-flex justify-content-between p-2 rounded-3" style="background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);"><span class="fw-bold text-success">Guaranteed Disbursable</span><span class="fw-bold text-success fs-6" style="font-family:var(--font-mono);">KES 44,000</span></div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning border-0 m-0 p-2 text-center rounded-3 mt-3" style="font-size:11px;">
+                                    ⚠️ Premature automated liquidation breaks accrue a statutory 30% yield sacrifice.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOLIDAY SAVINGS -->
+                <div class="tab-pane fade" id="holSavingsTab" role="tabpanel">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-7">
+                            <div class="p-4 rounded-4" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width:42px;height:42px;background:#AB00D9;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;"><i class="fas fa-umbrella-beach"></i></div>
+                                        <div><div class="fw-bold" style="font-size:14px;">Holiday Escrow Vault</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">HS-001-HOL</div></div>
+                                    </div>
+                                    <span class="sp-badge" style="background:rgba(171,0,217,0.1);color:#AB00D9;border:1px solid rgba(171,0,217,0.2);"><i class="fas fa-snowflake"></i> Seasonal Window</span>
+                                </div>
+                                <hr style="border-color:rgba(26,29,46,0.06);">
+                                <div class="row g-3 mb-4" style="font-size:13px;">
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Vault Balance</span><div class="fw-bold fs-5" style="font-family:var(--font-mono);">KES 15,000</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Guaranteed Yield</span><div class="fw-bold fs-5 text-success" style="font-family:var(--font-mono);">5% p.a.</div></div>
+                                    <div class="col-12"><span style="color:var(--text-muted);font-size:11px;">Automated Liquidation Rules</span><div class="fw-bold text-warning">Disbursals permitted exclusively Nov 1 — Dec 31</div></div>
+                                </div>
+                                <button class="btn btn-sm text-white w-100 fw-semibold rounded-3" style="background:linear-gradient(135deg,#AB00D9,#7B1FA2);" onclick="triggerGatewayFor('holiday')"><i class="fas fa-plus-circle me-1"></i> Deposit Direct</button>
+                            </div>
+                        </div>
+
+                        <!-- Graphical Target Ring -->
+                        <div class="col-lg-5 text-center">
+                            <div class="p-4 rounded-4 bg-white border">
+                                <div style="font-size:13px;font-weight:600;" class="mb-3">Escrow Goal Progress</div>
+                                <div class="position-relative mx-auto mb-3" style="width:140px;height:140px;">
+                                    <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg);">
+                                        <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(26,29,46,0.06)" stroke-width="10"/>
+                                        <circle cx="70" cy="70" r="58" fill="none" stroke="#AB00D9" stroke-width="10" stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="182"/>
+                                    </svg>
+                                    <div class="position-absolute top-50 start-50 translate-middle">
+                                        <div class="fw-bold fs-4" style="font-family:var(--font-mono);color:#AB00D9;">50%</div>
+                                        <div style="font-size:10px;color:var(--text-muted);">KES 15K / 30K</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#editHolidayGoalModal"><i class="fas fa-sliders-h me-1"></i> Re-adjust Horizon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDUCATION FUND -->
+                <div class="tab-pane fade" id="eduFundTab" role="tabpanel">
+                    <div class="row g-4 align-items-start">
+                        <div class="col-lg-6">
+                            <div class="p-4 rounded-4" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width:42px;height:42px;background:#F9A825;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;"><i class="fas fa-graduation-cap"></i></div>
+                                        <div><div class="fw-bold" style="font-size:14px;">Education Assurance</div><div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">ED-001-EDU</div></div>
+                                    </div>
+                                    <span class="sp-badge" style="background:rgba(249,168,37,0.1);color:#F9A825;border:1px solid rgba(249,168,37,0.2);">High Liquidity</span>
+                                </div>
+                                <hr style="border-color:rgba(26,29,46,0.06);">
+                                <div class="row g-3 mb-4" style="font-size:13px;">
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Fund Balance</span><div class="fw-bold fs-5" style="font-family:var(--font-mono);">KES 5,000</div></div>
+                                    <div class="col-6"><span style="color:var(--text-muted);font-size:11px;text-transform:uppercase;">Baseline Yield</span><div class="fw-bold fs-5 text-success" style="font-family:var(--font-mono);">6% p.a.</div></div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm text-white flex-fill fw-semibold rounded-3" style="background:#F9A825;" onclick="triggerGatewayFor('education')"><i class="fas fa-plus-circle me-1"></i> Inject Funds</button>
+                                    <button class="btn btn-sm btn-outline-secondary flex-fill rounded-3" data-bs-toggle="modal" data-bs-target="#automatedWithdrawalModal"><i class="fas fa-arrow-up me-1"></i> Pay Tuition</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tracked Assurance Plans -->
+                        <div class="col-lg-6">
+                            <div class="p-4 rounded-4 bg-white border h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-school me-2 text-warning"></i>Assurance Targets</div>
+                                        <button class="btn btn-sm btn-outline-secondary py-1 px-2 rounded-2" data-bs-toggle="modal" data-bs-target="#addEduPlanModal" style="font-size:11px;"><i class="fas fa-plus"></i> Plan</button>
+                                    </div>
+                                    <div class="p-3 rounded-3 mb-2" style="background:var(--bg-base);border:1px solid rgba(26,29,46,0.06);">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-bold" style="font-size:12px;">Bright Future Academy</span>
+                                            <span class="sp-badge bg-warning text-dark" style="font-size:9px;">Term 2 Target</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-1 text-muted" style="font-size:11px;"><span>Saved: KES 5K</span><span>Needed: KES 25K</span></div>
+                                        <div class="sp-progress"><div class="sp-progress-fill bg-warning" style="width:20%;"></div></div>
+                                    </div>
+                                </div>
+                                <div style="font-size:11px;color:var(--text-muted);" class="text-center mt-2">
+                                    💡 Funds can be wired directly to registered institutions automatically.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- DATA ANALYSIS MODULE -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="row g-4 mb-4">
+            <!-- Asset Accumulation Chart -->
+            <div class="col-lg-8">
+                <div class="sp-card h-100">
+                    <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color:rgba(26,29,46,0.06)!important;">
+                        <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-chart-area me-2" style="color:var(--primary);"></i>Asset Accumulation Curve</div>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary btn-sm rounded-start-3" onclick="updateGrowthChart(this,'6M')">6M</button>
+                            <button class="btn btn-sm text-white rounded-0" style="background:var(--primary);" onclick="updateGrowthChart(this,'1Y')">1Y</button>
+                            <button class="btn btn-outline-secondary btn-sm rounded-end-3" onclick="updateGrowthChart(this,'ALL')">All Time</button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div style="height:260px;"><canvas id="wealthAccumulationChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linked Credit Power Gauge -->
+            <div class="col-lg-4">
+                <div class="sp-card h-100 d-flex flex-column justify-content-between p-4 clickable" style="background:var(--bg-base);" data-bs-toggle="modal" data-bs-target="#borrowingPowerModal">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div style="width:40px;height:40px;background:var(--gradient-primary);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;"><i class="fas fa-coins"></i></div>
+                            <div><div class="fw-bold" style="font-size:14px;">Available Credit Power</div><div style="font-size:11px;color:var(--text-muted);">Dynamic multiplier limit</div></div>
+                        </div>
+                        <div class="display-6 fw-bold mb-2" style="font-family:var(--font-mono);color:var(--primary);">KES 476.2K</div>
+                        <p style="font-size:12px;color:var(--text-secondary);">Your current combined savings explicitly guarantee an automated borrow ceiling of up to 3× cumulative capital.</p>
+                        <div class="sp-progress mb-2"><div class="sp-progress-fill shimmer" style="width:33%;background:var(--primary);"></div></div>
+                        <div class="d-flex justify-content-between text-muted" style="font-size:10px;"><span>Active exposure: KES 103.5K</span><span>Liquid available: KES 372.7K</span></div>
+                    </div>
+                    <div class="bg-white p-2 rounded-3 text-center fw-semibold mt-3" style="font-size:12px;color:var(--primary);border:1px solid var(--primary-border);">
+                        Explore instant low-interest credit <i class="fas fa-arrow-right ms-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SAVINGS TRANSACTIONS TABLE -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="sp-card mb-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-bottom gap-2" style="border-color:rgba(26,29,46,0.06)!important;">
+                <div class="fw-semibold" style="font-size:14px;"><i class="fas fa-history me-2" style="color:var(--primary);"></i>Savings Operations Ledger</div>
+                <div class="d-flex flex-wrap gap-2">
+                    <select class="form-select form-select-sm" style="width:auto;font-size:12px;border-radius:8px;" onchange="filterSavingsOperations(this.value)">
+                        <option value="all">All Categorizations</option>
+                        <option value="deposit">Deposits Credited</option>
+                        <option value="interest">Interest Yields</option>
+                        <option value="withdrawal">Liquidation Breaks</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#statementModal"><i class="fas fa-file-export me-1"></i> Ledger</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="font-size:13px;" id="savingsOpsTable">
+                    <thead>
+                        <tr style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);background:rgba(26,29,46,0.02);">
+                            <th class="border-0 py-3 px-3">Date</th>
+                            <th class="border-0">Reference</th>
+                            <th class="border-0">Operation Type</th>
+                            <th class="border-0">Vault Routing</th>
+                            <th class="border-0">Capital Move</th>
+                            <th class="border-0">Compounded Baseline</th>
+                            <th class="border-0 text-end">Audit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="cursor:pointer;" onclick="openAuditView('DEP-2025-00189','deposit')" data-op-type="deposit">
+                            <td class="px-3">Feb 25, 2025</td>
+                            <td><span style="font-family:var(--font-mono);font-size:11px;color:var(--primary);">DEP-2025-00189</span></td>
+                            <td><span class="sp-badge bg-success text-white" style="font-size:9px;"><i class="fas fa-arrow-down"></i> Deposit Direct</span></td>
+                            <td>Ordinary Savings</td>
+                            <td><span style="font-family:var(--font-mono);font-weight:700;color:#00C853;">+ KES 7,500</span></td>
+                            <td><span style="font-family:var(--font-mono);">KES 98,750</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0"><i class="fas fa-check-double text-success"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="openAuditView('INT-2025-00012','interest')" data-op-type="interest">
+                            <td class="px-3">Jan 31, 2025</td>
+                            <td><span style="font-family:var(--font-mono);font-size:11px;color:#0288D1;">INT-2025-00012</span></td>
+                            <td><span class="sp-badge text-white" style="background:#0288D1;font-size:9px;"><i class="fas fa-percentage"></i> Auto Yield</span></td>
+                            <td>Ordinary Savings</td>
+                            <td><span style="font-family:var(--font-mono);font-weight:700;color:#0288D1;">+ KES 350</span></td>
+                            <td><span style="font-family:var(--font-mono);">KES 91,250</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0"><i class="fas fa-check-double text-success"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="openAuditView('DEP-2025-00145','deposit')" data-op-type="deposit">
+                            <td class="px-3">Jan 25, 2025</td>
+                            <td><span style="font-family:var(--font-mono);font-size:11px;color:var(--primary);">DEP-2025-00145</span></td>
+                            <td><span class="sp-badge bg-success text-white" style="font-size:9px;"><i class="fas fa-arrow-down"></i> Deposit Direct</span></td>
+                            <td>Ordinary Savings</td>
+                            <td><span style="font-family:var(--font-mono);font-weight:700;color:#00C853;">+ KES 5,000</span></td>
+                            <td><span style="font-family:var(--font-mono);">KES 90,900</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0"><i class="fas fa-check-double text-success"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="openAuditView('WDR-2025-00031','withdrawal')" data-op-type="withdrawal">
+                            <td class="px-3">Jan 15, 2025</td>
+                            <td><span style="font-family:var(--font-mono);font-size:11px;color:#E53935;">WDR-2025-00031</span></td>
+                            <td><span class="sp-badge bg-danger text-white" style="font-size:9px;"><i class="fas fa-arrow-up"></i> Liquidation Break</span></td>
+                            <td>Ordinary Savings</td>
+                            <td><span style="font-family:var(--font-mono);font-weight:700;color:#E53935;">- KES 10,000</span></td>
+                            <td><span style="font-family:var(--font-mono);">KES 85,900</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0"><i class="fas fa-check-double text-success"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="openAuditView('INT-2024-00144','interest')" data-op-type="interest">
+                            <td class="px-3">Dec 31, 2024</td>
+                            <td><span style="font-family:var(--font-mono);font-size:11px;color:#0288D1;">INT-2024-00144</span></td>
+                            <td><span class="sp-badge text-white" style="background:#0288D1;font-size:9px;"><i class="fas fa-percentage"></i> Auto Yield</span></td>
+                            <td>Ordinary Savings</td>
+                            <td><span style="font-family:var(--font-mono);font-weight:700;color:#0288D1;">+ KES 325</span></td>
+                            <td><span style="font-family:var(--font-mono);">KES 95,900</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0"><i class="fas fa-check-double text-success"></i></button></td>
+                        </tr>
+                        <tr style="cursor:pointer;" onclick="openAuditView('DEP-2024-00890','deposit')" data-op-type="deposit">
+                            <td class="px-3">Dec 25, 2024</td>
+                            <td><span style="font-family:var(--font-mono);font-size:11px;color:var(--primary);">DEP-2024-00890</span></td>
+                            <td><span class="sp-badge bg-success text-white" style="font-size:9px;"><i class="fas fa-arrow-down"></i> Deposit Direct</span></td>
+                            <td>Holiday Savings</td>
+                            <td><span style="font-family:var(--font-mono);font-weight:700;color:#00C853;">+ KES 5,000</span></td>
+                            <td><span style="font-family:var(--font-mono);">KES 15,000</span></td>
+                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary border-0"><i class="fas fa-check-double text-success"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 border-top" style="border-color:rgba(26,29,46,0.06)!important;font-size:12px;color:var(--text-muted);">
+                <span>Displaying real-time automated assurance tracking blocks.</span>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item"><a class="page-link rounded-2" href="#" onclick="event.preventDefault();showToast('Prev ledger batch','info')"><i class="fas fa-chevron-left"></i></a></li>
+                        <li class="page-item active"><a class="page-link rounded-2" href="#" style="background:var(--primary);border-color:var(--primary);">1</a></li>
+                        <li class="page-item"><a class="page-link rounded-2" href="#" onclick="event.preventDefault();showToast('Page 2 ledger','info')">2</a></li>
+                        <li class="page-item"><a class="page-link rounded-2" href="#" onclick="event.preventDefault();showToast('Next ledger batch','info')"><i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div><!-- /page-content -->
+</div><!-- /sp-main -->
+
+
+<!-- ═════════════════════════════════════════════════════════════════ -->
+<!--                         ALL MODALS                              -->
+<!-- ═════════════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- MODAL: Automated Savings Deposit Gateway -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="modal fade" id="savingsDepositGatewayModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--gradient-primary);"></div>
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div>
+                    <h5 class="modal-title fw-bold"><i class="fas fa-bolt me-2" style="color:var(--primary);"></i>Automated Savings Allocation Gateway</h5>
+                    <p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">Process direct injections directly to target asset accounts securely. Fully automatic API hooks.</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4 pt-3">
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Target Vault Routing <span class="text-danger">*</span></label>
+                    <select class="form-select" style="border-radius:12px;" id="gatewayTargetVault">
+                        <option value="ordinary" selected>Ordinary Savings Vault (SAV-001) — Highly Compoundable</option>
+                        <option value="fixed">Fixed Deposit Fund (FD-001) — 10% Term Lock Baseline</option>
+                        <option value="holiday">Holiday Escrow Vault (HS-001) — Seasonal Multiplier</option>
+                        <option value="education">Education Assurance (ED-001) — Priority Fund</option>
+                    </select>
+                </div>
+
+                <label class="form-label fw-semibold" style="font-size:13px;">Injection Mechanism</label>
+                <div class="row g-3 mb-3">
+                    <div class="col-6 col-md-3">
+                        <div class="auto-pay-method active" onclick="selectSavingsInjectionMethod(this,'mpesa')" id="pmSavingsMpesa">
+                            <div class="pay-icon" style="background:rgba(0,200,83,0.08);color:#00C853;border:1px solid rgba(0,200,83,0.2);"><i class="fas fa-mobile-alt"></i></div>
+                            <div class="fw-bold" style="font-size:13px;">M-Pesa</div>
+                            <div style="font-size:11px;color:var(--text-muted);">STK Hook</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="auto-pay-method" onclick="selectSavingsInjectionMethod(this,'card')" id="pmSavingsCard">
+                            <div class="pay-icon" style="background:rgba(171,0,217,0.06);color:#AB00D9;border:1px solid rgba(171,0,217,0.18);"><i class="fas fa-credit-card"></i></div>
+                            <div class="fw-bold" style="font-size:13px;">Card</div>
+                            <div style="font-size:11px;color:var(--text-muted);">Direct Charge</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="auto-pay-method" onclick="selectSavingsInjectionMethod(this,'bank')" id="pmSavingsBank">
+                            <div class="pay-icon" style="background:rgba(2,136,209,0.06);color:#0288D1;border:1px solid rgba(2,136,209,0.18);"><i class="fas fa-university"></i></div>
+                            <div class="fw-bold" style="font-size:13px;">Bank</div>
+                            <div style="font-size:11px;color:var(--text-muted);">EFT Trigger</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="auto-pay-method" onclick="selectSavingsInjectionMethod(this,'airtel')" id="pmSavingsAirtel">
+                            <div class="pay-icon" style="background:rgba(229,57,53,0.06);color:#E53935;border:1px solid rgba(229,57,53,0.18);"><i class="fas fa-sim-card"></i></div>
+                            <div class="fw-bold" style="font-size:13px;">Airtel</div>
+                            <div style="font-size:11px;color:var(--text-muted);">STK Hook</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="font-size:13px;">Capital Allocation (KES) <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text fw-bold" style="border-radius:12px 0 0 12px;background:var(--bg-input);border-color:rgba(26,29,46,0.10);font-size:14px;">KES</span>
+                        <input type="number" class="form-control form-control-lg" placeholder="0.00" id="savingsInjectionAmountInput" style="border-radius:0 12px 12px 0;border-color:rgba(26,29,46,0.10);font-family:var(--font-mono);font-size:18px;" oninput="updateSavingsGatewayPreview()">
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setSavingsAmt(1000)">1K</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setSavingsAmt(2500)">2.5K</button>
+                        <button class="btn btn-sm rounded-pill fw-semibold" style="border:1px solid var(--primary-border);color:var(--primary);background:var(--primary-subtle);" onclick="setSavingsAmt(5000)">5K <span style="font-size:9px;opacity:0.7;">(min req)</span></button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setSavingsAmt(15000)">15K</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setSavingsAmt(50000)">50K</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Abort</button>
+                <button type="button" class="btn text-white rounded-3 fw-semibold px-4" style="background:var(--gradient-primary);box-shadow:var(--shadow-orange);" onclick="executeSavingsInjectionTrigger()"><i class="fas fa-satellite-dish me-1"></i> Trigger Hook</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- MODAL: Core Gateway Processing Blocks (M-Pesa STK Hook) -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="modal fade" id="savingsMpesaStkModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:#00C853;"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-mobile-alt me-2" style="color:#00C853;"></i>Automated STK Routing Hook</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                <!-- Phase 1: Enter Telephony Handshake -->
+                <div id="savingsStkPhase1">
+                    <div class="alert border-0 mb-4" style="background:rgba(0,200,83,0.06);color:#00C853;border-radius:12px;">
+                        <div class="d-flex align-items-start gap-2"><i class="fas fa-info-circle mt-1"></i><div style="font-size:12px;">The central API securely dispatches a silent billing push token to your active device. Simply authenticate with your private credentials.</div></div>
+                    </div>
+                    <div class="text-center mb-4 p-3 rounded-4" style="background:var(--bg-input);">
+                        <div style="font-size:12px;color:var(--text-muted);">Allocating Capital</div>
+                        <div class="fw-bold mt-1" style="font-size:28px;font-family:var(--font-mono);color:var(--primary);" id="savingsStkAmountDisplay">KES 5,000</div>
+                        <div style="font-size:12px;color:var(--text-muted);" id="savingsStkAccountDisplay">to Ordinary Savings Vault</div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" style="font-size:13px;">Telephony End-Point <span class="text-danger">*</span></label>
+                        <div class="phone-input-group">
+                            <span class="flag">🇰🇪</span><span class="prefix">+254</span>
+                            <input type="tel" class="form-control form-control-lg" style="border-radius:14px;border-color:rgba(26,29,46,0.10);" placeholder="712 345 890" id="savingsStkPhoneInput" maxlength="10" value="712345890">
+                        </div>
+                    </div>
+                    <button class="btn btn-lg w-100 text-white fw-semibold rounded-3" style="background:#00C853;box-shadow:0 4px 16px rgba(0,200,83,0.3);" onclick="triggerSavingsSTKCountdown()">
+                        <i class="fas fa-paper-plane me-2"></i> Issue API Push
+                    </button>
+                </div>
+
+                <!-- Phase 2: Intercept Watcher -->
+                <div id="savingsStkPhase2" style="display:none;">
+                    <div class="stk-loader">
+                        <div class="stk-spinner"></div>
+                        <div class="text-center">
+                            <h5 class="fw-bold mb-2" style="color:#00C853;">Intercepting Token Auth</h5>
+                            <p style="font-size:13px;color:var(--text-muted);max-width:300px;margin:0 auto;">An interactive M-Pesa token prompt has been sent to <strong style="color:var(--text-primary);">0712***890</strong>. Input your secure PIN to confirm.</p>
+                        </div>
+                        <div class="position-relative" style="width:80px;height:80px;">
+                            <svg width="80" height="80" viewBox="0 0 100 100" style="transform:rotate(-90deg);">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(26,29,46,0.06)" stroke-width="6"/>
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#00C853" stroke-width="6" stroke-linecap="round" stroke-dasharray="283" id="savingsStkTimerCircle" style="animation: countDown 60s linear forwards;"/>
+                            </svg>
+                            <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                <div class="fw-bold" style="font-size:20px;font-family:var(--font-mono);color:var(--text-primary);" id="savingsStkCountdown">60</div>
+                                <div style="font-size:9px;color:var(--text-muted);">seconds</div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 w-100 mt-2">
+                            <button class="btn btn-outline-secondary btn-sm rounded-3 flex-fill" onclick="resetSavingsSTK()"><i class="fas fa-redo me-1"></i> Abort / Resend</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3: Verified Acknowledgment -->
+                <div id="savingsStkPhase3" style="display:none;">
+                    <div class="text-center py-3">
+                        <div style="width:72px;height:72px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:#00C853;"><i class="fas fa-check-circle"></i></div>
+                        <h5 class="fw-bold" style="color:#00C853;">Injection Handshake Completed!</h5>
+                        <div class="fw-bold mt-2" style="font-size:28px;font-family:var(--font-mono);color:var(--text-primary);">KES 5,000.00</div>
+                        <p class="mt-2 mb-3" style="font-size:13px;color:var(--text-muted);">Credited to Ordinary Savings Vault successfully.</p>
+                        <div class="p-3 rounded-4 text-start" style="background:var(--bg-input);">
+                            <div class="d-flex justify-content-between mb-2" style="font-size:12px;"><span style="color:var(--text-muted);">Ledger Ref</span><span class="fw-semibold" style="font-family:var(--font-mono);color:var(--primary);">DEP-2025-00201</span></div>
+                            <div class="d-flex justify-content-between mb-2" style="font-size:12px;"><span style="color:var(--text-muted);">Matched Hook ID</span><span class="fw-semibold" style="font-family:var(--font-mono);">SHL3KM8R2Q</span></div>
+                            <div class="d-flex justify-content-between mb-2" style="font-size:12px;"><span style="color:var(--text-muted);">Timestamp</span><span>Feb 25, 2025 5:42 PM</span></div>
+                            <div class="d-flex justify-content-between" style="font-size:12px;"><span style="color:var(--text-muted);">Compounded Available</span><span class="fw-bold" style="color:#00C853;font-family:var(--font-mono);">KES 103,750.00</span></div>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button class="btn btn-outline-secondary rounded-3 flex-fill" onclick="showToast('Electronic audit receipt compiled','success')"><i class="fas fa-download me-1"></i> Audit PDF</button>
+                            <button class="btn text-white rounded-3 flex-fill fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="resetAllSavingsModals()"><i class="fas fa-check me-1"></i> Acknowledge</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- MODAL: Core Gateway Processing Blocks (Visual Card Payment) -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="modal fade" id="savingsCardPayModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:linear-gradient(90deg,#AB00D9,#7B1FA2);"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-credit-card me-2" style="color:#AB00D9;"></i>Direct PCI-DSS Integration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                <!-- Phase 1: Card GUI -->
+                <div id="savingsCardPhase1">
+                    <div class="text-center mb-4 p-3 rounded-4" style="background:var(--bg-input);">
+                        <div style="font-size:12px;color:var(--text-muted);">Charging Securely</div>
+                        <div class="fw-bold" style="font-size:24px;font-family:var(--font-mono);color:var(--primary);" id="savingsCardAmountDisplay">KES 5,000</div>
+                    </div>
+                    <div class="card-visual mb-4">
+                        <div style="font-size:11px;opacity:0.7;">ISO ACCREDITED TRANSACTION</div>
+                        <div class="card-number" id="savingsCardNumberDisplay">•••• •••• •••• ••••</div>
+                        <div class="d-flex justify-content-between align-items-end">
+                            <div><div style="font-size:9px;opacity:0.5;">CARD CREDENTIAL</div><div style="font-size:13px;font-weight:600;" id="savingsCardHolderDisplay">YOUR NAME</div></div>
+                            <div><div style="font-size:9px;opacity:0.5;">EXPIRATION</div><div style="font-size:13px;font-weight:600;" id="savingsCardExpiryDisplay">MM/YY</div></div>
+                        </div>
+                        <div class="card-brand"><i class="fab fa-cc-visa"></i></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:13px;">ISO Card Digits <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19" style="border-radius:12px 0 0 12px;font-family:var(--font-mono);letter-spacing:2px;" id="savingsCardNumberInput" oninput="formatSavingsCardNumber(this)">
+                            <span class="input-group-text" style="border-radius:0 12px 12px 0;background:#fff;"><i class="fab fa-cc-visa" style="color:#1A1F71;"></i> <i class="fab fa-cc-mastercard ms-1" style="color:#EB001B;"></i></span>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6"><label class="form-label fw-semibold" style="font-size:13px;">Expiration <span class="text-danger">*</span></label><input type="text" class="form-control" placeholder="MM/YY" maxlength="5" style="border-radius:12px;font-family:var(--font-mono);" id="savingsCardExpiryInput" oninput="formatSavingsExpiry(this)"></div>
+                        <div class="col-6"><label class="form-label fw-semibold" style="font-size:13px;">CVC Auth Token <span class="text-danger">*</span></label><input type="password" class="form-control" placeholder="•••" maxlength="4" style="border-radius:12px;font-family:var(--font-mono);"></div>
+                    </div>
+                    <div class="mb-4"><label class="form-label fw-semibold" style="font-size:13px;">Cardholder Credentials <span class="text-danger">*</span></label><input type="text" class="form-control" placeholder="JOHN KAMAU" style="border-radius:12px;text-transform:uppercase;" id="savingsCardNameInput" oninput="document.getElementById('savingsCardHolderDisplay').textContent=this.value||'YOUR NAME'"></div>
+                    <button class="btn btn-lg w-100 text-white fw-semibold rounded-3" style="background:linear-gradient(135deg,#AB00D9,#7B1FA2);box-shadow:0 4px 16px rgba(171,0,217,0.3);" onclick="executeSavingsCardPayment()">
+                        <i class="fas fa-lock me-2"></i> Secure Allocation of KES <span id="savingsCardPayBtnAmount">5,000</span>
+                    </button>
+                </div>
+                <!-- Phase 2: Processing Spinner -->
+                <div id="savingsCardPhase2" style="display:none;">
+                    <div class="stk-loader"><div class="stk-spinner" style="border-top-color:#AB00D9;"></div><div class="text-center"><h5 class="fw-bold" style="color:#AB00D9;">Secure Gateway Intercept</h5><p style="font-size:13px;color:var(--text-muted);">Relaying isolated encrypted tokens directly to the inter-bank acquirer...</p></div></div>
+                </div>
+                <!-- Phase 3: Success -->
+                <div id="savingsCardPhase3" style="display:none;">
+                    <div class="text-center py-3"><div style="width:72px;height:72px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:#00C853;"><i class="fas fa-check-circle"></i></div><h5 class="fw-bold" style="color:#00C853;">Token Verification Passed!</h5><div class="fw-bold mt-2" style="font-size:28px;font-family:var(--font-mono);">KES 5,000.00</div><p class="mt-2" style="font-size:13px;color:var(--text-muted);">Successfully routed directly to targeted savings accounts.</p><div class="d-flex gap-2 mt-4"><button class="btn text-white rounded-3 w-100 fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="resetAllSavingsModals()"><i class="fas fa-check me-1"></i> Close Module</button></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- MODAL: Core Gateway Processing Blocks (EFT Bank Trigger) -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="modal fade" id="savingsBankTransferModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:#0288D1;"></div>
+            <div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-university me-2" style="color:#0288D1;"></i>Automated Inter-Bank EFT Link</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4">
+                <div class="alert border-0 mb-4" style="background:rgba(2,136,209,0.06);color:#0288D1;border-radius:12px;"><div class="d-flex align-items-start gap-2"><i class="fas fa-info-circle mt-1"></i><div style="font-size:12px;">Initiate a push from your core bank directly to our clearing identifier. Our clearing agents auto-audit based strictly on your unique routing reference.</div></div></div>
+                <div class="p-4 rounded-4 mb-4" style="background:var(--bg-input);">
+                    <div class="row g-3" style="font-size:13px;">
+                        <div class="col-6"><div style="color:var(--text-muted);font-size:11px;margin-bottom:2px;">Clearing Entity</div><div class="fw-bold">Co-operative Bank</div></div>
+                        <div class="col-6"><div style="color:var(--text-muted);font-size:11px;margin-bottom:2px;">Clearing Hub</div><div class="fw-bold">Nairobi Main</div></div>
+                        <div class="col-6"><div style="color:var(--text-muted);font-size:11px;margin-bottom:2px;">Clearing Account No.</div><div class="fw-bold" style="font-family:var(--font-mono);">01100287654321</div></div>
+                        <div class="col-6"><div style="color:var(--text-muted);font-size:11px;margin-bottom:2px;">Entity Holder</div><div class="fw-bold">SaccoPay SACCO Ltd</div></div>
+                        <div class="col-12 mt-2"><div style="color:var(--text-muted);font-size:11px;margin-bottom:2px;">Explicit Audit Identifier (Reference)</div><div class="fw-bold fs-5" style="color:var(--primary);font-family:var(--font-mono);">MEM-2024-0045</div></div>
+                    </div>
+                </div>
+                <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">EFT Amount Dispatched (KES)</label><input type="number" class="form-control" placeholder="Enter transfer value" style="border-radius:12px;font-family:var(--font-mono);" id="savingsBankAmountInput"></div>
+                <div class="mb-3"><label class="form-label fw-semibold" style="font-size:13px;">Attach Digital Reference Intercept</label><div class="border rounded-3 p-3 text-center" style="border-style:dashed!important;border-color:rgba(26,29,46,0.15)!important;cursor:pointer;" onclick="document.getElementById('savingsBankProof').click()"><i class="fas fa-cloud-upload-alt d-block mb-1" style="font-size:20px;color:var(--text-muted);"></i><span style="font-size:12px;color:var(--text-muted);">Drop digital EFT metadata stub</span><input type="file" id="savingsBankProof" style="display:none;" onchange="showToast('EFT Metadata loaded','success')"></div></div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button><button class="btn text-white rounded-3 fw-semibold" style="background:#0288D1;" onclick="submitSavingsBankTrigger()"><i class="fas fa-satellite-dish me-1"></i> Disptach Auto-Audit Request</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- MODAL: Automated Withdrawal Gateway Modal -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="modal fade" id="automatedWithdrawalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;">
+            <div style="height:3px;background:var(--success);"></div>
+            <div class="modal-header border-0 pb-0 pt-4 px-4"><div><h5 class="modal-title fw-bold"><i class="fas fa-arrow-up me-2 text-success"></i>Automated Capital Liquidation Interface</h5><p class="mb-0 mt-1" style="font-size:13px;color:var(--text-muted);">Disburse capital allocations back to private digital wallets instantaneously.</p></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body px-4 pb-4 pt-3">
+                <div class="alert alert-warning border-0 p-3 rounded-3" style="background:rgba(249,168,37,0.08);color:#E09100;font-size:12px;">⚠️ 14 days baseline clearing notices apply. Real-time dynamic checks isolate uncollateralized baselines.</div>
+                <div class="row g-3 mb-4 text-center">
+                    <div class="col-4"><div class="p-3 rounded-3 bg-white border"><div style="font-size:11px;color:var(--text-muted);">Total Wealth</div><div class="fw-bold fs-6" style="font-family:var(--font-mono);">KES 158.7K</div></div></div>
+                    <div class="col-4"><div class="p-3 rounded-3 bg-white border"><div style="font-size:11px;color:var(--text-muted);">Locked Ceiling</div><div class="fw-bold fs-6 text-danger" style="font-family:var(--font-mono);">KES 35.0K</div></div></div>
+                    <div class="col-4"><div class="p-3 rounded-3" style="background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.2);"><div style="font-size:11px;color:#00C853;">Fully Liquid</div><div class="fw-bold fs-6 text-success" style="font-family:var(--font-mono);">KES 123.7K</div></div></div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Liquidate From Vault</label><select class="form-select" style="border-radius:12px;"><option>Ordinary Savings (KES 73,750 available)</option><option>Education Fund Assurance (KES 5,000 available)</option></select></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Allocation Request (KES)</label><input type="number" class="form-control" style="border-radius:12px;font-family:var(--font-mono);" placeholder="Enter amount"></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Disbursal Endpoint Routing</label><select class="form-select" style="border-radius:12px;"><option>M-Pesa API Handshake (0712***890)</option><option>Bank Core EFT Hook (Co-op ***4321)</option></select></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Explicit Purpose Parameter</label><select class="form-select" style="border-radius:12px;"><option>School Fees Disbursal</option><option>Private Asset Access</option><option>General Liquidation Break</option></select></div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 pt-0"><button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-success rounded-3 fw-semibold px-4" onclick="showToast('Disbursal hook queued! Ledger block updated automatically.','success')" data-bs-dismiss="modal"><i class="fas fa-paper-plane me-1"></i> Disptach Disbursal Hook</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- MODALS: Account Structural Breakdown & Auxiliary Operations -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="modal fade" id="availableBreakdownModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-wallet me-2 text-success"></i>Liquid Balances Analysis</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="text-center mb-3"><div class="display-6 fw-bold text-success" style="font-family:var(--font-mono);">KES 123,750</div><div style="font-size:12px;color:var(--text-muted);">Fully withdrawable baseline funds</div></div><div class="d-flex flex-column gap-2" style="font-size:13px;"><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Ordinary Savings</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 73,750</span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Education Assurance</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 5,000</span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span class="text-muted">Fixed Deposit Escrow</span><span class="fw-bold text-muted" style="font-family:var(--font-mono);">KES 0 <small>(Locked)</small></span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span class="text-muted">Holiday Escrow Vault</span><span class="fw-bold text-muted" style="font-family:var(--font-mono);">KES 0 <small>(Locked)</small></span></div></div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3 w-100" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="lockedFundsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-lock me-2 text-warning"></i>Locked Ceilings Audit</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="text-center mb-3"><div class="display-6 fw-bold text-warning" style="font-family:var(--font-mono);">KES 35,000</div><div style="font-size:12px;color:var(--text-muted);">Allocated collateral holdings</div></div><div class="d-flex flex-column gap-2" style="font-size:13px;"><div class="p-3 rounded-3 bg-white border"><div class="d-flex justify-content-between mb-1 fw-bold"><span>Emergency Loan Security</span><span class="text-danger" style="font-family:var(--font-mono);">KES 25,000</span></div><div style="font-size:11px;color:var(--text-muted);">Isolated explicitly against active ref LN-2025-0042</div></div><div class="p-3 rounded-3 bg-white border"><div class="d-flex justify-content-between mb-1 fw-bold"><span>Guarantorship Assurance</span><span class="text-danger" style="font-family:var(--font-mono);">KES 10,000</span></div><div style="font-size:11px;color:var(--text-muted);">Active guarantee mapping against active ref LN-2024-0089</div></div></div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3 w-100" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="interestAccruedModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-percentage me-2" style="color:var(--primary);"></i>Yield Accumulation Tracking</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="text-center mb-3"><div class="display-6 fw-bold" style="font-family:var(--font-mono);color:var(--primary);">KES 4,875</div><div style="font-size:12px;color:var(--text-muted);">Lifetime automated yield credits</div></div><div class="d-flex flex-column gap-2 max-h-200 overflow-auto" style="font-size:13px;"><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Feb 2025 Hook Trigger</span><span class="fw-bold text-success" style="font-family:var(--font-mono);">+ KES 375</span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Jan 2025 Hook Trigger</span><span class="fw-bold text-success" style="font-family:var(--font-mono);">+ KES 350</span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Dec 2024 Hook Trigger</span><span class="fw-bold text-success" style="font-family:var(--font-mono);">+ KES 325</span></div></div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn text-white rounded-3 w-100 fw-semibold" style="background:var(--gradient-primary);" data-bs-dismiss="modal" onclick="new bootstrap.Modal(document.getElementById('savingsDepositGatewayModal')).show();">Inject Additional Capital</button></div></div></div></div>
+
+<div class="modal fade" id="goalEditModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold">Overall Goal Target</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="mb-3"><label class="form-label" style="font-size:12px;">Target Baseline Ceiling</label><input type="number" class="form-control" style="border-radius:12px;font-family:var(--font-mono);" value="250000"></div><button class="btn btn-primary rounded-3 w-100 fw-semibold" onclick="showToast('Overall automated target updated successfully!','success')" data-bs-dismiss="modal">Update Target Baseline</button></div></div></div></div>
+
+<div class="modal fade" id="openAccountModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-layer-group me-2" style="color:var(--primary);"></i>Open Auxiliary Savings Engine</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><p style="font-size:12px;color:var(--text-muted);">Select pre-approved compounding engines directly from our core banking catalog.</p><div class="d-flex flex-column gap-2"><div class="p-3 rounded-3 bg-white border clickable" onclick="showToast('Emergency Engine setup hook dispatched!','success')" data-bs-dismiss="modal"><div class="fw-bold" style="font-size:13px;">Emergency Fund Vault</div><div style="font-size:11px;color:var(--text-muted);">8% p.a. • Instant withdrawal rights</div></div><div class="p-3 rounded-3 bg-white border clickable" onclick="showToast('Junior Savings setup hook dispatched!','success')" data-bs-dismiss="modal"><div class="fw-bold" style="font-size:13px;">Junior Protection Vault</div><div style="font-size:11px;color:var(--text-muted);">6% p.a. • Isolated baseline security</div></div></div></div></div></div></div>
+
+<div class="modal fade" id="editAutoDepositModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold">Automated Allocation Hook</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="mb-3"><label class="form-label" style="font-size:12px;">Trigger Day</label><select class="form-select" style="border-radius:12px;"><option>5th monthly</option><option>15th monthly</option><option selected>25th monthly</option></select></div><div class="mb-3"><label class="form-label" style="font-size:12px;">Standing Token Routing</label><input type="number" class="form-control" style="border-radius:12px;font-family:var(--font-mono);" value="5000"></div><button class="btn btn-primary rounded-3 w-100 fw-semibold" onclick="showToast('Automated standing trigger mapped','success')" data-bs-dismiss="modal">Synchronize Hook</button></div></div></div></div>
+
+<div class="modal fade" id="fdEarlyBreakModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4 text-center"><div style="font-size:28px;color:#E53935;"><i class="fas fa-exclamation-triangle"></i></div><h5 class="fw-bold mt-2">Premature Break</h5><p style="font-size:12px;color:var(--text-muted);">Early automated escrow liquidation applies a statutory 30% yield sacrifice. Disbursable amount: <strong style="color:var(--text-primary);">KES 40,840</strong></p><button class="btn btn-danger w-100 rounded-3" onclick="showToast('Premature break processed instantly','success')" data-bs-dismiss="modal">Force Complete</button></div></div></div></div>
+
+<div class="modal fade" id="editHolidayGoalModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold">Re-adjust Escrow</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="mb-3"><label class="form-label" style="font-size:12px;">Escrow Ceiling</label><input type="number" class="form-control" style="border-radius:12px;font-family:var(--font-mono);" value="30000"></div><button class="btn rounded-3 w-100 fw-semibold text-white" style="background:#AB00D9;" onclick="showToast('Escrow ceiling parameter synchronized','success')" data-bs-dismiss="modal">Commit Adjustments</button></div></div></div></div>
+
+<div class="modal fade" id="addEduPlanModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold">Map Core Target</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="mb-2"><input type="text" class="form-control" style="border-radius:12px;" placeholder="Entity Name (e.g. Alliance)"></div><div class="mb-3"><input type="number" class="form-control" style="border-radius:12px;font-family:var(--font-mono);" placeholder="Baseline Allocation (KES)"></div><button class="btn btn-warning rounded-3 w-100 fw-semibold" onclick="showToast('Assurance plan mapped successfully!','success')" data-bs-dismiss="modal">Commit Target</button></div></div></div></div>
+
+<div class="modal fade" id="borrowingPowerModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-coins me-2" style="color:var(--primary);"></i>Credit Power Framework</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="text-center mb-3"><div class="display-6 fw-bold" style="font-family:var(--font-mono);color:var(--primary);">KES 476,250</div><div style="font-size:12px;color:var(--text-muted);">Dynamic baseline credit threshold</div></div><div class="d-flex flex-column gap-2" style="font-size:12px;"><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Total Verified Savings</span><span class="fw-bold" style="font-family:var(--font-mono);">KES 158,750</span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Dynamic Multiplier</span><span class="fw-bold text-success">3× Core Balance</span></div><div class="d-flex justify-content-between p-2 rounded-3 bg-white border"><span>Active Debt Exposure</span><span class="fw-bold text-danger" style="font-family:var(--font-mono);">- KES 103,500</span></div></div><div class="alert alert-info border-0 mt-3 mb-0 p-2 text-center rounded-3" style="font-size:11px;">💡 Maximize your compounding deposits to rapidly expand this automated credit ceiling.</div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3 w-100" data-bs-dismiss="modal">Acknowledge</button></div></div></div></div>
+
+<!-- Auxiliary Structural Support & Generic Audit View Modals -->
+<div class="modal fade" id="statementModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-0"><h5 class="modal-title fw-bold"><i class="fas fa-file-alt me-2" style="color:var(--primary);"></i>Generate Ledger</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="mb-3"><select class="form-select" style="border-radius:12px;"><option>All Comprehensive Vaults</option><option>Ordinary Savings Vault</option><option>Fixed Deposit Escrow</option></select></div><div class="d-flex gap-2"><button class="btn btn-outline-danger rounded-3 flex-fill" onclick="showToast('PDF compiled','success')" data-bs-dismiss="modal"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-outline-success rounded-3 flex-fill" onclick="showToast('CSV compilation extracted','success')" data-bs-dismiss="modal"><i class="fas fa-file-csv"></i> CSV</button></div></div></div></div></div>
+
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4" style="max-height:350px;overflow-y:auto;"><div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;background:rgba(255,107,0,0.03);" onclick="showToast('Direct injection credited successfully','success');bootstrap.Modal.getInstance(document.getElementById('notificationsModal')).hide();"><div style="width:32px;height:32px;background:rgba(0,200,83,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#00C853;flex-shrink:0;font-size:12px;"><i class="fas fa-check"></i></div><div><div style="font-size:13px;font-weight:600;">Direct Deposit Linked</div><div style="font-size:11px;color:var(--text-muted);">KES 7,500 injection confirmed • 2h ago</div></div></div><div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1" style="cursor:pointer;" onclick="bootstrap.Modal.getInstance(document.getElementById('notificationsModal')).hide();new bootstrap.Modal(document.getElementById('interestAccruedModal')).show();"><div style="width:32px;height:32px;background:var(--primary-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0;font-size:12px;"><i class="fas fa-percentage"></i></div><div><div style="font-size:13px;font-weight:600;">Automated Interest Credit</div><div style="font-size:11px;color:var(--text-muted);">KES 375 compounded yield active • 3d ago</div></div></div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3 w-100" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="messagesModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-header border-0 px-4 pt-4 pb-2"><h5 class="modal-title fw-bold"><i class="fas fa-envelope me-2" style="color:#0288D1;"></i>Secured Channels</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body px-4 pb-4"><div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1"><div style="width:36px;height:36px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0;">SP</div><div><div style="font-size:13px;font-weight:600;">API Handshake Audit Complete</div><div style="font-size:11px;color:var(--text-muted);">Core API fully validated active nodes...</div></div></div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3 w-100" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="logoutModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4 text-center"><div style="width:56px;height:56px;background:rgba(229,57,53,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#E53935;font-size:24px;"><i class="fas fa-sign-out-alt"></i></div><h5 class="fw-bold">Logout?</h5><p style="font-size:13px;color:var(--text-muted);">Securely unbind from private portal?</p><div class="d-flex gap-2"><button class="btn btn-outline-secondary rounded-3 flex-fill" data-bs-dismiss="modal">Keep Linked</button><a href="login.html" class="btn btn-danger rounded-3 flex-fill"><i class="fas fa-sign-out-alt me-1"></i> Force Break</a></div></div></div></div></div>
+
+<!-- Audit Details Ledger Intercept Modal -->
+<div class="modal fade" id="auditDetailInterceptModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg" style="border-radius:20px;"><div class="modal-body p-4"><div class="text-center mb-4"><div style="width:64px;height:64px;background:rgba(0,200,83,0.1);border:2px solid rgba(0,200,83,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;color:#00C853;"><i class="fas fa-check-circle"></i></div><div style="font-size:11px;color:#00C853;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;">Verified Ledger Audit</div><div class="fw-bold mt-1" style="font-size:28px;font-family:var(--font-mono);color:#00C853;" id="auditAmtDisplay">+ KES 7,500.00</div></div><div class="rounded-4 overflow-hidden" style="background:var(--bg-input);"><div class="d-flex justify-content-between p-3 border-bottom" style="font-size:13px;border-color:rgba(26,29,46,0.06)!important;"><span style="color:var(--text-muted);">Ledger Reference</span><span class="fw-semibold" style="font-family:var(--font-mono);color:var(--primary);" id="auditRefDisplay">DEP-2025-00189</span></div><div class="d-flex justify-content-between p-3 border-bottom" style="font-size:13px;border-color:rgba(26,29,46,0.06)!important;"><span style="color:var(--text-muted);">Operation Category</span><span id="auditTypeDisplay">Deposit Direct</span></div><div class="d-flex justify-content-between p-3" style="font-size:13px;"><span style="color:var(--text-muted);">Verification Intercept</span><span class="fw-bold text-success">API Autocomplete</span></div></div></div><div class="modal-footer border-0 px-4 pb-4 pt-0"><button class="btn btn-outline-secondary rounded-3 w-100" data-bs-dismiss="modal">Close Ledger View</button></div></div></div></div>
+
+
+<!-- Toast Container -->
+<div class="sp-toast-container" id="toastContainer"></div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SCRIPTS -->
+<!-- ═══════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// === Toast ===
+function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#FF6B00'};const t=document.createElement('div');t.className=`sp-toast ${type}`;t.innerHTML=`<i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${msg}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},5000);}
+
+// === Sidebar (mobile) ===
+function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('show');document.getElementById('sidebarBackdrop').classList.remove('show');}
+
+// === Aux Inject Trigger Gateway Context Setting ===
+function triggerGatewayFor(targetVault) {
+    const s = document.getElementById('gatewayTargetVault');
+    if(s) s.value = targetVault;
+    new bootstrap.Modal(document.getElementById('savingsDepositGatewayModal')).show();
+}
+
+// === Multi-option Gateway Execution Mechanisms ===
+let activeSavingsInjectionMethod = 'mpesa';
+function selectSavingsInjectionMethod(el, method) {
+    document.querySelectorAll('.auto-pay-method').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    activeSavingsInjectionMethod = method;
+}
+function setSavingsAmt(a) { document.getElementById('savingsInjectionAmountInput').value = a; updateSavingsGatewayPreview(); }
+function updateSavingsGatewayPreview() {
+    const a = document.getElementById('savingsInjectionAmountInput').value;
+    ['savingsStkAmountDisplay','savingsCardAmountDisplay','savingsCardPayBtnAmount'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = a ? 'KES ' + parseInt(a).toLocaleString() : 'KES 0';
+    });
+}
+
+function executeSavingsInjectionTrigger() {
+    const amt = document.getElementById('savingsInjectionAmountInput').value;
+    if(!amt || amt <= 0) { showToast('Please enter an authentic monetary value','warning'); return; }
+    const acct = document.getElementById('gatewayTargetVault');
+    const acctText = acct.options[acct.selectedIndex].text.split('—')[0].trim();
+    
+    bootstrap.Modal.getInstance(document.getElementById('savingsDepositGatewayModal')).hide();
+    updateSavingsGatewayPreview();
+    const stkAcct = document.getElementById('savingsStkAccountDisplay');
+    if(stkAcct) stkAcct.textContent = 'to ' + acctText;
+
+    setTimeout(() => {
+        if(activeSavingsInjectionMethod === 'mpesa' || activeSavingsInjectionMethod === 'airtel') {
+            new bootstrap.Modal(document.getElementById('savingsMpesaStkModal')).show();
+        } else if(activeSavingsInjectionMethod === 'card') {
+            new bootstrap.Modal(document.getElementById('savingsCardPayModal')).show();
+        } else if(activeSavingsInjectionMethod === 'bank') {
+            document.getElementById('savingsBankAmountInput').value = amt;
+            new bootstrap.Modal(document.getElementById('savingsBankTransferModal')).show();
+        }
+    }, 400);
+}
+
+// === Automated Phase Transitions: STK Push ===
+let savingsStkTimer;
+function triggerSavingsSTKCountdown() {
+    const phone = document.getElementById('savingsStkPhoneInput').value;
+    if(!phone || phone.length < 9) { showToast('Enter an authentic target endpoint','warning'); return; }
+    document.getElementById('savingsStkPhase1').style.display = 'none';
+    document.getElementById('savingsStkPhase2').style.display = 'block';
+    showToast('Push token initiated to active endpoint endpoint','success');
+    
+    let countdown = 60;
+    const countdownEl = document.getElementById('savingsStkCountdown');
+    savingsStkTimer = setInterval(() => {
+        countdown--;
+        countdownEl.textContent = countdown;
+        if(countdown <= 0) { clearInterval(savingsStkTimer); showToast('STK connection interval passed. Reloading...','warning'); resetSavingsSTK(); }
+    }, 1000);
+
+    setTimeout(() => {
+        clearInterval(savingsStkTimer);
+        document.getElementById('savingsStkPhase2').style.display = 'none';
+        document.getElementById('savingsStkPhase3').style.display = 'block';
+        showToast('Direct baseline injection completed successfully!','success');
+    }, 4500);
+}
+function resetSavingsSTK() {
+    clearInterval(savingsStkTimer);
+    document.getElementById('savingsStkPhase1').style.display = 'block';
+    document.getElementById('savingsStkPhase2').style.display = 'none';
+    document.getElementById('savingsStkPhase3').style.display = 'none';
+    document.getElementById('savingsStkCountdown').textContent = '60';
+    document.getElementById('savingsStkTimerCircle').style.animation = 'none';
+    setTimeout(() => { document.getElementById('savingsStkTimerCircle').style.animation = 'countDown 60s linear forwards'; }, 10);
+}
+
+// === Automated Phase Transitions: Visual Card Payments ===
+function formatSavingsCardNumber(el) {
+    let v = el.value.replace(/\s/g,'').replace(/\D/g,'');
+    v = v.match(/.{1,4}/g)?.join(' ') || v;
+    el.value = v;
+    document.getElementById('savingsCardNumberDisplay').textContent = v || '•••• •••• •••• ••••';
+}
+function formatSavingsExpiry(el) {
+    let v = el.value.replace(/\D/g,'');
+    if(v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+    el.value = v;
+    document.getElementById('savingsCardExpiryDisplay').textContent = v || 'MM/YY';
+}
+function executeSavingsCardPayment() {
+    document.getElementById('savingsCardPhase1').style.display = 'none';
+    document.getElementById('savingsCardPhase2').style.display = 'block';
+    setTimeout(() => {
+        document.getElementById('savingsCardPhase2').style.display = 'none';
+        document.getElementById('savingsCardPhase3').style.display = 'block';
+        showToast('PCI-DSS Gateway clearing confirmed!','success');
+    }, 3000);
+}
+
+// === Automated Inter-Bank Trigger ===
+function submitSavingsBankTrigger() {
+    const amt = document.getElementById('savingsBankAmountInput').value;
+    if(!amt) { showToast('Assign explicit allocation parameter first','warning'); return; }
+    showToast('Direct EFT clearing hook scheduled! Auto-audit active.','success');
+    bootstrap.Modal.getInstance(document.getElementById('savingsBankTransferModal')).hide();
+}
+
+function resetAllSavingsModals() {
+    resetSavingsSTK();
+    document.getElementById('savingsCardPhase1').style.display = 'block';
+    document.getElementById('savingsCardPhase2').style.display = 'none';
+    document.getElementById('savingsCardPhase3').style.display = 'none';
+    document.getElementById('savingsInjectionAmountInput').value = '';
+}
+
+// === Ledger Table Operation Utilities ===
+function filterSavingsOperations(type) {
+    let count = 0;
+    document.querySelectorAll('#savingsOpsTable tbody tr').forEach(row => {
+        const rowType = row.getAttribute('data-op-type');
+        const show = (type === 'all' || rowType === type);
+        row.style.display = show ? '' : 'none';
+        if(show) count++;
+    });
+    showToast(`Audit ledger extracted ${count} matched nodes`, 'info');
+}
+
+function openAuditView(ref, type) {
+    document.getElementById('auditRefDisplay').textContent = ref;
+    document.getElementById('auditTypeDisplay').textContent = type.toUpperCase() + " OPERATION";
+    new bootstrap.Modal(document.getElementById('auditDetailInterceptModal')).show();
+}
+
+// === Chart.js: Dynamic Asset Accumulation Curve ===
+let accumulationChartInst;
+function updateGrowthChart(btn, period) {
+    btn.parentElement.querySelectorAll('.btn').forEach(b => { b.classList.remove('text-white'); b.style.background=''; b.classList.add('btn-outline-secondary'); });
+    btn.classList.remove('btn-outline-secondary'); btn.classList.add('text-white'); btn.style.background='var(--primary)';
+    showToast(`Asset accumulation vector mapped to ${period} scope`, 'info');
+}
+
+const wCtx = document.getElementById('wealthAccumulationChart');
+if(wCtx) {
+    accumulationChartInst = new Chart(wCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+            datasets: [
+                {
+                    label: 'Cumulative Compounded Capital',
+                    data: [45000, 52000, 60000, 68000, 76000, 84000, 95000, 108000, 120000, 135000, 148000, 158750],
+                    borderColor: '#FF6B00',
+                    backgroundColor: 'rgba(255,107,0,0.06)',
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#FF6B00',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 2
+                },
+                {
+                    label: 'Isolated Injections',
+                    data: [5000, 7000, 8000, 8000, 8000, 8000, 11000, 13000, 12000, 15000, 13000, 12500],
+                    borderColor: '#00C853',
+                    borderWidth: 1.5,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    borderDash: [4, 3]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'end',
+                    labels: { color: 'rgba(26,29,46,0.50)', font: { size: 11 }, boxWidth: 12, boxHeight: 2, padding: 16, usePointStyle: true }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255,255,255,0.97)',
+                    titleColor: '#FF6B00',
+                    bodyColor: '#1A1D2E',
+                    borderColor: 'rgba(255,107,0,0.2)',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: { label(c){ return c.dataset.label + ': KES ' + c.raw.toLocaleString(); } }
+                }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: 'rgba(26,29,46,0.4)' } },
+                y: { grid: { color: 'rgba(26,29,46,0.04)' }, ticks: { color: 'rgba(26,29,46,0.4)', callback(v){ return 'KES '+(v/1000)+'K'; } }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+// === Init Engine Initializers ===
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.stat-value').forEach((el,i) => {
+        el.style.opacity='0'; el.style.transform='translateY(10px)';
+        setTimeout(() => { el.style.transition='all 0.5s ease'; el.style.opacity='1'; el.style.transform='translateY(0)'; }, 100+i*80);
+    });
+    setTimeout(() => showToast('Escrow vaults live. Compounding multiplier active.','primary'), 800);
+});
+</script>
+
+</body>
+</html>
