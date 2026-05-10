@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guarantorship Management - Rongo SACCO | SACCOPay Member</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* ========================================
+           CORE VARIABLES & THEME COLORS
+        ======================================== */
+        :root {
+            --primary-green: #00d084;
+            --primary-green-dark: #00a866;
+            --primary-green-light: #66e5b8;
+            --primary-green-ultra-light: #e6faf4;
+
+            --accent-teal: #00bcd4;
+            --accent-blue: #2196f3;
+            --accent-purple: #9c27b0;
+            --accent-orange: #ff9800;
+            --accent-red: #f44336;
+
+            --status-success: #4caf50;
+            --status-warning: #ffc107;
+            --status-danger: #f44336;
+            --status-info: #2196f3;
+            --status-pending: #ff9800;
+
+            --bg-primary: #f8fafb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f0f4f7;
+
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 208, 132, 0.2);
+            --glass-shadow: rgba(0, 208, 132, 0.1);
+
+            --text-primary: #1a2332;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-glow: 0 0 20px rgba(0, 208, 132, 0.15);
+
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'SF Mono', monospace;
+        }
+
+        /* ========================================
+           RESET & BASE STYLES
+        ======================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--primary-green-ultra-light) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .app-layout { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .app-sidebar {
+            width: 260px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease;
+        }
+        .sidebar-brand {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: var(--spacing-sm);
+        }
+        .brand-logo {
+            width: 36px; height: 36px; border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 1.2rem;
+        }
+        .brand-text h1 { font-size: 1.2rem; font-weight: 800; margin: 0; background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-text p { font-size: 0.7rem; color: var(--text-secondary); margin: 0; }
+        
+        .sidebar-nav { padding: var(--spacing-md) 0; }
+        .nav-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-tertiary); padding: var(--spacing-xs) var(--spacing-lg); margin-top: var(--spacing-md); }
+        .nav-item { margin: 2px var(--spacing-sm); }
+        .nav-link {
+            display: flex; align-items: center; gap: var(--spacing-md);
+            padding: 10px var(--spacing-md); color: var(--text-secondary);
+            text-decoration: none; border-radius: var(--radius-md);
+            font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease;
+        }
+        .nav-link:hover { background: var(--primary-green-ultra-light); color: var(--primary-green-dark); transform: translateX(4px); }
+        .nav-link.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; box-shadow: 0 4px 12px rgba(0, 208, 132, 0.3); font-weight: 600; }
+        .nav-badge { margin-left: auto; background: var(--status-danger); color: white; padding: 2px 8px; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700; }
+
+        /* Main Content */
+        .app-main { flex: 1; margin-left: 260px; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Topbar */
+        .app-topbar {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: var(--spacing-md) var(--spacing-xl);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .search-bar { position: relative; max-width: 400px; width: 100%; }
+        .search-bar input { width: 100%; padding: 8px 16px 8px 40px; border: 1px solid var(--border-color); border-radius: var(--radius-full); background: var(--bg-secondary); font-size: 0.85rem; outline: none; transition: all 0.3s; }
+        .search-bar input:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); }
+        .search-bar i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); font-size: 0.9rem; }
+        
+        .topbar-actions { display: flex; align-items: center; gap: var(--spacing-md); }
+        .btn-icon-only { width: 40px; height: 40px; border-radius: var(--radius-full); border: 1px solid var(--border-color); background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; position: relative; }
+        .btn-icon-only:hover { background: var(--primary-green-ultra-light); color: var(--primary-green); border-color: var(--primary-green); }
+        .btn-icon-only .badge-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: var(--status-danger); border-radius: 50%; }
+
+        .user-widget { display: flex; align-items: center; gap: var(--spacing-sm); padding: 4px 8px; border-radius: var(--radius-full); border: 1px solid var(--border-color); background: var(--bg-secondary); cursor: pointer; transition: all 0.2s; }
+        .user-widget:hover { border-color: var(--primary-green); box-shadow: var(--shadow-sm); }
+        .user-av { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem; }
+        .user-meta h6 { font-size: 0.8rem; font-weight: 600; margin: 0; }
+        .user-meta p { font-size: 0.65rem; color: var(--text-tertiary); margin: 0; }
+
+        /* Content Area */
+        .content-area { padding: var(--spacing-xl); flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; }
+        
+        /* Glass Card Utility */
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md); transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .glass-card:hover { box-shadow: var(--shadow-lg), var(--shadow-glow); border-color: var(--primary-green-light); }
+
+        /* Guarantor Hero Card */
+        .guarantor-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl) var(--spacing-2xl);
+            color: white; margin-bottom: var(--spacing-xl);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: var(--spacing-lg);
+            position: relative; overflow: hidden;
+        }
+        .guarantor-hero::before {
+            content: ''; position: absolute; top: -100px; right: -50px;
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 208, 132, 0.15) 0%, transparent 70%);
+        }
+        .hero-main h2 { font-size: 1.8rem; font-weight: 800; margin: 0 0 4px; }
+        .hero-main p { font-size: 0.9rem; color: var(--text-tertiary); margin: 0; max-width: 450px; }
+        
+        .exposure-stats { display: flex; gap: var(--spacing-xl); flex-wrap: wrap; }
+        .exp-stat-box { padding: var(--spacing-sm) var(--spacing-lg); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); text-align: center; }
+        .exp-stat-box h3 { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--primary-green); }
+        .exp-stat-box p { font-size: 0.7rem; color: var(--text-tertiary); margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+        .exp-stat-box.warning h3 { color: var(--status-warning); }
+
+        /* Metric Grid */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-xl); }
+        .metric-card { padding: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-md); cursor: pointer; }
+        .metric-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+        .metric-icon.blue { background: rgba(33, 150, 243, 0.1); color: var(--accent-blue); }
+        .metric-icon.green { background: rgba(0, 208, 132, 0.1); color: var(--primary-green); }
+        .metric-icon.orange { background: rgba(255, 152, 0, 0.1); color: var(--accent-orange); }
+        .metric-icon.purple { background: rgba(156, 39, 176, 0.1); color: var(--accent-purple); }
+        .metric-info h4 { font-size: 1.3rem; font-weight: 800; margin: 0; }
+        .metric-info p { font-size: 0.75rem; color: var(--text-secondary); margin: 0; font-weight: 500; }
+
+        /* Filter Tabs */
+        .custom-tabs { display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: var(--spacing-lg); border-bottom: 2px solid var(--border-color); padding-bottom: 2px; }
+        .ctab-btn {
+            background: transparent; border: none; padding: 10px 20px;
+            font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);
+            cursor: pointer; position: relative; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .ctab-btn:hover { color: var(--primary-green-dark); }
+        .ctab-btn.active { color: var(--primary-green); }
+        .ctab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 4px; background: var(--primary-green); border-radius: 4px 4px 0 0; }
+        .ctab-btn .badge-cnt { background: var(--bg-tertiary); color: var(--text-secondary); padding: 2px 8px; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700; transition: all 0.2s; }
+        .ctab-btn.active .badge-cnt { background: var(--primary-green-ultra-light); color: var(--primary-green); }
+
+        /* Guarantor Card Item */
+        .guar-card {
+            padding: var(--spacing-lg); border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between;
+            gap: var(--spacing-md); flex-wrap: wrap; transition: all 0.2s; background: var(--bg-secondary);
+        }
+        .guar-card:hover { background: var(--primary-green-ultra-light); padding-left: var(--spacing-xl); }
+        .guar-card:last-child { border-bottom: none; }
+        
+        .member-profile { display: flex; align-items: center; gap: var(--spacing-md); min-width: 220px; }
+        .member-av { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: white; flex-shrink: 0; }
+        .member-av.c1 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+        .member-av.c2 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .member-av.c3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+        .member-av.c4 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .member-details h5 { font-size: 0.95rem; font-weight: 700; margin: 0 0 2px; display: flex; align-items: center; gap: 6px; }
+        .member-details p { font-size: 0.75rem; color: var(--text-tertiary); margin: 0; font-family: var(--font-mono); }
+        
+        .liability-spec { flex: 1; min-width: 180px; }
+        .liability-spec h6 { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 2px; }
+        .liability-spec p { font-size: 1.1rem; font-weight: 800; margin: 0; color: var(--text-primary); }
+        .liability-spec .sub-spec { font-size: 0.75rem; color: var(--text-tertiary); font-weight: 500; }
+
+        /* Loan Performance Indicators */
+        .perf-track { width: 100px; height: 6px; background: var(--bg-tertiary); border-radius: var(--radius-full); overflow: hidden; margin: 4px 0; }
+        .perf-fill { height: 100%; border-radius: var(--radius-full); }
+        .perf-fill.good { background: var(--status-success); }
+        .perf-fill.late { background: var(--status-warning); }
+        .perf-fill.danger { background: var(--status-danger); }
+        .perf-lbl { font-size: 0.7rem; font-weight: 600; display: flex; justify-content: space-between; }
+        .perf-lbl.good { color: var(--status-success); }
+        .perf-lbl.late { color: var(--accent-orange); }
+        .perf-lbl.danger { color: var(--status-danger); }
+
+        /* Action Pill Badges */
+        .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+        .status-badge.active { background: rgba(76, 175, 80, 0.1); color: var(--status-success); }
+        .status-badge.warning { background: rgba(255, 152, 0, 0.1); color: var(--accent-orange); }
+        .status-badge.pending { background: rgba(33, 150, 243, 0.1); color: var(--accent-blue); }
+
+        .btn-actions { display: flex; gap: var(--spacing-sm); align-items: center; }
+        .btn-custom { padding: 8px 16px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; border: 1px solid; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-custom-outline { background: transparent; border-color: var(--border-color); color: var(--text-secondary); }
+        .btn-custom-outline:hover { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--text-secondary); }
+        .btn-custom-primary { background: var(--primary-green); border-color: var(--primary-green); color: white; box-shadow: 0 4px 12px rgba(0, 208, 132, 0.2); }
+        .btn-custom-primary:hover { background: var(--primary-green-dark); border-color: var(--primary-green-dark); transform: translateY(-1px); }
+        .btn-custom-danger { background: rgba(244, 67, 54, 0.1); border-color: transparent; color: var(--status-danger); }
+        .btn-custom-danger:hover { background: var(--status-danger); color: white; }
+
+        /* Exposure Bar Visualizer (Custom CSS Stacked Bar) */
+        .exposure-visualizer { background: var(--bg-tertiary); padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-xl); }
+        .vis-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm); }
+        .vis-header h5 { font-size: 0.95rem; font-weight: 700; margin: 0; }
+        .vis-header p { font-size: 0.8rem; color: var(--text-secondary); margin: 0; font-weight: 500; }
+        
+        .stacked-track { width: 100%; height: 16px; background: rgba(0,0,0,0.05); border-radius: var(--radius-full); display: flex; overflow: hidden; margin: var(--spacing-md) 0; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        .stack-segment { height: 100%; transition: width 0.5s ease; position: relative; }
+        .stack-segment.committed { background: linear-gradient(90deg, var(--accent-orange), var(--status-warning)); }
+        .stack-segment.free { background: linear-gradient(90deg, var(--primary-green), var(--accent-teal)); }
+        
+        .vis-legend { display: flex; gap: var(--spacing-xl); flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .legend-dot.committed { background: var(--accent-orange); }
+        .legend-dot.free { background: var(--primary-green); }
+
+        /* Sidebar Right Widgets */
+        .side-widget { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+        .side-widget h4 { font-size: 1rem; font-weight: 700; margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: 8px; }
+        .policy-list { list-style: none; padding: 0; }
+        .policy-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: var(--spacing-sm); padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); }
+        .policy-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .policy-item i { color: var(--primary-green); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+        /* Custom Modals Enhancements */
+        .custom-modal-header { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border: none; padding: var(--spacing-lg) var(--spacing-xl); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+        .custom-modal-header .btn-close { filter: brightness(0) invert(1); opacity: 0.8; }
+        .custom-modal-header .btn-close:hover { opacity: 1; }
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        .f-group { margin-bottom: var(--spacing-md); }
+        .f-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+        .f-group input, .f-group select, .f-group textarea { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+        .f-group input:focus, .f-group select:focus, .f-group textarea:focus { border-color: var(--primary-green); }
+
+        /* Search Sim Result Box */
+        .search-res-box { border: 1px solid var(--primary-green); border-radius: var(--radius-md); padding: var(--spacing-md); background: var(--primary-green-ultra-light); display: none; align-items: center; justify-content: space-between; margin-top: var(--spacing-sm); }
+        
+        /* OTP Form Blocks */
+        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: var(--spacing-md) 0; }
+        .otp-inputs input { width: 50px; height: 60px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--border-color); }
+        .otp-inputs input:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 4px var(--primary-green-ultra-light); }
+
+        /* Responsive tweaks */
+        @media (max-width: 1024px) {
+            .app-sidebar { transform: translateX(-100%); }
+            .app-sidebar.open { transform: translateX(0); }
+            .app-main { margin-left: 0; }
+        }
+        @media (max-width: 768px) {
+            .guarantor-hero { padding: var(--spacing-lg); flex-direction: column; align-items: stretch; }
+            .exposure-stats { justify-content: space-between; }
+            .guar-card { flex-direction: column; align-items: flex-start; }
+            .btn-actions { width: 100%; justify-content: space-between; margin-top: var(--spacing-sm); }
+            .content-area { padding: var(--spacing-md); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- ========================================
+         SIDEBAR NAVIGATION
+    ======================================== -->
+    <aside class="app-sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo"><i class="bi bi-shield-check"></i></div>
+            <div class="brand-text">
+                <h1>SACCOPay</h1>
+                <p>Member Portal</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-title">My Account</div>
+            <div class="nav-item"><a href="../index.html" class="nav-link"><i class="bi bi-grid-1x2"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i> Savings</a></div>
+            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i> Loans</a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2"></i> Wallet</a></div>
+            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up-arrow"></i> Dividends</a></div>
+            <div class="nav-item"><a href="guarantors.html" class="nav-link active"><i class="bi bi-people-fill"></i> Guarantors</a></div>
+            
+            <div class="nav-title">History & Settings</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i> Transactions</a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i> Settings</a></div>
+            
+            <div class="nav-title" style="margin-top: 4rem;">Support</div>
+            <div class="nav-item"><a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-circle"></i> Help Center</a></div>
+        </nav>
+    </aside>
+
+    <!-- ========================================
+         MAIN CONTENT AREA
+    ======================================== -->
+    <main class="app-main">
+        
+        <!-- TOPBAR -->
+        <header class="app-topbar">
+            <button class="btn-icon-only d-lg-none" id="toggleSidebar" aria-label="Toggle Menu"><i class="bi bi-list"></i></button>
+            
+            <div class="search-bar d-none d-md-block">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search members, loans, policies..." data-bs-toggle="modal" data-bs-target="#searchSimModal">
+            </div>
+
+            <div class="topbar-actions">
+                <button class="btn-icon-only" data-bs-toggle="modal" data-bs-target="#notificationSimModal" aria-label="Notifications">
+                    <i class="bi bi-bell"></i>
+                    <span class="badge-dot"></span>
+                </button>
+                
+                <div class="user-widget" data-bs-toggle="modal" data-bs-target="#profileModal">
+                    <div class="user-av">AM</div>
+                    <div class="user-meta d-none d-sm-block">
+                        <h6>Alex Mwangi</h6>
+                        <p>SP-10482</p>
+                    </div>
+                    <i class="bi bi-chevron-down d-none d-sm-block" style="color: var(--text-tertiary); font-size:0.8rem; margin-left:4px;"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div class="content-area">
+            
+            <!-- Guarantor High-Impact Hero -->
+            <div class="guarantor-hero">
+                <div class="hero-main">
+                    <h2>Guarantorship Hub</h2>
+                    <p>Track your inbound guarantor coverages, outbound exposure liabilities, and process incoming guarantor requests securely.</p>
+                </div>
+                <div class="exposure-stats">
+                    <div class="exp-stat-box warning">
+                        <h3>KES 450,000</h3>
+                        <p>Committed Exposure</p>
+                    </div>
+                    <div class="exp-stat-box">
+                        <h3>KES 1,050,000</h3>
+                        <p>Available Guarantee Limit</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualizer Section -->
+            <div class="exposure-visualizer glass-card">
+                <div class="vis-header">
+                    <div>
+                        <h5>Guarantee Capacity Utilization</h5>
+                        <p>Based on 3x your total qualifying deposits (KES 500,000)</p>
+                    </div>
+                    <span class="status-badge active" style="font-size: 0.85rem;"><i class="bi bi-shield-check"></i> Status: Unrestricted</span>
+                </div>
+                
+                <div class="stacked-track">
+                    <div class="stack-segment committed" style="width: 30%;" title="Committed: KES 450,000"></div>
+                    <div class="stack-segment free" style="width: 70%;" title="Available Limit: KES 1,050,000"></div>
+                </div>
+
+                <div class="vis-legend">
+                    <div class="legend-item"><span class="legend-dot committed"></span> Committed Liability (30%)</div>
+                    <div class="legend-item"><span class="legend-dot free"></span> Unutilized Limit Capacity (70%)</div>
+                    <div class="legend-item" style="margin-left: auto; color: var(--text-tertiary); font-weight:500;">Max Guarantee Cap: KES 1,500,000</div>
+                </div>
+            </div>
+
+            <!-- Primary Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card glass-card" data-bs-toggle="tab" data-bs-target="#outbound" onclick="activateCustomTab('btnOutbound')">
+                    <div class="metric-icon blue"><i class="bi bi-box-arrow-up-right"></i></div>
+                    <div class="metric-info">
+                        <h4>3 Active</h4>
+                        <p>Loans I Guarantee</p>
+                    </div>
+                </div>
+                <div class="metric-card glass-card" data-bs-toggle="tab" data-bs-target="#inbound" onclick="activateCustomTab('btnInbound')">
+                    <div class="metric-icon green"><i class="bi bi-shield-check"></i></div>
+                    <div class="metric-info">
+                        <h4>2 Guarantors</h4>
+                        <p>Covering My Active Loan</p>
+                    </div>
+                </div>
+                <div class="metric-card glass-card" data-bs-toggle="tab" data-bs-target="#requests" onclick="activateCustomTab('btnRequests')">
+                    <div class="metric-icon orange"><i class="bi bi-person-exclamation"></i></div>
+                    <div class="metric-info">
+                        <h4>1 Pending</h4>
+                        <p>Inbound Request</p>
+                    </div>
+                </div>
+                <div class="metric-card glass-card" data-bs-toggle="modal" data-bs-target="#requestGuarantorModal">
+                    <div class="metric-icon purple"><i class="bi bi-plus-circle-dotted"></i></div>
+                    <div class="metric-info">
+                        <h4 style="font-size:1.1rem; color:var(--accent-purple);">Request New</h4>
+                        <p>Guarantor Coverage</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Column Layout -->
+            <div class="row g-4">
+                
+                <!-- Main Records Panels -->
+                <div class="col-lg-8">
+                    
+                    <!-- Customized Tab Headers -->
+                    <div class="custom-tabs">
+                        <button class="ctab-btn active" id="btnOutbound" data-bs-toggle="tab" data-bs-target="#outbound">
+                            Loans I Guarantee <span class="badge-cnt">3</span>
+                        </button>
+                        <button class="ctab-btn" id="btnInbound" data-bs-toggle="tab" data-bs-target="#inbound">
+                            My Guarantors <span class="badge-cnt">2</span>
+                        </button>
+                        <button class="ctab-btn" id="btnRequests" data-bs-toggle="tab" data-bs-target="#requests">
+                            Pending Requests <span class="badge-cnt">1</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab Content Panels -->
+                    <div class="glass-card mb-4">
+                        <div class="tab-content">
+                            
+                            <!-- TAB 1: OUTBOUND (Loans I Guarantee) -->
+                            <div class="tab-pane fade show active" id="outbound">
+                                
+                                <!-- Card Item 1 -->
+                                <div class="guar-card">
+                                    <div class="member-profile">
+                                        <div class="member-av c1">DK</div>
+                                        <div class="member-details">
+                                            <h5>David Kipkorir <span class="status-badge active"><i class="bi bi-circle-fill" style="font-size:0.4rem;"></i> Active</span></h5>
+                                            <p>SP-10145 • Rongo Main</p>
+                                        </div>
+                                    </div>
+                                    <div class="liability-spec">
+                                        <h6>Committed Guarantee</h6>
+                                        <p>KES 200,000</p>
+                                        <span class="sub-spec">Business Loan (LN-2024-0012)</span>
+                                    </div>
+                                    <div class="perf-status">
+                                        <span class="perf-lbl good"><span>Repayment 65%</span> <span>On Track</span></span>
+                                        <div class="perf-track"><div class="perf-fill good" style="width: 65%;"></div></div>
+                                    </div>
+                                    <div class="btn-actions">
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#loanDetailModal" onclick="populateLoanModal('LN-2024-0012', 'David Kipkorir', 'KES 200,000', '65%', 'On Track')"><i class="bi bi-eye"></i> View</button>
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#replaceGuarantorModal" onclick="populateReplaceModal('David Kipkorir', 'KES 200,000', 'outbound')"><i class="bi bi-arrow-repeat"></i> Replace</button>
+                                    </div>
+                                </div>
+
+                                <!-- Card Item 2 -->
+                                <div class="guar-card">
+                                    <div class="member-profile">
+                                        <div class="member-av c2">AM</div>
+                                        <div class="member-details">
+                                            <h5>Alice Muthoni <span class="status-badge active"><i class="bi bi-circle-fill" style="font-size:0.4rem;"></i> Active</span></h5>
+                                            <p>SP-10042 • Rongo Branch</p>
+                                        </div>
+                                    </div>
+                                    <div class="liability-spec">
+                                        <h6>Committed Guarantee</h6>
+                                        <p>KES 50,000</p>
+                                        <span class="sub-spec">Emergency Loan (LN-2024-0089)</span>
+                                    </div>
+                                    <div class="perf-status">
+                                        <span class="perf-lbl good"><span>Repayment 90%</span> <span>On Track</span></span>
+                                        <div class="perf-track"><div class="perf-fill good" style="width: 90%;"></div></div>
+                                    </div>
+                                    <div class="btn-actions">
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#loanDetailModal" onclick="populateLoanModal('LN-2024-0089', 'Alice Muthoni', 'KES 50,000', '90%', 'On Track')"><i class="bi bi-eye"></i> View</button>
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#replaceGuarantorModal" onclick="populateReplaceModal('Alice Muthoni', 'KES 50,000', 'outbound')"><i class="bi bi-arrow-repeat"></i> Replace</button>
+                                    </div>
+                                </div>
+
+                                <!-- Card Item 3 (Warning State) -->
+                                <div class="guar-card" style="background: rgba(255, 152, 0, 0.04);">
+                                    <div class="member-profile">
+                                        <div class="member-av c3">BK</div>
+                                        <div class="member-details">
+                                            <h5>Bernard Kiprop <span class="status-badge warning"><i class="bi bi-exclamation-triangle-fill"></i> Warning</span></h5>
+                                            <p>SP-10078 • Awendo Sub</p>
+                                        </div>
+                                    </div>
+                                    <div class="liability-spec">
+                                        <h6>Committed Guarantee</h6>
+                                        <p>KES 200,000</p>
+                                        <span class="sub-spec">Development Loan (LN-2024-0045)</span>
+                                    </div>
+                                    <div class="perf-status">
+                                        <span class="perf-lbl late"><span>Repayment 30%</span> <span>14 Days Overdue</span></span>
+                                        <div class="perf-track"><div class="perf-fill late" style="width: 30%;"></div></div>
+                                    </div>
+                                    <div class="btn-actions">
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#reminderModal" onclick="populateReminderModal('Bernard Kiprop', 'LN-2024-0045', '14 days')"><i class="bi bi-bell-fill" style="color:var(--accent-orange);"></i> Remind</button>
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#loanDetailModal" onclick="populateLoanModal('LN-2024-0045', 'Bernard Kiprop', 'KES 200,000', '30%', '14 Days Overdue')"><i class="bi bi-eye"></i> View</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- TAB 2: INBOUND (My Guarantors) -->
+                            <div class="tab-pane fade" id="inbound">
+                                
+                                <div class="p-3 bg-light border-bottom">
+                                    <h6 class="mb-1 font-weight-bold">Covering My Loan: Personal Loan (LN-2024-00891)</h6>
+                                    <p class="text-secondary mb-0" style="font-size:0.8rem;">Total Guarantee Required: KES 300,000 | Total Secured: KES 300,000 (100% Fully Covered)</p>
+                                </div>
+
+                                <!-- Inbound Guarantor 1 -->
+                                <div class="guar-card">
+                                    <div class="member-profile">
+                                        <div class="member-av c4">SA</div>
+                                        <div class="member-details">
+                                            <h5>Sarah Auma <span class="status-badge active"><i class="bi bi-check-circle-fill"></i> Approved</span></h5>
+                                            <p>SP-10089 • Rongo Main</p>
+                                        </div>
+                                    </div>
+                                    <div class="liability-spec">
+                                        <h6>Secured Amount</h6>
+                                        <p>KES 150,000</p>
+                                        <span class="sub-spec">50% Coverage Allocation</span>
+                                    </div>
+                                    <div class="btn-actions">
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#thankYouModal" onclick="populateThankYouModal('Sarah Auma')"><i class="bi bi-envelope-heart"></i> Thank</button>
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#replaceGuarantorModal" onclick="populateReplaceModal('Sarah Auma', 'KES 150,000', 'inbound')"><i class="bi bi-arrow-repeat"></i> Swap</button>
+                                    </div>
+                                </div>
+
+                                <!-- Inbound Guarantor 2 -->
+                                <div class="guar-card">
+                                    <div class="member-profile">
+                                        <div class="member-av c1">JK</div>
+                                        <div class="member-details">
+                                            <h5>John Kamau <span class="status-badge active"><i class="bi bi-check-circle-fill"></i> Approved</span></h5>
+                                            <p>SP-10015 • Migori Center</p>
+                                        </div>
+                                    </div>
+                                    <div class="liability-spec">
+                                        <h6>Secured Amount</h6>
+                                        <p>KES 150,000</p>
+                                        <span class="sub-spec">50% Coverage Allocation</span>
+                                    </div>
+                                    <div class="btn-actions">
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#thankYouModal" onclick="populateThankYouModal('John Kamau')"><i class="bi bi-envelope-heart"></i> Thank</button>
+                                        <button class="btn-custom btn-custom-outline" data-bs-toggle="modal" data-bs-target="#replaceGuarantorModal" onclick="populateReplaceModal('John Kamau', 'KES 150,000', 'inbound')"><i class="bi bi-arrow-repeat"></i> Swap</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- TAB 3: PENDING REQUESTS -->
+                            <div class="tab-pane fade" id="requests">
+                                
+                                <div class="p-3 bg-light border-bottom">
+                                    <h6 class="mb-0 font-weight-bold">Incoming Actions Requiring Your Consent</h6>
+                                </div>
+
+                                <!-- Request Item 1 -->
+                                <div class="guar-card" style="background: rgba(0, 188, 212, 0.04);">
+                                    <div class="member-profile">
+                                        <div class="member-av c2">EW</div>
+                                        <div class="member-details">
+                                            <h5>Evans Wafula <span class="status-badge pending"><i class="bi bi-hourglass-split"></i> Review Needed</span></h5>
+                                            <p>SP-10203 • Requesting Coverage</p>
+                                        </div>
+                                    </div>
+                                    <div class="liability-spec">
+                                        <h6>Requested Guarantee</h6>
+                                        <p>KES 100,000</p>
+                                        <span class="sub-spec">Asset Finance Loan (LN-2024-0155)</span>
+                                    </div>
+                                    <div class="btn-actions">
+                                        <button class="btn-custom btn-custom-primary" data-bs-toggle="modal" data-bs-target="#approveGuaranteeModal"><i class="bi bi-shield-check"></i> Accept</button>
+                                        <button class="btn-custom btn-custom-danger" data-bs-toggle="modal" data-bs-target="#rejectGuaranteeModal"><i class="bi bi-x-circle"></i> Decline</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Guarantorship Insights Widget -->
+                    <div class="glass-card p-4">
+                        <h5 class="mb-3 font-weight-bold"><i class="bi bi-info-circle-fill" style="color:var(--primary-green);"></i> Pro Tip: Managing Your Exposure Securely</h5>
+                        <p class="text-secondary" style="font-size:0.85rem;">
+                            Your active deposits dictate the maximum capacity you can guarantee. Committing to multiple guarantees reduces your own instant borrowing cap. Always review a member's loan history via the <strong class="text-dark">View</strong> details modal before validating any incoming requests with your Secure OTP.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Side Panels Layout -->
+                <div class="col-lg-4">
+                    
+                    <!-- Quick Request Trigger Widget -->
+                    <div class="side-widget" style="background: linear-gradient(135deg, #ffffff, var(--primary-green-ultra-light)); border-color: var(--primary-green);">
+                        <h4><i class="bi bi-person-add"></i> Guarantee Assistance</h4>
+                        <p class="text-secondary mb-3" style="font-size:0.8rem;">Need cover for a pending loan application? Send an automated request directly to qualifying SACCO members.</p>
+                        <button class="btn-custom btn-custom-primary w-100 justify-content-center" data-bs-toggle="modal" data-bs-target="#requestGuarantorModal">
+                            <i class="bi bi-send-plus-fill"></i> Initiate Guarantor Request
+                        </button>
+                    </div>
+
+                    <!-- Guarantorship Policies Widget -->
+                    <div class="side-widget">
+                        <h4><i class="bi bi-shield-lock"></i> Rongo SACCO Policy</h4>
+                        <ul class="policy-list">
+                            <li class="policy-item">
+                                <i class="bi bi-check2-circle"></i>
+                                <span><strong>3x Deposit Limit:</strong> Total combined exposure cannot exceed thrice your clean deposits.</span>
+                            </li>
+                            <li class="policy-item">
+                                <i class="bi bi-check2-circle"></i>
+                                <span><strong>Shared Liability:</strong> In case of default, liability is distributed equally among active guarantors.</span>
+                            </li>
+                            <li class="policy-item">
+                                <i class="bi bi-check2-circle"></i>
+                                <span><strong>Substitutions:</strong> Swapping a guarantor takes 48 hours and requires internal credit officer authorization.</span>
+                            </li>
+                            <li class="policy-item">
+                                <i class="bi bi-check2-circle"></i>
+                                <span><strong>Auto-Release:</strong> Coverages automatically unfreeze once the underlying loan principle falls below KES 5,000.</span>
+                            </li>
+                        </ul>
+                        <button class="btn-custom btn-custom-outline w-100 justify-content-center mt-3" data-bs-toggle="modal" data-bs-target="#guarantorPolicyModal">
+                            <i class="bi bi-book"></i> Full Policy Document
+                        </button>
+                    </div>
+
+                    <!-- System Release Notice -->
+                    <div class="side-widget bg-white">
+                        <h4><i class="bi bi-bell-fill" style="color:var(--accent-orange);"></i> System Notification</h4>
+                        <p class="text-secondary mb-0" style="font-size:0.8rem;">
+                            Your guarantee liability for <strong class="text-dark">Rose Nyambura (SP-10156)</strong> amounting to <strong class="text-success">KES 100,000</strong> was fully un-committed on <strong class="text-dark">Nov 28, 2024</strong> following final loan payoff.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS (ZERO DEAD ENDS ASSURANCE)
+==================================================================== -->
+
+<!-- 1. Request Guarantor Modal (Multi-step Search Wizard) -->
+<div class="modal fade" id="requestGuarantorModal" tabindex="-1" aria-labelledby="rgModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="custom-modal-header">
+                <h5 class="modal-title" id="rgModalLabel"><i class="bi bi-plus-circle-dotted me-2"></i>Initiate New Guarantor Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="f-group">
+                    <label for="searchGuarantorInput">Step 1: Locate Rongo SACCO Member</label>
+                    <input type="text" id="searchGuarantorInput" placeholder="Enter Member ID (e.g. SP-10204) or Registered Mobile Number" onkeyup="simulateSearch(this.value)">
+                </div>
+
+                <!-- Simulated Async Lookup Results -->
+                <div class="search-res-box" id="simulatedResultBox">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="member-av c1" style="width:40px; height:40px;">KM</div>
+                        <div>
+                            <h6 class="mb-0 font-weight-bold">Kevin Mwangi <i class="bi bi-patch-check-fill text-success"></i></h6>
+                            <p class="text-secondary mb-0" style="font-size:0.75rem;">SP-10204 • Capacity Status: <span class="text-success font-weight-bold">Highly Available</span></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-custom btn-custom-primary btn-sm" onclick="lockGuarantorSelection('Kevin Mwangi', 'SP-10204')"><i class="bi bi-check-lg"></i> Select</button>
+                </div>
+
+                <div id="requestDetailsForm" style="display: none; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border-color);">
+                    <div class="f-group">
+                        <label>Target Loan Application</label>
+                        <select>
+                            <option>Personal Loan Application (Pending - LN-2024-00891)</option>
+                            <option>Emergency Asset Loan (Draft - LN-2024-00994)</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 f-group">
+                            <label>Guarantee Value Requested (KES)</label>
+                            <input type="number" placeholder="e.g. 150000" value="150000">
+                        </div>
+                        <div class="col-md-6 f-group">
+                            <label>Liability Expiry Estimate</label>
+                            <input type="text" value="24 Months (Amortized)" disabled class="bg-light">
+                        </div>
+                    </div>
+
+                    <div class="f-group">
+                        <label>Accompanying Personal Note</label>
+                        <textarea rows="2" placeholder="Provide a friendly note asking for their authorization...">Hello Kevin, requesting your guarantee support for my active Personal Loan facility. My repayment history is fully secure.</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-custom btn-custom-primary" id="btnDispatchRequest" disabled onclick="executeToastAction('Guarantor request dispatched securely to Kevin Mwangi via Push/SMS notification.')"><i class="bi bi-send-check"></i> Dispatch Authorization Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Approve Guarantee Modal (With Realistic OTP & Risk Profile) -->
+<div class="modal fade" id="approveGuaranteeModal" tabindex="-1" aria-labelledby="agModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));">
+                <h5 class="modal-title" id="agModalLabel"><i class="bi bi-shield-lock me-2"></i>Authorize Guarantorship Liability</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="bg-light p-3 rounded mb-3">
+                    <h6 class="font-weight-bold text-dark mb-2">Applicant Risk Breakdown</h6>
+                    <div class="drow"><span class="dl">Applicant</span><span class="dv">Evans Wafula (SP-10203)</span></div>
+                    <div class="drow"><span class="dl">Credit Score Rating</span><span class="dv text-success">740 (Excellent)</span></div>
+                    <div class="drow"><span class="dl">Requested Liability</span><span class="dv text-dark">KES 100,000</span></div>
+                    <div class="drow"><span class="dl">Underlying Loan Type</span><span class="dv">Asset Finance Facility</span></div>
+                </div>
+                
+                <p class="text-secondary text-center mb-1" style="font-size:0.8rem;">Enter the 4-digit verification token dispatched to your device ending in <strong class="text-dark">**784</strong></p>
+                
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" oninput="focusNext(this)">
+                    <input type="text" maxlength="1" oninput="focusNext(this)">
+                    <input type="text" maxlength="1" oninput="focusNext(this)">
+                    <input type="text" maxlength="1" oninput="focusNext(this)">
+                </div>
+
+                <div class="text-center mt-2">
+                    <span class="text-tertiary" style="font-size:0.75rem;">Didn't receive token? <a href="javascript:void(0)" onclick="executeToastAction('Fresh OTP token dispatched successfully.')" class="text-success" style="font-weight:600;">Resend OTP</a></span>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Abort</button>
+                <button type="button" class="btn-custom btn-custom-primary px-4" onclick="executeToastAction('Guarantorship liability authorized! You are now covering KES 100,000 for Evans Wafula.')"><i class="bi bi-check-all"></i> Validate & Commit Coverage</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Reject Guarantee Request Modal -->
+<div class="modal fade" id="rejectGuaranteeModal" tabindex="-1" aria-labelledby="rejModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, var(--accent-red), #e53935);">
+                <h5 class="modal-title" id="rejModalLabel"><i class="bi bi-x-circle me-2"></i>Decline Guarantee Assistance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="f-group">
+                    <label>Select Rejection Logic</label>
+                    <select>
+                        <option>Insufficient free guarantee capacity limits</option>
+                        <option>Exceeded maximum personal exposure targets</option>
+                        <option>Unfamiliar with member's credit consistency</option>
+                        <option>Currently planning personal principal withdrawals</option>
+                        <option>Other personal internal factors</option>
+                    </select>
+                </div>
+                <div class="f-group">
+                    <label>Accompanying Submitter Feedback (Optional)</label>
+                    <textarea rows="3" placeholder="Provide a polite, discrete explanation to Evans Wafula..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Back</button>
+                <button type="button" class="btn-custom btn-custom-danger" onclick="executeToastAction('Guarantee request declined discretely. Submitter notified.')"><i class="bi bi-x-lg"></i> Confirm Rejection Action</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Loan Performance Detail Modal -->
+<div class="modal fade" id="loanDetailModal" tabindex="-1" aria-labelledby="ldModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, var(--accent-blue), #1565c0);">
+                <h5 class="modal-title" id="ldModalLabel"><i class="bi bi-clipboard-data me-2"></i>Underlying Loan Monitoring Audit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="font-weight-bold mb-3">Facility Specifications</h6>
+                        <div class="drow"><span class="dl">Debtor Name</span><span class="dv" id="modDebtor">...</span></div>
+                        <div class="drow"><span class="dl">Facility Reference</span><span class="dv" id="modRef">...</span></div>
+                        <div class="drow"><span class="dl">Your Outbound Liability</span><span class="dv text-dark" id="modLiab">...</span></div>
+                        <div class="drow"><span class="dl">Disbursement Channel</span><span class="dv">Automated Electronic Ledger</span></div>
+                        <div class="drow"><span class="dl">Total Amortization</span><span class="dv">12 Monthly Installments</span></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="font-weight-bold mb-3">Current Collections Standing</h6>
+                        <div class="drow"><span class="dl">Paydown Metric</span><span class="dv text-primary" id="modProg">...</span></div>
+                        <div class="drow"><span class="dl">Risk Trajectory</span><span class="dv font-weight-bold" id="modTrack">...</span></div>
+                        <div class="drow"><span class="dl">PAR Ratio Status</span><span class="dv text-success">0.00% (Clean Standing)</span></div>
+                        <div class="drow"><span class="dl">Last Monitored Receipt</span><span class="dv">Received 4 Days Ago</span></div>
+                        <div class="drow"><span class="dl">Auto-Release Threshold</span><span class="dv">Principal < KES 5,000</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Close Auditor</button>
+                <button type="button" class="btn-custom btn-custom-primary" onclick="executeToastAction('Complete audit compliance report generated & downloaded.')"><i class="bi bi-file-earmark-pdf"></i> Extract Coverage Cert</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 5. Replace/Swap Guarantor Request Modal -->
+<div class="modal fade" id="replaceGuarantorModal" tabindex="-1" aria-labelledby="repModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, var(--accent-orange), #ef6c00);">
+                <h5 class="modal-title" id="repModalLabel"><i class="bi bi-arrow-repeat me-2"></i>Initiate Liability Substitution Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-secondary mb-3" style="font-size:0.85rem;">
+                    Substitutions transfer active guarantor liability to an alternate willing member or cover it directly using free un-committed internal capital deposits.
+                </p>
+
+                <div class="f-group">
+                    <label>Target Replacement Facility</label>
+                    <input type="text" id="repTargetSpec" disabled class="bg-light font-weight-bold">
+                </div>
+
+                <div class="f-group">
+                    <label>Substitution Source Channel</label>
+                    <select id="selSwapChannel" onchange="toggleReplacementFields(this.value)">
+                        <option value="member">Transfer exposure to an alternate member</option>
+                        <option value="deposits">Secure liability directly via unutilized savings deposits</option>
+                    </select>
+                </div>
+
+                <div id="altMemberInputBlock" class="f-group">
+                    <label>Locate Alternate Authorized Guarantor</label>
+                    <input type="text" placeholder="Enter Member ID (e.g. SP-10331)">
+                </div>
+
+                <div class="f-group">
+                    <label>Justification for Administration Processing</label>
+                    <textarea rows="2" placeholder="Provide operational reasons for coverage transfer..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Dismiss</button>
+                <button type="button" class="btn-custom btn-custom-primary" style="background:var(--accent-orange); border-color:var(--accent-orange);" onclick="executeToastAction('Substitution protocol dispatched to internal audit queue for validation.')"><i class="bi bi-send-plus"></i> Submit Substitution Protocol</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 6. Friendly Reminder Transmission Modal -->
+<div class="modal fade" id="reminderModal" tabindex="-1" aria-labelledby="remModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, var(--status-warning), #ffa000);">
+                <h5 class="modal-title text-dark" id="remModalLabel"><i class="bi bi-bell-fill me-2"></i>Dispatch Discretional Friendly Reminder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-secondary mb-3" style="font-size:0.85rem;">
+                    As a committed guarantor, you can invoke automated SMS push reminders through our secure gateway to ensure members maintain prompt paydown timelines.
+                </p>
+
+                <div class="f-group">
+                    <label>Recipient Debtor</label>
+                    <input type="text" id="remDebtorName" disabled class="bg-light font-weight-bold">
+                </div>
+
+                <div class="f-group">
+                    <label>Discretionary Pre-set Message Framework</label>
+                    <textarea rows="3" id="remMessagePayload">Hello Bernard, our SACCOPay internal ledger flags your development installment as overdue. Kindly initiate paydown through M-Pesa channels to preserve our shared borrowing indices. Thank you.</textarea>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center bg-light p-2 rounded mt-2">
+                    <span style="font-size:0.8rem; font-weight:600;">Anonymous Transmission Gateway</span>
+                    <input type="checkbox" checked style="width:18px; height:18px;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-custom btn-custom-primary text-dark" style="background:var(--status-warning); border-color:var(--status-warning);" onclick="executeToastAction('Automated friendly reminder transmission executed securely to Bernard Kiprop.')"><i class="bi bi-broadcast"></i> Execute Transmission</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 7. Guarantor Gratitude Transmission Modal -->
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-labelledby="tyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, var(--accent-purple), #7b1fa2);">
+                <h5 class="modal-title" id="tyModalLabel"><i class="bi bi-envelope-heart me-2"></i>Transmit Guarantor Appreciation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="f-group">
+                    <label>Securing Recipient</label>
+                    <input type="text" id="tyRecipientName" disabled class="bg-light font-weight-bold">
+                </div>
+                
+                <div class="f-group">
+                    <label>Transmission Payload Framework</label>
+                    <textarea rows="3">Dear Sarah, thank you for authorizing guarantee coverage for my active Personal Loan facility. Your trust and support within Rongo SACCO is greatly appreciated.</textarea>
+                </div>
+
+                <div class="f-group mt-3">
+                    <label>Optional Complimentary Action</label>
+                    <select>
+                        <option>Standard Appreciative Notification Delivery</option>
+                        <option>Attach KES 500 Digital SACCO Wallet Recharge Token</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn-custom btn-custom-primary" style="background:var(--accent-purple); border-color:var(--accent-purple);" onclick="executeToastAction('Appreciative notification dispatched securely to Sarah Auma.')"><i class="bi bi-send-heart"></i> Dispatch Message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 8. Rongo SACCO Guarantor Comprehensive Policy Modal -->
+<div class="modal fade" id="guarantorPolicyModal" tabindex="-1" aria-labelledby="gpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="custom-modal-header" style="background: linear-gradient(135deg, #37474f, #00695c);">
+                <h5 class="modal-title" id="gpModalLabel"><i class="bi bi-book-half me-2"></i>Rongo SACCO Complete Guarantorship Mandates</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="font-size:0.85rem; line-height:1.7;">
+                <h6 class="font-weight-bold text-dark mb-2">1. Governing Scope & Capacity Thresholds</h6>
+                <p class="text-secondary mb-3">
+                    All valid deposit holdings are dynamically bound to maximum lending indices. Members are permitted to commit inbound coverage exposure up to 300% (thrice) their clear non-withdrawable savings allocations. Exposure limits adjust instantly based on ledger updates processed via SACCOPay gateway networks.
+                </p>
+                
+                <h6 class="font-weight-bold text-dark mb-2">2. Liability Distribution Framework</h6>
+                <p class="text-secondary mb-3">
+                    In the highly atypical scenario of underlying facility default, outstanding principal liabilities are instantly divided proportionately among active verifying guarantors. Attached principal allocations remain locked and completely non-withdrawable until the primary defaulting account is brought back to performing PAR compliance levels.
+                </p>
+
+                <h6 class="font-weight-bold text-dark mb-2">3. Substitution & Release Timelines</h6>
+                <p class="text-secondary mb-3">
+                    Guarantors retain the absolute right to initiate liability substitution requests via the Member Dashboard at any processing interval. Replacement requires an alternate authorized member accepting equivalent capital risk using secure OTP protocols, or direct allocation bindings directly to non-withdrawable personal savings capital pools. Administrative review requires an operational period of 48 hours.
+                </p>
+
+                <h6 class="font-weight-bold text-dark mb-2">4. Discretionary Data Visibility Permissions</h6>
+                <p class="text-secondary mb-0">
+                    By validating guaranteed coverages, guarantor personnel retain continuous, persistent access to basic collections performance matrices (PAR status, amortization percentages) linked directly to target underlying loan facilities to ensure complete personal risk tracking compliance.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-custom btn-custom-outline" data-bs-dismiss="modal">Close Auditor</button>
+                <button type="button" class="btn-custom btn-custom-primary" style="background:#00695c; border-color:#00695c;" onclick="executeToastAction('Full compliance charter downloaded successfully.')"><i class="bi bi-cloud-download"></i> Extract Complete Charter PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Profile Modal Placeholder -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="member-av c4 mx-auto mb-2" style="width:60px; height:60px; font-size:1.2rem;">AM</div>
+                <h6 class="font-weight-bold mb-0">Alex Mwangi</h6>
+                <p class="text-secondary mb-3" style="font-size:0.75rem;">SP-10482 • Rongo Member</p>
+                <button type="button" class="btn-custom btn-custom-outline w-100 mb-2" onclick="executeToastAction('Navigating to full user configuration menu...')"><i class="bi bi-person-gear"></i> Configuration</button>
+                <button type="button" class="btn-custom btn-custom-danger w-100" data-bs-dismiss="modal"><i class="bi bi-box-arrow-right"></i> Disconnect</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Modal Placeholder -->
+<div class="modal fade" id="notificationSimModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="custom-modal-header p-3">
+                <h6 class="modal-title mb-0"><i class="bi bi-bell me-2"></i>Action Feed</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="p-2 bg-light rounded mb-2" style="font-size:0.8rem;">
+                    <strong class="text-dark">New Inbound Alert:</strong> Evans Wafula requests coverage verification. <a href="javascript:void(0)" onclick="switchDirectTab('requests')" data-bs-dismiss="modal" class="text-success font-weight-bold">View action</a>
+                </div>
+                <div class="p-2 bg-light rounded" style="font-size:0.8rem;">
+                    <strong class="text-dark">System Release:</strong> Guaranteed commitment for Rose Nyambura completely released.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Simulation Modal Placeholder -->
+<div class="modal fade" id="searchSimModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-body p-3">
+                <input type="text" class="form-control mb-2" placeholder="Search parameters active..." autofocus>
+                <p class="text-tertiary mb-0" style="font-size:0.75rem;">Simulated gateway connected. Locate exact internal nodes instantly.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Support Modal Placeholder -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-headset text-primary mb-2" style="font-size:2rem;"></i>
+                <h6 class="font-weight-bold mb-2">Member Live Support</h6>
+                <p class="text-secondary mb-3" style="font-size:0.75rem;">Direct digital interaction available via automated SACCOPay customer nodes.</p>
+                <button type="button" class="btn-custom btn-custom-primary w-100" data-bs-dismiss="modal" onclick="executeToastAction('Connecting secure WebSocket channel to support operator desk...')"><i class="bi bi-chat-dots"></i> Dispatch Desk Query</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Global Dynamic Action Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11000">
+    <div id="dynamicToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="dynamicToastContent">
+                Action complete successfully.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Execution Handlers Assurance -->
+<script>
+    // Global Toast Network Integration
+    function executeToastAction(messageText) {
+        const toastElement = document.getElementById('dynamicToast');
+        const contentElement = document.getElementById('dynamicToastContent');
+        contentElement.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2"></i> ${messageText}`;
+        const initializedToast = new bootstrap.Toast(toastElement, { delay: 4000 });
+        initializedToast.show();
+        
+        // Hide triggering custom operational modal instances to preserve interface flow
+        const activeModalNodes = document.querySelectorAll('.modal.show');
+        activeModalNodes.forEach(activeNode => {
+            const bootstrapInstance = bootstrap.Modal.getInstance(activeNode);
+            if (bootstrapInstance) { bootstrapInstance.hide(); }
+        });
+    }
+
+    // Toggle Mobile Sidebar Network
+    document.getElementById('toggleSidebar').addEventListener('click', function() {
+        const sidebarRef = document.getElementById('sidebar');
+        sidebarRef.classList.toggle('open');
+    });
+
+    // Custom Button-to-Tab Routing Proxy
+    function activateCustomTab(targetButtonId) {
+        const matchingButtonRef = document.getElementById(targetButtonId);
+        if (matchingButtonRef) {
+            // Dismiss active tabs formatting
+            const activeHeaderButtons = document.querySelectorAll('.ctab-btn');
+            activeHeaderButtons.forEach(btn => btn.classList.remove('active'));
+            matchingButtonRef.classList.add('active');
+        }
+    }
+
+    // Direct routing triggered by internal dialog notifications
+    function switchDirectTab(tabIdentifier) {
+        const targetTabLink = document.querySelector(`[data-bs-target="#${tabIdentifier}"]`);
+        if (targetTabLink) {
+            targetTabLink.click();
+        }
+    }
+
+    // Populate Dynamic Auditing Modal Payloads
+    function populateLoanModal(refSpec, debtorSpec, liabSpec, progSpec, trackSpec) {
+        document.getElementById('modDebtor').innerText = debtorSpec;
+        document.getElementById('modRef').innerText = refSpec;
+        document.getElementById('modLiab').innerText = liabSpec;
+        document.getElementById('modProg').innerText = progSpec;
+        
+        const trackingRef = document.getElementById('modTrack');
+        trackingRef.innerText = trackSpec;
+        if (trackSpec.includes('Overdue')) {
+            trackingRef.className = 'dv font-weight-bold text-danger';
+        } else {
+            trackingRef.className = 'dv font-weight-bold text-success';
+        }
+    }
+
+    // Populate Dynamic Replacement Modal Payloads
+    function populateReplaceModal(memberNameSpec, liabilityAmountSpec, contextChannel) {
+        document.getElementById('repTargetSpec').value = `${memberNameSpec} - Exposure Allocation: ${liabilityAmountSpec}`;
+    }
+
+    function toggleReplacementFields(selectedValue) {
+        const altInputBlockRef = document.getElementById('altMemberInputBlock');
+        if (selectedValue === 'member') {
+            altInputBlockRef.style.display = 'block';
+        } else {
+            altInputBlockRef.style.display = 'none';
+        }
+    }
+
+    // Populate Dynamic Discretional Reminder Modal
+    function populateReminderModal(debtorNameSpec, loanRefSpec, delayRangeSpec) {
+        document.getElementById('remDebtorName').value = `${debtorNameSpec} (${loanRefSpec})`;
+    }
+
+    // Populate Dynamic Gratitude Transmission Modal
+    function populateThankYouModal(recipientNameSpec) {
+        document.getElementById('tyRecipientName').value = recipientNameSpec;
+    }
+
+    // Request Multi-Step Async Simulated Input Engine
+    function simulateSearch(searchKeyPayload) {
+        const simulatedBoxRef = document.getElementById('simulatedResultBox');
+        const requestFormRef = document.getElementById('requestDetailsForm');
+        const dispatchButtonRef = document.getElementById('btnDispatchRequest');
+
+        if (searchKeyPayload.length > 4) {
+            simulatedBoxRef.style.display = 'flex';
+        } else {
+            simulatedBoxRef.style.display = 'none';
+            requestFormRef.style.display = 'none';
+            dispatchButtonRef.disabled = true;
+        }
+    }
+
+    function lockGuarantorSelection(lockedNameSpec, lockedIdSpec) {
+        document.getElementById('searchGuarantorInput').value = `${lockedNameSpec} (${lockedIdSpec})`;
+        document.getElementById('simulatedResultBox').style.display = 'none';
+        document.getElementById('requestDetailsForm').style.display = 'block';
+        document.getElementById('btnDispatchRequest').disabled = false;
+    }
+
+    // Dynamic OTP Focusing Utility
+    function focusNext(inputRef) {
+        if (inputRef.value.length === 1 && inputRef.nextElementSibling) {
+            inputRef.nextElementSibling.focus();
+        }
+    }
+
+    // Auto-map customized button classes formatting on initial native boot
+    document.addEventListener("DOMContentLoaded", function() {
+        const nativeTabLinks = document.querySelectorAll('.ctab-btn');
+        nativeTabLinks.forEach(elementLink => {
+            elementLink.addEventListener('click', function() {
+                nativeTabLinks.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

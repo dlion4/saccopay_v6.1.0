@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statements | SACCOPay Member</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary:#00d084;--primary-dark:#00a866;--primary-ultra:#e6faf4;
+            --teal:#00bcd4;--blue:#2196f3;--purple:#9c27b0;--orange:#ff9800;--red:#f44336;
+            --bg:#f8fafb;--bg2:#ffffff;--bg3:#f0f4f7;--glass:rgba(255,255,255,0.85);--border:#e2e8f0;
+            --text1:#1a2332;--text2:#64748b;--text3:#94a3b8;
+            --shadow-sm:0 2px 8px rgba(0,0,0,0.04);--shadow-md:0 4px 16px rgba(0,0,0,0.08);
+            --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;--r-full:9999px;
+            --sp-xs:.25rem;--sp-sm:.5rem;--sp-md:1rem;--sp-lg:1.5rem;--sp-xl:2rem;--sp-2xl:3rem;
+            --font:'Inter',-apple-system,sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:var(--font);background:linear-gradient(135deg,#f8fafb,#e6faf4);color:var(--text1);min-height:100vh;}
+        .member-layout{display:flex;min-height:100vh;}
+
+        /* Sidebar */
+        .member-sidebar{width:260px;background:var(--glass);backdrop-filter:blur(20px);border-right:1px solid rgba(0,208,132,0.15);position:fixed;height:100vh;overflow-y:auto;z-index:1000;}
+        .sidebar-brand{padding:var(--sp-xl);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:var(--sp-md);}
+        .brand-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--primary),var(--teal));border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:1.1rem;}
+        .brand-text h2{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .member-info-bar{padding:var(--sp-md) var(--sp-xl);border-bottom:1px solid var(--border);background:var(--primary-ultra);}
+        .member-info-bar .m-name{font-size:.88rem;font-weight:700;}
+        .member-info-bar .m-id{font-size:.7rem;color:var(--text2);}
+        .nav-section-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:var(--sp-sm) var(--sp-xl);margin-top:var(--sp-sm);}
+        .nav-item{margin:2px var(--sp-md);}
+        .nav-link{display:flex;align-items:center;gap:var(--sp-sm);padding:10px var(--sp-md);color:var(--text2);text-decoration:none;border-radius:var(--r-md);font-size:.85rem;font-weight:500;transition:all .2s;}
+        .nav-link:hover{background:var(--primary-ultra);color:var(--primary-dark);transform:translateX(4px);}
+        .nav-link.active{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;box-shadow:0 4px 12px rgba(0,208,132,0.3);}
+        .nav-link i{width:18px;flex-shrink:0;}
+        .nav-badge{margin-left:auto;background:var(--red);color:white;padding:1px 6px;border-radius:var(--r-full);font-size:.65rem;font-weight:700;}
+
+        .member-main{flex:1;margin-left:260px;min-height:100vh;}
+
+        /* Topbar */
+        .member-topbar{background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,208,132,0.15);padding:var(--sp-md) var(--sp-xl);position:sticky;top:0;z-index:100;}
+        .topbar-inner{display:flex;justify-content:space-between;align-items:center;}
+        .page-breadcrumb{font-size:.8rem;color:var(--text2);}
+        .page-breadcrumb span{color:var(--primary);font-weight:600;}
+        .topbar-right{display:flex;align-items:center;gap:var(--sp-md);}
+        .topbar-btn{width:36px;height:36px;border-radius:var(--r-full);background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;text-decoration:none;color:var(--text2);}
+        .topbar-btn:hover{background:var(--primary-ultra);border-color:var(--primary);color:var(--primary);}
+        .topbar-notif{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--red);border-radius:50%;font-size:.6rem;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid white;}
+        .user-chip{display:flex;align-items:center;gap:var(--sp-sm);padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-full);cursor:pointer;transition:all .2s;}
+        .user-chip:hover{border-color:var(--primary);}
+        .user-chip-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.68rem;}
+
+        .page-content{padding:var(--sp-xl);max-width:1100px;}
+
+        /* Header */
+        .pg-header{margin-bottom:var(--sp-xl);}
+        .pg-header h2{font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:var(--sp-sm);}
+        .pg-header p{font-size:.88rem;color:var(--text2);margin:4px 0 0;}
+
+        /* Stat strip */
+        .stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-md);margin-bottom:var(--sp-xl);}
+        .stat-tile{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(0,208,132,0.15);border-radius:var(--r-md);padding:var(--sp-lg);transition:all .2s;cursor:pointer;}
+        .stat-tile:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:rgba(0,208,132,0.3);}
+        .stat-tile .st-icon{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:var(--sp-sm);}
+        .stat-tile .st-label{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+        .stat-tile .st-value{font-size:1.4rem;font-weight:700;margin-top:2px;}
+        .stat-tile .st-sub{font-size:.7rem;color:var(--text3);margin-top:2px;}
+
+        /* Glass Card */
+        .g-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(0,208,132,0.15);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow:hidden;}
+        .g-card-header{padding:var(--sp-lg) var(--sp-xl);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--sp-md);}
+        .g-card-header h3{font-size:1rem;font-weight:700;margin:0;}
+        .g-card-body{padding:var(--sp-xl);}
+
+        /* Filter Bar */
+        .filter-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-md);margin-bottom:var(--sp-lg);align-items:end;}
+        .filter-bar label{font-size:.72rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;}
+        .finput{border:2px solid var(--border);border-radius:var(--r-md);padding:9px 14px;font-size:.85rem;width:100%;transition:all .3s;}
+        .finput:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,208,132,0.12);outline:none;}
+        .fselect{border:2px solid var(--border);border-radius:var(--r-md);padding:9px 14px;font-size:.85rem;width:100%;}
+
+        /* Quick Range */
+        .quick-range{display:flex;gap:var(--sp-sm);flex-wrap:wrap;margin-bottom:var(--sp-lg);}
+        .qr-btn{padding:6px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-full);font-size:.78rem;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;}
+        .qr-btn:hover{background:var(--primary-ultra);border-color:rgba(0,208,132,0.3);color:var(--primary-dark);}
+        .qr-btn.active{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border-color:transparent;}
+
+        /* Statement Type Cards */
+        .stype-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-md);}
+        .stype-card{background:var(--bg2);border:2px solid var(--border);border-radius:var(--r-md);padding:var(--sp-md);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:var(--sp-md);}
+        .stype-card:hover{border-color:rgba(0,208,132,0.3);background:var(--primary-ultra);}
+        .stype-card.sel{border-color:var(--primary);background:var(--primary-ultra);box-shadow:0 0 0 3px rgba(0,208,132,0.12);}
+        .stype-icon{width:40px;height:40px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+        .stype-card h6{font-size:.85rem;font-weight:700;margin:0;}
+        .stype-card p{font-size:.7rem;color:var(--text3);margin:2px 0 0;}
+
+        /* Format Pills */
+        .fmt-pills{display:flex;gap:8px;flex-wrap:wrap;}
+        .fmt-pill{padding:8px 16px;border:2px solid var(--border);border-radius:var(--r-md);background:var(--bg2);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text2);transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .fmt-pill:hover{border-color:rgba(0,208,132,0.3);}
+        .fmt-pill.sel{border-color:var(--primary);background:var(--primary-ultra);color:var(--primary-dark);}
+
+        /* Status Badges */
+        .sbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--r-full);font-size:.7rem;font-weight:700;}
+        .sbadge.ready{background:rgba(0,208,132,0.1);color:var(--primary-dark);}
+        .sbadge.processing{background:rgba(255,152,0,0.1);color:#e65100;}
+        .sbadge.expired{background:rgba(158,158,158,0.1);color:#616161;}
+        .sbadge.scheduled{background:rgba(33,150,243,0.1);color:#1565c0;}
+
+        /* Statement Row */
+        .stmt-row{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-md);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:var(--sp-sm);background:var(--bg2);transition:all .2s;}
+        .stmt-row:hover{border-color:rgba(0,208,132,0.3);box-shadow:var(--shadow-sm);transform:translateX(3px);}
+        .stmt-icon{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+        .stmt-icon.pdf{background:rgba(244,67,54,0.1);color:#e53935;}
+        .stmt-icon.excel{background:rgba(76,175,80,0.1);color:#43a047;}
+        .stmt-icon.csv{background:rgba(33,150,243,0.1);color:#1e88e5;}
+        .stmt-info{flex:1;min-width:0;}
+        .stmt-info h6{font-size:.88rem;font-weight:700;margin:0 0 2px;}
+        .stmt-info p{font-size:.72rem;color:var(--text3);margin:0;}
+        .stmt-meta{text-align:right;flex-shrink:0;}
+        .stmt-meta .stmt-date{font-size:.78rem;color:var(--text2);font-weight:500;}
+        .stmt-meta .stmt-size{font-size:.7rem;color:var(--text3);margin-top:1px;}
+        .stmt-actions{display:flex;gap:4px;flex-shrink:0;}
+
+        /* Schedule Row */
+        .sched-row{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-md);background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:var(--sp-sm);}
+        .sched-row .sched-info h6{font-size:.85rem;font-weight:600;margin:0 0 2px;}
+        .sched-row .sched-info p{font-size:.7rem;color:var(--text3);margin:0;}
+
+        /* Buttons */
+        .btn-g{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:var(--r-md);padding:10px 20px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-g:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,208,132,0.4);color:white;}
+        .btn-o{background:transparent;border:2px solid var(--primary);color:var(--primary);border-radius:var(--r-md);padding:8px 16px;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-o:hover{background:var(--primary);color:white;}
+        .btn-ghost-s{background:transparent;border:none;color:var(--text2);border-radius:var(--r-md);padding:8px 14px;font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-ghost-s:hover{background:var(--bg3);color:var(--primary);}
+        .btn-icon-s{width:32px;height:32px;border-radius:var(--r-sm);background:var(--bg3);border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--text2);font-size:.85rem;}
+        .btn-icon-s:hover{background:var(--primary);color:white;}
+        .btn-icon-s.danger:hover{background:var(--red);}
+
+        /* Modal */
+        .modal-content{border:none;border-radius:var(--r-lg);box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+        .mh-green{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-blue{background:linear-gradient(135deg,#1565c0,#1976d2);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-orange{background:linear-gradient(135deg,#e65100,#f57c00);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-dark{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .modal-header .btn-close{filter:brightness(0) invert(1);}
+        .modal-body{padding:var(--sp-xl);}
+        .modal-footer{border-top:1px solid var(--border);padding:var(--sp-lg) var(--sp-xl);}
+
+        .drow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+        .drow:last-child{border-bottom:none;}
+        .drow .dl{color:var(--text3);font-weight:500;}
+        .drow .dv{font-weight:600;color:var(--text1);}
+
+        /* Tabs */
+        .m-tabs{display:flex;gap:var(--sp-sm);border-bottom:2px solid var(--border);margin-bottom:var(--sp-xl);overflow-x:auto;}
+        .m-tab{padding:10px 20px;border:none;background:none;font-size:.88rem;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+        .m-tab:hover{color:var(--primary);}
+        .m-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+        .tab-pane{display:none;}.tab-pane.active{display:block;}
+
+        /* Generated Doc Preview */
+        .doc-preview{background:white;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--sp-xl);max-height:400px;overflow-y:auto;}
+        .doc-preview h2{font-size:1rem;font-weight:700;text-align:center;}
+        .doc-preview .doc-meta{font-size:.72rem;color:var(--text2);text-align:center;margin-bottom:var(--sp-md);}
+        .doc-preview table{width:100%;font-size:.78rem;border-collapse:collapse;margin-top:var(--sp-md);}
+        .doc-preview th{background:var(--bg3);padding:6px 10px;text-align:left;font-weight:700;border-bottom:2px solid var(--border);font-size:.7rem;text-transform:uppercase;}
+        .doc-preview td{padding:6px 10px;border-bottom:1px solid var(--border);}
+        .doc-preview tr:last-child td{border-bottom:none;}
+
+        /* Empty */
+        .empty-row{text-align:center;padding:var(--sp-xl);color:var(--text3);font-size:.85rem;}
+
+        @media(max-width:768px){
+            .member-sidebar{transform:translateX(-100%);transition:.3s;}
+            .member-sidebar.open{transform:translateX(0);}
+            .member-main{margin-left:0;}
+            .stat-strip{grid-template-columns:repeat(2,1fr);}
+            .stmt-row{flex-wrap:wrap;}
+            .stmt-actions{width:100%;justify-content:flex-end;}
+        }
+
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+        .fade-in{animation:fadeIn .4s ease-out;}
+    </style>
+</head>
+<body>
+<div class="member-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="member-sidebar" id="sidebar">
+        <div class="sidebar-brand"><div class="brand-logo">S</div><div class="brand-text"><h2>SACCOPay</h2><p style="font-size:.7rem;color:var(--text3);">Member Portal</p></div></div>
+        <div class="member-info-bar"><div class="m-name">John Kamau</div><div class="m-id">SP-10015 · Rongo SACCO</div></div>
+        <nav style="padding:var(--sp-sm) 0;">
+            <div class="nav-section-title">Overview</div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
+            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i>My Profile</a></div>
+            <div class="nav-section-title">Savings & Shares</div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings Accounts</a></div>
+            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i>Share Capital</a></div>
+            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i>Dividends</a></div>
+            <div class="nav-section-title">Loans</div>
+            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans</a></div>
+            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i>Apply for Loan</a></div>
+            <div class="nav-item"><a href="guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantorship<span class="nav-badge">2</span></a></div>
+            <div class="nav-section-title">Transactions</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2"></i>Wallet</a></div>
+            <div class="nav-item"><a href="statements.html" class="nav-link active"><i class="bi bi-file-text"></i>Statements</a></div>
+            <div class="nav-section-title">Account</div>
+            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">3</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
+            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="member-main">
+        <div class="member-topbar">
+            <div class="topbar-inner">
+                <div><button class="btn-ghost-s d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button><div class="page-breadcrumb">Home / Transactions / <span>Statements</span></div></div>
+                <div class="topbar-right"><a href="notifications.html" class="topbar-btn"><i class="bi bi-bell"></i><span class="topbar-notif">3</span></a><div class="user-chip" data-bs-toggle="modal" data-bs-target="#profileModal"><div class="user-chip-av">JK</div><span style="font-size:.8rem;font-weight:600;">John K.</span></div></div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <!-- HEADER -->
+            <div class="pg-header fade-in">
+                <h2><i class="bi bi-file-text" style="color:var(--primary);"></i> Account Statements</h2>
+                <p>Generate, download, and schedule statements for any of your accounts</p>
+            </div>
+
+            <!-- STAT STRIP -->
+            <div class="stat-strip fade-in">
+                <div class="stat-tile" onclick="switchTab('generate')">
+                    <div class="st-icon" style="background:rgba(0,208,132,0.1);color:var(--primary);"><i class="bi bi-file-earmark-plus"></i></div>
+                    <div class="st-label">Generate New</div>
+                    <div class="st-value">Now</div>
+                    <div class="st-sub">Custom statement</div>
+                </div>
+                <div class="stat-tile" onclick="switchTab('downloads')">
+                    <div class="st-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-download"></i></div>
+                    <div class="st-label">Recent Downloads</div>
+                    <div class="st-value">8</div>
+                    <div class="st-sub">Last 30 days</div>
+                </div>
+                <div class="stat-tile" onclick="switchTab('scheduled')">
+                    <div class="st-icon" style="background:rgba(255,152,0,0.1);color:var(--orange);"><i class="bi bi-calendar-check"></i></div>
+                    <div class="st-label">Auto Statements</div>
+                    <div class="st-value">2</div>
+                    <div class="st-sub">Active schedules</div>
+                </div>
+                <div class="stat-tile" onclick="switchTab('certificates')">
+                    <div class="st-icon" style="background:rgba(156,39,176,0.1);color:var(--purple);"><i class="bi bi-patch-check"></i></div>
+                    <div class="st-label">Certificates</div>
+                    <div class="st-value">5</div>
+                    <div class="st-sub">Loan, Tax, Audit</div>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="m-tabs fade-in">
+                <button class="m-tab active" id="tabBtn-generate" onclick="switchTab('generate')"><i class="bi bi-file-earmark-plus"></i> Generate</button>
+                <button class="m-tab" id="tabBtn-downloads" onclick="switchTab('downloads')"><i class="bi bi-clock-history"></i> Recent Downloads</button>
+                <button class="m-tab" id="tabBtn-scheduled" onclick="switchTab('scheduled')"><i class="bi bi-calendar-check"></i> Scheduled</button>
+                <button class="m-tab" id="tabBtn-certificates" onclick="switchTab('certificates')"><i class="bi bi-patch-check"></i> Certificates</button>
+            </div>
+
+            <!-- ============ TAB: GENERATE ============ -->
+            <div class="tab-pane active" id="pane-generate">
+                <div class="g-card">
+                    <div class="g-card-header"><h3><i class="bi bi-file-earmark-plus" style="color:var(--primary);"></i> Generate New Statement</h3></div>
+                    <div class="g-card-body">
+
+                        <!-- Account Type -->
+                        <div style="margin-bottom:var(--sp-xl);">
+                            <label style="font-size:.78rem;font-weight:700;color:var(--text1);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:var(--sp-md);">Select Account / Statement Type</label>
+                            <div class="stype-grid">
+                                <div class="stype-card sel" onclick="selectStmtType(this,'all')">
+                                    <div class="stype-icon" style="background:rgba(0,208,132,0.1);color:var(--primary);"><i class="bi bi-collection"></i></div>
+                                    <div><h6>All Accounts</h6><p>Combined statement</p></div>
+                                </div>
+                                <div class="stype-card" onclick="selectStmtType(this,'savings')">
+                                    <div class="stype-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-piggy-bank"></i></div>
+                                    <div><h6>Savings Account</h6><p>Deposits & balance</p></div>
+                                </div>
+                                <div class="stype-card" onclick="selectStmtType(this,'shares')">
+                                    <div class="stype-icon" style="background:rgba(26,35,126,0.1);color:#1a237e;"><i class="bi bi-shield-lock"></i></div>
+                                    <div><h6>Share Capital</h6><p>Holdings & dividends</p></div>
+                                </div>
+                                <div class="stype-card" onclick="selectStmtType(this,'loans')">
+                                    <div class="stype-icon" style="background:rgba(244,67,54,0.1);color:var(--red);"><i class="bi bi-cash-stack"></i></div>
+                                    <div><h6>Loans</h6><p>Repayments & balances</p></div>
+                                </div>
+                                <div class="stype-card" onclick="selectStmtType(this,'wallet')">
+                                    <div class="stype-icon" style="background:rgba(156,39,176,0.1);color:var(--purple);"><i class="bi bi-wallet2"></i></div>
+                                    <div><h6>Wallet</h6><p>SACCOPay activity</p></div>
+                                </div>
+                                <div class="stype-card" onclick="selectStmtType(this,'mini')">
+                                    <div class="stype-icon" style="background:rgba(255,152,0,0.1);color:var(--orange);"><i class="bi bi-receipt"></i></div>
+                                    <div><h6>Mini Statement</h6><p>Last 10 transactions</p></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Range -->
+                        <div style="margin-bottom:var(--sp-md);">
+                            <label style="font-size:.78rem;font-weight:700;color:var(--text1);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:var(--sp-md);">Quick Date Range</label>
+                            <div class="quick-range">
+                                <button class="qr-btn" onclick="setQuickRange(this,'7d')">Last 7 Days</button>
+                                <button class="qr-btn active" onclick="setQuickRange(this,'30d')">Last 30 Days</button>
+                                <button class="qr-btn" onclick="setQuickRange(this,'3m')">Last 3 Months</button>
+                                <button class="qr-btn" onclick="setQuickRange(this,'6m')">Last 6 Months</button>
+                                <button class="qr-btn" onclick="setQuickRange(this,'ytd')">Year to Date</button>
+                                <button class="qr-btn" onclick="setQuickRange(this,'lyr')">Last Year</button>
+                                <button class="qr-btn" onclick="setQuickRange(this,'all')">All Time</button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Range -->
+                        <div class="filter-bar">
+                            <div><label>From Date</label><input type="date" class="finput" value="2024-11-18" id="dateFrom"></div>
+                            <div><label>To Date</label><input type="date" class="finput" value="2024-12-18" id="dateTo"></div>
+                            <div><label>Format</label>
+                                <div class="fmt-pills">
+                                    <div class="fmt-pill sel" onclick="selectFormat(this,'pdf')"><i class="bi bi-file-earmark-pdf-fill" style="color:#e53935;"></i> PDF</div>
+                                    <div class="fmt-pill" onclick="selectFormat(this,'excel')"><i class="bi bi-file-earmark-excel-fill" style="color:#43a047;"></i> Excel</div>
+                                    <div class="fmt-pill" onclick="selectFormat(this,'csv')"><i class="bi bi-file-earmark-text-fill" style="color:#1e88e5;"></i> CSV</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div style="margin-top:var(--sp-lg);padding:var(--sp-lg);background:var(--bg3);border-radius:var(--r-md);">
+                            <h6 style="font-size:.82rem;font-weight:700;margin-bottom:var(--sp-md);"><i class="bi bi-sliders me-1"></i>Statement Options</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="optHeader" checked><label class="form-check-label" for="optHeader" style="font-size:.82rem;">Include SACCO header & branding</label></div></div>
+                                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="optBalance" checked><label class="form-check-label" for="optBalance" style="font-size:.82rem;">Show running balance column</label></div></div>
+                                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="optSummary" checked><label class="form-check-label" for="optSummary" style="font-size:.82rem;">Include opening/closing summary</label></div></div>
+                                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="optCharts"><label class="form-check-label" for="optCharts" style="font-size:.82rem;">Include charts & graphs (PDF only)</label></div></div>
+                                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="optStamp" checked><label class="form-check-label" for="optStamp" style="font-size:.82rem;">Add SACCO stamp (verified)</label></div></div>
+                                <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="optPwd"><label class="form-check-label" for="optPwd" style="font-size:.82rem;">Password-protect PDF</label></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="margin-top:var(--sp-xl);display:flex;gap:var(--sp-md);flex-wrap:wrap;">
+                            <button class="btn-g" onclick="openModal('previewModal')"><i class="bi bi-eye"></i> Preview Statement</button>
+                            <button class="btn-o" data-bs-toggle="modal" data-bs-target="#deliveryModal"><i class="bi bi-envelope"></i> Email Statement</button>
+                            <button class="btn-o" onclick="generateAndDownload()"><i class="bi bi-download"></i> Generate & Download</button>
+                            <button class="btn-ghost-s" data-bs-toggle="modal" data-bs-target="#scheduleModal"><i class="bi bi-calendar-plus"></i> Schedule Auto-Generation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ TAB: RECENT DOWNLOADS ============ -->
+            <div class="tab-pane" id="pane-downloads">
+                <div class="g-card">
+                    <div class="g-card-header">
+                        <h3><i class="bi bi-clock-history" style="color:var(--blue);"></i> Recent Downloads</h3>
+                        <div style="display:flex;gap:8px;">
+                            <select class="fselect" style="font-size:.78rem;padding:6px 10px;width:auto;"><option>All Types</option><option>Savings</option><option>Loans</option><option>Wallet</option></select>
+                            <button class="btn-ghost-s" onclick="showToast('All downloads cleared')"><i class="bi bi-trash"></i> Clear</button>
+                        </div>
+                    </div>
+                    <div class="g-card-body">
+                        <div class="stmt-row" onclick="openStmtDetail('Combined Statement','Nov 18 – Dec 18, 2024','PDF','1.2 MB','Today, 2:30 PM')">
+                            <div class="stmt-icon pdf"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+                            <div class="stmt-info"><h6>Combined Statement — All Accounts</h6><p>Period: Nov 18 – Dec 18, 2024 · Generated by you</p></div>
+                            <div class="stmt-meta"><div class="stmt-date">Today, 2:30 PM</div><div class="stmt-size">1.2 MB</div></div>
+                            <div class="stmt-actions">
+                                <button class="btn-icon-s" title="Download" onclick="event.stopPropagation();downloadStmt('Combined-Statement.pdf')"><i class="bi bi-download"></i></button>
+                                <button class="btn-icon-s" title="Email" onclick="event.stopPropagation();emailStmt('Combined-Statement.pdf')"><i class="bi bi-envelope"></i></button>
+                                <button class="btn-icon-s" title="Share" onclick="event.stopPropagation();shareStmt('Combined-Statement.pdf')"><i class="bi bi-share"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="event.stopPropagation();deleteStmt('Combined-Statement.pdf')"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="stmt-row" onclick="openStmtDetail('Savings Statement','Q4 2024','Excel','845 KB','Yesterday, 4:20 PM')">
+                            <div class="stmt-icon excel"><i class="bi bi-file-earmark-excel-fill"></i></div>
+                            <div class="stmt-info"><h6>Savings Account Statement — Q4 2024</h6><p>Period: Oct 1 – Dec 17, 2024</p></div>
+                            <div class="stmt-meta"><div class="stmt-date">Yesterday, 4:20 PM</div><div class="stmt-size">845 KB</div></div>
+                            <div class="stmt-actions">
+                                <button class="btn-icon-s" title="Download" onclick="event.stopPropagation();downloadStmt('Savings-Q4.xlsx')"><i class="bi bi-download"></i></button>
+                                <button class="btn-icon-s" title="Email" onclick="event.stopPropagation();emailStmt('Savings-Q4.xlsx')"><i class="bi bi-envelope"></i></button>
+                                <button class="btn-icon-s" title="Share" onclick="event.stopPropagation();shareStmt('Savings-Q4.xlsx')"><i class="bi bi-share"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="event.stopPropagation();deleteStmt('Savings-Q4.xlsx')"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="stmt-row" onclick="openStmtDetail('Loan Statement','LN-2024-00845','PDF','620 KB','Dec 16')">
+                            <div class="stmt-icon pdf"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+                            <div class="stmt-info"><h6>Loan Statement — LN-2024-00845</h6><p>Education Loan · Full repayment history</p></div>
+                            <div class="stmt-meta"><div class="stmt-date">Dec 16, 2024</div><div class="stmt-size">620 KB</div></div>
+                            <div class="stmt-actions">
+                                <button class="btn-icon-s" title="Download" onclick="event.stopPropagation();downloadStmt('Loan-Statement.pdf')"><i class="bi bi-download"></i></button>
+                                <button class="btn-icon-s" title="Email" onclick="event.stopPropagation();emailStmt('Loan-Statement.pdf')"><i class="bi bi-envelope"></i></button>
+                                <button class="btn-icon-s" title="Share" onclick="event.stopPropagation();shareStmt('Loan-Statement.pdf')"><i class="bi bi-share"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="event.stopPropagation();deleteStmt('Loan-Statement.pdf')"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="stmt-row" onclick="openStmtDetail('Wallet Statement','Nov 2024','CSV','215 KB','Dec 12')">
+                            <div class="stmt-icon csv"><i class="bi bi-file-earmark-text-fill"></i></div>
+                            <div class="stmt-info"><h6>Wallet Statement — November 2024</h6><p>SACCOPay Wallet activity</p></div>
+                            <div class="stmt-meta"><div class="stmt-date">Dec 12, 2024</div><div class="stmt-size">215 KB</div></div>
+                            <div class="stmt-actions">
+                                <button class="btn-icon-s" title="Download" onclick="event.stopPropagation();downloadStmt('Wallet-Nov.csv')"><i class="bi bi-download"></i></button>
+                                <button class="btn-icon-s" title="Email" onclick="event.stopPropagation();emailStmt('Wallet-Nov.csv')"><i class="bi bi-envelope"></i></button>
+                                <button class="btn-icon-s" title="Share" onclick="event.stopPropagation();shareStmt('Wallet-Nov.csv')"><i class="bi bi-share"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="event.stopPropagation();deleteStmt('Wallet-Nov.csv')"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="stmt-row" onclick="openStmtDetail('Share Statement','2024 Annual','PDF','480 KB','Dec 5')">
+                            <div class="stmt-icon pdf"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+                            <div class="stmt-info"><h6>Share Capital Statement — 2024 Annual</h6><p>Holdings, dividends & contributions</p></div>
+                            <div class="stmt-meta"><div class="stmt-date">Dec 5, 2024</div><div class="stmt-size">480 KB</div></div>
+                            <div class="stmt-actions">
+                                <button class="btn-icon-s" title="Download" onclick="event.stopPropagation();downloadStmt('Share-Annual.pdf')"><i class="bi bi-download"></i></button>
+                                <button class="btn-icon-s" title="Email" onclick="event.stopPropagation();emailStmt('Share-Annual.pdf')"><i class="bi bi-envelope"></i></button>
+                                <button class="btn-icon-s" title="Share" onclick="event.stopPropagation();shareStmt('Share-Annual.pdf')"><i class="bi bi-share"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="event.stopPropagation();deleteStmt('Share-Annual.pdf')"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ TAB: SCHEDULED ============ -->
+            <div class="tab-pane" id="pane-scheduled">
+                <div class="g-card">
+                    <div class="g-card-header">
+                        <h3><i class="bi bi-calendar-check" style="color:var(--orange);"></i> Scheduled Auto-Statements</h3>
+                        <button class="btn-g" data-bs-toggle="modal" data-bs-target="#scheduleModal"><i class="bi bi-plus"></i> New Schedule</button>
+                    </div>
+                    <div class="g-card-body">
+                        <div class="sched-row">
+                            <div style="display:flex;align-items:center;gap:var(--sp-md);">
+                                <div class="stmt-icon pdf"><i class="bi bi-calendar-month"></i></div>
+                                <div class="sched-info"><h6>Monthly Combined Statement</h6><p>1st of every month · PDF · Sent to john.k@email.com</p></div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span class="sbadge ready">Active</span>
+                                <button class="btn-icon-s" title="Edit" onclick="openModal('editScheduleModal')"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-icon-s" title="Pause" onclick="toggleSchedule(this)"><i class="bi bi-pause"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="deleteSchedule()"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="sched-row">
+                            <div style="display:flex;align-items:center;gap:var(--sp-md);">
+                                <div class="stmt-icon excel"><i class="bi bi-calendar3"></i></div>
+                                <div class="sched-info"><h6>Quarterly Loan Statement</h6><p>Last day of each quarter · Excel · Sent to john.k@email.com</p></div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span class="sbadge ready">Active</span>
+                                <button class="btn-icon-s" title="Edit" onclick="openModal('editScheduleModal')"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-icon-s" title="Pause" onclick="toggleSchedule(this)"><i class="bi bi-pause"></i></button>
+                                <button class="btn-icon-s danger" title="Delete" onclick="deleteSchedule()"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:var(--sp-lg);padding:var(--sp-md);background:rgba(33,150,243,0.06);border:1px solid rgba(33,150,243,0.15);border-radius:var(--r-md);font-size:.82rem;color:#1565c0;display:flex;gap:var(--sp-sm);align-items:flex-start;">
+                            <i class="bi bi-info-circle-fill" style="margin-top:2px;flex-shrink:0;"></i>
+                            <div>Scheduled statements are automatically generated and emailed on the configured date. You can also access them in <strong>Recent Downloads</strong>.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ TAB: CERTIFICATES ============ -->
+            <div class="tab-pane" id="pane-certificates">
+                <div class="g-card">
+                    <div class="g-card-header">
+                        <h3><i class="bi bi-patch-check" style="color:var(--purple);"></i> Official Certificates</h3>
+                    </div>
+                    <div class="g-card-body">
+                        <div class="stmt-row" onclick="openCertModal('Loan Clearance Certificate','Confirms full repayment')">
+                            <div class="stmt-icon" style="background:rgba(0,208,132,0.1);color:var(--primary);"><i class="bi bi-patch-check-fill"></i></div>
+                            <div class="stmt-info"><h6>Loan Clearance Certificate</h6><p>For LN-2024-00750 · Personal Loan · Cleared Mar 2024</p></div>
+                            <div class="stmt-meta"><span class="sbadge ready">Available</span></div>
+                            <div class="stmt-actions"><button class="btn-icon-s" onclick="event.stopPropagation();downloadStmt('Loan-Clearance.pdf')"><i class="bi bi-download"></i></button></div>
+                        </div>
+                        <div class="stmt-row" onclick="openCertModal('Tax Withholding Certificate (WHT)','For dividend tax filing')">
+                            <div class="stmt-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-receipt-cutoff"></i></div>
+                            <div class="stmt-info"><h6>Tax Withholding Certificate (WHT)</h6><p>FY 2024 · For KRA filing · Dividend tax withheld</p></div>
+                            <div class="stmt-meta"><span class="sbadge ready">Available</span></div>
+                            <div class="stmt-actions"><button class="btn-icon-s" onclick="event.stopPropagation();downloadStmt('WHT-Certificate.pdf')"><i class="bi bi-download"></i></button></div>
+                        </div>
+                        <div class="stmt-row" onclick="openCertModal('Share Certificate','Proof of share ownership')">
+                            <div class="stmt-icon" style="background:rgba(26,35,126,0.1);color:#1a237e;"><i class="bi bi-shield-fill-check"></i></div>
+                            <div class="stmt-info"><h6>Share Capital Certificate</h6><p>45 shares · Total value: KES 45,000 · Issued Dec 2024</p></div>
+                            <div class="stmt-meta"><span class="sbadge ready">Available</span></div>
+                            <div class="stmt-actions"><button class="btn-icon-s" onclick="event.stopPropagation();downloadStmt('Share-Certificate.pdf')"><i class="bi bi-download"></i></button></div>
+                        </div>
+                        <div class="stmt-row" onclick="openCertModal('Membership Certificate','Proof of SACCO membership')">
+                            <div class="stmt-icon" style="background:rgba(156,39,176,0.1);color:var(--purple);"><i class="bi bi-person-badge"></i></div>
+                            <div class="stmt-info"><h6>Membership Certificate</h6><p>Member since Jan 2022 · Active status</p></div>
+                            <div class="stmt-meta"><span class="sbadge ready">Available</span></div>
+                            <div class="stmt-actions"><button class="btn-icon-s" onclick="event.stopPropagation();downloadStmt('Membership-Certificate.pdf')"><i class="bi bi-download"></i></button></div>
+                        </div>
+                        <div class="stmt-row" onclick="openCertModal('Audit Confirmation Letter','For external auditors')">
+                            <div class="stmt-icon" style="background:rgba(255,152,0,0.1);color:var(--orange);"><i class="bi bi-file-earmark-check"></i></div>
+                            <div class="stmt-info"><h6>Audit Confirmation Letter</h6><p>Balance & holdings as at Dec 18, 2024 · For auditors</p></div>
+                            <div class="stmt-meta"><span class="sbadge processing">Request Required</span></div>
+                            <div class="stmt-actions"><button class="btn-o" style="font-size:.72rem;padding:6px 12px;" onclick="event.stopPropagation();openModal('certRequestModal')">Request</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- PREVIEW MODAL -->
+<div class="modal fade" id="previewModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mh-green"><h5 class="modal-title"><i class="bi bi-eye me-2"></i>Statement Preview</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="doc-preview">
+            <div style="text-align:center;border-bottom:2px solid var(--border);padding-bottom:var(--sp-md);margin-bottom:var(--sp-md);">
+                <div style="font-size:.7rem;color:var(--primary);font-weight:700;letter-spacing:.1em;text-transform:uppercase;">RONGO SACCO SOCIETY LTD</div>
+                <h2>Combined Account Statement</h2>
+                <div class="doc-meta">Member: John Kamau · SP-10015 · Period: Nov 18 – Dec 18, 2024</div>
+            </div>
+            <div class="row" style="font-size:.78rem;margin-bottom:var(--sp-md);">
+                <div class="col-6"><strong>Opening Balance:</strong> KES 95,000</div>
+                <div class="col-6 text-end"><strong>Closing Balance:</strong> KES 128,450</div>
+            </div>
+            <table>
+                <thead><tr><th>Date</th><th>Description</th><th style="text-align:right;">Debit</th><th style="text-align:right;">Credit</th><th style="text-align:right;">Balance</th></tr></thead>
+                <tbody>
+                    <tr><td>Nov 18</td><td>Opening Balance</td><td></td><td></td><td>95,000</td></tr>
+                    <tr><td>Nov 25</td><td>Salary Deposit</td><td></td><td>85,000</td><td>180,000</td></tr>
+                    <tr><td>Nov 28</td><td>Loan Repayment</td><td>15,000</td><td></td><td>165,000</td></tr>
+                    <tr><td>Dec 1</td><td>Share Purchase</td><td>10,000</td><td></td><td>155,000</td></tr>
+                    <tr><td>Dec 5</td><td>Withdrawal — M-Pesa</td><td>30,000</td><td></td><td>125,000</td></tr>
+                    <tr><td>Dec 10</td><td>Wallet Top-up</td><td></td><td>5,000</td><td>130,000</td></tr>
+                    <tr><td>Dec 17</td><td>Transfer to Savings</td><td>1,550</td><td></td><td>128,450</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top:var(--sp-md);padding-top:var(--sp-md);border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.75rem;">
+                <div>Generated: Dec 18, 2024 · 3:45 PM</div>
+                <div style="color:var(--primary);">✓ Verified · Stamp Applied</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Close</button>
+        <button class="btn-o" onclick="emailStmt('preview')"><i class="bi bi-envelope"></i> Email</button>
+        <button class="btn-g" onclick="generateAndDownload()"><i class="bi bi-download"></i> Download Now</button>
+    </div>
+</div></div></div>
+
+<!-- DELIVERY MODAL -->
+<div class="modal fade" id="deliveryModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-blue"><h5 class="modal-title"><i class="bi bi-envelope me-2"></i>Email Statement</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">To Email</label><input type="email" class="finput" value="john.k@email.com"></div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">CC (Optional)</label><input type="email" class="finput" placeholder="Add another email"></div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Subject</label><input type="text" class="finput" value="My SACCO Statement — Nov 18 – Dec 18, 2024"></div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Message (Optional)</label><textarea class="finput" rows="3" placeholder="Add a personal note..."></textarea></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="deliveryPwd"><label class="form-check-label" for="deliveryPwd" style="font-size:.82rem;">Password-protect attachment (sent via SMS)</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-g" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="sendEmail()"><i class="bi bi-send"></i> Send Email</button>
+    </div>
+</div></div></div>
+
+<!-- SCHEDULE MODAL -->
+<div class="modal fade" id="scheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-orange"><h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>Schedule Auto-Statement</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Statement Type</label>
+                <select class="fselect"><option>Combined (All Accounts)</option><option>Savings Only</option><option>Loans Only</option><option>Wallet Only</option><option>Share Capital Only</option></select>
+            </div>
+            <div class="col-md-6"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Frequency</label>
+                <select class="fselect"><option>Weekly</option><option>Bi-weekly</option><option selected>Monthly</option><option>Quarterly</option><option>Annually</option></select>
+            </div>
+            <div class="col-md-6"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Day / Date</label>
+                <select class="fselect"><option>1st of month</option><option>15th of month</option><option>Last day of month</option></select>
+            </div>
+            <div class="col-md-6"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Format</label>
+                <select class="fselect"><option>PDF</option><option>Excel</option><option>CSV</option></select>
+            </div>
+            <div class="col-md-6"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Delivery</label>
+                <select class="fselect"><option>Email</option><option>Dashboard Only</option><option>Email + Dashboard</option></select>
+            </div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Email Address</label><input type="email" class="finput" value="john.k@email.com"></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-g" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="createSchedule()"><i class="bi bi-calendar-check"></i> Create Schedule</button>
+    </div>
+</div></div></div>
+
+<!-- EDIT SCHEDULE MODAL -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-orange"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Schedule</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Frequency</label><select class="fselect"><option selected>Monthly</option><option>Quarterly</option></select></div>
+            <div class="col-md-6"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Day</label><select class="fselect"><option selected>1st of month</option><option>15th</option><option>Last day</option></select></div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Email</label><input type="email" class="finput" value="john.k@email.com"></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-g" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="updateSchedule()"><i class="bi bi-check"></i> Update</button>
+    </div>
+</div></div></div>
+
+<!-- STATEMENT DETAIL MODAL -->
+<div class="modal fade" id="stmtDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-dark"><h5 class="modal-title"><i class="bi bi-file-text me-2"></i>Statement Detail</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" id="stmtDetailBody"></div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Close</button>
+        <button class="btn-o" onclick="emailStmt('detail')"><i class="bi bi-envelope"></i> Email</button>
+        <button class="btn-g" onclick="downloadStmt('statement')"><i class="bi bi-download"></i> Download</button>
+    </div>
+</div></div></div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="modal fade" id="certificateModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-green" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);"><h5 class="modal-title"><i class="bi bi-patch-check me-2"></i><span id="certTitle">Certificate</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:white;border:2px solid #6a1b9a;border-radius:var(--r-md);padding:var(--sp-xl);text-align:center;">
+            <div style="font-size:.7rem;color:#6a1b9a;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">RONGO SACCO SOCIETY LTD</div>
+            <h3 style="margin:var(--sp-md) 0;font-weight:800;" id="certTitleBig">Certificate</h3>
+            <p style="color:var(--text2);font-size:.85rem;" id="certDesc">Certificate description</p>
+            <div style="margin:var(--sp-lg) 0;padding:var(--sp-md);background:var(--bg3);border-radius:var(--r-sm);font-size:.85rem;">
+                <div class="drow"><span class="dl">Member</span><span class="dv">John Kamau</span></div>
+                <div class="drow"><span class="dl">Member ID</span><span class="dv">SP-10015</span></div>
+                <div class="drow"><span class="dl">Date Issued</span><span class="dv">Dec 18, 2024</span></div>
+                <div class="drow"><span class="dl">Verification Code</span><span class="dv">RS-CERT-7842-2024</span></div>
+            </div>
+            <div style="font-size:.7rem;color:var(--text3);">This is an officially generated digital certificate. Verify authenticity at <strong>verify.rongosacco.co.ke</strong></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Close</button>
+        <button class="btn-o" onclick="emailStmt('cert')"><i class="bi bi-envelope"></i> Email</button>
+        <button class="btn-g" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="downloadStmt('cert')"><i class="bi bi-download"></i> Download Certificate</button>
+    </div>
+</div></div></div>
+
+<!-- CERT REQUEST MODAL -->
+<div class="modal fade" id="certRequestModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-orange"><h5 class="modal-title"><i class="bi bi-file-earmark-arrow-up me-2"></i>Request Certificate</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="padding:var(--sp-md);background:rgba(33,150,243,0.06);border:1px solid rgba(33,150,243,0.15);border-radius:var(--r-md);font-size:.82rem;color:#1565c0;margin-bottom:var(--sp-lg);"><i class="bi bi-info-circle-fill me-1"></i> The Audit Confirmation Letter requires SACCO admin approval. Processing typically takes 1-3 business days.</div>
+        <div class="row g-3">
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Auditor / Recipient Name</label><input type="text" class="finput" placeholder="e.g. ABC Auditors LLP"></div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Auditor Email</label><input type="email" class="finput" placeholder="auditor@firm.com"></div>
+            <div class="col-12"><label style="font-size:.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;display:block;margin-bottom:5px;">Reason for Request</label><textarea class="finput" rows="3" placeholder="Brief reason..."></textarea></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-g" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="submitCertRequest()"><i class="bi bi-send"></i> Submit Request</button>
+    </div>
+</div></div></div>
+
+<!-- PROFILE MODAL -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--sp-xl);text-align:center;"><div class="user-chip-av" style="width:68px;height:68px;font-size:1.4rem;margin:0 auto var(--sp-md);">JK</div><h5 style="font-weight:700;">John Kamau</h5><p style="font-size:.78rem;color:var(--text2);margin-bottom:var(--sp-lg);">SP-10015 · Rongo SACCO</p><div style="display:flex;flex-direction:column;gap:8px;"><a href="profile.html" class="btn-ghost-s" style="text-decoration:none;justify-content:center;"><i class="bi bi-person me-2"></i>Profile</a><a href="settings.html" class="btn-ghost-s" style="text-decoration:none;justify-content:center;"><i class="bi bi-gear me-2"></i>Settings</a><hr style="margin:4px 0;border-color:var(--border);"><button class="btn-ghost-s" style="color:var(--red);justify-content:center;" onclick="showToast('Logging out...')"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="toast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('toast'),{delay:3500}).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function closeModal(id){const m=bootstrap.Modal.getInstance(document.getElementById(id));if(m)m.hide();}
+
+// Tabs
+function switchTab(tab){
+    document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    document.getElementById('tabBtn-'+tab).classList.add('active');
+    document.getElementById('pane-'+tab).classList.add('active');
+}
+
+// Generate
+function selectStmtType(el,t){document.querySelectorAll('.stype-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selectFormat(el,f){el.parentElement.querySelectorAll('.fmt-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+function setQuickRange(el,r){
+    document.querySelectorAll('.qr-btn').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+    const today=new Date();const from=new Date();
+    if(r==='7d')from.setDate(today.getDate()-7);
+    else if(r==='30d')from.setDate(today.getDate()-30);
+    else if(r==='3m')from.setMonth(today.getMonth()-3);
+    else if(r==='6m')from.setMonth(today.getMonth()-6);
+    else if(r==='ytd')from.setMonth(0,1);
+    else if(r==='lyr'){from.setFullYear(today.getFullYear()-1,0,1);today.setFullYear(today.getFullYear()-1,11,31);}
+    else if(r==='all')from.setFullYear(2020,0,1);
+    document.getElementById('dateFrom').value=from.toISOString().split('T')[0];
+    document.getElementById('dateTo').value=today.toISOString().split('T')[0];
+}
+
+function generateAndDownload(){closeModal('previewModal');showToast('Statement generated and downloading... 📄');}
+
+// Downloads
+function openStmtDetail(name,period,fmt,size,date){
+    document.getElementById('stmtDetailBody').innerHTML=`
+        <div style="text-align:center;margin-bottom:var(--sp-lg);">
+            <div style="width:60px;height:60px;border-radius:var(--r-md);background:rgba(244,67,54,0.1);color:#e53935;display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-sm);font-size:1.8rem;"><i class="bi bi-file-earmark-${fmt==='Excel'?'excel':fmt==='CSV'?'text':'pdf'}-fill"></i></div>
+            <h5 style="font-weight:700;">${name}</h5>
+            <p style="font-size:.82rem;color:var(--text2);">${period}</p>
+        </div>
+        <div class="drow"><span class="dl">Format</span><span class="dv">${fmt}</span></div>
+        <div class="drow"><span class="dl">Size</span><span class="dv">${size}</span></div>
+        <div class="drow"><span class="dl">Generated</span><span class="dv">${date}</span></div>
+        <div class="drow"><span class="dl">Status</span><span class="dv" style="color:var(--primary);"><i class="bi bi-check-circle-fill"></i> Verified</span></div>
+        <div class="drow"><span class="dl">SACCO Stamp</span><span class="dv" style="color:var(--primary);">✓ Applied</span></div>
+    `;
+    openModal('stmtDetailModal');
+}
+
+function downloadStmt(name){showToast(`Downloading ${name}...`);}
+function emailStmt(name){closeModal('stmtDetailModal');setTimeout(()=>openModal('deliveryModal'),300);}
+function shareStmt(name){showToast(`Sharing ${name}...`);}
+function deleteStmt(name){if(confirm(`Delete ${name}?`))showToast(`${name} deleted`);}
+
+function sendEmail(){closeModal('deliveryModal');showToast('Statement emailed successfully! 📧');}
+
+// Schedule
+function createSchedule(){closeModal('scheduleModal');showToast('Auto-statement schedule created! 📅');}
+function updateSchedule(){closeModal('editScheduleModal');showToast('Schedule updated!');}
+function toggleSchedule(el){const i=el.querySelector('i');if(i.classList.contains('bi-pause')){i.classList.replace('bi-pause','bi-play');showToast('Schedule paused');}else{i.classList.replace('bi-play','bi-pause');showToast('Schedule resumed');}}
+function deleteSchedule(){if(confirm('Delete this schedule?'))showToast('Schedule deleted');}
+
+// Certificates
+function openCertModal(title,desc){document.getElementById('certTitle').textContent=title;document.getElementById('certTitleBig').textContent=title;document.getElementById('certDesc').textContent=desc;openModal('certificateModal');}
+function submitCertRequest(){closeModal('certRequestModal');showToast('Certificate request submitted! Admin will process in 1-3 days. 📩');}
+</script>
+</body>
+</html>

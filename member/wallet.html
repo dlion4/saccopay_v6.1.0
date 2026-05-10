@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SACCOPay Wallet | Member Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary:#00d084;--primary-dark:#00a866;--primary-ultra:#e6faf4;
+            --teal:#00bcd4;--blue:#2196f3;--purple:#9c27b0;--orange:#ff9800;--red:#f44336;--green:#4caf50;
+            --bg:#f8fafb;--bg2:#ffffff;--bg3:#f0f4f7;--glass:rgba(255,255,255,0.85);--border:#e2e8f0;
+            --text1:#1a2332;--text2:#64748b;--text3:#94a3b8;
+            --shadow-sm:0 2px 8px rgba(0,0,0,0.04);--shadow-md:0 4px 16px rgba(0,0,0,0.08);
+            --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;--r-full:9999px;
+            --sp-xs:.25rem;--sp-sm:.5rem;--sp-md:1rem;--sp-lg:1.5rem;--sp-xl:2rem;--sp-2xl:3rem;
+            --font:'Inter',-apple-system,sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:var(--font);background:linear-gradient(135deg,#f8fafb,#e6faf4);color:var(--text1);min-height:100vh;}
+        .member-layout{display:flex;min-height:100vh;}
+
+        /* Sidebar */
+        .member-sidebar{width:260px;background:var(--glass);backdrop-filter:blur(20px);border-right:1px solid rgba(0,208,132,0.15);position:fixed;height:100vh;overflow-y:auto;z-index:1000;}
+        .sidebar-brand{padding:var(--sp-xl);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:var(--sp-md);}
+        .brand-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--primary),var(--teal));border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:1.1rem;}
+        .brand-text h2{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .member-info-bar{padding:var(--sp-md) var(--sp-xl);border-bottom:1px solid var(--border);background:var(--primary-ultra);}
+        .member-info-bar .m-name{font-size:.88rem;font-weight:700;}
+        .member-info-bar .m-id{font-size:.7rem;color:var(--text2);}
+        .nav-section-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:var(--sp-sm) var(--sp-xl);margin-top:var(--sp-sm);}
+        .nav-item{margin:2px var(--sp-md);}
+        .nav-link{display:flex;align-items:center;gap:var(--sp-sm);padding:10px var(--sp-md);color:var(--text2);text-decoration:none;border-radius:var(--r-md);font-size:.85rem;font-weight:500;transition:all .2s;}
+        .nav-link:hover{background:var(--primary-ultra);color:var(--primary-dark);transform:translateX(4px);}
+        .nav-link.active{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;box-shadow:0 4px 12px rgba(0,208,132,0.3);}
+        .nav-link i{width:18px;flex-shrink:0;}
+        .nav-badge{margin-left:auto;background:var(--red);color:white;padding:1px 6px;border-radius:var(--r-full);font-size:.65rem;font-weight:700;}
+
+        .member-main{flex:1;margin-left:260px;min-height:100vh;}
+
+        /* Topbar */
+        .member-topbar{background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,208,132,0.15);padding:var(--sp-md) var(--sp-xl);position:sticky;top:0;z-index:100;}
+        .topbar-inner{display:flex;justify-content:space-between;align-items:center;}
+        .page-breadcrumb{font-size:.8rem;color:var(--text2);}
+        .page-breadcrumb span{color:var(--primary);font-weight:600;}
+        .topbar-right{display:flex;align-items:center;gap:var(--sp-md);}
+        .topbar-btn{width:36px;height:36px;border-radius:var(--r-full);background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;text-decoration:none;color:var(--text2);}
+        .topbar-btn:hover{background:var(--primary-ultra);border-color:var(--primary);color:var(--primary);}
+        .topbar-notif{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--red);border-radius:50%;font-size:.6rem;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid white;}
+        .user-chip{display:flex;align-items:center;gap:var(--sp-sm);padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-full);cursor:pointer;transition:all .2s;}
+        .user-chip:hover{border-color:var(--primary);}
+        .user-chip-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.68rem;}
+
+        .page-content{padding:var(--sp-xl);max-width:1100px;}
+
+        /* Wallet Hero */
+        .wallet-hero{
+            background:linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#0f172a 100%);
+            border-radius:var(--r-xl);padding:0;color:white;margin-bottom:var(--sp-xl);
+            position:relative;overflow:hidden;
+        }
+        .wallet-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(0,208,132,0.18),transparent);}
+        .wallet-hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(0,188,212,0.12),transparent);}
+        .wh-inner{position:relative;z-index:1;padding:var(--sp-2xl);}
+        .wh-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--sp-xl);flex-wrap:wrap;gap:var(--sp-md);}
+
+        /* Chip */
+        .wallet-chip{width:48px;height:36px;border-radius:6px;background:linear-gradient(135deg,#d4af37,#f5d76e);display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-md);}
+        .chip-inner{width:28px;height:20px;border:1.5px solid rgba(139,109,30,0.5);border-radius:3px;position:relative;}
+        .chip-inner::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:rgba(139,109,30,0.4);}
+        .chip-inner::after{content:'';position:absolute;top:50%;left:0;right:0;height:1.5px;background:rgba(139,109,30,0.4);}
+
+        .wh-balance-label{font-size:.75rem;opacity:.6;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+        .wh-balance{font-size:2.6rem;font-weight:800;letter-spacing:-1px;line-height:1;margin:6px 0;}
+        .wh-balance .currency{font-size:1.3rem;font-weight:600;opacity:.7;vertical-align:top;margin-right:4px;}
+
+        .wallet-id-pill{
+            display:inline-flex;align-items:center;gap:8px;
+            background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+            border-radius:var(--r-full);padding:6px 16px;
+            font-family:'SF Mono','Consolas',monospace;font-size:.82rem;letter-spacing:1px;
+            cursor:pointer;transition:all .2s;
+        }
+        .wallet-id-pill:hover{background:rgba(255,255,255,0.14);border-color:var(--primary);}
+        .wallet-id-pill .copy-ic{opacity:.5;transition:opacity .2s;}
+        .wallet-id-pill:hover .copy-ic{opacity:1;color:var(--primary);}
+
+        .wh-status{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:var(--r-full);font-size:.72rem;font-weight:600;}
+        .wh-status.active{background:rgba(76,175,80,0.2);color:#81c784;}
+
+        .wh-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-md);}
+        .kpi-box{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:var(--sp-md);cursor:pointer;transition:all .2s;}
+        .kpi-box:hover{background:rgba(0,208,132,0.15);border-color:rgba(0,208,132,0.3);}
+        .kpi-box .k-label{font-size:.68rem;opacity:.6;margin-bottom:4px;}
+        .kpi-box .k-value{font-size:1.15rem;font-weight:700;}
+        .kpi-box .k-sub{font-size:.65rem;opacity:.5;margin-top:2px;}
+
+        /* Action Buttons */
+        .action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--sp-md);margin-bottom:var(--sp-xl);}
+        .action-tile{
+            background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(0,208,132,0.15);
+            border-radius:var(--r-lg);padding:var(--sp-lg);text-align:center;cursor:pointer;transition:all .3s;
+        }
+        .action-tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-md),0 0 20px rgba(0,208,132,0.15);border-color:rgba(0,208,132,0.4);}
+        .action-tile-icon{width:48px;height:48px;border-radius:var(--r-full);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto var(--sp-sm);}
+        .action-tile h6{font-size:.82rem;font-weight:600;margin:0;}
+        .action-tile p{font-size:.68rem;color:var(--text3);margin:2px 0 0;}
+
+        /* Glass Card */
+        .g-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(0,208,132,0.15);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);transition:all .3s;overflow:hidden;}
+        .g-card:hover{box-shadow:var(--shadow-md);}
+        .g-card-header{padding:var(--sp-lg) var(--sp-xl);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+        .g-card-header h3{font-size:1rem;font-weight:700;margin:0;}
+        .g-card-body{padding:var(--sp-xl);}
+
+        /* Tabs */
+        .m-tabs{display:flex;gap:var(--sp-sm);border-bottom:2px solid var(--border);margin-bottom:var(--sp-xl);overflow-x:auto;}
+        .m-tab{padding:10px 20px;border:none;background:none;font-size:.88rem;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+        .m-tab:hover{color:var(--primary);}
+        .m-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+        .tab-pane{display:none;}.tab-pane.active{display:block;}
+
+        /* Channel Option */
+        .ch-opt{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-md) var(--sp-lg);border:2px solid var(--border);border-radius:var(--r-md);cursor:pointer;transition:all .2s;margin-bottom:var(--sp-sm);}
+        .ch-opt:hover{border-color:rgba(0,208,132,0.3);background:var(--primary-ultra);}
+        .ch-opt.sel{border-color:var(--primary);background:var(--primary-ultra);box-shadow:0 0 0 3px rgba(0,208,132,0.12);}
+        .ch-icon{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+        .ch-opt .ch-name{font-weight:600;font-size:.88rem;}
+        .ch-opt .ch-desc{font-size:.72rem;color:var(--text3);}
+
+        /* Step Wizard */
+        .step-bar{display:flex;justify-content:center;gap:0;margin-bottom:var(--sp-xl);}
+        .step-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;min-width:60px;}
+        .step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;border:2px solid;transition:all .3s;}
+        .step-dot.done{background:var(--primary);border-color:var(--primary);color:white;}
+        .step-dot.active{background:white;border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px rgba(0,208,132,0.15);}
+        .step-dot.pending{background:white;border-color:var(--border);color:var(--text3);}
+        .step-label{font-size:.62rem;font-weight:600;}
+        .step-label.done,.step-label.active{color:var(--primary);}
+        .step-label.pending{color:var(--text3);}
+        .step-line{width:24px;height:2px;flex-shrink:0;margin-bottom:18px;}
+        .step-line.done{background:var(--primary);}
+        .step-line.pending{background:var(--border);}
+
+        /* PIN Input */
+        .pin-row{display:flex;justify-content:center;gap:10px;margin:var(--sp-lg) 0;}
+        .pin-box{width:48px;height:56px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--r-md);transition:all .3s;}
+        .pin-box:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,208,132,0.15);outline:none;}
+
+        /* Transaction Row */
+        .txn-row{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-md) 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all .2s;}
+        .txn-row:last-child{border-bottom:none;}
+        .txn-row:hover{background:var(--primary-ultra);border-radius:var(--r-md);padding-left:var(--sp-sm);}
+        .txn-icon{width:38px;height:38px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+        .txn-icon.in{background:rgba(0,208,132,0.1);color:var(--primary);}
+        .txn-icon.out{background:rgba(244,67,54,0.1);color:var(--red);}
+        .txn-icon.xfr{background:rgba(33,150,243,0.1);color:var(--blue);}
+        .txn-info{flex:1;min-width:0;}
+        .txn-info h6{font-size:.85rem;font-weight:600;margin:0;}
+        .txn-info p{font-size:.72rem;color:var(--text3);margin:2px 0 0;}
+        .txn-amt{text-align:right;flex-shrink:0;}
+        .txn-amt .amt{font-size:.95rem;font-weight:700;}
+        .txn-amt .time{font-size:.68rem;color:var(--text3);}
+
+        /* Service Card */
+        .svc-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-lg);transition:all .3s;cursor:pointer;position:relative;overflow:hidden;}
+        .svc-card:hover{border-color:var(--primary);transform:translateY(-3px);box-shadow:var(--shadow-md);}
+        .svc-card .svc-icon{width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:var(--sp-sm);}
+        .svc-card h5{font-size:.92rem;font-weight:700;margin:0 0 4px;}
+        .svc-card p{font-size:.75rem;color:var(--text2);margin:0 0 var(--sp-sm);}
+        .svc-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:var(--r-full);font-size:.6rem;font-weight:700;text-transform:uppercase;}
+        .svc-tag.instant{background:rgba(0,208,132,0.1);color:var(--primary-dark);}
+        .svc-tag.new{background:rgba(244,67,54,0.1);color:var(--red);}
+        .svc-tag.popular{background:rgba(33,150,243,0.1);color:var(--blue);}
+
+        /* Control Row */
+        .ctrl-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+        .ctrl-row:last-child{border-bottom:none;}
+        .ctrl-info h6{font-size:.88rem;font-weight:600;margin:0 0 2px;}
+        .ctrl-info p{font-size:.72rem;color:var(--text3);margin:0;}
+        .form-switch .form-check-input{width:44px;height:22px;cursor:pointer;}
+        .form-switch .form-check-input:checked{background-color:var(--primary);border-color:var(--primary);}
+
+        /* Modal */
+        .modal-content{border:none;border-radius:var(--r-lg);box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+        .mh-green{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-dark{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-blue{background:linear-gradient(135deg,#1565c0,#1976d2);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-purple{background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-orange{background:linear-gradient(135deg,#e65100,#f57c00);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-red{background:linear-gradient(135deg,#c62828,#e53935);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .modal-header .btn-close{filter:brightness(0) invert(1);}
+        .modal-body{padding:var(--sp-xl);}
+        .modal-footer{border-top:1px solid var(--border);padding:var(--sp-lg) var(--sp-xl);}
+
+        .drow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+        .drow:last-child{border-bottom:none;}
+        .drow .dl{color:var(--text3);font-weight:500;}
+        .drow .dv{font-weight:600;}
+
+        .flbl{font-size:.78rem;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em;}
+        .finput{border:2px solid var(--border);border-radius:var(--r-md);padding:10px 14px;font-size:.875rem;transition:all .3s;width:100%;}
+        .finput:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,208,132,0.12);outline:none;}
+        .fselect{border:2px solid var(--border);border-radius:var(--r-md);padding:10px 14px;font-size:.875rem;width:100%;}
+
+        .btn-g{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:var(--r-md);padding:10px 20px;font-weight:600;font-size:.875rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-g:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,208,132,0.4);color:white;}
+        .btn-o{background:transparent;border:2px solid var(--primary);color:var(--primary);border-radius:var(--r-md);padding:8px 18px;font-weight:600;font-size:.875rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-o:hover{background:var(--primary);color:white;}
+        .btn-ghost-s{background:transparent;border:none;color:var(--text2);border-radius:var(--r-md);padding:8px 14px;font-weight:500;font-size:.82rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-ghost-s:hover{background:var(--bg3);color:var(--primary);}
+
+        /* Success Screen */
+        .success-screen{text-align:center;padding:var(--sp-2xl);}
+        .success-ring{width:80px;height:80px;border-radius:50%;background:rgba(0,208,132,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-lg);}
+
+        @media(max-width:768px){
+            .member-sidebar{transform:translateX(-100%);transition:.3s;}
+            .member-sidebar.open{transform:translateX(0);}
+            .member-main{margin-left:0;}
+            .wh-kpis{grid-template-columns:repeat(2,1fr);}
+            .action-grid{grid-template-columns:repeat(3,1fr);}
+        }
+    </style>
+</head>
+<body>
+<div class="member-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="member-sidebar" id="sidebar">
+        <div class="sidebar-brand"><div class="brand-logo">S</div><div class="brand-text"><h2>SACCOPay</h2><p style="font-size:.7rem;color:var(--text3);">Member Portal</p></div></div>
+        <div class="member-info-bar"><div class="m-name">John Kamau</div><div class="m-id">SP-10015 · Rongo SACCO</div></div>
+        <nav class="nav-group">
+            <div class="nav-section-title">Overview</div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
+            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i>My Profile</a></div>
+            <div class="nav-section-title">Savings & Shares</div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings Accounts</a></div>
+            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i>Share Capital</a></div>
+            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i>Dividends</a></div>
+            <div class="nav-section-title">Loans</div>
+            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans</a></div>
+            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i>Apply for Loan</a></div>
+            <div class="nav-item"><a href="guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantorship<span class="nav-badge">2</span></a></div>
+            <div class="nav-section-title">Transactions</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link active"><i class="bi bi-wallet2"></i>Wallet</a></div>
+            <div class="nav-item"><a href="statements.html" class="nav-link"><i class="bi bi-file-text"></i>Statements</a></div>
+            <div class="nav-section-title">Account</div>
+            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">3</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
+            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="member-main">
+        <div class="member-topbar">
+            <div class="topbar-inner">
+                <div><button class="btn-ghost-s d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button><div class="page-breadcrumb">Home / Transactions / <span>Wallet</span></div></div>
+                <div class="topbar-right"><a href="notifications.html" class="topbar-btn"><i class="bi bi-bell"></i><span class="topbar-notif">3</span></a><div class="user-chip" data-bs-toggle="modal" data-bs-target="#profileModal"><div class="user-chip-av">JK</div><span style="font-size:.8rem;font-weight:600;">John K.</span></div></div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <!-- WALLET HERO -->
+            <div class="wallet-hero fade-in" style="animation:fadeIn .4s ease-out;">
+                <div class="wh-inner">
+                    <div class="wh-top">
+                        <div>
+                            <div class="wallet-chip"><div class="chip-inner"></div></div>
+                            <div class="wh-balance-label">Available Balance</div>
+                            <div class="wh-balance"><span class="currency">KES</span>128,450<span style="font-size:1.3rem;opacity:.5;">.00</span></div>
+                            <div class="wallet-id-pill" onclick="copyWalletId()" title="Click to copy">
+                                <i class="bi bi-wallet2" style="opacity:.5;"></i>
+                                SP-WAL-2024-00145
+                                <i class="bi bi-copy copy-ic"></i>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                            <span class="wh-status active"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Active</span>
+                            <div style="display:flex;gap:8px;">
+                                <button style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:6px 12px;border-radius:var(--r-md);font-size:.72rem;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#shareWalletModal"><i class="bi bi-share"></i> Share</button>
+                                <button style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:6px 12px;border-radius:var(--r-md);font-size:.72rem;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#qrModal"><i class="bi bi-qr-code"></i> QR</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wh-kpis">
+                        <div class="kpi-box" onclick="switchTab('history')"><div class="k-label">This Month In</div><div class="k-value" style="color:#00d084;">+KES 185K</div><div class="k-sub">12 deposits</div></div>
+                        <div class="kpi-box" onclick="switchTab('history')"><div class="k-label">This Month Out</div><div class="k-value" style="color:#f44336;">-KES 92K</div><div class="k-sub">8 withdrawals</div></div>
+                        <div class="kpi-box" data-bs-toggle="modal" data-bs-target="#limitsModal"><div class="k-label">Daily Limit</div><div class="k-value">KES 35K</div><div class="k-sub">of KES 100K used</div></div>
+                        <div class="kpi-box" data-bs-toggle="modal" data-bs-target="#pinSetupModal"><div class="k-label">Transaction PIN</div><div class="k-value" style="color:#4caf50;">Set ✓</div><div class="k-sub">Last changed Dec 1</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="action-grid fade-in">
+                <div class="action-tile" data-bs-toggle="modal" data-bs-target="#depositModal"><div class="action-tile-icon" style="background:rgba(0,208,132,0.1);color:var(--primary);"><i class="bi bi-box-arrow-in-down"></i></div><h6>Deposit</h6><p>Top up wallet</p></div>
+                <div class="action-tile" data-bs-toggle="modal" data-bs-target="#withdrawModal"><div class="action-tile-icon" style="background:rgba(244,67,54,0.1);color:var(--red);"><i class="bi bi-box-arrow-up"></i></div><h6>Withdraw</h6><p>To M-Pesa/Bank</p></div>
+                <div class="action-tile" data-bs-toggle="modal" data-bs-target="#sendModal"><div class="action-tile-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-send"></i></div><h6>Send</h6><p>To member/phone</p></div>
+                <div class="action-tile" data-bs-toggle="modal" data-bs-target="#transferModal"><div class="action-tile-icon" style="background:rgba(156,39,176,0.1);color:var(--purple);"><i class="bi bi-arrow-left-right"></i></div><h6>Transfer</h6><p>To savings/shares</p></div>
+                <div class="action-tile" data-bs-toggle="modal" data-bs-target="#requestModal"><div class="action-tile-icon" style="background:rgba(255,152,0,0.1);color:var(--orange);"><i class="bi bi-inbox"></i></div><h6>Request</h6><p>Request money</p></div>
+                <div class="action-tile" onclick="switchTab('services')"><div class="action-tile-icon" style="background:rgba(0,188,212,0.1);color:var(--teal);"><i class="bi bi-lightning"></i></div><h6>Services</h6><p>Loans & overdraft</p></div>
+            </div>
+
+            <!-- TABS -->
+            <div class="m-tabs fade-in">
+                <button class="m-tab active" id="tabBtn-history" onclick="switchTab('history')"><i class="bi bi-clock-history"></i> History</button>
+                <button class="m-tab" id="tabBtn-services" onclick="switchTab('services')"><i class="bi bi-lightning"></i> SACCOPay Services</button>
+                <button class="m-tab" id="tabBtn-controls" onclick="switchTab('controls')"><i class="bi bi-shield-lock"></i> Controls & Security</button>
+            </div>
+
+            <!-- TAB: HISTORY -->
+            <div class="tab-pane active" id="pane-history">
+                <div class="g-card">
+                    <div class="g-card-header">
+                        <h3><i class="bi bi-clock-history" style="color:var(--primary);"></i> Recent Wallet Activity</h3>
+                        <a href="statements.html" class="btn-ghost-s"><i class="bi bi-file-text"></i> Full Statement</a>
+                    </div>
+                    <div class="g-card-body" style="padding:var(--sp-md) var(--sp-xl);">
+                        <div class="txn-row" onclick="openTxDetail('Deposit','M-Pesa Top Up','+ KES 50,000','Dec 18, 3:45 PM','M-Pesa • QJK8X2M1PL','Success','Regular Savings → Wallet','KES 128,450')">
+                            <div class="txn-icon in"><i class="bi bi-arrow-down-circle-fill"></i></div>
+                            <div class="txn-info"><h6>M-Pesa Top Up</h6><p>From 0722-XXX-123</p></div>
+                            <div class="txn-amt"><div class="amt" style="color:var(--primary);">+ KES 50,000</div><div class="time">Dec 18, 3:45 PM</div></div>
+                        </div>
+                        <div class="txn-row" onclick="openTxDetail('Withdrawal','Withdraw to M-Pesa','- KES 15,000','Dec 18, 1:20 PM','M-Pesa • 0722-XXX-123','Success','Wallet → M-Pesa','KES 78,450')">
+                            <div class="txn-icon out"><i class="bi bi-arrow-up-circle-fill"></i></div>
+                            <div class="txn-info"><h6>Withdraw to M-Pesa</h6><p>To 0722-XXX-123</p></div>
+                            <div class="txn-amt"><div class="amt" style="color:var(--red);">- KES 15,000</div><div class="time">Dec 18, 1:20 PM</div></div>
+                        </div>
+                        <div class="txn-row" onclick="openTxDetail('Transfer','Transfer to Savings','- KES 30,000','Dec 17, 4:10 PM','Internal Transfer','Success','Wallet → Regular Savings','KES 93,450')">
+                            <div class="txn-icon xfr"><i class="bi bi-arrow-left-right"></i></div>
+                            <div class="txn-info"><h6>Transfer to Savings</h6><p>Wallet → Regular Savings</p></div>
+                            <div class="txn-amt"><div class="amt" style="color:var(--blue);">- KES 30,000</div><div class="time">Dec 17, 4:10 PM</div></div>
+                        </div>
+                        <div class="txn-row" onclick="openTxDetail('Received','Received from Sarah Auma','+ KES 5,000','Dec 17, 11:00 AM','SACCOPay Wallet • SP-WAL-00234','Success','From Sarah Auma','KES 123,450')">
+                            <div class="txn-icon in"><i class="bi bi-arrow-down-circle-fill"></i></div>
+                            <div class="txn-info"><h6>Received from Sarah Auma</h6><p>SP-WAL-00234</p></div>
+                            <div class="txn-amt"><div class="amt" style="color:var(--primary);">+ KES 5,000</div><div class="time">Dec 17, 11:00 AM</div></div>
+                        </div>
+                        <div class="txn-row" onclick="openTxDetail('Sent','Sent to Peter Omondi','- KES 8,000','Dec 16, 2:30 PM','SACCOPay Wallet • SP-WAL-00189','Success','To Peter Omondi','KES 118,450')">
+                            <div class="txn-icon out"><i class="bi bi-send-fill"></i></div>
+                            <div class="txn-info"><h6>Sent to Peter Omondi</h6><p>SP-WAL-00189</p></div>
+                            <div class="txn-amt"><div class="amt" style="color:var(--red);">- KES 8,000</div><div class="time">Dec 16, 2:30 PM</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SACCOPAY SERVICES -->
+            <div class="tab-pane" id="pane-services">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--sp-lg);">
+                    <div class="svc-card" data-bs-toggle="modal" data-bs-target="#overdraftModal">
+                        <div class="svc-icon" style="background:rgba(0,208,132,0.1);color:var(--primary);"><i class="bi bi-cash-coin"></i></div>
+                        <h5>Overdraft</h5>
+                        <p>Access up to KES 50,000 instantly when your wallet runs low. No collateral needed.</p>
+                        <div style="display:flex;gap:6px;"><span class="svc-tag instant"><i class="bi bi-lightning-fill"></i> Instant</span><span class="svc-tag popular"><i class="bi bi-star-fill"></i> Popular</span></div>
+                        <div style="margin-top:var(--sp-md);font-size:.82rem;color:var(--text1);"><strong>Limit:</strong> KES 50,000 &nbsp;|&nbsp; <strong>Rate:</strong> 1.5%/month &nbsp;|&nbsp; <strong>Tenure:</strong> 30 days</div>
+                    </div>
+                    <div class="svc-card" data-bs-toggle="modal" data-bs-target="#quickLoanModal">
+                        <div class="svc-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-rocket-takeoff"></i></div>
+                        <h5>Quick Loan</h5>
+                        <p>Borrow up to KES 200,000 in minutes. No guarantors. Straight to your wallet.</p>
+                        <div style="display:flex;gap:6px;"><span class="svc-tag instant"><i class="bi bi-lightning-fill"></i> Instant</span><span class="svc-tag new"><i class="bi bi-stars"></i> New</span></div>
+                        <div style="margin-top:var(--sp-md);font-size:.82rem;color:var(--text1);"><strong>Limit:</strong> KES 200,000 &nbsp;|&nbsp; <strong>Rate:</strong> 12% p.a. &nbsp;|&nbsp; <strong>Up to:</strong> 6 months</div>
+                    </div>
+                    <div class="svc-card" data-bs-toggle="modal" data-bs-target="#salaryAdvanceModal">
+                        <div class="svc-icon" style="background:rgba(156,39,176,0.1);color:var(--purple);"><i class="bi bi-calendar2-check"></i></div>
+                        <h5>Salary Advance</h5>
+                        <p>Get up to 50% of your next salary early. Auto-repaid on payday.</p>
+                        <div style="display:flex;gap:6px;"><span class="svc-tag instant"><i class="bi bi-lightning-fill"></i> Instant</span></div>
+                        <div style="margin-top:var(--sp-md);font-size:.82rem;color:var(--text1);"><strong>Max:</strong> 50% of salary &nbsp;|&nbsp; <strong>Fee:</strong> 3% flat &nbsp;|&nbsp; <strong>Repay:</strong> Next payday</div>
+                    </div>
+                    <div class="svc-card" data-bs-toggle="modal" data-bs-target="#bnplModal">
+                        <div class="svc-icon" style="background:rgba(255,152,0,0.1);color:var(--orange);"><i class="bi bi-bag-check"></i></div>
+                        <h5>Buy Now Pay Later</h5>
+                        <p>Split purchases into 3 installments. 0% interest for qualifying items.</p>
+                        <div style="display:flex;gap:6px;"><span class="svc-tag new"><i class="bi bi-stars"></i> New</span></div>
+                        <div style="margin-top:var(--sp-md);font-size:.82rem;color:var(--text1);"><strong>Max:</strong> KES 100,000 &nbsp;|&nbsp; <strong>Installments:</strong> 3 &nbsp;|&nbsp; <strong>Interest:</strong> 0%*</div>
+                    </div>
+                </div>
+                <div style="background:var(--primary-ultra);border:1px solid rgba(0,208,132,0.2);border-radius:var(--r-md);padding:var(--sp-lg);margin-top:var(--sp-xl);display:flex;align-items:center;gap:var(--sp-md);">
+                    <i class="bi bi-info-circle-fill" style="color:var(--primary);font-size:1.2rem;flex-shrink:0;"></i>
+                    <div style="font-size:.82rem;color:var(--text2);">SACCOPay services are provided directly by SACCOPay (PSP) — <strong>not from your SACCO savings</strong>. Your SACCO balances are never touched. Approvals are instant, no admin review needed.</div>
+                </div>
+            </div>
+
+            <!-- TAB: CONTROLS -->
+            <div class="tab-pane" id="pane-controls">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="g-card mb-4">
+                            <div class="g-card-header"><h3><i class="bi bi-sliders" style="color:var(--primary);"></i> Wallet Controls</h3></div>
+                            <div class="g-card-body">
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Channel All Funds via Wallet</h6><p>SACCO deposits route through wallet first for record-keeping</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleCtrl(this,'Fund channeling')"></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Allow Incoming Payments</h6><p>Other members can send money to this wallet</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleCtrl(this,'Incoming payments')"></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Allow External Withdrawals</h6><p>Withdraw to M-Pesa, Airtel Money, or bank</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleCtrl(this,'External withdrawals')"></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Auto-Save to Savings</h6><p>Auto-transfer 10% of each deposit to savings</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" onchange="toggleCtrl(this,'Auto-save')"></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Freeze Wallet (Pause All)</h6><p>Temporarily block all wallet activity</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" onchange="toggleCtrl(this,'Wallet freeze')"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="g-card mb-4">
+                            <div class="g-card-header"><h3><i class="bi bi-shield-lock" style="color:var(--blue);"></i> Security</h3></div>
+                            <div class="g-card-body">
+                                <div class="ctrl-row" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#pinSetupModal">
+                                    <div class="ctrl-info"><h6><i class="bi bi-key me-1" style="color:var(--primary);"></i> Transaction PIN</h6><p>Required for all outgoing transactions</p></div>
+                                    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:.78rem;color:var(--primary);font-weight:600;">Set ✓</span><i class="bi bi-chevron-right" style="color:var(--text3);"></i></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Require PIN for All Transactions</h6><p>Including internal transfers and payments</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleCtrl(this,'PIN for all')"></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Low Balance Alert</h6><p>Notify when below KES 5,000</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleCtrl(this,'Low balance alert')"></div>
+                                </div>
+                                <div class="ctrl-row">
+                                    <div class="ctrl-info"><h6>Large Transaction Alert</h6><p>Notify for transactions above KES 50,000</p></div>
+                                    <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked onchange="toggleCtrl(this,'Large transaction alert')"></div>
+                                </div>
+                                <div class="ctrl-row" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#limitsModal">
+                                    <div class="ctrl-info"><h6><i class="bi bi-speedometer2 me-1" style="color:var(--orange);"></i> Transaction Limits</h6><p>Daily: KES 100K • Monthly: KES 1M</p></div>
+                                    <i class="bi bi-chevron-right" style="color:var(--text3);"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+<!-- DEPOSIT MODAL (Multi-Step Wizard) -->
+<div class="modal fade" id="depositModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mh-green"><h5 class="modal-title"><i class="bi bi-box-arrow-in-down me-2"></i>Deposit to Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <!-- Step Indicator -->
+        <div class="step-bar" id="depStepBar"></div>
+
+        <!-- Step 1: Channel -->
+        <div id="dep-1">
+            <h6 style="font-weight:700;margin-bottom:var(--sp-md);"><i class="bi bi-credit-card me-1" style="color:var(--primary);"></i> Choose Deposit Method</h6>
+            <div class="ch-opt sel" onclick="selCh(this,'dep');showDepFields('mpesa')"><div class="ch-icon" style="background:rgba(76,175,80,0.1);color:#388e3c;"><i class="bi bi-phone"></i></div><div><div class="ch-name">M-Pesa</div><div class="ch-desc">STK Push · Instant · Free</div></div><input type="radio" name="depCh" checked style="margin-left:auto;"></div>
+            <div class="ch-opt" onclick="selCh(this,'dep');showDepFields('airtel')"><div class="ch-icon" style="background:rgba(0,150,136,0.1);color:#009688;"><i class="bi bi-phone"></i></div><div><div class="ch-name">Airtel Money</div><div class="ch-desc">Push notification · Instant · Free</div></div><input type="radio" name="depCh" style="margin-left:auto;"></div>
+            <div class="ch-opt" onclick="selCh(this,'dep');showDepFields('bank')"><div class="ch-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-bank"></i></div><div><div class="ch-name">Bank Transfer</div><div class="ch-desc">1-2 business days · KES 50 fee</div></div><input type="radio" name="depCh" style="margin-left:auto;"></div>
+            <div class="ch-opt" onclick="selCh(this,'dep');showDepFields('card')"><div class="ch-icon" style="background:rgba(156,39,176,0.1);color:var(--purple);"><i class="bi bi-credit-card-2-front"></i></div><div><div class="ch-name">Debit / Credit Card</div><div class="ch-desc">Visa / Mastercard · Instant · 1.5% fee</div></div><input type="radio" name="depCh" style="margin-left:auto;"></div>
+        </div>
+
+        <!-- Step 2: Amount & Details -->
+        <div id="dep-2" style="display:none;">
+            <h6 style="font-weight:700;margin-bottom:var(--sp-md);"><i class="bi bi-cash-stack me-1" style="color:var(--primary);"></i> Deposit Details</h6>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount" id="depAmt" value="50000" oninput="calcDepFees()"></div>
+                <div class="col-md-6" id="depPhoneField"><label class="flbl">M-Pesa Number</label><input type="tel" class="form-control finput" placeholder="+254 7XX XXX XXX" value="+254 722 123 456"></div>
+                <div class="col-md-6" id="depBankField" style="display:none;"><label class="flbl">Bank Name</label><select class="form-select fselect"><option>KCB Bank</option><option>Equity Bank</option><option>Co-operative Bank</option><option>NCBA</option><option>Absa Kenya</option></select></div>
+                <div class="col-md-6" id="depAcctField" style="display:none;"><label class="flbl">Account Number</label><input type="text" class="form-control finput" placeholder="Enter account number"></div>
+                <div class="col-md-6" id="depCardField" style="display:none;"><label class="flbl">Card Number</label><input type="text" class="form-control finput" placeholder="XXXX XXXX XXXX XXXX" maxlength="19"></div>
+                <div class="col-md-3" id="depExpField" style="display:none;"><label class="flbl">Expiry</label><input type="text" class="form-control finput" placeholder="MM/YY" maxlength="5"></div>
+                <div class="col-md-3" id="depCvvField" style="display:none;"><label class="flbl">CVV</label><input type="password" class="form-control finput" placeholder="***" maxlength="3"></div>
+            </div>
+            <!-- Fee Breakdown -->
+            <div style="margin-top:var(--sp-lg);padding:var(--sp-lg);background:var(--bg3);border-radius:var(--r-md);">
+                <h6 style="font-size:.82rem;font-weight:700;color:var(--primary);margin-bottom:var(--sp-sm);"><i class="bi bi-receipt me-1"></i> Transaction Summary</h6>
+                <div class="drow"><span class="dl">Deposit Amount</span><span class="dv" id="depSumAmt">KES 50,000</span></div>
+                <div class="drow"><span class="dl">Channel Fee</span><span class="dv" id="depSumFee">KES 0</span></div>
+                <div class="drow"><span class="dl">Tax (Excise Duty)</span><span class="dv" id="depSumTax">KES 0</span></div>
+                <div class="drow"><span class="dl"><strong>Total Charged</strong></span><span class="dv" id="depSumTotal" style="color:var(--primary);font-size:1rem;"><strong>KES 50,000</strong></span></div>
+                <div class="drow"><span class="dl">Current Balance</span><span class="dv">KES 128,450</span></div>
+                <div class="drow"><span class="dl"><strong>New Balance</strong></span><span class="dv" id="depSumNew" style="color:var(--primary);">KES 178,450</span></div>
+            </div>
+        </div>
+
+        <!-- Step 3: PIN Confirmation -->
+        <div id="dep-3" style="display:none;">
+            <div style="text-align:center;">
+                <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,208,132,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-md);"><i class="bi bi-shield-lock-fill" style="font-size:1.8rem;color:var(--primary);"></i></div>
+                <h5 style="font-weight:700;">Enter Transaction PIN</h5>
+                <p style="font-size:.82rem;color:var(--text2);">Confirm this deposit of <strong style="color:var(--primary);">KES 50,000</strong></p>
+                <div class="pin-row"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"></div>
+            </div>
+        </div>
+
+        <!-- Step 4: Success -->
+        <div id="dep-4" style="display:none;">
+            <div class="success-screen">
+                <div class="success-ring"><i class="bi bi-check-circle-fill" style="font-size:2.5rem;color:var(--primary);"></i></div>
+                <h4 style="font-weight:800;color:var(--primary);margin-bottom:4px;">Deposit Successful! 🎉</h4>
+                <p style="font-size:.88rem;color:var(--text2);">KES 50,000 deposited via M-Pesa</p>
+                <div style="background:var(--bg3);border-radius:var(--r-md);padding:var(--sp-lg);margin:var(--sp-lg) auto;max-width:380px;text-align:left;">
+                    <div class="drow"><span class="dl">Reference</span><span class="dv"><code>WTX-20241218-0901</code></span></div>
+                    <div class="drow"><span class="dl">Amount</span><span class="dv" style="color:var(--primary);">KES 50,000</span></div>
+                    <div class="drow"><span class="dl">New Balance</span><span class="dv" style="font-weight:700;">KES 178,450</span></div>
+                    <div class="drow"><span class="dl">Date</span><span class="dv">Dec 18, 2024 · 3:48 PM</span></div>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:center;">
+                    <button class="btn-o" onclick="showToast('Receipt downloaded!')"><i class="bi bi-download"></i> Download Receipt</button>
+                    <button class="btn-ghost-s" onclick="showToast('Receipt shared!')"><i class="bi bi-share"></i> Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-ghost-s" data-bs-dismiss="modal" id="depCancelBtn">Cancel</button>
+        <button class="btn-ghost-s" id="depBackBtn" style="display:none;" onclick="depPrev()"><i class="bi bi-arrow-left"></i> Back</button>
+        <button class="btn-g" id="depNextBtn" onclick="depNext()">Next <i class="bi bi-arrow-right"></i></button>
+        <button class="btn-g" id="depConfirmBtn" style="display:none;" onclick="depNext()"><i class="bi bi-shield-check"></i> Confirm Deposit</button>
+        <button class="btn-g" id="depDoneBtn" style="display:none;" data-bs-dismiss="modal" onclick="resetDep()"><i class="bi bi-check-circle"></i> Done</button>
+    </div>
+</div></div></div>
+
+<!-- WITHDRAW MODAL (Multi-Step Wizard) -->
+<div class="modal fade" id="withdrawModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mh-red" style="background:linear-gradient(135deg,#c62828,#e53935);"><h5 class="modal-title"><i class="bi bi-box-arrow-up me-2"></i>Withdraw from Wallet</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="step-bar" id="wdStepBar"></div>
+        <div id="wd-1">
+            <h6 style="font-weight:700;margin-bottom:var(--sp-md);"><i class="bi bi-send me-1" style="color:var(--red);"></i> Withdraw To</h6>
+            <div class="ch-opt sel" onclick="selCh(this,'wd')"><div class="ch-icon" style="background:rgba(76,175,80,0.1);color:#388e3c;"><i class="bi bi-phone"></i></div><div><div class="ch-name">M-Pesa</div><div class="ch-desc">Instant · KES 0 fee</div></div><input type="radio" name="wdCh" checked style="margin-left:auto;"></div>
+            <div class="ch-opt" onclick="selCh(this,'wd')"><div class="ch-icon" style="background:rgba(0,150,136,0.1);color:#009688;"><i class="bi bi-phone"></i></div><div><div class="ch-name">Airtel Money</div><div class="ch-desc">Instant · KES 0 fee</div></div><input type="radio" name="wdCh" style="margin-left:auto;"></div>
+            <div class="ch-opt" onclick="selCh(this,'wd')"><div class="ch-icon" style="background:rgba(33,150,243,0.1);color:var(--blue);"><i class="bi bi-bank"></i></div><div><div class="ch-name">Bank Account</div><div class="ch-desc">1-24 hrs · KES 50 fee</div></div><input type="radio" name="wdCh" style="margin-left:auto;"></div>
+        </div>
+        <div id="wd-2" style="display:none;">
+            <div class="row g-3">
+                <div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Amount" value="15000"></div>
+                <div class="col-md-6"><label class="flbl">Phone / Account</label><input type="text" class="form-control finput" value="0722-XXX-123"></div>
+            </div>
+            <div style="margin-top:var(--sp-lg);padding:var(--sp-lg);background:rgba(244,67,54,0.04);border:1px solid rgba(244,67,54,0.15);border-radius:var(--r-md);">
+                <div class="drow"><span class="dl">Withdrawal</span><span class="dv">KES 15,000</span></div>
+                <div class="drow"><span class="dl">Fee</span><span class="dv">KES 0</span></div>
+                <div class="drow"><span class="dl">You Receive</span><span class="dv" style="color:var(--primary);font-size:1rem;"><strong>KES 15,000</strong></span></div>
+                <div class="drow"><span class="dl">New Wallet Balance</span><span class="dv">KES 113,450</span></div>
+            </div>
+        </div>
+        <div id="wd-3" style="display:none;">
+            <div style="text-align:center;"><div style="width:64px;height:64px;border-radius:50%;background:rgba(244,67,54,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-md);"><i class="bi bi-shield-lock-fill" style="font-size:1.8rem;color:var(--red);"></i></div><h5>Enter Transaction PIN</h5><p style="font-size:.82rem;color:var(--text2);">Confirm withdrawal of <strong style="color:var(--red);">KES 15,000</strong></p><div class="pin-row"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"><input type="password" class="pin-box" maxlength="1" oninput="pinNext(this)"></div></div>
+        </div>
+        <div id="wd-4" style="display:none;">
+            <div class="success-screen"><div class="success-ring"><i class="bi bi-check-circle-fill" style="font-size:2.5rem;color:var(--primary);"></i></div><h4 style="font-weight:800;color:var(--primary);">Withdrawal Successful! 🎉</h4><p style="color:var(--text2);">KES 15,000 sent to M-Pesa 0722-XXX-123</p><div style="background:var(--bg3);border-radius:var(--r-md);padding:var(--sp-lg);margin:var(--sp-lg) auto;max-width:380px;text-align:left;"><div class="drow"><span class="dl">Reference</span><span class="dv"><code>WTX-20241218-0902</code></span></div><div class="drow"><span class="dl">New Balance</span><span class="dv" style="font-weight:700;">KES 113,450</span></div></div><button class="btn-o" onclick="showToast('Receipt downloaded!')"><i class="bi bi-download"></i> Download</button></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal" id="wdCancelBtn">Cancel</button><button class="btn-ghost-s" id="wdBackBtn" style="display:none;" onclick="wdPrev()"><i class="bi bi-arrow-left"></i> Back</button><button class="btn-g" id="wdNextBtn" style="background:linear-gradient(135deg,#c62828,#e53935);" onclick="wdNext()">Next <i class="bi bi-arrow-right"></i></button><button class="btn-g" id="wdConfirmBtn" style="display:none;background:linear-gradient(135deg,#c62828,#e53935);" onclick="wdNext()"><i class="bi bi-shield-check"></i> Confirm</button><button class="btn-g" id="wdDoneBtn" style="display:none;" data-bs-dismiss="modal" onclick="resetWd()"><i class="bi bi-check-circle"></i> Done</button></div>
+</div></div></div>
+
+<!-- SEND MONEY MODAL -->
+<div class="modal fade" id="sendModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-blue"><h5 class="modal-title"><i class="bi bi-send me-2"></i>Send Money</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Send To</label><select class="form-select fselect" id="sendToType" onchange="toggleSendTo()"><option value="wallet">SACCOPay Wallet (by ID or name)</option><option value="phone">Phone Number (M-Pesa)</option></select></div>
+        <div class="col-12" id="sendWalletField"><label class="flbl">Wallet ID or Member Name</label><input type="text" class="form-control finput" placeholder="e.g. SP-WAL-00234"></div>
+        <div class="col-12" id="sendPhoneField" style="display:none;"><label class="flbl">Phone Number</label><input type="tel" class="form-control finput" placeholder="+254 7XX XXX XXX"></div>
+        <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Amount" value="5000"></div>
+        <div class="col-12"><label class="flbl">Note (Optional)</label><input type="text" class="form-control finput" placeholder="What's this for?"></div>
+    </div>
+    <div style="margin-top:var(--sp-lg);padding:var(--sp-md);background:var(--bg3);border-radius:var(--r-md);font-size:.82rem;"><div class="drow"><span class="dl">Fee</span><span class="dv">KES 0</span></div><div class="drow"><span class="dl">Total</span><span class="dv" style="color:var(--blue);"><strong>KES 5,000</strong></span></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="processSend()"><i class="bi bi-send"></i> Send Money</button></div>
+</div></div></div>
+
+<!-- TRANSFER MODAL (Internal) -->
+<div class="modal fade" id="transferModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-purple"><h5 class="modal-title"><i class="bi bi-arrow-left-right me-2"></i>Internal Transfer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Transfer To</label><select class="form-select fselect"><option>Regular Savings (KES 250,000)</option><option>Share Capital — Buy Shares (Non-withdrawable)</option><option>Emergency Fund (KES 18,000)</option><option>Fixed Deposit — Create New</option><option>Holiday Savings</option></select></div>
+        <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Amount" value="30000"></div>
+        <div class="col-12"><label class="flbl">Narration</label><input type="text" class="form-control finput" placeholder="e.g. Monthly savings"></div>
+    </div>
+    <div style="margin-top:var(--sp-md);padding:var(--sp-md);background:rgba(156,39,176,0.06);border:1px solid rgba(156,39,176,0.15);border-radius:var(--r-md);font-size:.82rem;color:#6a1b9a;"><i class="bi bi-info-circle-fill me-1"></i>Transfers to <strong>Share Capital</strong> are non-withdrawable.</div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="processTransfer()"><i class="bi bi-arrow-left-right"></i> Transfer</button></div>
+</div></div></div>
+
+<!-- REQUEST MONEY MODAL -->
+<div class="modal fade" id="requestModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-orange"><h5 class="modal-title"><i class="bi bi-inbox me-2"></i>Request Money</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3">
+        <div class="col-12"><label class="flbl">Request From</label><input type="text" class="form-control finput" placeholder="Member name, wallet ID, or phone number"></div>
+        <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Amount"></div>
+        <div class="col-12"><label class="flbl">Reason</label><input type="text" class="form-control finput" placeholder="e.g. Contribution for event"></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="processRequest()"><i class="bi bi-send"></i> Send Request</button></div>
+</div></div></div>
+
+<!-- TRANSACTION DETAIL MODAL -->
+<div class="modal fade" id="txDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-green"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" id="txDetailBody"></div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Close</button><button class="btn-o" onclick="showToast('Receipt downloaded!')"><i class="bi bi-download"></i> Receipt</button><button class="btn-ghost-s" onclick="showToast('Shared!')"><i class="bi bi-share"></i> Share</button></div>
+</div></div></div>
+
+<!-- OVERDRAFT MODAL -->
+<div class="modal fade" id="overdraftModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-green"><h5 class="modal-title"><i class="bi bi-cash-coin me-2"></i>SACCOPay Overdraft</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:var(--primary-ultra);border-radius:var(--r-md);padding:var(--sp-lg);margin-bottom:var(--sp-lg);text-align:center;"><div style="font-size:.72rem;color:var(--text3);">Your Overdraft Limit</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);">KES 50,000</div><div style="font-size:.78rem;color:var(--text2);">Available now · Instant disbursement</div></div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Max: 50,000" max="50000" value="20000"></div>
+        </div>
+        <div style="margin-top:var(--sp-lg);padding:var(--sp-md);background:var(--bg3);border-radius:var(--r-md);font-size:.82rem;"><div class="drow"><span class="dl">Amount</span><span class="dv">KES 20,000</span></div><div class="drow"><span class="dl">Interest (1.5%/mo)</span><span class="dv">KES 300</span></div><div class="drow"><span class="dl">Repay By</span><span class="dv">Jan 18, 2025</span></div><div class="drow"><span class="dl">Total Repayable</span><span class="dv" style="color:var(--primary);"><strong>KES 20,300</strong></span></div></div>
+        <div style="margin-top:var(--sp-md);font-size:.78rem;color:var(--text3);"><i class="bi bi-info-circle me-1"></i>Provided by SACCOPay (PSP). Not from your SACCO savings. Auto-deducted from next wallet deposit.</div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processOverdraft()"><i class="bi bi-cash-coin"></i> Get Overdraft</button></div>
+</div></div></div>
+
+<!-- QUICK LOAN MODAL -->
+<div class="modal fade" id="quickLoanModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-blue"><h5 class="modal-title"><i class="bi bi-rocket-takeoff me-2"></i>SACCOPay Quick Loan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:rgba(33,150,243,0.06);border-radius:var(--r-md);padding:var(--sp-lg);margin-bottom:var(--sp-lg);text-align:center;"><div style="font-size:.72rem;color:var(--text3);">Your Quick Loan Limit</div><div style="font-size:1.8rem;font-weight:800;color:var(--blue);">KES 200,000</div></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" value="100000"></div>
+            <div class="col-md-6"><label class="flbl">Tenure</label><select class="form-select fselect"><option>1 month</option><option>3 months</option><option selected>6 months</option></select></div>
+        </div>
+        <div style="margin-top:var(--sp-lg);padding:var(--sp-md);background:var(--bg3);border-radius:var(--r-md);font-size:.82rem;"><div class="drow"><span class="dl">Amount</span><span class="dv">KES 100,000</span></div><div class="drow"><span class="dl">Interest (12% p.a.)</span><span class="dv">KES 6,000</span></div><div class="drow"><span class="dl">Monthly Payment</span><span class="dv">KES 17,667</span></div><div class="drow"><span class="dl">Total Repayable</span><span class="dv" style="color:var(--blue);"><strong>KES 106,000</strong></span></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" style="background:linear-gradient(135deg,#1565c0,#1976d2);" onclick="processQuickLoan()"><i class="bi bi-rocket-takeoff"></i> Apply Now</button></div>
+</div></div></div>
+
+<!-- SALARY ADVANCE MODAL -->
+<div class="modal fade" id="salaryAdvanceModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-purple"><h5 class="modal-title"><i class="bi bi-calendar2-check me-2"></i>Salary Advance</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:rgba(156,39,176,0.06);border-radius:var(--r-md);padding:var(--sp-lg);margin-bottom:var(--sp-lg);text-align:center;"><div style="font-size:.72rem;color:var(--text3);">Based on Your Salary</div><div style="font-size:1.8rem;font-weight:800;color:var(--purple);">KES 42,500</div><div style="font-size:.78rem;color:var(--text2);">50% of KES 85,000 net salary</div></div>
+        <div class="row g-3"><div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" value="30000" max="42500"></div></div>
+        <div style="margin-top:var(--sp-lg);padding:var(--sp-md);background:var(--bg3);border-radius:var(--r-md);font-size:.82rem;"><div class="drow"><span class="dl">Advance</span><span class="dv">KES 30,000</span></div><div class="drow"><span class="dl">Fee (3%)</span><span class="dv">KES 900</span></div><div class="drow"><span class="dl">You Receive</span><span class="dv" style="color:var(--purple);"><strong>KES 29,100</strong></span></div><div class="drow"><span class="dl">Repay On</span><span class="dv">Jan 25, 2025 (payday)</span></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="processSalaryAdv()"><i class="bi bi-calendar2-check"></i> Get Advance</button></div>
+</div></div></div>
+
+<!-- BNPL MODAL -->
+<div class="modal fade" id="bnplModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-orange"><h5 class="modal-title"><i class="bi bi-bag-check me-2"></i>Buy Now Pay Later</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div style="text-align:center;padding:var(--sp-lg);"><div style="font-size:2.5rem;margin-bottom:var(--sp-md);">🛍️</div><h5>Coming Soon!</h5><p style="color:var(--text2);font-size:.85rem;">Split purchases into 3 easy installments with 0% interest at partner merchants.</p><button class="btn-o mt-3" onclick="showToast('You will be notified when BNPL launches!')"><i class="bi bi-bell"></i> Notify Me</button></div></div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- PIN SETUP MODAL -->
+<div class="modal fade" id="pinSetupModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-dark"><h5 class="modal-title"><i class="bi bi-key me-2"></i>Transaction PIN</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div class="row g-3"><div class="col-12"><label class="flbl">Current PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="Enter current PIN"></div><div class="col-12"><label class="flbl">New PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="New 4-digit PIN"></div><div class="col-12"><label class="flbl">Confirm New PIN</label><input type="password" class="form-control finput" maxlength="4" placeholder="Re-enter PIN"></div></div></div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="changePin()"><i class="bi bi-key"></i> Update PIN</button></div>
+</div></div></div>
+
+<!-- LIMITS MODAL -->
+<div class="modal fade" id="limitsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-dark"><h5 class="modal-title"><i class="bi bi-speedometer2 me-2"></i>Transaction Limits</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="margin-bottom:var(--sp-md);"><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px;"><span>Daily Send</span><span style="font-weight:600;">KES 35,000 / 100,000</span></div><div style="height:6px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden;"><div style="width:35%;height:100%;background:linear-gradient(90deg,var(--primary),var(--teal));border-radius:var(--r-full);"></div></div></div>
+        <div style="margin-bottom:var(--sp-md);"><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px;"><span>Daily Withdrawal</span><span style="font-weight:600;">KES 15,000 / 200,000</span></div><div style="height:6px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden;"><div style="width:7.5%;height:100%;background:linear-gradient(90deg,var(--blue),#42a5f5);border-radius:var(--r-full);"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px;"><span>Monthly Volume</span><span style="font-weight:600;">KES 277,000 / 1,000,000</span></div><div style="height:6px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden;"><div style="width:27.7%;height:100%;background:linear-gradient(90deg,var(--purple),#ba68c8);border-radius:var(--r-full);"></div></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- SHARE WALLET MODAL -->
+<div class="modal fade" id="shareWalletModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mh-dark"><h5 class="modal-title"><i class="bi bi-share me-2"></i>Share Payment Link</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" style="text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,208,132,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-md);"><i class="bi bi-wallet2" style="font-size:1.5rem;color:var(--primary);"></i></div>
+        <h5 style="font-weight:700;">Pay John Kamau</h5>
+        <p style="font-size:.82rem;color:var(--text2);">Share this link to receive money</p>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--bg3);border:2px solid var(--border);border-radius:var(--r-md);padding:10px 16px;margin:var(--sp-md) 0;cursor:pointer;font-family:'SF Mono','Consolas',monospace;font-size:.82rem;" onclick="copyLink()"><i class="bi bi-link-45deg" style="color:var(--primary);"></i><span style="flex:1;text-align:left;">pay.saccopay.co.ke/SP-WAL-00145</span><i class="bi bi-copy" style="color:var(--primary);"></i></div>
+        <div style="display:flex;justify-content:center;gap:var(--sp-md);">
+            <div style="width:42px;height:42px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showToast('Shared via WhatsApp!')"><i class="bi bi-whatsapp" style="color:#25d366;"></i></div>
+            <div style="width:42px;height:42px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showToast('Shared via SMS!')"><i class="bi bi-chat-dots" style="color:var(--blue);"></i></div>
+            <div style="width:42px;height:42px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showToast('Shared via Email!')"><i class="bi bi-envelope" style="color:var(--orange);"></i></div>
+            <div style="width:42px;height:42px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="copyLink()"><i class="bi bi-clipboard" style="color:var(--purple);"></i></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- QR CODE MODAL -->
+<div class="modal fade" id="qrModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+    <div class="modal-header mh-dark"><h5 class="modal-title"><i class="bi bi-qr-code me-2"></i>Wallet QR</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" style="text-align:center;">
+        <div style="width:160px;height:160px;margin:0 auto;background:white;border:3px solid var(--text1);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;"><div id="qrGrid" style="width:120px;height:120px;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:2px;"></div></div>
+        <p style="margin-top:var(--sp-md);font-size:.82rem;"><strong>SP-WAL-2024-00145</strong></p>
+        <p style="font-size:.72rem;color:var(--text3);">Scan to pay John Kamau</p>
+    </div>
+    <div class="modal-footer justify-content-center"><button class="btn-o" style="font-size:.78rem;" onclick="showToast('QR downloaded!')"><i class="bi bi-download"></i> Download</button></div>
+</div></div></div>
+
+<!-- PROFILE MODAL -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--sp-xl);text-align:center;"><div class="user-chip-av" style="width:68px;height:68px;font-size:1.4rem;margin:0 auto var(--sp-md);">JK</div><h5 style="font-weight:700;">John Kamau</h5><p style="font-size:.78rem;color:var(--text2);margin-bottom:var(--sp-lg);">SP-10015 · Rongo SACCO</p><div style="display:flex;flex-direction:column;gap:8px;"><a href="profile.html" class="btn-ghost-s" style="text-decoration:none;justify-content:center;"><i class="bi bi-person me-2"></i>Profile</a><a href="settings.html" class="btn-ghost-s" style="text-decoration:none;justify-content:center;"><i class="bi bi-gear me-2"></i>Settings</a><hr style="margin:4px 0;border-color:var(--border);"><button class="btn-ghost-s" style="color:var(--red);justify-content:center;" onclick="showToast('Logging out...')"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="toast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ===== UTILITIES =====
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('toast'),{delay:3500}).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function closeModal(id){const m=bootstrap.Modal.getInstance(document.getElementById(id));if(m)m.hide();}
+function pinNext(el){if(el.value.length===1&&el.nextElementSibling)el.nextElementSibling.focus();}
+function selCh(el,prefix){el.closest('.modal-body').querySelectorAll('.ch-opt').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');el.querySelector('input[type=radio]').checked=true;}
+function copyWalletId(){navigator.clipboard.writeText('SP-WAL-2024-00145');showToast('Wallet ID copied!');}
+function copyLink(){navigator.clipboard.writeText('pay.saccopay.co.ke/SP-WAL-00145');showToast('Payment link copied!');}
+
+// ===== TABS =====
+function switchTab(tab){
+    document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    document.getElementById('tabBtn-'+tab).classList.add('active');
+    document.getElementById('pane-'+tab).classList.add('active');
+}
+
+// ===== DEPOSIT WIZARD =====
+let depStep=1;const depTotal=4;
+const depStepNames=['Method','Details','PIN','Complete'];
+function buildDepSteps(){
+    const bar=document.getElementById('depStepBar');bar.innerHTML='';
+    for(let i=1;i<=depTotal;i++){
+        const s=document.createElement('div');s.className='step-item';
+        const d=document.createElement('div');d.className='step-dot '+(i<depStep?'done':i===depStep?'active':'pending');d.textContent=i<depStep?'✓':i;
+        const l=document.createElement('div');l.className='step-label '+(i<=depStep?'active':'pending');l.textContent=depStepNames[i-1];
+        s.appendChild(d);s.appendChild(l);bar.appendChild(s);
+        if(i<depTotal){const ln=document.createElement('div');ln.className='step-line '+(i<depStep?'done':'pending');bar.appendChild(ln);}
+    }
+}
+function depUpdate(){
+    for(let i=1;i<=depTotal;i++)document.getElementById('dep-'+i).style.display=i===depStep?'block':'none';
+    buildDepSteps();
+    document.getElementById('depBackBtn').style.display=depStep>1&&depStep<4?'inline-flex':'none';
+    document.getElementById('depNextBtn').style.display=depStep<3?'inline-flex':'none';
+    document.getElementById('depConfirmBtn').style.display=depStep===3?'inline-flex':'none';
+    document.getElementById('depDoneBtn').style.display=depStep===4?'inline-flex':'none';
+    document.getElementById('depCancelBtn').style.display=depStep<4?'inline-flex':'none';
+}
+function depNext(){if(depStep<depTotal){depStep++;depUpdate();}}
+function depPrev(){if(depStep>1){depStep--;depUpdate();}}
+function resetDep(){depStep=1;depUpdate();}
+document.getElementById('depositModal').addEventListener('show.bs.modal',()=>{depStep=1;depUpdate();});
+
+function showDepFields(type){
+    document.getElementById('depPhoneField').style.display=['mpesa','airtel'].includes(type)?'block':'none';
+    document.getElementById('depBankField').style.display=type==='bank'?'block':'none';
+    document.getElementById('depAcctField').style.display=type==='bank'?'block':'none';
+    document.getElementById('depCardField').style.display=type==='card'?'block':'none';
+    document.getElementById('depExpField').style.display=type==='card'?'block':'none';
+    document.getElementById('depCvvField').style.display=type==='card'?'block':'none';
+}
+
+function calcDepFees(){
+    const amt=parseInt(document.getElementById('depAmt').value)||0;
+    document.getElementById('depSumAmt').textContent='KES '+amt.toLocaleString();
+    document.getElementById('depSumFee').textContent='KES 0';
+    document.getElementById('depSumTax').textContent='KES 0';
+    document.getElementById('depSumTotal').innerHTML='<strong>KES '+amt.toLocaleString()+'</strong>';
+    document.getElementById('depSumNew').textContent='KES '+(128450+amt).toLocaleString();
+}
+
+// ===== WITHDRAW WIZARD =====
+let wdStep=1;const wdTotal=4;
+const wdStepNames=['Destination','Details','PIN','Complete'];
+function buildWdSteps(){
+    const bar=document.getElementById('wdStepBar');bar.innerHTML='';
+    for(let i=1;i<=wdTotal;i++){
+        const s=document.createElement('div');s.className='step-item';
+        const d=document.createElement('div');d.className='step-dot '+(i<wdStep?'done':i===wdStep?'active':'pending');d.textContent=i<wdStep?'✓':i;
+        const l=document.createElement('div');l.className='step-label '+(i<=wdStep?'active':'pending');l.textContent=wdStepNames[i-1];
+        s.appendChild(d);s.appendChild(l);bar.appendChild(s);
+        if(i<wdTotal){const ln=document.createElement('div');ln.className='step-line '+(i<wdStep?'done':'pending');bar.appendChild(ln);}
+    }
+}
+function wdUpdate(){
+    for(let i=1;i<=wdTotal;i++)document.getElementById('wd-'+i).style.display=i===wdStep?'block':'none';
+    buildWdSteps();
+    document.getElementById('wdBackBtn').style.display=wdStep>1&&wdStep<4?'inline-flex':'none';
+    document.getElementById('wdNextBtn').style.display=wdStep<3?'inline-flex':'none';
+    document.getElementById('wdConfirmBtn').style.display=wdStep===3?'inline-flex':'none';
+    document.getElementById('wdDoneBtn').style.display=wdStep===4?'inline-flex':'none';
+    document.getElementById('wdCancelBtn').style.display=wdStep<4?'inline-flex':'none';
+}
+function wdNext(){if(wdStep<wdTotal){wdStep++;wdUpdate();}}
+function wdPrev(){if(wdStep>1){wdStep--;wdUpdate();}}
+function resetWd(){wdStep=1;wdUpdate();}
+document.getElementById('withdrawModal').addEventListener('show.bs.modal',()=>{wdStep=1;wdUpdate();});
+
+// ===== SEND / TRANSFER / REQUEST =====
+function toggleSendTo(){const v=document.getElementById('sendToType').value;document.getElementById('sendWalletField').style.display=v==='wallet'?'block':'none';document.getElementById('sendPhoneField').style.display=v==='phone'?'block':'none';}
+function processSend(){closeModal('sendModal');showToast('KES 5,000 sent successfully!');}
+function processTransfer(){closeModal('transferModal');showToast('KES 30,000 transferred to Regular Savings!');}
+function processRequest(){closeModal('requestModal');showToast('Payment request sent!');}
+
+// ===== SERVICES =====
+function processOverdraft(){closeModal('overdraftModal');showToast('Overdraft of KES 20,000 disbursed to your wallet! 🎉');}
+function processQuickLoan(){closeModal('quickLoanModal');showToast('Quick Loan of KES 100,000 approved and disbursed! 🚀');}
+function processSalaryAdv(){closeModal('salaryAdvanceModal');showToast('Salary advance of KES 29,100 credited to wallet! 💰');}
+
+// ===== CONTROLS =====
+function toggleCtrl(el,name){showToast(name+' '+(el.checked?'enabled':'disabled'));}
+function changePin(){closeModal('pinSetupModal');showToast('Transaction PIN updated!');}
+
+// ===== TX DETAIL =====
+function openTxDetail(type,title,amount,date,channel,status,flow,balance){
+    const body=document.getElementById('txDetailBody');
+    const isIn=type==='Deposit'||type==='Received';
+    body.innerHTML=`
+        <div style="text-align:center;margin-bottom:var(--sp-lg);">
+            <div style="width:60px;height:60px;border-radius:50%;background:${isIn?'rgba(0,208,132,0.1)':'rgba(244,67,54,0.1)'};display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-sm);font-size:1.5rem;color:${isIn?'var(--primary)':'var(--red)'};">
+                <i class="bi bi-${isIn?'arrow-down':'arrow-up'}-circle-fill"></i>
+            </div>
+            <h5 style="font-weight:700;">${title}</h5>
+            <h4 style="color:${isIn?'var(--primary)':'var(--red)'};">${amount}</h4>
+        </div>
+        <div class="drow"><span class="dl">Date & Time</span><span class="dv">${date}</span></div>
+        <div class="drow"><span class="dl">Channel</span><span class="dv">${channel}</span></div>
+        <div class="drow"><span class="dl">Status</span><span class="dv" style="color:var(--primary);"><i class="bi bi-check-circle-fill"></i> ${status}</span></div>
+        <div class="drow"><span class="dl">Flow</span><span class="dv">${flow}</span></div>
+        <div class="drow"><span class="dl">Balance After</span><span class="dv" style="font-weight:700;">${balance}</span></div>
+    `;
+    openModal('txDetailModal');
+}
+
+// ===== QR =====
+document.addEventListener('DOMContentLoaded',()=>{
+    const g=document.getElementById('qrGrid');
+    if(g)for(let i=0;i<49;i++){const s=document.createElement('span');s.style.background=Math.random()>.4?'#0f172a':'white';s.style.borderRadius='1px';g.appendChild(s);}
+    // Init deposit step bar
+    buildDepSteps();buildWdSteps();
+});
+</script>
+
+<style>@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}.fade-in{animation:fadeIn .4s ease-out;}</style>
+</body>
+</html>

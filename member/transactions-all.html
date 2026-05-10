@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions Management | SACCOPay Member</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <style>
+        /* ============================================
+           SACCOPAY MEMBER — MASTER STYLESHEET
+        ============================================ */
+        :root {
+            --primary: #00d084;
+            --primary-dark: #00a866;
+            --primary-light: #66e5b8;
+            --primary-ultra: #e6faf4;
+            --teal: #00bcd4;
+            --blue: #2196f3;
+            --purple: #9c27b0;
+            --orange: #ff9800;
+            --red: #f44336;
+            --green: #4caf50;
+            --bg: #f8fafb;
+            --bg2: #ffffff;
+            --bg3: #f0f4f7;
+            --glass: rgba(255, 255, 255, 0.85);
+            --border: #e2e8f0;
+            --text1: #1a2332;
+            --text2: #64748b;
+            --text3: #94a3b8;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-glow: 0 0 20px rgba(0, 208, 132, 0.15);
+            --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-full: 9999px;
+            --sp-xs: 0.25rem; --sp-sm: 0.5rem; --sp-md: 1rem; --sp-lg: 1.5rem; --sp-xl: 2rem; --sp-2xl: 3rem;
+            --font: 'Inter', -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--font);
+            background: linear-gradient(135deg, #f8fafb 0%, #e6faf4 100%);
+            color: var(--text1);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .member-layout { display: flex; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .member-sidebar {
+            width: 260px; background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0, 208, 132, 0.15);
+            position: fixed; height: 100vh;
+            overflow-y: auto; z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        .sidebar-brand {
+            padding: var(--sp-xl);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: var(--sp-md);
+        }
+        .brand-logo {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--teal));
+            border-radius: var(--r-md);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 1.1rem;
+        }
+        .brand-text h2 {
+            font-size: 1.1rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--teal));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .brand-text p { font-size: 0.7rem; color: var(--text3); }
+
+        .member-info-bar {
+            padding: var(--sp-md) var(--sp-xl);
+            border-bottom: 1px solid var(--border);
+            background: var(--primary-ultra);
+        }
+        .member-info-bar .m-name { font-size: 0.88rem; font-weight: 700; }
+        .member-info-bar .m-id { font-size: 0.7rem; color: var(--text2); }
+
+        .nav-group { padding: var(--sp-sm) 0; }
+        .nav-section-title {
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--text3);
+            padding: var(--sp-sm) var(--sp-xl); margin-top: var(--sp-sm);
+        }
+        .nav-item { margin: 2px var(--sp-md); }
+        .nav-link {
+            display: flex; align-items: center; gap: var(--sp-sm);
+            padding: 10px var(--sp-md); color: var(--text2);
+            text-decoration: none; border-radius: var(--r-md);
+            font-size: 0.85rem; font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover { background: var(--primary-ultra); color: var(--primary-dark); transform: translateX(4px); }
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary), var(--teal));
+            color: white; box-shadow: 0 4px 12px rgba(0, 208, 132, 0.3);
+        }
+        .nav-link i { width: 18px; flex-shrink: 0; }
+        .nav-badge {
+            margin-left: auto; background: var(--red);
+            color: white; padding: 1px 6px; border-radius: var(--r-full);
+            font-size: 0.65rem; font-weight: 700;
+        }
+
+        /* Main Content */
+        .member-main { flex: 1; margin-left: 260px; min-height: 100vh; }
+
+        /* Topbar */
+        .member-topbar {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 208, 132, 0.15);
+            padding: var(--sp-md) var(--sp-xl);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        .topbar-inner { display: flex; justify-content: space-between; align-items: center; }
+        .page-breadcrumb { font-size: 0.8rem; color: var(--text2); }
+        .page-breadcrumb span { color: var(--primary); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: var(--sp-md); }
+        .topbar-btn {
+            width: 36px; height: 36px; border-radius: var(--r-full);
+            background: var(--bg2); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; font-size: 1rem; color: var(--text2);
+            position: relative; text-decoration: none;
+        }
+        .topbar-btn:hover { background: var(--primary-ultra); border-color: var(--primary); color: var(--primary); }
+        .topbar-notif {
+            position: absolute; top: -4px; right: -4px;
+            width: 18px; height: 18px; background: var(--red);
+            border-radius: 50%; font-size: 0.6rem; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; border: 2px solid white;
+        }
+        .user-chip {
+            display: flex; align-items: center; gap: var(--sp-sm);
+            padding: 6px 12px; background: var(--bg2);
+            border: 1px solid var(--border); border-radius: var(--r-full);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .user-chip:hover { border-color: var(--primary); }
+        .user-chip-av {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--teal));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.68rem;
+        }
+        .user-chip span { font-size: 0.8rem; font-weight: 600; }
+
+        /* Page Workspace */
+        .page-content { padding: var(--sp-xl); max-width: 1150px; }
+
+        /* Hero Overview Card */
+        .hero-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+            border-radius: var(--r-xl); padding: var(--sp-2xl); color: white;
+            margin-bottom: var(--sp-xl); position: relative; overflow: hidden;
+        }
+        .hero-card::before {
+            content: ''; position: absolute; top: -60px; right: -60px;
+            width: 240px; height: 240px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 208, 132, 0.2), transparent);
+        }
+        .hero-card::after {
+            content: ''; position: absolute; bottom: -40px; left: -40px;
+            width: 180px; height: 180px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.12), transparent);
+        }
+        .hero-inner { position: relative; z-index: 1; }
+        .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--sp-xl); flex-wrap: wrap; gap: var(--sp-md); }
+        .hero-label { font-size: 0.75rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+        .hero-value { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+        .hero-sub { font-size: 0.82rem; opacity: 0.7; margin-top: 4px; }
+
+        .hero-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-md); }
+        .kpi-box {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--r-md); padding: var(--sp-md);
+        }
+        .kpi-box .k-label { font-size: 0.68rem; opacity: 0.6; margin-bottom: 4px; }
+        .kpi-box .k-value { font-size: 1.2rem; font-weight: 700; }
+        .kpi-box .k-value.pos { color: var(--primary-light); }
+        .kpi-box .k-value.neg { color: #ff8a80; }
+
+        /* Quick Action Row */
+        .quick-action-bar {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--sp-md); margin-bottom: var(--sp-xl);
+        }
+        .qa-tile {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 208, 132, 0.2);
+            border-radius: var(--r-lg); padding: var(--sp-md) var(--sp-lg);
+            display: flex; align-items: center; gap: var(--sp-md);
+            cursor: pointer; transition: all 0.2s ease;
+            text-decoration: none; color: inherit;
+        }
+        .qa-tile:hover {
+            transform: translateY(-2px); box-shadow: var(--shadow-md);
+            border-color: var(--primary); background: var(--primary-ultra);
+            color: inherit;
+        }
+        .qa-icon {
+            width: 42px; height: 42px; border-radius: var(--r-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; flex-shrink: 0;
+        }
+        .qa-icon.dep { background: rgba(0, 208, 132, 0.12); color: var(--primary-dark); }
+        .qa-icon.wdr { background: rgba(244, 67, 54, 0.12); color: var(--red); }
+        .qa-icon.txf { background: rgba(0, 188, 212, 0.12); color: var(--teal); }
+        .qa-icon.snd { background: rgba(33, 150, 243, 0.12); color: var(--blue); }
+
+        .qa-tile h6 { font-size: 0.88rem; font-weight: 600; margin: 0; }
+        .qa-tile p { font-size: 0.68rem; color: var(--text2); margin: 0; }
+
+        /* Filter Controls & Tabs Bar */
+        .controls-card {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 208, 132, 0.15); border-radius: var(--r-lg);
+            padding: var(--sp-md) var(--sp-xl); margin-bottom: var(--sp-lg);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: var(--sp-md); box-shadow: var(--shadow-sm);
+        }
+        .tx-tabs { display: flex; gap: var(--sp-xs); overflow-x: auto; }
+        .tx-tab {
+            padding: 8px 16px; border: none; background: transparent;
+            font-size: 0.82rem; font-weight: 600; color: var(--text2);
+            border-radius: var(--r-full); cursor: pointer; transition: all 0.2s;
+            white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .tx-tab:hover { color: var(--primary); background: var(--bg3); }
+        .tx-tab.active { background: linear-gradient(135deg, var(--primary), var(--teal)); color: white; box-shadow: 0 2px 8px rgba(0, 208, 132, 0.25); }
+        .tx-tab .tcnt { background: rgba(255, 255, 255, 0.25); padding: 1px 6px; border-radius: var(--r-full); font-size: 0.65rem; }
+        .tx-tab:not(.active) .tcnt { background: var(--border); color: var(--text2); }
+
+        .filter-tools { display: flex; align-items: center; gap: var(--sp-sm); flex-wrap: wrap; }
+        .search-box { position: relative; min-width: 220px; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.85rem; }
+        .search-box input {
+            width: 100%; padding: 8px 12px 8px 36px; font-size: 0.82rem;
+            border: 1px solid var(--border); border-radius: var(--r-md);
+            background: var(--bg2); outline: none; transition: all 0.2s;
+        }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ultra); }
+
+        /* Main Table Container */
+        .g-card {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 208, 132, 0.15); border-radius: var(--r-lg);
+            box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: var(--sp-xl);
+        }
+        .g-card-header {
+            padding: var(--sp-md) var(--sp-xl); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .g-card-header h3 { font-size: 0.95rem; font-weight: 700; margin: 0; }
+
+        /* Data Table */
+        .tx-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .tx-table th {
+            background: var(--bg3); padding: 10px var(--sp-md); text-align: left;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text3);
+            border-bottom: 2px solid var(--border);
+        }
+        .tx-table td { padding: 12px var(--sp-md); border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .tx-table tr { transition: background 0.2s; }
+        .tx-table tr:hover { background: var(--primary-ultra); }
+
+        .tx-cell-main { display: flex; align-items: center; gap: var(--sp-sm); }
+        .tx-icon {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; flex-shrink: 0;
+        }
+        .tx-icon.dep { background: rgba(0, 208, 132, 0.12); color: var(--primary-dark); }
+        .tx-icon.wdr { background: rgba(244, 67, 54, 0.12); color: var(--red); }
+        .tx-icon.txf { background: rgba(0, 188, 212, 0.12); color: var(--teal); }
+        .tx-icon.rep { background: rgba(33, 150, 243, 0.12); color: var(--blue); }
+        .tx-icon.shr { background: rgba(156, 39, 176, 0.12); color: var(--purple); }
+
+        .tx-title { font-weight: 600; color: var(--text1); margin-bottom: 2px; }
+        .tx-ref { font-size: 0.68rem; color: var(--text3); font-family: monospace; }
+
+        .tx-channel { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text2); }
+        .tx-date { font-size: 0.78rem; color: var(--text2); white-space: nowrap; }
+
+        .tx-amt { font-weight: 700; font-size: 0.9rem; text-align: right; white-space: nowrap; }
+        .tx-amt.pos { color: var(--primary-dark); }
+        .tx-amt.neg { color: var(--text1); }
+
+        /* Badges */
+        .sbadge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: var(--r-full);
+            font-size: 0.7rem; font-weight: 700;
+        }
+        .sbadge.ok { background: rgba(0, 208, 132, 0.1); color: var(--primary-dark); }
+        .sbadge.pend { background: rgba(255, 152, 0, 0.1); color: #e65100; }
+        .sbadge.fail { background: rgba(244, 67, 54, 0.12); color: #c62828; }
+
+        /* Modals */
+        .modal-content { border: none; border-radius: var(--r-lg); box-shadow: var(--shadow-lg); }
+        .modal-header.gh { background: linear-gradient(135deg, var(--primary), var(--teal)); color: white; border: none; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+        .modal-header .btn-close { filter: brightness(0) invert(1); }
+        .modal-body { padding: var(--sp-xl); }
+        .modal-footer { border-top: 1px solid var(--border); padding: var(--sp-md) var(--sp-xl); }
+
+        /* Receipt View */
+        .receipt-card {
+            border: 2px dashed var(--border); border-radius: var(--r-md);
+            padding: var(--sp-lg); background: var(--bg);
+        }
+        .receipt-head { text-align: center; margin-bottom: var(--sp-md); padding-bottom: var(--sp-md); border-bottom: 1px solid var(--border); }
+        .receipt-head .r-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 208, 132, 0.15); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 8px; }
+        .receipt-head h4 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+        .receipt-head p { font-size: 0.75rem; color: var(--text2); margin: 0; }
+
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text3); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text1); text-align: right; }
+
+        /* Form Components */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border); border-radius: var(--r-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
+        .finput:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.12); outline: none; }
+        .fselect { border: 2px solid var(--border); border-radius: var(--r-md); padding: 10px 14px; font-size: 0.875rem; width: 100%; outline: none; }
+        .fselect:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.12); }
+
+        /* Buttons */
+        .btn-g { background: linear-gradient(135deg, var(--primary), var(--teal)); color: white; border: none; border-radius: var(--r-md); padding: 10px 20px; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-g:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 208, 132, 0.4); color: white; }
+        .btn-o { background: transparent; border: 2px solid var(--primary); color: var(--primary); border-radius: var(--r-md); padding: 8px 18px; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-o:hover { background: var(--primary); color: white; }
+        .btn-ghost-s { background: transparent; border: none; color: var(--text2); border-radius: var(--r-md); padding: 8px 14px; font-weight: 500; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-ghost-s:hover { background: var(--bg3); color: var(--primary); }
+
+        .tab-content-pane { display: none; }
+        .tab-content-pane.active { display: block; }
+
+        @media (max-width: 768px) {
+            .member-sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .member-sidebar.open { transform: translateX(0); }
+            .member-main { margin-left: 0; }
+            .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+            .controls-card { flex-direction: column; align-items: stretch; }
+            .filter-tools { justify-content: space-between; }
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="member-layout">
+
+    <!-- ===================== SIDEBAR NAVIGATION ===================== -->
+    <aside class="member-sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo">S</div>
+            <div class="brand-text"><h2>SACCOPay</h2><p>Member Portal</p></div>
+        </div>
+
+        <div class="member-info-bar">
+            <div class="m-name">John Kamau</div>
+            <div class="m-id">SP-10015 · Rongo SACCO</div>
+        </div>
+
+        <nav class="nav-group">
+            <div class="nav-section-title">Overview</div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i><span>My Profile</span></a></div>
+
+            <div class="nav-section-title">Savings & Shares</div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i><span>Savings Accounts</span></a></div>
+            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i><span>Share Capital</span></a></div>
+            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i><span>Dividends & Returns</span></a></div>
+
+            <div class="nav-section-title">Loans</div>
+            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i><span>My Loans</span></a></div>
+            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i><span>Apply for Loan</span></a></div>
+            <div class="nav-item"><a href="guarantors.html" class="nav-link"><i class="bi bi-people"></i><span>Guarantorship</span><span class="nav-badge">2</span></a></div>
+
+            <div class="nav-section-title">Transactions</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link active"><i class="bi bi-arrow-left-right"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2"></i><span>Wallet</span></a></div>
+            <div class="nav-item"><a href="statements.html" class="nav-link"><i class="bi bi-file-text"></i><span>Statements</span></a></div>
+
+            <div class="nav-section-title">Account</div>
+            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i><span>Notifications</span><span class="nav-badge">3</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i><span>Support</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- ===================== MAIN CONTENT AREA ===================== -->
+    <main class="member-main">
+
+        <!-- Topbar Navigation -->
+        <div class="member-topbar">
+            <div class="topbar-inner">
+                <div>
+                    <button class="btn-ghost-s d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="page-breadcrumb">Home / Transactions / <span>Overview</span></div>
+                </div>
+                <div class="topbar-right">
+                    <a href="notifications.html" class="topbar-btn"><i class="bi bi-bell"></i><span class="topbar-notif">3</span></a>
+                    <div class="user-chip" onclick="openModal('profileModal')">
+                        <div class="user-chip-av">JK</div>
+                        <span>John K.</span>
+                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text3);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <!-- ===== HERO OVERVIEW CARD ===== -->
+            <div class="hero-card fade-in">
+                <div class="hero-inner">
+                    <div class="hero-top">
+                        <div>
+                            <div class="hero-label">Total Monthly Activity</div>
+                            <div class="hero-value">KES 142,500</div>
+                            <div class="hero-sub">Combined Inflows & Outflows for December 2024</div>
+                        </div>
+                        <div>
+                            <button class="btn-o" style="border-color:rgba(255,255,255,0.3);color:white;" onclick="openModal('exportModal')"><i class="bi bi-cloud-download"></i> Export Statement</button>
+                        </div>
+                    </div>
+                    <div class="hero-kpis">
+                        <div class="kpi-box">
+                            <div class="k-label">Total Inflows</div>
+                            <div class="k-value pos">+KES 85,000</div>
+                        </div>
+                        <div class="kpi-box">
+                            <div class="k-label">Total Outflows</div>
+                            <div class="k-value neg">-KES 57,500</div>
+                        </div>
+                        <div class="kpi-box">
+                            <div class="k-label">Pending Verifications</div>
+                            <div class="k-value" style="color:#ffb74d;">1 Transaction</div>
+                        </div>
+                        <div class="kpi-box">
+                            <div class="k-label">Success Rate</div>
+                            <div class="k-value" style="color:var(--primary-light);">98.4%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== QUICK ACTION ROW ===== -->
+            <div class="quick-action-bar fade-in">
+                <a href="#" class="qa-tile" onclick="openModal('depositModal')">
+                    <div class="qa-icon dep"><i class="bi bi-box-arrow-in-down"></i></div>
+                    <div><h6>Deposit Funds</h6><p>Add via M-Pesa/Bank</p></div>
+                </a>
+                <a href="#" class="qa-tile" onclick="openModal('withdrawModal')">
+                    <div class="qa-icon wdr"><i class="bi bi-box-arrow-up"></i></div>
+                    <div><h6>Withdraw Funds</h6><p>To Wallet or Bank</p></div>
+                </a>
+                <a href="#" class="qa-tile" onclick="openModal('transferModal')">
+                    <div class="qa-icon txf"><i class="bi bi-arrow-left-right"></i></div>
+                    <div><h6>Internal Transfer</h6><p>Move funds in SACCO</p></div>
+                </a>
+                <a href="#" class="qa-tile" onclick="openModal('sendModal')">
+                    <div class="qa-icon snd"><i class="bi bi-send"></i></div>
+                    <div><h6>Send Money</h6><p>To another Member</p></div>
+                </a>
+            </div>
+
+            <!-- ===== ANALYTICS VISUALIZATION PANEL ===== -->
+            <div class="row g-4 mb-4 fade-in">
+                <div class="col-lg-8">
+                    <div class="g-card" style="margin-bottom:0; height: 100%;">
+                        <div class="g-card-header">
+                            <h3><i class="bi bi-graph-up me-2" style="color:var(--primary);"></i> Activity Insights (Inflows vs Outflows)</h3>
+                            <span style="font-size:0.75rem;color:var(--text3);">Last 6 Months</span>
+                        </div>
+                        <div style="padding:var(--sp-md) var(--sp-xl);">
+                            <div style="position: relative; height: 200px;">
+                                <canvas id="txTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="g-card" style="margin-bottom:0; height: 100%;">
+                        <div class="g-card-header">
+                            <h3><i class="bi bi-pie-chart me-2" style="color:var(--teal);"></i> Outflow Breakdown</h3>
+                        </div>
+                        <div style="padding:var(--sp-md) var(--sp-lg); display: flex; flex-direction: column; justify-content: center; height: 200px;">
+                            <div style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                <span><i class="bi bi-circle-fill me-2" style="color:var(--blue); font-size:0.5rem;"></i>Loan Repayments</span>
+                                <strong>65%</strong>
+                            </div>
+                            <div style="height:6px; background:var(--bg3); border-radius:var(--r-full); margin-bottom:16px; overflow:hidden;">
+                                <div style="width:65%; height:100%; background:var(--blue);"></div>
+                            </div>
+
+                            <div style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                <span><i class="bi bi-circle-fill me-2" style="color:var(--teal); font-size:0.5rem;"></i>Share Purchases</span>
+                                <strong>25%</strong>
+                            </div>
+                            <div style="height:6px; background:var(--bg3); border-radius:var(--r-full); margin-bottom:16px; overflow:hidden;">
+                                <div style="width:25%; height:100%; background:var(--teal);"></div>
+                            </div>
+
+                            <div style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                <span><i class="bi bi-circle-fill me-2" style="color:var(--orange); font-size:0.5rem;"></i>External Withdrawals</span>
+                                <strong>10%</strong>
+                            </div>
+                            <div style="height:6px; background:var(--bg3); border-radius:var(--r-full); overflow:hidden;">
+                                <div style="width:10%; height:100%; background:var(--orange);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== FILTER CONTROLS & TABS BAR ===== -->
+            <div class="controls-card fade-in">
+                <div class="tx-tabs">
+                    <button class="tx-tab active" onclick="filterCategory('all', this)">All Transactions <span class="tcnt">18</span></button>
+                    <button class="tx-tab" onclick="filterCategory('dep', this)">Deposits <span class="tcnt">6</span></button>
+                    <button class="tx-tab" onclick="filterCategory('wdr', this)">Withdrawals <span class="tcnt">3</span></button>
+                    <button class="tx-tab" onclick="filterCategory('txf', this)">Transfers <span class="tcnt">5</span></button>
+                    <button class="tx-tab" onclick="filterCategory('rep', this)">Repayments <span class="tcnt">4</span></button>
+                </div>
+                <div class="filter-tools">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search reference, account..." id="txSearchInput" onkeyup="searchTx()">
+                    </div>
+                    <button class="btn-ghost-s" onclick="openModal('filterModal')"><i class="bi bi-funnel"></i> Filters</button>
+                </div>
+            </div>
+
+            <!-- ===== MAIN TRANSACTIONS TABLE ===== -->
+            <div class="g-card fade-in">
+                <div class="g-card-header">
+                    <h3>Transaction Ledger</h3>
+                    <span style="font-size:0.75rem; color:var(--text2);">Showing December 2024 Records</span>
+                </div>
+                <table class="tx-table" id="txLedgerTable">
+                    <thead>
+                        <tr>
+                            <th>Transaction Details</th>
+                            <th>Reference</th>
+                            <th>Channel</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Amount (KES)</th>
+                            <th style="text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- TRX 1: Deposit -->
+                        <tr class="tx-row dep-row">
+                            <td>
+                                <div class="tx-cell-main">
+                                    <div class="tx-icon dep"><i class="bi bi-arrow-down-left"></i></div>
+                                    <div>
+                                        <div class="tx-title">Deposit to Regular Savings</div>
+                                        <div style="font-size:0.7rem; color:var(--text3);">Savings Account Contribution</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tx-ref">TRX-2024-09812</span></td>
+                            <td><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa PayBill</span></td>
+                            <td><div class="tx-date">Dec 18, 2024<br><span style="font-size:0.68rem; color:var(--text3);">03:45 PM</span></div></td>
+                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                            <td class="tx-amt pos">+15,000.00</td>
+                            <td style="text-align: center;">
+                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09812', 'Deposit to Regular Savings', '+15,000.00', 'M-Pesa PayBill', 'Success', 'Dec 18, 2024 03:45 PM', 'John Kamau', 'Regular Savings')">
+                                    <i class="bi bi-receipt"></i> View
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- TRX 2: Repayment -->
+                        <tr class="tx-row rep-row">
+                            <td>
+                                <div class="tx-cell-main">
+                                    <div class="tx-icon rep"><i class="bi bi-cash-coin"></i></div>
+                                    <div>
+                                        <div class="tx-title">Loan Repayment Installment</div>
+                                        <div style="font-size:0.7rem; color:var(--text3);">Personal Loan (LN-2024-00845)</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tx-ref">TRX-2024-09811</span></td>
+                            <td><span class="tx-channel"><i class="bi bi-wallet2"></i> SACCO Wallet</span></td>
+                            <td><div class="tx-date">Dec 15, 2024<br><span style="font-size:0.68rem; color:var(--text3);">11:20 AM</span></div></td>
+                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                            <td class="tx-amt neg">-12,500.00</td>
+                            <td style="text-align: center;">
+                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09811', 'Loan Repayment Installment', '-12,500.00', 'SACCO Wallet', 'Success', 'Dec 15, 2024 11:20 AM', 'John Kamau', 'Personal Loan (LN-2024-00845)')">
+                                    <i class="bi bi-receipt"></i> View
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- TRX 3: Withdrawal -->
+                        <tr class="tx-row wdr-row">
+                            <td>
+                                <div class="tx-cell-main">
+                                    <div class="tx-icon wdr"><i class="bi bi-arrow-up-right"></i></div>
+                                    <div>
+                                        <div class="tx-title">Withdrawal from Emergency Fund</div>
+                                        <div style="font-size:0.7rem; color:var(--text3);">Cash Out Request</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tx-ref">TRX-2024-09810</span></td>
+                            <td><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa Disburse</span></td>
+                            <td><div class="tx-date">Dec 12, 2024<br><span style="font-size:0.68rem; color:var(--text3);">09:10 AM</span></div></td>
+                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                            <td class="tx-amt neg">-5,000.00</td>
+                            <td style="text-align: center;">
+                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09810', 'Withdrawal from Emergency Fund', '-5,000.00', 'M-Pesa Disburse', 'Success', 'Dec 12, 2024 09:10 AM', 'Emergency Fund', 'John Kamau (M-Pesa)')">
+                                    <i class="bi bi-receipt"></i> View
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- TRX 4: Share Purchase -->
+                        <tr class="tx-row txf-row">
+                            <td>
+                                <div class="tx-cell-main">
+                                    <div class="tx-icon shr"><i class="bi bi-shield-plus"></i></div>
+                                    <div>
+                                        <div class="tx-title">Share Capital Purchase</div>
+                                        <div style="font-size:0.7rem; color:var(--text3);">Internal Capital Top-Up</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tx-ref">TRX-2024-09809</span></td>
+                            <td><span class="tx-channel"><i class="bi bi-arrow-left-right"></i> Internal Transfer</span></td>
+                            <td><div class="tx-date">Dec 10, 2024<br><span style="font-size:0.68rem; color:var(--text3);">04:00 PM</span></div></td>
+                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                            <td class="tx-amt pos">+10,000.00</td>
+                            <td style="text-align: center;">
+                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09809', 'Share Capital Purchase', '+10,000.00', 'Internal Transfer', 'Success', 'Dec 10, 2024 04:00 PM', 'Regular Savings', 'Share Capital')">
+                                    <i class="bi bi-receipt"></i> View
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- TRX 5: Pending Transfer -->
+                        <tr class="tx-row txf-row">
+                            <td>
+                                <div class="tx-cell-main">
+                                    <div class="tx-icon txf"><i class="bi bi-arrow-left-right"></i></div>
+                                    <div>
+                                        <div class="tx-title">Transfer to SACCO Wallet</div>
+                                        <div style="font-size:0.7rem; color:var(--text3);">Wallet Fund Allocation</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tx-ref">TRX-2024-09808</span></td>
+                            <td><span class="tx-channel"><i class="bi bi-bank"></i> Bank Disburse</span></td>
+                            <td><div class="tx-date">Dec 08, 2024<br><span style="font-size:0.68rem; color:var(--text3);">01:30 PM</span></div></td>
+                            <td><span class="sbadge pend"><i class="bi bi-hourglass-split"></i> Pending</span></td>
+                            <td class="tx-amt pos">+20,000.00</td>
+                            <td style="text-align: center;">
+                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09808', 'Transfer to SACCO Wallet', '+20,000.00', 'Bank Disburse', 'Pending Approval', 'Dec 08, 2024 01:30 PM', 'KCB Bank Kenya', 'SACCO Wallet')">
+                                    <i class="bi bi-receipt"></i> View
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- TRX 6: Failed Withdrawal -->
+                        <tr class="tx-row wdr-row">
+                            <td>
+                                <div class="tx-cell-main">
+                                    <div class="tx-icon wdr"><i class="bi bi-x-circle"></i></div>
+                                    <div>
+                                        <div class="tx-title">Withdrawal from Regular Savings</div>
+                                        <div style="font-size:0.7rem; color:var(--text3);">External Bank Transfer</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tx-ref">TRX-2024-09807</span></td>
+                            <td><span class="tx-channel"><i class="bi bi-bank"></i> EFT Gateway</span></td>
+                            <td><div class="tx-date">Dec 05, 2024<br><span style="font-size:0.68rem; color:var(--text3);">10:05 AM</span></div></td>
+                            <td><span class="sbadge fail"><i class="bi bi-x-circle-fill"></i> Failed</span></td>
+                            <td class="tx-amt neg">-15,000.00</td>
+                            <td style="text-align: center;">
+                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09807', 'Withdrawal from Regular Savings', '-15,000.00', 'EFT Gateway', 'Failed (Reversed)', 'Dec 05, 2024 10:05 AM', 'Regular Savings', 'Equity Bank (Failed)')">
+                                    <i class="bi bi-receipt"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS (ZERO DEAD ENDS ASSURANCE)
+==================================================================== -->
+
+<!-- 1. TRANSACTION RECEIPT / DETAIL MODAL -->
+<div class="modal fade" id="txReceiptModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction Receipt</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="receipt-card">
+            <div class="receipt-head">
+                <div class="r-icon"><i class="bi bi-check2-circle"></i></div>
+                <h4 id="rcptAmount">+KES 15,000.00</h4>
+                <p id="rcptTitle">Deposit to Regular Savings</p>
+                <span class="sbadge ok mt-2" id="rcptStatus">Success</span>
+            </div>
+            <div class="drow"><span class="dl">Transaction Ref</span><span class="dv" id="rcptRef">TRX-2024-09812</span></div>
+            <div class="drow"><span class="dl">Payment Method</span><span class="dv" id="rcptMethod">M-Pesa PayBill</span></div>
+            <div class="drow"><span class="dl">Source</span><span class="dv" id="rcptSource">John Kamau</span></div>
+            <div class="drow"><span class="dl">Destination</span><span class="dv" id="rcptDest">Regular Savings</span></div>
+            <div class="drow"><span class="dl">Transaction Fee</span><span class="dv">KES 0.00</span></div>
+            <div class="drow"><span class="dl">Timestamp</span><span class="dv" id="rcptDate">Dec 18, 2024 03:45 PM</span></div>
+        </div>
+        <div class="mt-4 text-center">
+            <p style="font-size:0.75rem; color:var(--text3);">If you notice any discrepancies regarding this transaction, please raise an official dispute right away.</p>
+        </div>
+    </div>
+    <div class="modal-footer" style="display:flex; justify-content:space-between;">
+        <button class="btn-ghost-s" style="color:var(--red);" onclick="closeAndOpen('txReceiptModal', 'disputeModal')"><i class="bi bi-shield-exclamation"></i> Raise Dispute</button>
+        <div style="display:flex; gap:8px;">
+            <button class="btn-o" onclick="showToast('Receipt downloaded successfully!')"><i class="bi bi-download"></i> PDF</button>
+            <button class="btn-g" onclick="window.print()"><i class="bi bi-printer"></i> Print</button>
+        </div>
+    </div>
+</div></div></div>
+
+<!-- 2. DEPOSIT FUNDS MODAL -->
+<div class="modal fade" id="depositModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-box-arrow-in-down me-2"></i>Deposit Funds</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Select Deposit Channel</label>
+                <select class="fselect" id="depChannelSelect" onchange="toggleDepFields()">
+                    <option value="mpesa">M-Pesa Express (STK Push)</option>
+                    <option value="bank">Direct Bank EFT</option>
+                    <option value="card">Visa / Mastercard</option>
+                </select>
+            </div>
+            <div class="col-12"><label class="flbl">Target SACCO Account</label>
+                <select class="fselect">
+                    <option>Regular Savings Account</option>
+                    <option>Share Capital (Buy Shares)</option>
+                    <option>Emergency Fund Account</option>
+                    <option>SACCOPay Personal Wallet</option>
+                </select>
+            </div>
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="finput" placeholder="e.g. 5000"></div>
+
+            <!-- Context Dependent Channel Inputs -->
+            <div class="col-12" id="mpesaPhoneRow"><label class="flbl">M-Pesa Mobile Number</label><input type="text" class="finput" value="0722123456"></div>
+            <div class="col-12" id="bankRefRow" style="display:none;"><label class="flbl">EFT Payment Ref Code</label><input type="text" class="finput" placeholder="e.g. EFT9382410"></div>
+        </div>
+        <div style="margin-top:var(--sp-lg); padding:10px; background:var(--primary-ultra); border-radius:var(--r-sm); font-size:0.8rem; color:var(--primary-dark);">
+            <i class="bi bi-info-circle-fill me-1"></i> No fees charged for internal deposits via M-Pesa. Processing is instant upon mobile PIN entry.
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('depositModal', 'Deposit request initiated via M-Pesa. Check your phone to complete PIN authorization.')"><i class="bi bi-check-circle"></i> Complete Deposit</button></div>
+</div></div></div>
+
+<!-- 3. WITHDRAW FUNDS MODAL -->
+<div class="modal fade" id="withdrawModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-box-arrow-up me-2"></i>Withdraw Funds</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Source Account</label>
+                <select class="fselect">
+                    <option>Regular Savings (Bal: KES 125,000.00)</option>
+                    <option>Emergency Fund (Bal: KES 18,000.00)</option>
+                    <option>SACCOPay Personal Wallet (Bal: KES 5,400.00)</option>
+                </select>
+            </div>
+            <div class="col-12"><label class="flbl">Withdraw To</label>
+                <select class="fselect">
+                    <option>Registered M-Pesa (0722***456)</option>
+                    <option>Linked Bank Account (KCB ****8821)</option>
+                </select>
+            </div>
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="finput" placeholder="e.g. 2000"></div>
+            <div class="col-12"><label class="flbl">Member Authorization PIN</label><input type="password" class="finput" placeholder="Enter 4-digit PIN" maxlength="4"></div>
+        </div>
+        <div style="margin-top:var(--sp-lg); padding:10px; background:rgba(255,152,0,0.1); border-radius:var(--r-sm); font-size:0.8rem; color:#e65100;">
+            <i class="bi bi-shield-exclamation me-1"></i> Ensure your exposure capacity permits this withdrawal. Standard transfer fees (KES 35) apply.
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('withdrawModal', 'Withdrawal processed successfully. Funds disbursed to your registered M-Pesa account.')"><i class="bi bi-box-arrow-up"></i> Disburse Funds</button></div>
+</div></div></div>
+
+<!-- 4. INTERNAL TRANSFER MODAL -->
+<div class="modal fade" id="transferModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-arrow-left-right me-2"></i>Internal Funds Transfer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">From Account</label>
+                <select class="fselect">
+                    <option>Regular Savings</option>
+                    <option>SACCOPay Wallet</option>
+                </select>
+            </div>
+            <div class="col-md-6"><label class="flbl">To Account</label>
+                <select class="fselect">
+                    <option>Share Capital (Buy Shares)</option>
+                    <option>Emergency Fund</option>
+                    <option>Regular Savings</option>
+                </select>
+            </div>
+            <div class="col-12"><label class="flbl">Transfer Amount (KES)</label><input type="number" class="finput" placeholder="e.g. 5000"></div>
+            <div class="col-12"><label class="flbl">Description/Narration</label><input type="text" class="finput" placeholder="e.g. Top up shares capital"></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('transferModal', 'Internal funds transfer complete. Accounts synchronized.')"><i class="bi bi-check-circle"></i> Commit Transfer</button></div>
+</div></div></div>
+
+<!-- 5. SEND MONEY MODAL -->
+<div class="modal fade" id="sendModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-send me-2"></i>Send Money (Member-to-Member)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Recipient Member ID or Phone</label><input type="text" class="finput" placeholder="e.g. SP-10089 or 0712345678"></div>
+            <div class="col-12"><label class="flbl">Source Fund</label>
+                <select class="fselect"><option>SACCOPay Wallet (Instant)</option><option>Regular Savings Account</option></select>
+            </div>
+            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="finput" placeholder="Enter amount"></div>
+            <div class="col-12"><label class="flbl">Message/Note</label><input type="text" class="finput" placeholder="e.g. Settlement for group supplies"></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('sendModal', 'Funds successfully transferred to recipient member.')"><i class="bi bi-send"></i> Send Money</button></div>
+</div></div></div>
+
+<!-- 6. FILTERS MODAL -->
+<div class="modal fade" id="filterModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-funnel me-2"></i>Advanced Transaction Filters</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Start Date</label><input type="date" class="finput"></div>
+            <div class="col-md-6"><label class="flbl">End Date</label><input type="date" class="finput"></div>
+            <div class="col-12"><label class="flbl">Transaction Status</label>
+                <select class="fselect"><option>All Statuses</option><option>Success Only</option><option>Pending Only</option><option>Failed Only</option></select>
+            </div>
+            <div class="col-12"><label class="flbl">Specific Channel</label>
+                <select class="fselect"><option>All Delivery Channels</option><option>M-Pesa Integrated</option><option>Bank EFT / Gateway</option><option>Internal Ledger Transfer</option></select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Reset</button><button class="btn-g" onclick="processAction('filterModal', 'Filters applied to ledger feed successfully.')"><i class="bi bi-funnel"></i> Apply Filter</button></div>
+</div></div></div>
+
+<!-- 7. EXPORT STATEMENT MODAL -->
+<div class="modal fade" id="exportModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-cloud-download me-2"></i>Export Account Statement</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Statement Format</label>
+                <select class="fselect"><option>Adobe PDF (.pdf)</option><option>Microsoft Excel (.xlsx)</option><option>Comma Separated Values (.csv)</option></select>
+            </div>
+            <div class="col-12"><label class="flbl">Scope Selection</label>
+                <select class="fselect"><option>Current Month (Dec 2024)</option><option>Last 90 Days</option><option>Complete Lifetime Statement</option></select>
+            </div>
+            <div class="col-12"><label class="flbl">Send Duplicate Copy to Registered Email?</label>
+                <div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" checked style="cursor:pointer;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('exportModal', 'Statement packaged successfully. Download initialised.')"><i class="bi bi-download"></i> Execute Download</button></div>
+</div></div></div>
+
+<!-- 8. RAISE DISPUTE MODAL -->
+<div class="modal fade" id="disputeModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header gr"><h5 class="modal-title"><i class="bi bi-shield-exclamation me-2"></i>Raise Transaction Dispute</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:rgba(244, 67, 54, 0.08); border-radius:var(--r-sm); padding:10px; margin-bottom:var(--sp-md); font-size:0.8rem; color:#c62828;">
+            Disputing Reference: <strong id="disputeRefCode">TRX-2024-09812</strong>
+        </div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Issue Category</label>
+                <select class="fselect"><option>Amount deducted but transaction failed</option><option>Incorrect amount charged/credited</option><option>Duplicate ledger processing</option><option>Unrecognised account processing</option></select>
+            </div>
+            <div class="col-12"><label class="flbl">Detailed Explanation</label><textarea class="finput" rows="4" placeholder="Describe the discrepancy clearly so support agents can reconcile..."></textarea></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-red" onclick="processAction('disputeModal', 'Dispute ticket registered. Support desk will update status within 24 hours.')"><i class="bi bi-send"></i> Submit Dispute Ticket</button></div>
+</div></div></div>
+
+<!-- Profile Modal View -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+    <div class="modal-body text-center" style="padding:var(--sp-xl);">
+        <div class="user-chip-av" style="width:64px; height:64px; font-size:1.4rem; margin:0 auto var(--sp-md);">JK</div>
+        <h5 style="font-weight:700;">John Kamau</h5>
+        <p style="font-size:0.75rem; color:var(--text2);">SP-10015 · Active Account</p>
+        <hr style="margin:var(--sp-sm) 0; border-color:var(--border);">
+        <div style="display:flex; flex-direction:column; gap:4px;">
+            <button class="btn-ghost-s w-100 justify-content-center" onclick="window.location.href='profile.html'"><i class="bi bi-person me-2"></i>My Profile</button>
+            <button class="btn-ghost-s w-100 justify-content-center" onclick="window.location.href='settings.html'"><i class="bi bi-gear me-2"></i>Settings</button>
+            <button class="btn-ghost-s w-100 justify-content-center" style="color:var(--red);" onclick="showToast('Securely logging out account...')"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+        </div>
+    </div>
+</div></div></div>
+
+<!-- Universal Notification Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="toast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ========== INTERACTIVE PLATFORM UTILITIES ==========
+function showToast(m, type='success'){
+    const el = document.getElementById('toast');
+    el.className = 'toast align-items-center border-0 text-bg-' + (type === 'error' ? 'danger' : 'success');
+    document.getElementById('toastMsg').innerHTML = '<i class="bi bi-' + (type === 'error' ? 'x-circle' : 'check-circle') + '-fill me-2"></i>' + m;
+    new bootstrap.Toast(el, {delay: 3000}).show();
+}
+
+function openModal(id){ new bootstrap.Modal(document.getElementById(id)).show(); }
+function closeModal(id){ const m = bootstrap.Modal.getInstance(document.getElementById(id)); if(m) m.hide(); }
+function closeAndOpen(closeId, openId){ closeModal(closeId); setTimeout(() => openModal(openId), 350); }
+
+function processAction(modalId, msg){
+    closeModal(modalId);
+    showToast(msg);
+}
+
+// Contextually Toggle Deposit Inputs
+function toggleDepFields(){
+    const ch = document.getElementById('depChannelSelect').value;
+    document.getElementById('mpesaPhoneRow').style.display = ch === 'mpesa' ? 'block' : 'none';
+    document.getElementById('bankRefRow').style.display = ch === 'bank' ? 'block' : 'none';
+}
+
+// Receipt Parameter Insertion
+function viewReceipt(ref, title, amount, method, status, date, source, dest){
+    document.getElementById('rcptRef').textContent = ref;
+    document.getElementById('rcptTitle').textContent = title;
+    document.getElementById('rcptAmount').textContent = (amount.startsWith('+') ? '+KES ' : '-KES ') + amount.replace(/[+-]/,'');
+    document.getElementById('rcptMethod').textContent = method;
+    document.getElementById('rcptSource').textContent = source;
+    document.getElementById('rcptDest').textContent = dest;
+    document.getElementById('rcptDate').textContent = date;
+
+    const stBadge = document.getElementById('rcptStatus');
+    stBadge.className = 'sbadge mt-2 ' + (status.includes('Success') ? 'ok' : status.includes('Pending') ? 'pend' : 'fail');
+    stBadge.textContent = status;
+
+    // Inject matching code to Dispute parameter display
+    document.getElementById('disputeRefCode').textContent = ref;
+
+    openModal('txReceiptModal');
+}
+
+// Contextual Table Ledger Filter
+function filterCategory(cat, btn){
+    document.querySelectorAll('.tx-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    const rows = document.querySelectorAll('#txLedgerTable tbody tr');
+    rows.forEach(r => {
+        if(cat === 'all'){
+            r.style.display = '';
+        } else {
+            r.style.display = r.classList.contains(cat + '-row') ? '' : 'none';
+        }
+    });
+}
+
+// Simple Row Keyword Searching
+function searchTx(){
+    const term = document.getElementById('txSearchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#txLedgerTable tbody tr');
+    rows.forEach(r => {
+        const textContent = r.textContent.toLowerCase();
+        r.style.display = textContent.includes(term) ? '' : 'none';
+    });
+}
+
+// ========== INITIALISE CHART.JS ANALYTICS ==========
+document.addEventListener('DOMContentLoaded', function(){
+    const ctx = document.getElementById('txTrendChart');
+    if(ctx){
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'Inflows (KES)',
+                        data: [75000, 92000, 68000, 110000, 89000, 85000],
+                        backgroundColor: '#00d084',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Outflows (KES)',
+                        data: [42000, 58000, 50000, 72000, 61000, 57500],
+                        backgroundColor: '#2196f3',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+                    x: { ticks: { font: { size: 11 } } }
+                }
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>
