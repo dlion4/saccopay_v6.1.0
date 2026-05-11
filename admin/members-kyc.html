@@ -14,6 +14,135 @@
     
     <!-- Master CSS -->
     <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+  
+
+    /* Modal Styling */
+    .sacco-modal-content {
+      background: #ffffff;
+      border: none;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .sacco-modal-header {
+      background: linear-gradient(to right, #065f46, #047857, #0d9488); /* Emerald-800 to Teal-600 */
+      color: #ffffff;
+    }
+    .sacco-modal-footer {
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    /* Form Controls */
+    .form-control, .form-select {
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.625rem 1rem;
+      color: #111827;
+      background-color: #ffffff;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+    }
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Step Indicator Bubbles */
+    .step-indicator {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .step-indicator.active {
+      background: #ffffff;
+      color: #047857;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+    }
+    .step-indicator.completed {
+      background: #ffffff;
+      color: #047857;
+    }
+
+    /* Buttons */
+    .btn-emerald {
+      background-color: #059669;
+      color: #ffffff;
+      font-weight: 500;
+      border-radius: 0.75rem;
+      border: none;
+      padding: 0.625rem 1.5rem;
+      transition: background-color 0.2s;
+    }
+    .btn-emerald:hover {
+      background-color: #047857;
+      color: #ffffff;
+    }
+    .btn-emerald:disabled {
+      background-color: #9ca3af;
+    }
+    .btn-outline-gray {
+      border: 1px solid #d1d5db;
+      color: #374151;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      padding: 0.625rem 1.5rem;
+      background: #ffffff;
+    }
+    .btn-outline-gray:hover {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    /* Custom Radio Cards */
+    .custom-radio-input:checked + .custom-radio-card {
+      border-color: #10b981;
+      background-color: #ecfdf5;
+      color: #047857;
+    }
+    .custom-radio-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .custom-radio-card:hover {
+      border-color: #d1d5db;
+    }
+
+    /* Steps */
+    .step-content {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+    .step-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .doc-item, .fee-item {
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+    }
+    .fee-item.selected {
+      border-color: #6ee7b7;
+      background-color: #ecfdf5;
+    }
+  </style>
 </head>
 <body>
     
@@ -64,7 +193,7 @@
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registrationModal">
                         <i class="bi bi-person-plus nav-icon"></i>
                         <span>Register Member</span>
                     </a>
@@ -237,9 +366,9 @@
                             <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#bulkApproveModal">
                                 <i class="bi bi-check-all"></i> Bulk Approve
                             </button>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
-                                <i class="bi bi-person-plus"></i> Register for Member
-                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registrationModal">
+  <i class="bi bi-person-plus"></i>Register New Member
+</button>
                         </div>
                     </div>
                 </div>
@@ -844,6 +973,732 @@
     </div>
     
     <!-- MODALS -->
+
+    <!-- registered members -->
+     <div class="modal fade" id="registrationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" style="max-width: 800px;">
+    <div class="modal-content rounded-4 sacco-modal-content">
+      
+      <div class="modal-header sacco-modal-header border-0 flex-column align-items-stretch px-4 py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.2);">
+              <i class="bi bi-person-badge fs-5 text-white"></i>
+            </div>
+            <div>
+              <h5 class="modal-title fw-semibold mb-0 fs-6">Register New Member</h5>
+              <p class="mb-0 text-white-50" style="font-size: 0.875rem;" id="step-title">Step 1 of 10: Personal Details</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="position-relative">
+          <div class="progress rounded-pill" style="height: 8px; background: rgba(255, 255, 255, 0.2);">
+            <div class="progress-bar bg-white" id="form-progress" style="width: 10%; transition: width 0.3s ease;"></div>
+          </div>
+          <div class="d-flex justify-content-between mt-2" id="step-indicators">
+            </div>
+        </div>
+      </div>
+
+      <div class="modal-body p-4 bg-white">
+        <form id="registrationForm">
+
+          <div class="step-content active" data-step="1" data-name="Personal Details">
+            <div class="alert bg-primary-subtle border-primary-subtle text-primary-emphasis rounded-3 d-flex align-items-start gap-2 p-3 mb-4">
+              <i class="bi bi-info-circle-fill mt-1"></i>
+              <small>Enter the member's personal information exactly as it appears on their National ID card.</small>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label">First Name *</label>
+                <input type="text" class="form-control" placeholder="Enter first name">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Middle Name</label>
+                <input type="text" class="form-control" placeholder="Enter middle name">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Last Name *</label>
+                <input type="text" class="form-control" placeholder="Enter last name">
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">National ID Number *</label>
+                <input type="text" class="form-control" placeholder="e.g. 12345678">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">KRA PIN</label>
+                <input type="text" class="form-control" placeholder="e.g. A012345678Z">
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Date of Birth *</label>
+                <input type="date" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Gender *</label>
+                <select class="form-select">
+                  <option value="">Select gender</option>
+                  <option>Male</option><option>Female</option><option>Other</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Marital Status *</label>
+                <select class="form-select">
+                  <option value="">Select status</option>
+                  <option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Nationality *</label>
+              <select class="form-select">
+                <option>Kenyan</option><option>Ugandan</option><option>Tanzanian</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="2" data-name="Contact Details">
+            <div class="alert bg-success-subtle border-success-subtle text-success-emphasis rounded-3 d-flex align-items-start gap-2 p-3 mb-4">
+              <i class="bi bi-telephone-fill mt-1"></i>
+              <small>The primary phone number will be used for M-Pesa transactions and SMS notifications.</small>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Primary Phone Number *</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-secondary">+254</span>
+                  <input type="tel" class="form-control" placeholder="7XX XXX XXX">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Alternative Phone</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-secondary">+254</span>
+                  <input type="tel" class="form-control" placeholder="7XX XXX XXX">
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email Address *</label>
+              <input type="email" class="form-control" placeholder="member@example.com">
+            </div>
+            <div>
+              <label class="form-label mb-2">Preferred Contact Method *</label>
+              <div class="row g-3">
+                <div class="col-4">
+                  <input type="radio" name="contactMethod" id="c_sms" class="d-none custom-radio-input" checked>
+                  <label for="c_sms" class="custom-radio-card p-3 text-center d-block position-relative">
+                    <span class="fw-medium">SMS</span>
+                  </label>
+                </div>
+                <div class="col-4">
+                  <input type="radio" name="contactMethod" id="c_email" class="d-none custom-radio-input">
+                  <label for="c_email" class="custom-radio-card p-3 text-center d-block position-relative">
+                    <span class="fw-medium">Email</span>
+                  </label>
+                </div>
+                <div class="col-4">
+                  <input type="radio" name="contactMethod" id="c_wa" class="d-none custom-radio-input">
+                  <label for="c_wa" class="custom-radio-card p-3 text-center d-block position-relative">
+                    <span class="fw-medium">WhatsApp</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="3" data-name="Residential Details">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">County *</label>
+                <select class="form-select">
+                  <option>Select county</option>
+                  <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option><option>Nakuru</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Sub-County *</label>
+                <input type="text" class="form-control" placeholder="Enter sub-county">
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Ward</label>
+                <input type="text" class="form-control" placeholder="Enter ward">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Estate/Village</label>
+                <input type="text" class="form-control" placeholder="Enter estate or village">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Street Address *</label>
+              <textarea class="form-control" rows="2" placeholder="Enter detailed street address"></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">P.O. Box</label>
+                <input type="text" class="form-control" placeholder="e.g. 12345">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Postal Code</label>
+                <input type="text" class="form-control" placeholder="e.g. 00100">
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Residence Type *</label>
+                <select class="form-select">
+                  <option>Select type</option><option>Owned</option><option>Rented</option><option>Family</option><option>Employer Provided</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Years at Current Address</label>
+                <select class="form-select">
+                  <option>Select</option><option>Less than 1 year</option><option>1-2 years</option><option>3-5 years</option><option>More than 5 years</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="4" data-name="Employment Details">
+            <div class="mb-3">
+              <label class="form-label">Employment Status *</label>
+              <select class="form-select" id="empStatus">
+                <option value="">Select status</option>
+                <option value="employed">Employed</option>
+                <option value="self-employed">Self-Employed</option>
+                <option value="business-owner">Business Owner</option>
+                <option value="retired">Retired</option>
+                <option value="student">Student</option>
+                <option value="unemployed">Unemployed</option>
+              </select>
+            </div>
+            <div id="employedFields" class="d-none">
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label">Employer Name *</label>
+                  <input type="text" class="form-control" placeholder="Enter employer name">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Employee Number</label>
+                  <input type="text" class="form-control" placeholder="Enter employee number">
+                </div>
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label">Job Title *</label>
+                  <input type="text" class="form-control" placeholder="Enter job title">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Department</label>
+                  <input type="text" class="form-control" placeholder="Enter department">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Employer Address</label>
+                <textarea class="form-control" rows="2" placeholder="Enter employer address"></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Date of Employment</label>
+                <input type="date" class="form-control">
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Monthly Income Range *</label>
+                <select class="form-select">
+                  <option>Select range</option><option>Below KES 20,000</option><option>KES 20,000 - 50,000</option><option>KES 50,000 - 100,000</option><option>KES 100,000 - 200,000</option><option>Above KES 200,000</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Payment Mode</label>
+                <select class="form-select">
+                  <option>Select mode</option><option>Bank Transfer</option><option>M-Pesa</option><option>Cash</option><option>Cheque</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="5" data-name="Next of Kin">
+            <div class="alert bg-warning-subtle border-warning-subtle text-warning-emphasis rounded-3 d-flex align-items-start gap-2 p-3 mb-4">
+              <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+              <small>Next of kin information is required for emergency contacts and in case of beneficiary claims.</small>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-control" placeholder="Enter full name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Relationship *</label>
+                <select class="form-select">
+                  <option>Select relationship</option><option>Spouse</option><option>Parent</option><option>Child</option><option>Sibling</option><option>Other Relative</option><option>Friend</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Phone Number *</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light">+254</span>
+                  <input type="tel" class="form-control" placeholder="7XX XXX XXX">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">National ID</label>
+                <input type="text" class="form-control" placeholder="Enter national ID">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" placeholder="Enter email address">
+            </div>
+            <div>
+              <label class="form-label">Physical Address</label>
+              <textarea class="form-control" rows="2" placeholder="Enter physical address"></textarea>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="6" data-name="Documents">
+            <div class="alert bg-secondary-subtle border-secondary-subtle text-secondary-emphasis rounded-3 d-flex align-items-start gap-2 p-3 mb-4">
+              <i class="bi bi-file-earmark-text-fill mt-1"></i>
+              <div>
+                <p class="mb-0 fw-medium">Document Upload</p>
+                <small>Upload required documents or skip to upload later. Required documents are marked with *</small>
+              </div>
+            </div>
+            
+            <div class="d-flex flex-column gap-3" id="doc-container">
+              <div class="doc-item p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="bg-light rounded p-2 text-secondary"><i class="bi bi-card-heading fs-5"></i></div>
+                  <div>
+                    <div class="fw-medium text-dark mb-0">National ID (Front) <span class="text-danger">*</span></div>
+                    <small class="text-muted">PDF, JPG, PNG (Max 5MB)</small>
+                  </div>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-sm btn-emerald me-2">Upload</button>
+                </div>
+              </div>
+              <div class="doc-item p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="bg-light rounded p-2 text-secondary"><i class="bi bi-card-heading fs-5"></i></div>
+                  <div>
+                    <div class="fw-medium text-dark mb-0">National ID (Back) <span class="text-danger">*</span></div>
+                    <small class="text-muted">PDF, JPG, PNG (Max 5MB)</small>
+                  </div>
+                </div>
+                <div><button type="button" class="btn btn-sm btn-emerald">Upload</button></div>
+              </div>
+              <div class="doc-item p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="bg-light rounded p-2 text-secondary"><i class="bi bi-person-bounding-box fs-5"></i></div>
+                  <div>
+                    <div class="fw-medium text-dark mb-0">Passport Photo <span class="text-danger">*</span></div>
+                    <small class="text-muted">PDF, JPG, PNG (Max 5MB)</small>
+                  </div>
+                </div>
+                <div><button type="button" class="btn btn-sm btn-emerald">Upload</button></div>
+              </div>
+              <div class="doc-item p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="bg-light rounded p-2 text-secondary"><i class="bi bi-file-earmark-pdf fs-5"></i></div>
+                  <div>
+                    <div class="fw-medium text-dark mb-0">KRA PIN Certificate</div>
+                    <small class="text-muted">PDF, JPG, PNG (Max 5MB)</small>
+                  </div>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-sm btn-emerald me-1">Upload</button>
+                  <button type="button" class="btn btn-sm btn-outline-gray">Skip</button>
+                </div>
+              </div>
+              </div>
+          </div>
+
+          <div class="step-content" data-step="7" data-name="Shares & Fees">
+            <div class="rounded-4 p-4 text-white mb-4" style="background: linear-gradient(to right, #10b981, #14b8a6);">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="mb-0 text-white-50 small">Total Amount Due</p>
+                  <h2 class="fw-bold mb-0">KES <span id="displayTotal">5,850</span></h2>
+                </div>
+                <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                  <i class="bi bi-wallet2 fs-3"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div class="fee-item selected p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <div>
+                    <p class="mb-0 fw-medium">Minimum Share Capital <span class="text-danger">*</span></p>
+                    <small class="text-muted">Required</small>
+                  </div>
+                </div>
+                <span class="fw-semibold">KES 5,000</span>
+              </div>
+              <div class="fee-item selected p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <div>
+                    <p class="mb-0 fw-medium">Registration Fee <span class="text-danger">*</span></p>
+                    <small class="text-muted">Required</small>
+                  </div>
+                </div>
+                <span class="fw-semibold">KES 500</span>
+              </div>
+              <div class="fee-item selected p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <div>
+                    <p class="mb-0 fw-medium">Onboarding Charge <span class="text-danger">*</span></p>
+                    <small class="text-muted">Required</small>
+                  </div>
+                </div>
+                <span class="fw-semibold">KES 200</span>
+              </div>
+              <div class="fee-item selected p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <p class="mb-0 fw-medium">Membership Card</p>
+                </div>
+                <span class="fw-semibold">KES 150</span>
+              </div>
+              <div class="fee-item selected p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                  <i class="bi bi-circle text-muted"></i>
+                  <p class="mb-0 fw-medium">Additional Shares</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-muted small">KES</span>
+                  <input type="number" class="form-control form-control-sm w-auto" placeholder="0" min="0" step="1000">
+                </div>
+              </div>
+            </div>
+            
+            <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+              <span class="fw-bold fs-5">Total Payable</span>
+              <span class="fw-bold fs-5 text-success">KES 5,850</span>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="8" data-name="Payment">
+             <div class="bg-light rounded-3 p-3 d-flex justify-content-between align-items-center mb-4 border">
+                <span class="text-muted fw-medium">Amount to Pay:</span>
+                <span class="fs-4 fw-bold text-success">KES 5,850</span>
+             </div>
+
+             <label class="form-label mb-3">Select Payment Method</label>
+             <div class="row g-3 mb-4">
+                <div class="col-6">
+                  <input type="radio" name="payMethod" id="pay_mpesa" class="d-none custom-radio-input" onchange="showPayMethod('mpesa')" checked>
+                  <label for="pay_mpesa" class="custom-radio-card p-3 text-center d-flex flex-column align-items-center">
+                    <span class="fs-2 mb-1">📱</span>
+                    <span class="fw-medium">M-Pesa</span>
+                  </label>
+                </div>
+                <div class="col-6">
+                  <input type="radio" name="payMethod" id="pay_cash" class="d-none custom-radio-input" onchange="showPayMethod('cash')">
+                  <label for="pay_cash" class="custom-radio-card p-3 text-center d-flex flex-column align-items-center">
+                    <span class="fs-2 mb-1">💵</span>
+                    <span class="fw-medium">Cash</span>
+                  </label>
+                </div>
+                <div class="col-6">
+                  <input type="radio" name="payMethod" id="pay_bank" class="d-none custom-radio-input" onchange="showPayMethod('bank')">
+                  <label for="pay_bank" class="custom-radio-card p-3 text-center d-flex flex-column align-items-center">
+                    <span class="fs-2 mb-1">🏦</span>
+                    <span class="fw-medium">Bank Transfer</span>
+                  </label>
+                </div>
+                <div class="col-6">
+                  <input type="radio" name="payMethod" id="pay_card" class="d-none custom-radio-input" onchange="showPayMethod('card')">
+                  <label for="pay_card" class="custom-radio-card p-3 text-center d-flex flex-column align-items-center">
+                    <span class="fs-2 mb-1">💳</span>
+                    <span class="fw-medium">Card Payment</span>
+                  </label>
+                </div>
+             </div>
+
+             <div id="form_mpesa" class="pay-form bg-success-subtle border-success-subtle p-3 rounded-3 border">
+               <div class="d-flex align-items-center gap-2 text-success mb-3">
+                 <i class="bi bi-phone-vibrate-fill"></i> <span class="fw-semibold">M-Pesa STK Push</span>
+               </div>
+               <div class="mb-3">
+                 <label class="form-label">M-Pesa Phone Number</label>
+                 <div class="input-group">
+                   <span class="input-group-text bg-white">+254</span>
+                   <input type="tel" class="form-control" placeholder="7XX XXX XXX">
+                 </div>
+               </div>
+               <button type="button" class="btn btn-success w-100 py-2 fw-semibold rounded-3">Send STK Push</button>
+             </div>
+
+             <div id="form_cash" class="pay-form bg-warning-subtle border-warning-subtle p-3 rounded-3 border d-none">
+                <div class="d-flex align-items-center gap-2 text-warning-emphasis mb-3">
+                 <i class="bi bi-cash-stack"></i> <span class="fw-semibold">Cash Payment</span>
+               </div>
+               <div class="mb-3">
+                 <label class="form-label">Receipt Number</label>
+                 <input type="text" class="form-control" placeholder="Enter receipt number">
+               </div>
+               <button type="button" class="btn btn-warning w-100 py-2 fw-semibold rounded-3">Record Cash Payment</button>
+             </div>
+
+             <div id="form_bank" class="pay-form bg-primary-subtle border-primary-subtle p-3 rounded-3 border d-none">
+                 <div class="d-flex align-items-center gap-2 text-primary mb-3">
+                 <i class="bi bi-bank2"></i> <span class="fw-semibold">Bank Transfer</span>
+               </div>
+               <div class="mb-3">
+                 <label class="form-label">Bank Name</label>
+                 <select class="form-select"><option>Select Bank</option><option>KCB</option><option>Equity</option></select>
+               </div>
+               <div class="row g-2 mb-3">
+                 <div class="col-6">
+                   <label class="form-label">Account Number</label>
+                   <input type="text" class="form-control">
+                 </div>
+                 <div class="col-6">
+                   <label class="form-label">Reference Number</label>
+                   <input type="text" class="form-control">
+                 </div>
+               </div>
+               <button type="button" class="btn btn-primary w-100 py-2 fw-semibold rounded-3">Confirm Bank Payment</button>
+             </div>
+
+             <div id="form_card" class="pay-form bg-info-subtle border-info-subtle p-3 rounded-3 border d-none">
+                <div class="d-flex align-items-center gap-2 text-info-emphasis mb-3">
+                 <i class="bi bi-credit-card-2-front-fill"></i> <span class="fw-semibold">Card Payment</span>
+               </div>
+               <div class="mb-3">
+                 <label class="form-label">Card Number</label>
+                 <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+               </div>
+               <div class="row g-2 mb-3">
+                 <div class="col-6">
+                   <label class="form-label">Expiry Date</label>
+                   <input type="text" class="form-control" placeholder="MM/YY">
+                 </div>
+                 <div class="col-6">
+                   <label class="form-label">CVV</label>
+                   <input type="password" class="form-control" placeholder="***" maxlength="4">
+                 </div>
+               </div>
+               <button type="button" class="btn btn-info w-100 py-2 fw-semibold text-white rounded-3">Pay KES 5,850</button>
+             </div>
+          </div>
+
+          <div class="step-content" data-step="9" data-name="Terms & Policies">
+             <div class="alert bg-primary-subtle border-primary-subtle text-primary-emphasis rounded-3 d-flex align-items-start gap-2 p-3 mb-4">
+              <i class="bi bi-shield-lock-fill mt-1"></i>
+              <div>
+                <p class="mb-0 fw-medium">Terms & Policies Acceptance</p>
+                <small>The member must accept all terms and policies to complete registration.</small>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted" id="termCount">0 of 8 accepted</span>
+              <button type="button" class="btn btn-link text-success text-decoration-none p-0 small fw-medium" onclick="toggleAllTerms()">Accept All</button>
+            </div>
+
+            <div class="d-flex flex-column gap-2 mb-4" style="max-height: 300px; overflow-y: auto;">
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">SACCO Terms & Conditions</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">General terms governing membership, services, and obligations.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">SACCOPay Digital Services Terms</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">Terms for using mobile banking, USSD, and digital payment services.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">Data Protection & Privacy Policy</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">How we collect, use, and protect your personal information.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">Loan Policy Agreement</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">Terms for loan applications, interest rates, and repayment.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">Savings & Withdrawal Policy</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">Rules governing savings accounts and withdrawal procedures.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">Membership Rights & Obligations</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">Your rights as a member and responsibilities to the SACCO.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">Electronic Communication Consent</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">Consent to receive statements, notices via SMS and email.</span>
+                </div>
+              </label>
+              <label class="d-flex align-items-start gap-3 p-3 border rounded-3 bg-white custom-term-card">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary term-chk">
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-medium text-dark">AML/KYC Compliance Declaration</span>
+                    <a href="#" class="text-success small text-decoration-none">View Full</a>
+                  </div>
+                  <span class="small text-muted">Declaration of compliance with anti-money laundering regulations.</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="bg-light rounded-3 p-3 border">
+              <label class="d-flex align-items-start gap-3">
+                <input type="checkbox" class="form-check-input mt-1 border-secondary" disabled id="masterDeclaration">
+                <div>
+                  <span class="fw-medium text-dark d-block">Member Declaration</span>
+                  <span class="small text-muted">I hereby confirm that I have read, understood, and agree to all the above terms, conditions, and policies of Rongo SACCO.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="10" data-name="Review & Complete">
+             <div class="alert bg-success-subtle border-success-subtle text-success-emphasis rounded-3 d-flex align-items-start gap-2 p-3 mb-4">
+              <i class="bi bi-check-circle-fill mt-1"></i>
+              <small>Review all information before completing the registration.</small>
+            </div>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div class="border rounded-3 overflow-hidden">
+                <div class="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
+                  <span class="fw-medium">Personal Information</span>
+                  <a href="#" class="text-success small text-decoration-none" onclick="goToStep(1)">Edit</a>
+                </div>
+                <div class="p-3 row g-2 small">
+                  <div class="col-6"><span class="text-muted">Name:</span> <span class="fw-medium text-dark">John Doe</span></div>
+                  <div class="col-6"><span class="text-muted">ID:</span> <span class="fw-medium text-dark">12345678</span></div>
+                  <div class="col-6"><span class="text-muted">DOB:</span> <span class="fw-medium text-dark">1990-01-01</span></div>
+                  <div class="col-6"><span class="text-muted">Gender:</span> <span class="fw-medium text-dark">Male</span></div>
+                </div>
+              </div>
+
+              <div class="border rounded-3 overflow-hidden">
+                <div class="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
+                  <span class="fw-medium">Contact Information</span>
+                  <a href="#" class="text-success small text-decoration-none" onclick="goToStep(2)">Edit</a>
+                </div>
+                <div class="p-3 row g-2 small">
+                  <div class="col-6"><span class="text-muted">Phone:</span> <span class="fw-medium text-dark">+254 700 000000</span></div>
+                  <div class="col-6"><span class="text-muted">Email:</span> <span class="fw-medium text-dark">john@example.com</span></div>
+                </div>
+              </div>
+
+              <div class="border rounded-3 overflow-hidden">
+                <div class="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
+                  <span class="fw-medium">Documents</span>
+                  <a href="#" class="text-success small text-decoration-none" onclick="goToStep(6)">Edit</a>
+                </div>
+                <div class="p-3 small d-flex flex-wrap gap-2">
+                  <span class="badge bg-success-subtle text-success-emphasis rounded-pill">National ID</span>
+                  <span class="badge bg-success-subtle text-success-emphasis rounded-pill">Passport</span>
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">KRA PIN</span>
+                </div>
+              </div>
+
+              <div class="border rounded-3 overflow-hidden">
+                <div class="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
+                  <span class="fw-medium">Payment Summary</span>
+                  <a href="#" class="text-success small text-decoration-none" onclick="goToStep(7)">Edit</a>
+                </div>
+                <div class="p-3 small">
+                  <div class="d-flex justify-content-between mb-1"><span class="text-muted">Minimum Share Capital</span><span class="fw-medium">KES 5,000</span></div>
+                  <div class="d-flex justify-content-between mb-1"><span class="text-muted">Registration Fee</span><span class="fw-medium">KES 500</span></div>
+                  <div class="d-flex justify-content-between border-top pt-2 mt-2">
+                    <span class="fw-bold text-dark">Total Paid</span><span class="fw-bold text-success">KES 5,850</span>
+                  </div>
+                  <div class="mt-2"><span class="text-muted">Method:</span> <span class="fw-medium text-dark">M-Pesa</span> <span class="badge bg-success-subtle text-success-emphasis ms-2">Paid</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-4 p-4 text-white" style="background: linear-gradient(to right, #10b981, #14b8a6);">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                  <i class="bi bi-check-lg fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Ready to Complete Registration</h6>
+                  <small class="text-white-50">All required information has been provided.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer sacco-modal-footer px-4 py-3 d-flex justify-content-between border-top-0">
+        <button type="button" class="btn btn-outline-gray" id="btnPrev" style="display: none;">
+          <i class="bi bi-arrow-left me-2"></i>Back
+        </button>
+        <div class="ms-auto d-flex gap-2">
+          <button type="button" class="btn btn-outline-gray" data-bs-dismiss="modal" id="btnCancel">Cancel</button>
+          <button type="button" class="btn btn-emerald" id="btnNext">
+            Continue <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+          <button type="button" class="btn btn-emerald" id="btnSubmit" style="display: none;">
+            <i class="bi bi-check-circle me-1"></i> Complete Registration
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
     
     <!-- Approve KYC Modal -->
     <div class="modal fade" id="approveKycModal" tabindex="-1">
@@ -2021,5 +2876,166 @@
             color: var(--text-secondary);
         }
     </style>
+    <script>
+  const totalSteps = 10;
+  let currentStep = 1;
+
+  const steps = document.querySelectorAll('.step-content');
+  const btnNext = document.getElementById('btnNext');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnCancel = document.getElementById('btnCancel');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const progressBar = document.getElementById('form-progress');
+  const stepTitle = document.getElementById('step-title');
+  const indicatorContainer = document.getElementById('step-indicators');
+
+  // Initialize bubbles
+  for (let i = 1; i <= totalSteps; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'step-indicator';
+    bubble.id = `indicator-${i}`;
+    bubble.innerText = i;
+    indicatorContainer.appendChild(bubble);
+  }
+
+  function updateUI() {
+    steps.forEach(step => {
+      const stepNum = parseInt(step.getAttribute('data-step'));
+      if (stepNum === currentStep) {
+        step.classList.add('active');
+        stepTitle.textContent = `Step ${currentStep} of ${totalSteps}: ${step.getAttribute('data-name')}`;
+      } else {
+        step.classList.remove('active');
+      }
+    });
+
+    // Update Bubbles and Progress Line
+    progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+    for (let i = 1; i <= totalSteps; i++) {
+      const bubble = document.getElementById(`indicator-${i}`);
+      bubble.classList.remove('active', 'completed');
+      if (i < currentStep) {
+        bubble.classList.add('completed');
+        bubble.innerHTML = '<i class="bi bi-check"></i>';
+      } else if (i === currentStep) {
+        bubble.classList.add('active');
+        bubble.innerHTML = i;
+      } else {
+        bubble.innerHTML = i;
+      }
+    }
+
+    // Button Logic
+    btnPrev.style.display = currentStep === 1 ? 'none' : 'inline-flex';
+    btnCancel.style.display = currentStep === 1 ? 'inline-flex' : 'none';
+    
+    if (currentStep === totalSteps) {
+      btnNext.style.display = 'none';
+      btnSubmit.style.display = 'inline-flex';
+    } else {
+      btnNext.style.display = 'inline-flex';
+      btnSubmit.style.display = 'none';
+    }
+  }
+
+  // Navigation handlers
+  btnNext.addEventListener('click', () => {
+    if (currentStep < totalSteps) {
+      currentStep++;
+      updateUI();
+    }
+  });
+
+  btnPrev.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep--;
+      updateUI();
+    }
+  });
+
+  // Jump to step (for the edit buttons in Review step)
+  window.goToStep = function(stepNum) {
+    currentStep = stepNum;
+    updateUI();
+  }
+
+  // Payment Form Toggling
+  window.showPayMethod = function(method) {
+    document.querySelectorAll('.pay-form').forEach(form => form.classList.add('d-none'));
+    document.getElementById(`form_${method}`).classList.remove('d-none');
+  }
+
+  // Toggle employment fields
+  document.getElementById('empStatus').addEventListener('change', function(e) {
+    const fields = document.getElementById('employedFields');
+    if (e.target.value === 'employed') {
+      fields.classList.remove('d-none');
+    } else {
+      fields.classList.add('d-none');
+    }
+  });
+
+  // Terms and Policies master toggle
+  window.toggleAllTerms = function() {
+    const checkboxes = document.querySelectorAll('.term-chk');
+    const master = document.getElementById('masterDeclaration');
+    let allChecked = true;
+    
+    checkboxes.forEach(chk => {
+      if(!chk.checked) allChecked = false;
+    });
+
+    checkboxes.forEach(chk => {
+      chk.checked = !allChecked;
+      const card = chk.closest('.custom-term-card');
+      if (!allChecked) {
+        card.style.borderColor = '#10b981';
+        card.style.backgroundColor = '#ecfdf5';
+      } else {
+        card.style.borderColor = '#dee2e6';
+        card.style.backgroundColor = '#fff';
+      }
+    });
+    master.checked = !allChecked;
+    document.getElementById('termCount').innerText = `${!allChecked ? 8 : 0} of 8 accepted`;
+  }
+
+  // Event listeners for individual terms to update UI
+  document.querySelectorAll('.term-chk').forEach(chk => {
+    chk.addEventListener('change', function() {
+      const card = this.closest('.custom-term-card');
+      if (this.checked) {
+        card.style.borderColor = '#10b981';
+        card.style.backgroundColor = '#ecfdf5';
+      } else {
+        card.style.borderColor = '#dee2e6';
+        card.style.backgroundColor = '#fff';
+      }
+      
+      const total = document.querySelectorAll('.term-chk').length;
+      const checked = document.querySelectorAll('.term-chk:checked').length;
+      document.getElementById('termCount').innerText = `${checked} of ${total} accepted`;
+      document.getElementById('masterDeclaration').checked = (checked === total);
+    });
+  });
+
+  // Submit
+  btnSubmit.addEventListener('click', () => {
+    const originalText = btnSubmit.innerHTML;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing...';
+    btnSubmit.disabled = true;
+    
+    setTimeout(() => {
+      alert("Registration completed successfully!");
+      bootstrap.Modal.getInstance(document.getElementById('registrationModal')).hide();
+      currentStep = 1;
+      updateUI();
+      btnSubmit.innerHTML = originalText;
+      btnSubmit.disabled = false;
+    }, 1500);
+  });
+
+  updateUI();
+</script>
 </body>
 </html>

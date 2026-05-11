@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Subscription & Billing | SACCOPay Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --g:#00d084;--gd:#00a866;--gl:#66e5b8;--gul:#e6faf4;
+  --teal:#00bcd4;--blue:#2196f3;--purple:#9c27b0;--orange:#ff9800;--red:#f44336;--indigo:#3f51b5;
+  --ok:#4caf50;--warn:#ffc107;--danger:#f44336;
+  --bg:#f8fafb;--bg2:#fff;--bg3:#f0f4f7;
+  --glass:rgba(255,255,255,.88);--gb:rgba(0,208,132,.18);
+  --t1:#1a2332;--t2:#64748b;--t3:#94a3b8;
+  --bd:#e2e8f0;
+  --sm:0 2px 8px rgba(0,0,0,.04);--md:0 4px 16px rgba(0,0,0,.08);--lg:0 8px 32px rgba(0,0,0,.12);
+  --glow:0 0 24px rgba(0,208,132,.18);
+  --r1:8px;--r2:12px;--r3:16px;--r4:24px;--rf:9999px;
+  --ff:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--ff);background:linear-gradient(135deg,#f8fafb 0%,#e6faf4 50%,#eef6ff 100%);color:var(--t1);min-height:100vh;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:#f0f4f7;}::-webkit-scrollbar-thumb{background:var(--gl);border-radius:99px;}
+
+/* LAYOUT */
+.lay{display:flex;min-height:100vh;}
+.sidebar{width:268px;background:var(--glass);backdrop-filter:blur(24px);border-right:1px solid var(--gb);position:fixed;height:100vh;overflow-y:auto;z-index:1000;box-shadow:var(--md);}
+.main{flex:1;margin-left:268px;min-height:100vh;display:flex;flex-direction:column;}
+
+/* SIDEBAR */
+.sb-brand{padding:1.4rem 1.2rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.8rem;}
+.sb-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--g),var(--teal));border-radius:var(--r2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.05rem;box-shadow:0 4px 12px rgba(0,208,132,.35);flex-shrink:0;}
+.sb-name h1{font-size:1.15rem;font-weight:800;background:linear-gradient(135deg,var(--g),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sb-name p{font-size:.68rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;}
+.sb-nav{padding:.9rem 0;}
+.sb-sec{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);padding:.4rem 1.4rem;margin-top:.9rem;}
+.nav-item{margin:2px .7rem;}
+.nav-a{display:flex;align-items:center;gap:.8rem;padding:.7rem .95rem;color:var(--t2);text-decoration:none;border-radius:var(--r2);transition:all .2s;font-weight:500;font-size:.84rem;position:relative;}
+.nav-a:hover{background:var(--gul);color:var(--gd);transform:translateX(3px);}
+.nav-a.active{background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;box-shadow:0 4px 14px rgba(0,208,132,.3);}
+.nav-a.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;background:#fff;border-radius:0 4px 4px 0;}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;padding:1px 6px;border-radius:var(--rf);font-size:.64rem;font-weight:700;}
+.sb-foot{padding:.9rem 1.2rem;border-top:1px solid var(--bd);display:flex;align-items:center;gap:.7rem;}
+.av-sm{width:34px;height:34px;border-radius:var(--rf);background:linear-gradient(135deg,var(--g),var(--teal));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;flex-shrink:0;}
+
+/* TOPBAR */
+.topbar{background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--gb);padding:.9rem 2rem;position:sticky;top:0;z-index:100;box-shadow:var(--sm);}
+.tb-inner{display:flex;justify-content:space-between;align-items:center;}
+.tb-left .bc{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--t3);}
+.tb-left .bc span{color:var(--g);font-weight:600;}
+.tb-title{font-size:1.3rem;font-weight:800;color:var(--t1);margin-top:.1rem;}
+.tb-right{display:flex;align-items:center;gap:.8rem;}
+.ic-btn{width:36px;height:36px;border-radius:var(--rf);background:var(--bg2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;position:relative;color:var(--t2);font-size:.85rem;}
+.ic-btn:hover{background:var(--gul);border-color:var(--g);color:var(--g);}
+.nd{position:absolute;top:-3px;right:-3px;width:17px;height:17px;background:var(--danger);color:#fff;border-radius:var(--rf);font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
+.uc{display:flex;align-items:center;gap:.55rem;padding:.35rem .85rem .35rem .35rem;border-radius:var(--rf);background:var(--bg2);border:1px solid var(--bd);cursor:pointer;transition:.2s;}
+.uc:hover{border-color:var(--g);background:var(--gul);}
+.uc-name{font-size:.78rem;font-weight:700;}
+.uc-role{font-size:.63rem;color:var(--t3);}
+
+/* CONTENT */
+.body{padding:1.75rem 2rem;flex:1;}
+
+/* ALERT */
+.alert{display:flex;align-items:flex-start;gap:1rem;padding:1rem 1.4rem;border-radius:var(--r3);margin-bottom:1.5rem;border-left:4px solid;font-size:.84rem;}
+.al-warn{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:var(--warn);color:#92400e;}
+.al-info{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:var(--blue);color:#1e40af;}
+.al-ok{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:var(--ok);color:#166534;}
+.al-body{flex:1;}.al-body strong{display:block;font-weight:700;margin-bottom:.15rem;}
+.al-close{background:none;border:none;cursor:pointer;opacity:.6;color:inherit;font-size:.9rem;padding:.1rem;}
+.al-close:hover{opacity:1;}
+
+/* CARDS */
+.card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--gb);border-radius:var(--r4);overflow:hidden;transition:all .3s cubic-bezier(.4,0,.2,1);}
+.card:hover{box-shadow:var(--lg),var(--glow);}
+.card-hd{padding:1.25rem 1.5rem;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;}
+.card-bd{padding:1.5rem;}
+
+/* SECTION HEADER */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
+.sh-title{font-size:1.05rem;font-weight:800;color:var(--t1);display:flex;align-items:center;gap:.55rem;}
+.sh-dot{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--teal));}
+.sh-acts{display:flex;gap:.55rem;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1.2rem;border-radius:var(--r2);font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:.22s;font-family:var(--ff);}
+.btn-p{background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;box-shadow:0 4px 14px rgba(0,208,132,.28);}
+.btn-p:hover{box-shadow:0 6px 20px rgba(0,208,132,.42);transform:translateY(-1px);}
+.btn-o{background:var(--bg2);border:1.5px solid var(--bd);color:var(--t2);}
+.btn-o:hover{border-color:var(--g);color:var(--gd);background:var(--gul);}
+.btn-d{background:linear-gradient(135deg,#f44336,#e91e63);color:#fff;}
+.btn-d:hover{box-shadow:0 6px 18px rgba(244,67,54,.35);transform:translateY(-1px);}
+.btn-w{background:linear-gradient(135deg,#ff9800,#ff5722);color:#fff;}
+.btn-w:hover{box-shadow:0 6px 18px rgba(255,152,0,.35);}
+.btn-sm{padding:.42rem .9rem;font-size:.75rem;}
+.btn-xs{padding:.28rem .65rem;font-size:.7rem;border-radius:var(--r1);}
+.btn-ghost{background:transparent;border:none;color:var(--t2);font-size:.78rem;}
+.btn-ghost:hover{color:var(--gd);background:var(--gul);}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;gap:.25rem;padding:.18rem .6rem;border-radius:var(--rf);font-size:.66rem;font-weight:600;}
+.tg{background:var(--gul);color:var(--gd);border:1px solid var(--gl);}
+.tb{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
+.to{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.tp{background:#faf5ff;color:#7c3aed;border:1px solid #e9d5ff;}
+.tr{background:#fff5f5;color:#dc2626;border:1px solid #fecaca;}
+.tgy{background:#f8fafc;color:#475569;border:1px solid var(--bd);}
+.ty{background:#fefce8;color:#854d0e;border:1px solid #fef08a;}
+
+/* PROGRESS */
+.pb-track{height:6px;background:#e2e8f0;border-radius:var(--rf);overflow:hidden;}
+.pb-fill{height:100%;border-radius:var(--rf);}
+.pb-g{background:linear-gradient(90deg,var(--g),var(--teal));}
+.pb-b{background:linear-gradient(90deg,#2196f3,#21cbf3);}
+.pb-o{background:linear-gradient(90deg,#ff9800,#ff5722);}
+.pb-r{background:linear-gradient(90deg,#f44336,#e91e63);}
+.pb-p{background:linear-gradient(90deg,#9c27b0,#673ab7);}
+
+/* PILL */
+.pill{display:inline-flex;align-items:center;gap:.28rem;padding:.2rem .65rem;border-radius:var(--rf);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.pill-ok{background:#dcfce7;color:#166534;}
+.pill-warn{background:#fef9c3;color:#854d0e;}
+.pill-off{background:#f1f5f9;color:#475569;}
+.pill-danger{background:#fee2e2;color:#991b1b;}
+.pill-blue{background:#dbeafe;color:#1e40af;}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(26,35,50,.48);backdrop-filter:blur(6px);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.mo.open{display:flex;animation:fdi .2s ease;}
+@keyframes fdi{from{opacity:0}to{opacity:1}}
+.mo-box{background:var(--bg2);border-radius:var(--r4);box-shadow:var(--lg);width:100%;max-height:92vh;overflow-y:auto;animation:slup .25s cubic-bezier(.4,0,.2,1);}
+@keyframes slup{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.mo-hd{padding:1.4rem 1.6rem 1.2rem;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);z-index:5;}
+.mo-title{font-size:1rem;font-weight:800;color:var(--t1);display:flex;align-items:center;gap:.55rem;}
+.mo-ti{width:34px;height:34px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.mo-x{width:32px;height:32px;border-radius:var(--rf);background:var(--bg3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.85rem;transition:.2s;}
+.mo-x:hover{background:#fee2e2;color:var(--danger);}
+.mo-bd{padding:1.4rem 1.6rem;}
+.mo-ft{padding:1.1rem 1.6rem;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:.65rem;position:sticky;bottom:0;background:var(--bg2);}
+
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:.38rem;margin-bottom:.85rem;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;}
+.fg-full{grid-column:1/-1;}
+.fl{font-size:.76rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:.3rem;}
+.fl-req{color:var(--danger);font-size:.72rem;}
+.fl-hint{font-size:.63rem;color:var(--t3);font-weight:400;}
+.fc{padding:.62rem .88rem;border:2px solid var(--bd);border-radius:var(--r2);font-size:.8rem;font-family:var(--ff);color:var(--t1);background:var(--bg2);transition:.2s;width:100%;}
+.fc:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px var(--gul);}
+.fc::placeholder{color:var(--t3);}
+textarea.fc{resize:vertical;min-height:72px;}
+.ig{display:flex;}
+.ig-pre,.ig-suf{padding:.62rem .88rem;background:var(--bg3);border:2px solid var(--bd);font-size:.8rem;font-weight:600;color:var(--t2);white-space:nowrap;}
+.ig-pre{border-right:none;border-radius:var(--r2) 0 0 var(--r2);}
+.ig-suf{border-left:none;border-radius:0 var(--r2) var(--r2) 0;}
+.ig .fc{border-radius:0;flex:1;}
+.fhint{font-size:.68rem;color:var(--t3);}
+.fsec{font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);padding:.7rem 0 .5rem;border-bottom:1px dashed var(--bd);margin-bottom:.75rem;display:flex;align-items:center;gap:.45rem;}
+.fsec i{color:var(--g);}
+.chk-item{display:flex;align-items:flex-start;gap:.6rem;font-size:.8rem;color:var(--t2);cursor:pointer;padding:.35rem 0;}
+.chk-item input[type=checkbox]{accent-color:var(--g);width:14px;height:14px;cursor:pointer;flex-shrink:0;margin-top:.15rem;}
+.chk-item input[type=radio]{accent-color:var(--g);width:14px;height:14px;cursor:pointer;flex-shrink:0;margin-top:.15rem;}
+
+/* ── STEP WIZARD ── */
+.wizard-wrap{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--gb);border-radius:var(--r4);overflow:hidden;margin-bottom:1.75rem;}
+.wizard-steps{display:flex;background:var(--bg3);border-bottom:1px solid var(--bd);overflow-x:auto;}
+.ws{display:flex;align-items:center;gap:.65rem;padding:1.1rem 1.5rem;font-size:.8rem;font-weight:600;color:var(--t3);cursor:pointer;transition:.2s;white-space:nowrap;border-bottom:3px solid transparent;position:relative;}
+.ws:hover:not(.ws-done):not(.ws-active){color:var(--t2);}
+.ws-num{width:26px;height:26px;border-radius:50%;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;transition:.2s;}
+.ws.ws-active{color:var(--gd);border-bottom-color:var(--g);}
+.ws.ws-active .ws-num{background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;box-shadow:0 2px 8px rgba(0,208,132,.35);}
+.ws.ws-done{color:var(--gd);}
+.ws.ws-done .ws-num{background:var(--g);color:#fff;}
+.wizard-body{padding:2rem 2.5rem 2rem;}
+.wizard-footer{padding:1.25rem 2.5rem;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;background:rgba(248,250,251,.6);}
+.step-panel{display:none;animation:fdi .2s ease;}
+.step-panel.active{display:block;}
+
+/* ── PACKAGE CARDS ── */
+.pkg-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:.5rem;}
+.pkg-card{background:var(--bg2);border:2px solid var(--bd);border-radius:var(--r3);padding:1.25rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.pkg-card:hover{border-color:var(--gl);box-shadow:var(--md);}
+.pkg-card.selected{border-color:var(--g);background:var(--gul);box-shadow:var(--md),var(--glow);}
+.pkg-card.recommended{border-color:var(--g);}
+.pkg-badge{position:absolute;top:0;right:0;background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;font-size:.6rem;font-weight:700;padding:.22rem .7rem .22rem 1rem;border-radius:0 var(--r1) 0 var(--r3);text-transform:uppercase;letter-spacing:.04em;}
+.pkg-badge-hot{position:absolute;top:0;right:0;background:linear-gradient(135deg,#f44336,#e91e63);color:#fff;font-size:.6rem;font-weight:700;padding:.22rem .7rem .22rem 1rem;border-radius:0 var(--r1) 0 var(--r3);}
+.pkg-icon{width:44px;height:44px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.85rem;}
+.pkg-name{font-size:.9rem;font-weight:800;color:var(--t1);margin-bottom:.25rem;}
+.pkg-price{display:flex;align-items:baseline;gap:.25rem;margin-bottom:.5rem;}
+.pkg-price-val{font-size:1.5rem;font-weight:900;color:var(--t1);}
+.pkg-price-per{font-size:.72rem;color:var(--t3);}
+.pkg-price-cur{font-size:.8rem;font-weight:700;color:var(--t2);}
+.pkg-desc{font-size:.72rem;color:var(--t3);line-height:1.55;margin-bottom:.85rem;}
+.pkg-members{font-size:.7rem;font-weight:600;color:var(--t2);background:var(--bg3);border-radius:var(--r1);padding:.3rem .6rem;display:inline-flex;align-items:center;gap:.3rem;margin-bottom:.75rem;}
+.pkg-feat-list{display:flex;flex-direction:column;gap:.3rem;}
+.pkg-feat{display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--t2);}
+.pkg-feat i{font-size:.65rem;flex-shrink:0;}
+.pkg-feat.ok i{color:var(--ok);}
+.pkg-feat.no i{color:var(--bd);}
+.pkg-feat.no{color:var(--t3);}
+.pkg-sel-check{position:absolute;top:.75rem;left:.75rem;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--teal));display:none;align-items:center;justify-content:center;color:#fff;font-size:.65rem;box-shadow:0 2px 6px rgba(0,208,132,.4);}
+.pkg-card.selected .pkg-sel-check{display:flex;}
+
+/* ── ADD-ON CHECKBOXES ── */
+.addon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;}
+.addon-card{background:var(--bg2);border:2px solid var(--bd);border-radius:var(--r3);padding:1rem;cursor:pointer;transition:all .22s;position:relative;display:flex;flex-direction:column;gap:.5rem;}
+.addon-card:hover{border-color:var(--gl);box-shadow:var(--md);}
+.addon-card.selected{border-color:var(--g);background:var(--gul);}
+.addon-card-hd{display:flex;align-items:flex-start;gap:.65rem;}
+.addon-icon{width:34px;height:34px;border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.addon-meta{flex:1;}
+.addon-name{font-size:.82rem;font-weight:700;color:var(--t1);}
+.addon-price{font-size:.78rem;font-weight:800;color:var(--gd);}
+.addon-desc{font-size:.72rem;color:var(--t3);line-height:1.5;}
+.addon-features{display:flex;flex-direction:column;gap:.22rem;}
+.addon-feat{font-size:.7rem;color:var(--t2);display:flex;align-items:center;gap:.35rem;}
+.addon-feat i{color:var(--g);font-size:.62rem;}
+.addon-chk{position:absolute;top:.7rem;right:.7rem;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--teal));display:none;align-items:center;justify-content:center;color:#fff;font-size:.65rem;}
+.addon-card.selected .addon-chk{display:flex;}
+.addon-btn-info{font-size:.68rem;color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;gap:.2rem;background:none;border:none;font-family:var(--ff);padding:0;}
+.addon-btn-info:hover{text-decoration:underline;}
+
+/* ── CONTRACT ── */
+.contract-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;}
+.ct-card{background:var(--bg2);border:2px solid var(--bd);border-radius:var(--r3);padding:1.1rem;cursor:pointer;transition:.22s;text-align:center;}
+.ct-card:hover{border-color:var(--gl);}
+.ct-card.selected{border-color:var(--g);background:var(--gul);}
+.ct-dur{font-size:1.3rem;font-weight:900;color:var(--t1);}
+.ct-lbl{font-size:.72rem;color:var(--t3);margin-bottom:.5rem;}
+.ct-disc{font-size:.78rem;font-weight:700;color:var(--ok);margin-bottom:.3rem;}
+.ct-save{font-size:.7rem;color:var(--t3);}
+
+/* ── BILLING SUMMARY ── */
+.bill-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px dashed var(--bd);font-size:.82rem;}
+.bill-row:last-child{border:none;}
+.bill-row-label{color:var(--t2);display:flex;align-items:center;gap:.5rem;}
+.bill-row-val{font-weight:700;color:var(--t1);}
+.bill-total{display:flex;justify-content:space-between;align-items:center;padding:1rem 0 0;margin-top:.5rem;border-top:2px solid var(--bd);}
+.bill-total-label{font-size:1rem;font-weight:800;}
+.bill-total-val{font-size:1.3rem;font-weight:900;color:var(--gd);}
+.bill-due{display:flex;justify-content:space-between;font-size:.78rem;color:var(--t3);margin-top:.3rem;}
+
+/* ── PAYMENT METHODS ── */
+.pm-tabs{display:flex;gap:.5rem;margin-bottom:1.25rem;background:var(--bg3);border-radius:var(--r2);padding:.3rem;}
+.pm-tab{flex:1;padding:.55rem;border-radius:var(--r1);font-size:.78rem;font-weight:600;cursor:pointer;text-align:center;color:var(--t2);border:none;background:transparent;font-family:var(--ff);transition:.2s;display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.pm-tab.active{background:var(--bg2);color:var(--gd);box-shadow:var(--sm);}
+.pm-panel{display:none;}
+.pm-panel.active{display:block;animation:fdi .2s;}
+.pm-card{background:var(--bg3);border-radius:var(--r2);padding:1rem;border:1px solid var(--bd);}
+
+/* ── PAYG ── */
+.payg-card{background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:2px solid var(--gl);border-radius:var(--r3);padding:1.25rem;margin-bottom:1.25rem;}
+.payg-title{font-size:.9rem;font-weight:800;color:var(--t1);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+.payg-split{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem;margin-top:1rem;}
+.payg-opt{background:var(--bg2);border:2px solid var(--bd);border-radius:var(--r2);padding:.85rem;cursor:pointer;transition:.2s;text-align:center;}
+.payg-opt:hover{border-color:var(--gl);}
+.payg-opt.selected{border-color:var(--g);background:var(--gul);}
+.payg-pct{font-size:1.3rem;font-weight:900;color:var(--t1);}
+.payg-lbl{font-size:.7rem;color:var(--t3);margin-top:.15rem;}
+.payg-now{font-size:.78rem;font-weight:700;color:var(--gd);margin-top:.35rem;}
+
+/* ── COMPARISON TABLE ── */
+.cmp-wrap{overflow-x:auto;margin-bottom:1.75rem;}
+.cmp-table{width:100%;border-collapse:collapse;font-size:.78rem;min-width:800px;}
+.cmp-table th{padding:.75rem 1rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);background:var(--bg3);border-bottom:1px solid var(--bd);text-align:center;}
+.cmp-table th:first-child{text-align:left;}
+.cmp-table td{padding:.7rem 1rem;border-bottom:1px solid var(--bd);text-align:center;vertical-align:middle;}
+.cmp-table td:first-child{text-align:left;font-weight:600;color:var(--t1);}
+.cmp-table tr:hover td{background:var(--gul);}
+.cmp-table .cmp-sp{font-weight:900;color:var(--gd);}
+.cmp-table .cmp-yes{color:var(--ok);}
+.cmp-table .cmp-no{color:var(--t3);}
+.cmp-table .cmp-part{color:var(--warn);}
+.cmp-hl{background:linear-gradient(135deg,var(--gul),#eff6ff)!important;}
+
+/* ── BILLING HISTORY ── */
+.bh-item{display:flex;align-items:center;gap:1rem;padding:.9rem 1.25rem;border-radius:var(--r2);background:var(--bg2);border:1px solid var(--bd);margin-bottom:.6rem;transition:.15s;}
+.bh-item:hover{border-color:var(--gl);background:var(--gul);}
+.bh-icon{width:38px;height:38px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.bh-meta{flex:1;}
+.bh-meta strong{display:block;font-size:.82rem;font-weight:700;color:var(--t1);}
+.bh-meta span{font-size:.72rem;color:var(--t3);}
+.bh-right{text-align:right;}
+.bh-amount{font-size:.9rem;font-weight:800;color:var(--t1);}
+.bh-date{font-size:.7rem;color:var(--t3);}
+
+/* ── METRIC CARDS ── */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
+.mc{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--gb);border-radius:var(--r3);padding:1.1rem 1.25rem;transition:.3s;}
+.mc:hover{box-shadow:var(--lg),var(--glow);transform:translateY(-2px);}
+.mc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.mc-icon{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.mc-val{font-size:1.45rem;font-weight:900;color:var(--t1);line-height:1;}
+.mc-lbl{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-top:.2rem;}
+.mc-sub{font-size:.7rem;color:var(--t3);margin-top:.15rem;}
+.mc-ch{font-size:.68rem;font-weight:600;display:flex;align-items:center;gap:.18rem;padding:.18rem .55rem;border-radius:var(--rf);}
+.mc-ch-up{background:#dcfce7;color:#166534;}
+.mc-ch-dn{background:#fee2e2;color:#991b1b;}
+
+/* ── ACTIVE CONTRACT BANNER ── */
+.ct-banner{background:linear-gradient(135deg,var(--gul),#eff6ff);border:1px solid var(--gl);border-radius:var(--r3);padding:1.25rem 1.5rem;margin-bottom:1.75rem;display:flex;align-items:center;gap:1.25rem;}
+.ct-banner-icon{width:50px;height:50px;border-radius:var(--r2);background:linear-gradient(135deg,var(--g),var(--teal));display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;box-shadow:0 4px 12px rgba(0,208,132,.3);flex-shrink:0;}
+.ct-banner-body{flex:1;}
+.ct-banner-body h3{font-size:.95rem;font-weight:800;color:var(--t1);margin-bottom:.25rem;}
+.ct-banner-body p{font-size:.78rem;color:var(--t2);}
+.ct-banner-stats{display:flex;gap:1.5rem;}
+.ct-stat{text-align:center;}
+.ct-stat-val{font-size:.95rem;font-weight:800;color:var(--t1);}
+.ct-stat-lbl{font-size:.65rem;color:var(--t3);text-transform:uppercase;}
+
+/* TOAST */
+.tc{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.55rem;}
+.toast{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.2rem;background:var(--bg2);border-radius:var(--r3);box-shadow:var(--lg);border-left:4px solid;font-size:.8rem;min-width:270px;animation:tin .3s cubic-bezier(.4,0,.2,1);}
+@keyframes tin{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.t-ok{border-color:var(--ok);}
+.t-warn{border-color:var(--warn);}
+.t-danger{border-color:var(--danger);}
+.t-icon{font-size:.95rem;}
+.t-body{flex:1;}.t-body strong{display:block;font-weight:700;color:var(--t1);}.t-body span{color:var(--t2);font-size:.73rem;}
+.t-x{background:none;border:none;cursor:pointer;color:var(--t3);font-size:.8rem;}
+
+/* MISC */
+.divider{height:1px;background:var(--bd);margin:1.25rem 0;}
+.info-box{background:var(--bg3);border-radius:var(--r2);padding:1rem;font-size:.78rem;color:var(--t2);line-height:1.6;border-left:3px solid var(--g);}
+.discount-badge{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#166534;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:var(--rf);border:1px solid #86efac;}
+.separator{display:flex;align-items:center;gap:.75rem;margin:1.25rem 0;}
+.separator span{font-size:.72rem;color:var(--t3);white-space:nowrap;}
+.separator::before,.separator::after{content:'';flex:1;height:1px;background:var(--bd);}
+.scroll-x{overflow-x:auto;}
+@media(max-width:1200px){.pkg-grid{grid-template-columns:repeat(3,1fr)}.metric-grid{grid-template-columns:repeat(2,1fr)}.addon-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}.pkg-grid{grid-template-columns:1fr 1fr}.contract-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="lay">
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">S</div>
+    <div class="sb-name"><h1>SACCOPay</h1><p>Admin Console v2.0</p></div>
+  </div>
+  <nav class="sb-nav">
+    <p class="sb-sec">Overview</p>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-grid-2" style="width:16px;"></i> Dashboard</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-users" style="width:16px;"></i> Members <span class="nav-badge" style="background:var(--g);">1,284</span></a></div>
+    <p class="sb-sec">Loans</p>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-briefcase" style="width:16px;"></i> Loan Products</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-file-invoice-dollar" style="width:16px;"></i> Applications <span class="nav-badge">23</span></a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-chart-pie" style="width:16px;"></i> Portfolio</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-money-bill-transfer" style="width:16px;"></i> Disbursements</a></div>
+    <p class="sb-sec">Finance</p>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-piggy-bank" style="width:16px;"></i> Savings & Deposits</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-share-nodes" style="width:16px;"></i> Shares</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-building-columns" style="width:16px;"></i> Treasury</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-wallet" style="width:16px;"></i> Wallet</a></div>
+    <p class="sb-sec">Operations</p>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-chart-bar" style="width:16px;"></i> Analytics</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-file-alt" style="width:16px;"></i> Reports</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-users-gear" style="width:16px;"></i> Staff & HR</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-id-card-clip" style="width:16px;"></i> KYC Management</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-bell" style="width:16px;"></i> Notifications <span class="nav-badge">5</span></a></div>
+    <p class="sb-sec">Account</p>
+    <div class="nav-item"><a href="#" class="nav-a active"><i class="fas fa-credit-card" style="width:16px;"></i> Subscription & Billing</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-gear" style="width:16px;"></i> Settings</a></div>
+    <div class="nav-item"><a href="#" class="nav-a"><i class="fas fa-shield-halved" style="width:16px;"></i> Compliance / SASRA</a></div>
+  </nav>
+  <div class="sb-foot">
+    <div class="av-sm">AD</div>
+    <div style="flex:1;min-width:0;"><div style="font-size:.78rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Admin Operator</div><div style="font-size:.64rem;color:var(--t3);">Super Admin · Rongo SACCO</div></div>
+    <button class="ic-btn" style="width:26px;height:26px;font-size:.7rem;"><i class="fas fa-right-from-bracket"></i></button>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="tb-inner">
+      <div class="tb-left">
+        <div class="bc"><i class="fas fa-home" style="font-size:.62rem;"></i> <i class="fas fa-chevron-right" style="font-size:.52rem;"></i> Account <i class="fas fa-chevron-right" style="font-size:.52rem;"></i> <span>Subscription & Billing</span></div>
+        <div class="tb-title">Subscription & Billing Management</div>
+      </div>
+      <div class="tb-right">
+        <button class="ic-btn" onclick="toast('Help Center','Opening SACCOPay help documentation','ok')"><i class="fas fa-circle-question"></i></button>
+        <button class="ic-btn"><i class="fas fa-bell"></i><span class="nd">5</span></button>
+        <div class="uc">
+          <div class="av-sm" style="width:28px;height:28px;font-size:.72rem;">AD</div>
+          <div><div class="uc-name">Admin</div><div class="uc-role">Super Admin</div></div>
+          <i class="fas fa-chevron-down" style="font-size:.58rem;color:var(--t3);"></i>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- ACTIVE PLAN ALERT -->
+    <div class="alert al-ok" id="al-active">
+      <i class="fas fa-circle-check" style="font-size:1.05rem;flex-shrink:0;"></i>
+      <div class="al-body">
+        <strong>Active Subscription: Growth Plan — Contract Ends Feb 28, 2026</strong>
+        Your platform is fully operational. Next billing: <strong>KES 68,500</strong> on Feb 1, 2026. You have 12 add-ons active. 28 days remaining in your current cycle.
+      </div>
+      <button class="btn btn-sm" style="background:#166534;color:#fff;flex-shrink:0;" onclick="scrollToWizard()"><i class="fas fa-arrow-up"></i> Upgrade</button>
+      <button class="al-close" onclick="this.closest('.alert').remove()"><i class="fas fa-xmark"></i></button>
+    </div>
+
+    <!-- METRICS ROW -->
+    <div class="metric-grid">
+      <div class="mc">
+        <div class="mc-hd">
+          <div class="mc-icon" style="background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;"><i class="fas fa-credit-card"></i></div>
+          <span class="mc-ch mc-ch-dn"><i class="fas fa-arrow-down"></i>-5%</span>
+        </div>
+        <div class="mc-val">KES 68.5K</div>
+        <div class="mc-lbl">Monthly Billing</div>
+        <div class="mc-sub">Growth Plan + 12 Add-ons</div>
+      </div>
+      <div class="mc">
+        <div class="mc-hd">
+          <div class="mc-icon" style="background:linear-gradient(135deg,#2196f3,#21cbf3);color:#fff;"><i class="fas fa-file-contract"></i></div>
+          <span class="mc-ch mc-ch-up" style="background:#dbeafe;color:#1d4ed8;"><i class="fas fa-check"></i> Active</span>
+        </div>
+        <div class="mc-val">6-Month</div>
+        <div class="mc-lbl">Contract Duration</div>
+        <div class="mc-sub">Signed Sep 1, 2025 — 28 days left</div>
+      </div>
+      <div class="mc">
+        <div class="mc-hd">
+          <div class="mc-icon" style="background:linear-gradient(135deg,#9c27b0,#673ab7);color:#fff;"><i class="fas fa-puzzle-piece"></i></div>
+          <span class="mc-ch mc-ch-up"><i class="fas fa-arrow-up"></i>+3</span>
+        </div>
+        <div class="mc-val">12</div>
+        <div class="mc-lbl">Active Add-ons</div>
+        <div class="mc-sub">KES 18,500 / month additional</div>
+      </div>
+      <div class="mc">
+        <div class="mc-hd">
+          <div class="mc-icon" style="background:linear-gradient(135deg,#ff9800,#ff5722);color:#fff;"><i class="fas fa-users"></i></div>
+          <span class="mc-ch mc-ch-up"><i class="fas fa-arrow-up"></i>+84</span>
+        </div>
+        <div class="mc-val">1,284</div>
+        <div class="mc-lbl">Active Members</div>
+        <div class="mc-sub">Within Growth Plan limit (2,500)</div>
+      </div>
+    </div>
+
+    <!-- ACTIVE CONTRACT BANNER -->
+    <div class="ct-banner">
+      <div class="ct-banner-icon"><i class="fas fa-shield-check"></i></div>
+      <div class="ct-banner-body">
+        <h3>Growth Plan — 6-Month Contract Active <span class="pill pill-ok" style="margin-left:.5rem;font-size:.65rem;">CONTRACT #SP-2025-0091</span></h3>
+        <p>Signed: Sep 1, 2025 · Expires: Feb 28, 2026 · Auto-renewal: ON · <strong>10% discount applied</strong> for 6-month commitment · Billing: KES 68,500/mo (was KES 76,111)</p>
+      </div>
+      <div class="ct-banner-stats">
+        <div class="ct-stat"><div class="ct-stat-val" style="color:var(--g);">28</div><div class="ct-stat-lbl">Days Left</div></div>
+        <div class="ct-stat"><div class="ct-stat-val">KES 411K</div><div class="ct-stat-lbl">Total Committed</div></div>
+        <div class="ct-stat"><div class="ct-stat-val" style="color:var(--ok);">KES 38.5K</div><div class="ct-stat-lbl">Saved vs Monthly</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0;">
+        <button class="btn btn-o btn-sm" onclick="openMo('mo-contract')"><i class="fas fa-eye"></i> View Contract</button>
+        <button class="btn btn-sm" style="background:var(--gul);color:var(--gd);border:1px solid var(--gl);" onclick="toast('Renewal Queued','Auto-renewal set for Feb 28, 2026','ok')"><i class="fas fa-rotate"></i> Manage Renewal</button>
+      </div>
+    </div>
+
+    <!-- COMPETITOR COMPARISON SECTION -->
+    <div class="sh">
+      <h3 class="sh-title"><span class="sh-dot"></span> How We Compare — Kenya SACCO PSP Market</h3>
+      <div class="sh-acts">
+        <span class="tag tg" style="font-size:.7rem;"><i class="fas fa-trophy"></i> Best Value in Kenya</span>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:1.75rem;">
+      <div class="card-hd">
+        <div style="font-size:.84rem;font-weight:700;color:var(--t1);">Platform Feature & Pricing Comparison — 5 Leading Kenya SACCO PSPs</div>
+        <span class="tag tb"><i class="fas fa-database"></i> Research-Based · Jan 2026</span>
+      </div>
+      <div class="scroll-x">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th style="min-width:200px;">Feature / Metric</th>
+              <th class="cmp-hl" style="min-width:130px;color:var(--gd);font-weight:800;">SACCOPay ✦</th>
+              <th style="min-width:120px;">Kwara</th>
+              <th style="min-width:120px;">Coretec Africa</th>
+              <th style="min-width:120px;">SaccoTek (Kangai)</th>
+              <th style="min-width:120px;">iSACCO (Shahi)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Base Monthly Price</td><td class="cmp-hl cmp-sp">From KES 50,000</td><td>Contact (est. KES 95K+/mo)</td><td>Contact (est. KES 80K–120K/mo)</td><td>KES 10K–25K/mo (limited)</td><td>Free Tier / KES 15K+ paid</td></tr>
+            <tr><td>Member-Based Pricing</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Tiered (5 tiers)</td><td><i class="fas fa-check cmp-yes"></i> Annual + per-member</td><td><i class="fas fa-minus cmp-part"></i> Custom Quote</td><td><i class="fas fa-times cmp-no"></i> Flat fee only</td><td><i class="fas fa-check cmp-yes"></i> Per member</td></tr>
+            <tr><td>Core Banking Module</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Full</td><td><i class="fas fa-check cmp-yes"></i> Full</td><td><i class="fas fa-check cmp-yes"></i> Full</td><td><i class="fas fa-minus cmp-part"></i> Partial</td><td><i class="fas fa-minus cmp-part"></i> Basic</td></tr>
+            <tr><td>Loan Portfolio Management</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Advanced + AI Risk</td><td><i class="fas fa-check cmp-yes"></i> Advanced</td><td><i class="fas fa-check cmp-yes"></i> Advanced</td><td><i class="fas fa-minus cmp-part"></i> Basic</td><td><i class="fas fa-minus cmp-part"></i> Basic</td></tr>
+            <tr><td>CRM & Member Portal</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Full CRM Suite</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-minus cmp-part"></i> Add-on</td><td><i class="fas fa-times cmp-no"></i> Not Available</td><td><i class="fas fa-times cmp-no"></i> Not Available</td></tr>
+            <tr><td>HR & Staff Management</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Full HR Module</td><td><i class="fas fa-times cmp-no"></i> Not Included</td><td><i class="fas fa-minus cmp-part"></i> Basic</td><td><i class="fas fa-times cmp-no"></i> Not Available</td><td><i class="fas fa-times cmp-no"></i> Not Available</td></tr>
+            <tr><td>M-PESA / Mobile Money Integration</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Full (M-Pesa, Airtel, T-Kash)</td><td><i class="fas fa-check cmp-yes"></i> M-Pesa Only</td><td><i class="fas fa-check cmp-yes"></i> M-Pesa + Banks</td><td><i class="fas fa-check cmp-yes"></i> M-Pesa</td><td><i class="fas fa-check cmp-yes"></i> M-Pesa</td></tr>
+            <tr><td>SASRA Compliance Reporting</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Auto-Generated</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-minus cmp-part"></i> Manual</td><td><i class="fas fa-minus cmp-part"></i> Basic</td></tr>
+            <tr><td>Analytics & Business Intelligence</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Advanced Dashboard</td><td><i class="fas fa-minus cmp-part"></i> Basic</td><td><i class="fas fa-minus cmp-part"></i> Standard</td><td><i class="fas fa-times cmp-no"></i> None</td><td><i class="fas fa-times cmp-no"></i> None</td></tr>
+            <tr><td>Multi-Branch Support</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Unlimited Branches</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-minus cmp-part"></i> Extra Cost</td><td><i class="fas fa-times cmp-no"></i> Single Branch</td></tr>
+            <tr><td>Diaspora / Cross-Border Members</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Full International</td><td><i class="fas fa-minus cmp-part"></i> Limited</td><td><i class="fas fa-minus cmp-part"></i> Partial</td><td><i class="fas fa-times cmp-no"></i> None</td><td><i class="fas fa-times cmp-no"></i> None</td></tr>
+            <tr><td>KYC & Digital Onboarding</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Automated + IPRS</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-minus cmp-part"></i> Manual</td><td><i class="fas fa-times cmp-no"></i> None</td><td><i class="fas fa-minus cmp-part"></i> Basic</td></tr>
+            <tr><td>SMS Sender ID</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Branded + Bundled</td><td><i class="fas fa-times cmp-no"></i> Separate Cost</td><td><i class="fas fa-times cmp-no"></i> KES 10K one-off</td><td><i class="fas fa-times cmp-no"></i> KES 10K per network</td><td><i class="fas fa-minus cmp-part"></i> Bundled basic</td></tr>
+            <tr><td>Pay As You Go Option</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> Available</td><td><i class="fas fa-times cmp-no"></i> Annual only</td><td><i class="fas fa-times cmp-no"></i> None</td><td><i class="fas fa-check cmp-yes"></i> Monthly only</td><td><i class="fas fa-minus cmp-part"></i> Limited</td></tr>
+            <tr><td>Contract Flexibility</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> 1/3/6/12/24 months</td><td>Quarterly or Annual</td><td>Annual only</td><td>Monthly only</td><td>Monthly / Annual</td></tr>
+            <tr><td>Uptime SLA</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> 99.95%</td><td>99.99%</td><td>99.9%</td><td>~99%</td><td>~99%</td></tr>
+            <tr><td>24/7 Support</td><td class="cmp-hl cmp-sp"><i class="fas fa-check cmp-yes"></i> All Plans</td><td><i class="fas fa-check cmp-yes"></i> Included</td><td><i class="fas fa-minus cmp-part"></i> Business Hours</td><td><i class="fas fa-times cmp-no"></i> Email only</td><td><i class="fas fa-times cmp-no"></i> Email only</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:.85rem 1.25rem;border-top:1px solid var(--bd);font-size:.72rem;color:var(--t3);">
+        <i class="fas fa-info-circle" style="color:var(--blue);"></i> Competitor pricing is estimated based on industry research, publicly available data, and direct market surveys (Jan 2026). Kwara pricing is contact-based; Coretec and SaccoTek confirmed via partner channels.
+      </div>
+    </div>
+
+    <!-- ══ MULTISTEP BILLING WIZARD ══ -->
+    <div class="sh" id="wizard-anchor">
+      <h3 class="sh-title"><span class="sh-dot"></span> Configure Your Subscription</h3>
+      <div class="sh-acts">
+        <span class="tag to"><i class="fas fa-wand-magic-sparkles"></i> Smart Configurator</span>
+      </div>
+    </div>
+
+    <div class="wizard-wrap" id="main-wizard">
+      <!-- STEP TABS -->
+      <div class="wizard-steps">
+        <div class="ws ws-done" onclick="goStep(1)" id="ws1"><div class="ws-num"><i class="fas fa-check" style="font-size:.6rem;"></i></div><span>1. Plan</span></div>
+        <div class="ws ws-active" onclick="goStep(2)" id="ws2"><div class="ws-num">2</div><span>2. Add-ons</span></div>
+        <div class="ws" onclick="goStep(3)" id="ws3"><div class="ws-num">3</div><span>3. Members & Region</span></div>
+        <div class="ws" onclick="goStep(4)" id="ws4"><div class="ws-num">4</div><span>4. Contract Term</span></div>
+        <div class="ws" onclick="goStep(5)" id="ws5"><div class="ws-num">5</div><span>5. Pay As You Go</span></div>
+        <div class="ws" onclick="goStep(6)" id="ws6"><div class="ws-num">6</div><span>6. Review & Pay</span></div>
+      </div>
+
+      <!-- ── STEP 1: CHOOSE PLAN ── -->
+      <div class="wizard-body">
+        <div class="step-panel" id="sp1">
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:1rem;font-weight:800;color:var(--t1);margin-bottom:.3rem;">Choose Your Base Plan</div>
+            <div style="font-size:.8rem;color:var(--t2);">All plans include core banking, member management, loan processing, and 24/7 support. Add-ons available on top of any plan. Prices start from <strong>KES 50,000/month</strong> — the most competitive rate in Kenya vs Kwara (KES 95K+) and Coretec (KES 80K+).</div>
+          </div>
+          <div class="pkg-grid">
+            <!-- STARTER -->
+            <div class="pkg-card" onclick="selectPkg(this,'Starter',50000)" id="pk-0">
+              <div class="pkg-sel-check"><i class="fas fa-check"></i></div>
+              <div class="pkg-icon" style="background:linear-gradient(135deg,#e2e8f0,#cbd5e1);color:#64748b;"><i class="fas fa-seedling"></i></div>
+              <div class="pkg-name">Starter</div>
+              <div class="pkg-members"><i class="fas fa-users"></i> Up to 200 members</div>
+              <div class="pkg-price">
+                <span class="pkg-price-cur">KES</span>
+                <span class="pkg-price-val" id="pv-0">50,000</span>
+                <span class="pkg-price-per">/month</span>
+              </div>
+              <div class="pkg-desc">For newly registered SACCOs getting started with digital operations. Essential tools included.</div>
+              <div class="pkg-feat-list">
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Member Registry (200 max)</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Basic Loan Processing</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> M-Pesa Integration</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Savings & Deposits</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> SASRA Basic Reports</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Email + SMS Alerts</div>
+                <div class="pkg-feat no"><i class="fas fa-circle"></i> CRM Suite</div>
+                <div class="pkg-feat no"><i class="fas fa-circle"></i> HR Module</div>
+                <div class="pkg-feat no"><i class="fas fa-circle"></i> Multi-Branch</div>
+                <div class="pkg-feat no"><i class="fas fa-circle"></i> Advanced Analytics</div>
+              </div>
+            </div>
+            <!-- BASIC -->
+            <div class="pkg-card" onclick="selectPkg(this,'Basic',75000)" id="pk-1">
+              <div class="pkg-sel-check"><i class="fas fa-check"></i></div>
+              <div class="pkg-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;"><i class="fas fa-building"></i></div>
+              <div class="pkg-name">Basic</div>
+              <div class="pkg-members"><i class="fas fa-users"></i> Up to 500 members</div>
+              <div class="pkg-price">
+                <span class="pkg-price-cur">KES</span>
+                <span class="pkg-price-val" id="pv-1">75,000</span>
+                <span class="pkg-price-per">/month</span>
+              </div>
+              <div class="pkg-desc">For small established SACCOs with growing operations and branch management needs.</div>
+              <div class="pkg-feat-list">
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Member Registry (500 max)</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Full Loan Management</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> M-Pesa + Airtel Money</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Savings, Shares, Withdrawals</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> SASRA Full Reports</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> 2 Branches Included</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Basic CRM</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> KYC & Onboarding</div>
+                <div class="pkg-feat no"><i class="fas fa-circle"></i> Full HR Module</div>
+                <div class="pkg-feat no"><i class="fas fa-circle"></i> Advanced Analytics</div>
+              </div>
+            </div>
+            <!-- GROWTH (CURRENT) -->
+            <div class="pkg-card recommended selected" onclick="selectPkg(this,'Growth',95000)" id="pk-2">
+              <div class="pkg-badge">Current Plan</div>
+              <div class="pkg-sel-check"><i class="fas fa-check"></i></div>
+              <div class="pkg-icon" style="background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;box-shadow:0 4px 10px rgba(0,208,132,.35);"><i class="fas fa-rocket"></i></div>
+              <div class="pkg-name">Growth</div>
+              <div class="pkg-members"><i class="fas fa-users"></i> Up to 2,500 members</div>
+              <div class="pkg-price">
+                <span class="pkg-price-cur">KES</span>
+                <span class="pkg-price-val" id="pv-2">95,000</span>
+                <span class="pkg-price-per">/month</span>
+              </div>
+              <div class="pkg-desc">Most popular for mid-sized SACCOs with full operational needs, CRM, HR and analytics.</div>
+              <div class="pkg-feat-list">
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Member Registry (2,500 max)</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Advanced Loan Portfolio</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> All Mobile Money + Banks</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Full CRM Suite</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> HR & Staff Management</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Unlimited Branches</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Advanced Analytics</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> SASRA Auto-Reports</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Treasury Management</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Branded SMS Sender ID</div>
+              </div>
+            </div>
+            <!-- PROFESSIONAL -->
+            <div class="pkg-card" onclick="selectPkg(this,'Professional',140000)" id="pk-3">
+              <div class="pkg-badge-hot" style="position:absolute;top:0;right:0;background:linear-gradient(135deg,#9c27b0,#673ab7);color:#fff;font-size:.6rem;font-weight:700;padding:.22rem .7rem .22rem 1rem;border-radius:0 var(--r1) 0 var(--r3);">PREMIUM</div>
+              <div class="pkg-sel-check"><i class="fas fa-check"></i></div>
+              <div class="pkg-icon" style="background:linear-gradient(135deg,#9c27b0,#673ab7);color:#fff;box-shadow:0 4px 10px rgba(156,39,176,.35);"><i class="fas fa-crown"></i></div>
+              <div class="pkg-name">Professional</div>
+              <div class="pkg-members"><i class="fas fa-users"></i> Up to 10,000 members</div>
+              <div class="pkg-price">
+                <span class="pkg-price-cur">KES</span>
+                <span class="pkg-price-val" id="pv-3">140,000</span>
+                <span class="pkg-price-per">/month</span>
+              </div>
+              <div class="pkg-desc">For large SACCOs with diaspora members, multi-currency, and enterprise-grade integrations.</div>
+              <div class="pkg-feat-list">
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Everything in Growth</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Diaspora & Cross-Border</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Multi-Currency Support</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> AI Credit Scoring</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> API Access (Full)</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Custom Branding</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Dedicated Account Manager</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> White-label Member App</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Priority 4hr Support SLA</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Audit & Compliance Suite</div>
+              </div>
+            </div>
+            <!-- ENTERPRISE -->
+            <div class="pkg-card" onclick="selectPkg(this,'Enterprise',220000)" id="pk-4">
+              <div class="pkg-badge-hot" style="position:absolute;top:0;right:0;background:linear-gradient(135deg,#1a2332,#374151);color:#fff;font-size:.6rem;font-weight:700;padding:.22rem .7rem .22rem 1rem;border-radius:0 var(--r1) 0 var(--r3);">ENTERPRISE</div>
+              <div class="pkg-sel-check"><i class="fas fa-check"></i></div>
+              <div class="pkg-icon" style="background:linear-gradient(135deg,#1a2332,#374151);color:#fff;"><i class="fas fa-building-columns"></i></div>
+              <div class="pkg-name">Enterprise</div>
+              <div class="pkg-members"><i class="fas fa-users"></i> Unlimited members</div>
+              <div class="pkg-price">
+                <span class="pkg-price-cur">KES</span>
+                <span class="pkg-price-val" id="pv-4">220,000</span>
+                <span class="pkg-price-per">/month</span>
+              </div>
+              <div class="pkg-desc">For SACCO federations, umbrella bodies, and financial cooperatives operating at national scale.</div>
+              <div class="pkg-feat-list">
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Everything in Professional</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Unlimited Sub-SACCOs</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> On-Premise Deployment Option</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Custom Integrations</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Dedicated Infrastructure</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> 1hr Emergency SLA</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Source Code Escrow</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Legal & Compliance Advisory</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Staff Training (On-site)</div>
+                <div class="pkg-feat ok"><i class="fas fa-check-circle"></i> Quarterly Business Reviews</div>
+              </div>
+            </div>
+          </div>
+          <div class="info-box" style="margin-top:1rem;">
+            <strong style="color:var(--t1);">💡 Pricing Insight:</strong> SACCOPay's Growth Plan at KES 95,000/month includes CRM, HR, full analytics, unlimited branches, and all mobile money integrations — features that competitors like Kwara charge KES 95,000+ for core banking alone, with CRM, HR, and analytics billed separately at additional cost.
+          </div>
+        </div>
+
+        <!-- ── STEP 2: ADD-ONS ── -->
+        <div class="step-panel" id="sp2">
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:1rem;font-weight:800;color:var(--t1);margin-bottom:.3rem;">Customize With Add-on Services</div>
+            <div style="font-size:.8rem;color:var(--t2);">Each add-on is billed separately on top of your base plan. Select exactly what your SACCO needs. Hover or click <em>Learn More</em> to see detailed feature breakdown. <strong>12 add-ons currently active</strong> on your account.</div>
+          </div>
+
+          <!-- CATEGORY: COMMUNICATIONS -->
+          <div class="fsec" style="margin-bottom:1rem;"><i class="fas fa-comments"></i> Communications & Member Engagement</div>
+          <div class="addon-grid" style="margin-bottom:1.25rem;">
+            <div class="addon-card selected" onclick="toggleAddon(this,'Branded SMS Suite',3500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:var(--gul);color:var(--gd);"><i class="fas fa-comment-dots"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Branded SMS Suite</div>
+                  <div class="addon-price">KES 3,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Custom Sender ID across Safaricom, Airtel & Telkom. Includes 1,000 SMS/month. Additional SMS at KES 0.50/unit.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Custom Sender ID on all networks</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> 1,000 SMS credits monthly</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Loan & repayment alerts</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-sms')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card selected" onclick="toggleAddon(this,'WhatsApp Notify',4200)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#f0fdf4;color:#16a34a;"><i class="fab fa-whatsapp"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">WhatsApp Notifications</div>
+                  <div class="addon-price">KES 4,200 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Rich WhatsApp messages for loan approvals, reminders, statements, and balance alerts to all members.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> 2,000 WhatsApp messages/month</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Rich media (PDF statements)</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Two-way member chat</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-wa')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'Email Campaign Engine',2800)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-envelope-open-text"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Email Campaign Engine</div>
+                  <div class="addon-price">KES 2,800 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Branded email newsletters, AGM notices, dividend announcements, and member statements.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> 10,000 emails/month</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Custom HTML templates</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Open & click analytics</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-email')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+          </div>
+
+          <!-- CATEGORY: INTEGRATIONS -->
+          <div class="fsec" style="margin-bottom:1rem;"><i class="fas fa-plug"></i> Payment & Banking Integrations</div>
+          <div class="addon-grid" style="margin-bottom:1.25rem;">
+            <div class="addon-card selected" onclick="toggleAddon(this,'M-Pesa Paybill Link',5500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-mobile-screen-button"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">M-Pesa Paybill (Active)</div>
+                  <div class="addon-price">KES 5,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Live Paybill integration with real-time posting of member payments, loan repayments, and savings.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Real-time transaction posting</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Auto-reconciliation daily</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Disbursement via M-Pesa B2C</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-mpesa')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'Bank API Integration',7500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-university"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Bank API Integration</div>
+                  <div class="addon-price">KES 7,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Live bank reconciliation with Equity, KCB, Co-op, Family Bank and DTB. Auto-posting of bank credits.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Up to 3 bank accounts</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Daily auto-reconciliation</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Bank statement import</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-bank')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'USSD Channel',6000)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#faf5ff;color:#7c3aed;"><i class="fas fa-hashtag"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">USSD Member Channel</div>
+                  <div class="addon-price">KES 6,000 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Dedicated USSD short code for members to check balances, apply for loans, and get statements without internet.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Dedicated USSD code</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Works on all phones</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Loan application via USSD</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-ussd')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+          </div>
+
+          <!-- CATEGORY: CRM & HR -->
+          <div class="fsec" style="margin-bottom:1rem;"><i class="fas fa-users-gear"></i> CRM, HR & Operations</div>
+          <div class="addon-grid" style="margin-bottom:1.25rem;">
+            <div class="addon-card selected" onclick="toggleAddon(this,'Full CRM Suite',8500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#fff7ed;color:#c2410c;"><i class="fas fa-headset"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Full CRM Suite</div>
+                  <div class="addon-price">KES 8,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Complete member relationship management: tickets, follow-ups, communication logs, member scoring, and lifecycle tracking.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Member ticketing system</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Communication logs</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Member health scoring</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-crm')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card selected" onclick="toggleAddon(this,'HR & Payroll Module',6500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#faf5ff;color:#7c3aed;"><i class="fas fa-id-badge"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">HR & Payroll Module</div>
+                  <div class="addon-price">KES 6,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Staff management, payroll processing, leave management, performance tracking, and NSSF/NHIF/PAYE compliance.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Payroll + statutory deductions</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Leave & attendance</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Performance reviews</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-hr')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'KYC & IPRS Verification',4500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-fingerprint"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">KYC & IPRS Verification</div>
+                  <div class="addon-price">KES 4,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Automated ID verification via IPRS Kenya. Real-time national ID checks, KYC compliance, and member onboarding automation.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> IPRS live verification</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> 500 verifications/month</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> KYC audit trail</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();openMo('mo-addon-kyc')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+          </div>
+
+          <!-- CATEGORY: ANALYTICS & COMPLIANCE -->
+          <div class="fsec" style="margin-bottom:1rem;"><i class="fas fa-chart-line"></i> Analytics, Reports & Compliance</div>
+          <div class="addon-grid" style="margin-bottom:1.25rem;">
+            <div class="addon-card selected" onclick="toggleAddon(this,'Advanced BI Dashboard',5000)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-chart-bar"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Advanced BI Dashboard</div>
+                  <div class="addon-price">KES 5,000 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Real-time business intelligence: portfolio health, member growth, loan performance trends, and predictive insights.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> 50+ custom report types</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Exportable PDF/Excel</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Scheduled email reports</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();toast('Feature','Advanced BI includes portfolio heatmaps, trend lines, member cohort analysis and risk scoring','ok')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'SASRA Auto-Compliance',3500)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#fef9c3;color:#854d0e;"><i class="fas fa-gavel"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">SASRA Auto-Compliance</div>
+                  <div class="addon-price">KES 3,500 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Automated SASRA quarterly and annual report generation. Submission-ready formats with audit trails and regulatory alerts.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> SASRA-approved templates</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Auto-submission reminders</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Regulatory change alerts</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();toast('SASRA Module','Generates SASRA Annual Return, Quarterly Reports, and Prudential Standards automatically','ok')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'AI Credit Scoring',9000)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#faf5ff;color:#7c3aed;"><i class="fas fa-brain"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">AI Credit Scoring Engine</div>
+                  <div class="addon-price">KES 9,000 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Machine learning credit assessment using savings history, repayment behavior, and cross-reference data for smarter lending decisions.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Internal SACCO scoring</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Risk profiling per member</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Auto loan recommendations</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();toast('AI Module','Reduces loan default rates by avg 34% based on pilot data from 18 SACCOs','ok')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+          </div>
+
+          <!-- CATEGORY: ADVANCED -->
+          <div class="fsec" style="margin-bottom:1rem;"><i class="fas fa-star"></i> Advanced & Premium Features</div>
+          <div class="addon-grid">
+            <div class="addon-card" onclick="toggleAddon(this,'White-Label Mobile App',15000)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#1a2332;color:#fff;"><i class="fas fa-mobile-alt"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">White-Label Mobile App</div>
+                  <div class="addon-price">KES 15,000 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Fully branded iOS & Android app for your SACCO members. Published under your SACCO's name on app stores.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> iOS + Android</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Custom brand + logo</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Push notifications</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();toast('Mobile App','Includes onboarding, loan application, balance check, statements, and guarantor management','ok')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'Diaspora Member Portal',8000)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-globe"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Diaspora Member Portal</div>
+                  <div class="addon-price">KES 8,000 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Cross-border savings, multi-currency remittances, and international member management for diaspora SACCO members.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Multi-currency (USD/GBP/EUR)</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> International KYC</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Forex remittance tracking</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();toast('Diaspora Portal','Supports members in UK, US, Canada, UAE and 40+ other countries with local payment rails','ok')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+            <div class="addon-card" onclick="toggleAddon(this,'Dedicated Account Manager',12000)">
+              <div class="addon-chk"><i class="fas fa-check"></i></div>
+              <div class="addon-card-hd">
+                <div class="addon-icon" style="background:linear-gradient(135deg,var(--g),var(--teal));color:#fff;"><i class="fas fa-user-tie"></i></div>
+                <div class="addon-meta">
+                  <div class="addon-name">Dedicated Account Manager</div>
+                  <div class="addon-price">KES 12,000 / month</div>
+                </div>
+              </div>
+              <div class="addon-desc">Named account manager dedicated to your SACCO. Monthly strategy calls, priority issue resolution, and growth advisory.</div>
+              <div class="addon-features">
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Named contact person</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> Monthly review call</div>
+                <div class="addon-feat"><i class="fas fa-check-circle"></i> 2hr response SLA</div>
+              </div>
+              <button class="addon-btn-info" onclick="event.stopPropagation();toast('Account Manager','Your AM will join your onboarding, handle escalations, and advise on SACCO growth strategies','ok')"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+          </div>
+
+          <div class="info-box" style="margin-top:1.25rem;">
+            <strong>🤖 Not sure what you need?</strong> Click <strong>"Get Recommendation"</strong> and our team will analyse your member size, transaction volume, and regulatory requirements to suggest the minimum viable add-on set for your SACCO.
+            <div style="margin-top:.65rem;display:flex;gap:.6rem;">
+              <button class="btn btn-p btn-sm" onclick="toast('Recommendation Requested','Our team will contact you within 2 hours with a tailored add-on suggestion','ok')"><i class="fas fa-wand-magic-sparkles"></i> Get AI Recommendation</button>
+              <button class="btn btn-o btn-sm" onclick="toast('Reset','All add-ons cleared. Selecting minimum recommended set.','warn')"><i class="fas fa-rotate-left"></i> Reset to Minimum</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STEP 3: MEMBERS & REGION ── -->
+        <div class="step-panel" id="sp3">
+          <div style="font-size:1rem;font-weight:800;margin-bottom:.3rem;">Member Size & Regional Configuration</div>
+          <div style="font-size:.8rem;color:var(--t2);margin-bottom:1.5rem;">These metrics directly affect your final billing. Be as accurate as possible. You can update these anytime — billing adjusts on the next cycle.</div>
+          <div class="fg2">
+            <div class="fg">
+              <label class="fl">Current Active Members <span class="fl-req">*</span></label>
+              <div class="ig"><span class="ig-pre"><i class="fas fa-users"></i></span><input class="fc" type="number" value="1284" placeholder="1284" oninput="calcBill()"/></div>
+              <div class="fhint">Your plan supports up to 2,500 members (Growth). Extra members: KES 25 per member/month above limit.</div>
+            </div>
+            <div class="fg">
+              <label class="fl">Projected Members (12 months) <span class="fl-req">*</span></label>
+              <div class="ig"><span class="ig-pre"><i class="fas fa-chart-line"></i></span><input class="fc" type="number" value="1800" placeholder="1800" oninput="calcBill()"/></div>
+              <div class="fhint">We use this to recommend the right plan tier. No charge for projection — only actuals are billed.</div>
+            </div>
+            <div class="fg">
+              <label class="fl">Number of Branches / Offices</label>
+              <input class="fc" type="number" value="3" min="1" oninput="calcBill()"/>
+              <div class="fhint">First 3 branches free on Growth & above. Extra branches: KES 2,000/branch/month.</div>
+            </div>
+            <div class="fg">
+              <label class="fl">Number of Admin/Staff Users</label>
+              <input class="fc" type="number" value="8" min="1" oninput="calcBill()"/>
+              <div class="fhint">Unlimited staff accounts on Growth+. Starter/Basic: 5 admin users included; KES 500/extra user.</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="fsec"><i class="fas fa-map-marked-alt"></i> Regional Configuration</div>
+          <div style="margin-bottom:1rem;">
+            <label class="fl" style="margin-bottom:.6rem;">SACCO Member Regions <span class="fl-req">*</span> <span class="fl-hint">(select all that apply)</span></label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">
+              <label class="chk-item"><input type="checkbox" checked/> Kenya — Domestic Members</label>
+              <label class="chk-item"><input type="checkbox" checked/> UK / Europe Diaspora (+KES 3,000/mo)</label>
+              <label class="chk-item"><input type="checkbox"/> USA / Canada Diaspora (+KES 3,000/mo)</label>
+              <label class="chk-item"><input type="checkbox"/> Middle East (UAE, Qatar) (+KES 2,000/mo)</label>
+              <label class="chk-item"><input type="checkbox"/> East Africa (Uganda, Tanzania, Rwanda) (+KES 1,500/mo)</label>
+              <label class="chk-item"><input type="checkbox"/> Rest of World (+KES 4,000/mo)</label>
+            </div>
+          </div>
+          <div class="fg2">
+            <div class="fg">
+              <label class="fl">Primary Currency</label>
+              <select class="fc">
+                <option>KES — Kenyan Shilling (Default)</option>
+                <option>USD — US Dollar</option>
+                <option>GBP — British Pound</option>
+                <option>EUR — Euro</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">Additional Currencies (Multi-currency Add-on)</label>
+              <select class="fc" multiple style="height:80px;">
+                <option>USD</option><option selected>GBP</option><option>EUR</option><option>AED</option>
+              </select>
+              <div class="fhint">Multi-currency requires Professional plan or above.</div>
+            </div>
+          </div>
+          <div class="info-box">
+            <strong>Billing Metrics We Use:</strong><br/>
+            <span style="display:inline-block;margin-top:.4rem;">1. <strong>Active Member Count</strong> — billed monthly based on your actual live member count at cycle start.<br/>
+            2. <strong>Branch Count</strong> — each branch above your plan limit = KES 2,000/month additional.<br/>
+            3. <strong>Regional Scope</strong> — diaspora/cross-border regions add a flat regional fee for compliance and international routing infrastructure.<br/>
+            4. <strong>Transaction Volume</strong> — for Pay-As-You-Go plans, we count M-Pesa transactions above threshold.<br/>
+            5. <strong>Staff Users</strong> — above plan limit: KES 500 per additional admin user/month.</span>
+          </div>
+        </div>
+
+        <!-- ── STEP 4: CONTRACT TERM ── -->
+        <div class="step-panel" id="sp4">
+          <div style="font-size:1rem;font-weight:800;margin-bottom:.3rem;">Choose Your Contract Duration</div>
+          <div style="font-size:.8rem;color:var(--t2);margin-bottom:1.5rem;">Longer commitments earn greater discounts. A signed contract is required for all plans. You may cancel early — a 30-day notice period applies with no penalty after the minimum term. Early exit within minimum term incurs a 10% remaining value fee.</div>
+          <div class="contract-grid" style="margin-bottom:1.5rem;">
+            <div class="ct-card" onclick="selectContract(this,1,0)">
+              <div class="ct-dur">1 Month</div>
+              <div class="ct-lbl">Rolling Monthly</div>
+              <div class="ct-disc" style="color:var(--t3);">No Discount</div>
+              <div class="ct-save">Full rate applies</div>
+              <span class="pill pill-off" style="font-size:.65rem;margin-top:.5rem;">Standard Rate</span>
+            </div>
+            <div class="ct-card" onclick="selectContract(this,3,5)">
+              <div class="ct-dur">3 Months</div>
+              <div class="ct-lbl">Quarterly</div>
+              <div class="ct-disc"><i class="fas fa-tag"></i> 5% off monthly rate</div>
+              <div class="ct-save">Save KES ~14,250</div>
+              <span class="pill pill-blue" style="font-size:.65rem;margin-top:.5rem;">Starter Discount</span>
+            </div>
+            <div class="ct-card selected" onclick="selectContract(this,6,10)">
+              <div class="ct-dur">6 Months</div>
+              <div class="ct-lbl">Semi-Annual <span class="discount-badge">CURRENT</span></div>
+              <div class="ct-disc"><i class="fas fa-tag"></i> 10% off monthly rate</div>
+              <div class="ct-save">Save KES ~57,000</div>
+              <span class="pill pill-ok" style="font-size:.65rem;margin-top:.5rem;">Popular Choice</span>
+            </div>
+            <div class="ct-card" onclick="selectContract(this,12,18)">
+              <div class="ct-dur">12 Months</div>
+              <div class="ct-lbl">Annual</div>
+              <div class="ct-disc"><i class="fas fa-tag"></i> 18% off monthly rate</div>
+              <div class="ct-save">Save KES ~205,200</div>
+              <span class="pill" style="background:#dcfce7;color:#166534;font-size:.65rem;margin-top:.5rem;">Best Value</span>
+            </div>
+          </div>
+          <div class="fsec"><i class="fas fa-file-signature"></i> Contract Terms & Commitments</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+            <div style="background:var(--bg3);border-radius:var(--r2);padding:1rem;">
+              <div style="font-size:.82rem;font-weight:700;margin-bottom:.75rem;color:var(--t1);">What You Commit To:</div>
+              <div style="display:flex;flex-direction:column;gap:.45rem;font-size:.78rem;color:var(--t2);">
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> Pay agreed monthly fee for contract duration</div>
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> 30-day written notice for early termination</div>
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> Maintain accurate member count declarations</div>
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> Allow SACCOPay to list SACCO as a reference (optional)</div>
+              </div>
+            </div>
+            <div style="background:var(--bg3);border-radius:var(--r2);padding:1rem;">
+              <div style="font-size:.82rem;font-weight:700;margin-bottom:.75rem;color:var(--t1);">What We Guarantee:</div>
+              <div style="display:flex;flex-direction:column;gap:.45rem;font-size:.78rem;color:var(--t2);">
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> Price lock — no increases during contract term</div>
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> 99.95% uptime SLA with service credits</div>
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> Free upgrades and new features during term</div>
+                <div><i class="fas fa-check" style="color:var(--g);margin-right:.4rem;"></i> Data export in full at any time, free of charge</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff7ed;border-radius:var(--r2);padding:.9rem 1rem;border-left:3px solid var(--orange);font-size:.78rem;color:#92400e;">
+            <strong>Early Exit Policy:</strong> You may terminate within your contract at 30 days notice. If exiting within the minimum term (3/6/12 months), a 10% fee on the remaining contract value applies. After the minimum term, you may exit with 30-day notice — zero penalty. Pause requests (max 2 months) are available once per contract cycle due to verified operational reasons.
+          </div>
+          <div class="fg" style="margin-top:1rem;">
+            <label class="fl">Auto-Renewal</label>
+            <div style="display:flex;gap:1rem;">
+              <label class="chk-item"><input type="radio" name="autorenew" checked/> Yes — automatically renew at same terms (recommended)</label>
+              <label class="chk-item"><input type="radio" name="autorenew"/> No — notify me 30 days before expiry</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STEP 5: PAY AS YOU GO ── -->
+        <div class="step-panel" id="sp5">
+          <div style="font-size:1rem;font-weight:800;margin-bottom:.3rem;">Pay As You Go — Flexible Billing Options</div>
+          <div style="font-size:.8rem;color:var(--t2);margin-bottom:1.25rem;">PAYG lets you start using SACCOPay with a partial upfront payment while paying the remainder over time. A signed contract is still required — you cannot simply abandon without the 30-day notice policy.</div>
+
+          <div class="payg-card">
+            <div class="payg-title"><i class="fas fa-split" style="color:var(--g);"></i> Split Payment Options — Growth Plan (KES 95,000/month × 6 months = KES 570,000)</div>
+            <div style="font-size:.78rem;color:var(--t2);">Choose how much to pay upfront. Remainder is billed in monthly installments with a small PAYG service charge of <strong>2.5% per installment</strong>.</div>
+            <div class="payg-split">
+              <div class="payg-opt" onclick="selectPayg(this,'50/50',50)">
+                <div class="payg-pct">50%</div>
+                <div class="payg-lbl">Upfront Today</div>
+                <div class="payg-now">Pay KES 47,500</div>
+                <div style="font-size:.68rem;color:var(--t3);margin-top:.2rem;">KES 47,500 × 5 months remaining</div>
+                <div style="font-size:.68rem;color:var(--orange);margin-top:.2rem;font-weight:600;">+2.5% PAYG fee</div>
+              </div>
+              <div class="payg-opt selected" onclick="selectPayg(this,'60/40',60)">
+                <div class="payg-pct">60%</div>
+                <div class="payg-lbl">Upfront Today <span class="discount-badge">POPULAR</span></div>
+                <div class="payg-now">Pay KES 57,000</div>
+                <div style="font-size:.68rem;color:var(--t3);margin-top:.2rem;">KES 38,000 × 5 months remaining</div>
+                <div style="font-size:.68rem;color:var(--orange);margin-top:.2rem;font-weight:600;">+1.5% PAYG fee (reduced)</div>
+              </div>
+              <div class="payg-opt" onclick="selectPayg(this,'100',100)">
+                <div class="payg-pct">100%</div>
+                <div class="payg-lbl">Pay in Full</div>
+                <div class="payg-now" style="color:var(--gd);">Pay KES 570,000</div>
+                <div style="font-size:.68rem;color:var(--t3);margin-top:.2rem;">No PAYG charge applies</div>
+                <div style="font-size:.68rem;color:var(--ok);margin-top:.2rem;font-weight:600;">Best value — 0% extra charge</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fg2">
+            <div>
+              <div class="fsec"><i class="fas fa-money-bill-wave"></i> PAYG Schedule</div>
+              <div style="display:flex;flex-direction:column;gap:.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border-radius:var(--r1);font-size:.78rem;">
+                  <span style="font-weight:600;color:var(--t1);">Upfront (Today)</span>
+                  <span style="font-weight:800;color:var(--gd);">KES 57,000</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border-radius:var(--r1);font-size:.78rem;">
+                  <span>Installment 1 — Feb 1, 2026</span><span style="font-weight:700;">KES 38,570</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border-radius:var(--r1);font-size:.78rem;">
+                  <span>Installment 2 — Mar 1, 2026</span><span style="font-weight:700;">KES 38,570</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border-radius:var(--r1);font-size:.78rem;">
+                  <span>Installment 3 — Apr 1, 2026</span><span style="font-weight:700;">KES 38,570</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border-radius:var(--r1);font-size:.78rem;">
+                  <span>Installment 4 — May 1, 2026</span><span style="font-weight:700;">KES 38,570</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .85rem;background:var(--bg3);border-radius:var(--r1);font-size:.78rem;">
+                  <span>Installment 5 — Jun 1, 2026</span><span style="font-weight:700;">KES 38,570</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="fsec"><i class="fas fa-shield-halved"></i> PAYG Terms & Safeguards</div>
+              <div style="display:flex;flex-direction:column;gap:.65rem;font-size:.78rem;color:var(--t2);">
+                <div style="background:var(--bg3);border-radius:var(--r1);padding:.75rem;">
+                  <div style="font-weight:700;color:var(--t1);margin-bottom:.3rem;">Missed Payment Policy</div>
+                  A 5-day grace period applies. After 5 days, a 1.5% late fee is added. After 15 days, services are suspended (data is preserved). After 30 days, a formal notice is issued.
+                </div>
+                <div style="background:var(--bg3);border-radius:var(--r1);padding:.75rem;">
+                  <div style="font-weight:700;color:var(--t1);margin-bottom:.3rem;">Auto-Debit Option</div>
+                  Enable auto-debit from your SACCOPay Wallet or M-Pesa to never miss an installment. Auto-debit waives the PAYG service charge entirely.
+                  <label class="chk-item" style="margin-top:.5rem;"><input type="checkbox" checked/> Enable Auto-Debit (waives 1.5% PAYG fee)</label>
+                </div>
+                <div style="background:#fff7ed;border-radius:var(--r1);padding:.75rem;border-left:3px solid var(--orange);">
+                  <div style="font-weight:700;color:#92400e;margin-bottom:.2rem;">Cannot Simply Abandon</div>
+                  PAYG does not mean free trial. A signed contract remains in effect. Early exit without 30-day notice triggers the standard early exit fee.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STEP 6: REVIEW & PAY ── -->
+        <div class="step-panel" id="sp6">
+          <div style="font-size:1rem;font-weight:800;margin-bottom:1.25rem;">Review Your Order & Complete Payment</div>
+          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1.5rem;">
+
+            <!-- LEFT: BILL BREAKDOWN -->
+            <div>
+              <div class="fsec"><i class="fas fa-receipt"></i> Bill Breakdown</div>
+              <div style="background:var(--bg3);border-radius:var(--r3);padding:1.25rem;margin-bottom:1rem;">
+                <div class="bill-row">
+                  <span class="bill-row-label"><div style="width:28px;height:28px;border-radius:var(--r1);background:linear-gradient(135deg,var(--g),var(--teal));display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;margin-right:.3rem;"><i class="fas fa-rocket"></i></div> Growth Plan (Base)</span>
+                  <span class="bill-row-val">KES 95,000</span>
+                </div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-tag" style="color:var(--ok);margin-right:.4rem;"></i> 6-Month Contract Discount (10%)</span><span class="bill-row-val" style="color:var(--ok);">- KES 9,500</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-comment-dots" style="color:var(--gd);margin-right:.4rem;"></i> Branded SMS Suite</span><span class="bill-row-val">KES 3,500</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fab fa-whatsapp" style="color:#16a34a;margin-right:.4rem;"></i> WhatsApp Notifications</span><span class="bill-row-val">KES 4,200</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-mobile-screen-button" style="color:#16a34a;margin-right:.4rem;"></i> M-Pesa Paybill Integration</span><span class="bill-row-val">KES 5,500</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-headset" style="color:var(--orange);margin-right:.4rem;"></i> Full CRM Suite</span><span class="bill-row-val">KES 8,500</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-id-badge" style="color:#7c3aed;margin-right:.4rem;"></i> HR & Payroll Module</span><span class="bill-row-val">KES 6,500</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-chart-bar" style="color:#1d4ed8;margin-right:.4rem;"></i> Advanced BI Dashboard</span><span class="bill-row-val">KES 5,000</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-globe" style="color:var(--blue);margin-right:.4rem;"></i> UK/Europe Diaspora Region</span><span class="bill-row-val">KES 3,000</span></div>
+                <div class="bill-row"><span class="bill-row-label"><i class="fas fa-rotate" style="color:var(--orange);margin-right:.4rem;"></i> 60% PAYG Structure (+1.5% fee)</span><span class="bill-row-val">KES 855</span></div>
+                <div class="bill-total">
+                  <span class="bill-total-label">Monthly Total</span>
+                  <span class="bill-total-val">KES 132,555</span>
+                </div>
+                <div class="bill-due" style="margin-top:.65rem;">
+                  <span>Upfront Today (60%): <strong style="color:var(--gd);">KES 79,533</strong></span>
+                  <span>Next installment: <strong>Feb 1, 2026</strong></span>
+                </div>
+              </div>
+              <div style="background:var(--gul);border:1px solid var(--gl);border-radius:var(--r2);padding:.85rem;font-size:.78rem;color:var(--gd);">
+                <i class="fas fa-shield-check"></i> <strong>Price locked</strong> for 6 months. No increases during your contract term. Data is yours — exportable anytime free of charge.
+              </div>
+            </div>
+
+            <!-- RIGHT: PAYMENT -->
+            <div>
+              <div class="fsec"><i class="fas fa-credit-card"></i> Payment Method</div>
+              <div class="pm-tabs">
+                <button class="pm-tab active" onclick="switchPm('mpesa',this)"><i class="fas fa-mobile-screen-button"></i> M-Pesa</button>
+                <button class="pm-tab" onclick="switchPm('bank',this)"><i class="fas fa-university"></i> Bank</button>
+                <button class="pm-tab" onclick="switchPm('card',this)"><i class="fas fa-credit-card"></i> Card</button>
+                <button class="pm-tab" onclick="switchPm('wallet',this)"><i class="fas fa-wallet"></i> Wallet</button>
+              </div>
+
+              <!-- M-PESA -->
+              <div class="pm-panel active pm-card" id="pm-mpesa">
+                <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;">
+                  <div style="width:38px;height:38px;background:#f0fdf4;border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#16a34a;"><i class="fas fa-mobile-screen-button"></i></div>
+                  <div><div style="font-weight:700;font-size:.85rem;">M-Pesa STK Push</div><div style="font-size:.72rem;color:var(--t3);">Safaricom M-Pesa · Instant debit</div></div>
+                </div>
+                <div class="fg">
+                  <label class="fl">M-Pesa Phone Number <span class="fl-req">*</span></label>
+                  <div class="ig"><span class="ig-pre">+254</span><input class="fc" type="tel" placeholder="7XX XXX XXX" value="712345678"/></div>
+                  <div class="fhint">STK push will be sent to this number for approval</div>
+                </div>
+                <div class="fg">
+                  <label class="fl">M-Pesa PIN Confirmation</label>
+                  <div style="background:#f0fdf4;border-radius:var(--r1);padding:.75rem;font-size:.78rem;color:#166534;border:1px solid #bbf7d0;">
+                    <i class="fas fa-info-circle"></i> You will receive an STK push prompt on your phone. Enter your M-Pesa PIN to confirm KES 79,533 payment.
+                  </div>
+                </div>
+                <div class="fg">
+                  <label class="chk-item"><input type="checkbox" checked/> Enable Auto-Debit for monthly installments</label>
+                  <label class="chk-item"><input type="checkbox" checked/> Save this number for future payments</label>
+                </div>
+                <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="processPayment('M-Pesa','KES 79,533')">
+                  <i class="fas fa-mobile-screen-button"></i> Send STK Push — KES 79,533
+                </button>
+              </div>
+
+              <!-- BANK TRANSFER -->
+              <div class="pm-panel pm-card" id="pm-bank">
+                <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;">
+                  <div style="width:38px;height:38px;background:#eff6ff;border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#1d4ed8;"><i class="fas fa-university"></i></div>
+                  <div><div style="font-weight:700;font-size:.85rem;">Bank Transfer Details</div><div style="font-size:.72rem;color:var(--t3);">Send exactly KES 79,533 to the account below</div></div>
+                </div>
+                <div style="background:var(--bg3);border-radius:var(--r2);padding:1rem;display:flex;flex-direction:column;gap:.55rem;margin-bottom:.85rem;">
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">Bank Name</span><strong>Equity Bank Kenya</strong></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">Account Name</span><strong>SACCOPay Technologies Ltd</strong></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">Account Number</span><strong style="font-family:monospace;color:var(--gd);">0501234567890</strong></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">Branch Code</span><strong>076 — Nairobi CBD</strong></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">SWIFT / BIC</span><strong>EQBLKENA</strong></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">Payment Reference</span><strong style="color:var(--orange);">SP-2026-0091-RONGO</strong></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;"><span style="color:var(--t2);">Amount Due</span><strong style="color:var(--gd);font-size:.95rem;">KES 79,533</strong></div>
+                </div>
+                <div class="fg">
+                  <label class="fl">Upload Payment Slip / Screenshot</label>
+                  <input class="fc" type="file" accept="image/*,.pdf" style="padding:.45rem;"/>
+                  <div class="fhint">Optional — speeds up verification (usually 2–4 hours without slip)</div>
+                </div>
+                <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="toast('Transfer Recorded','Bank transfer details saved. We will activate your plan within 4 business hours of payment confirmation.','ok')">
+                  <i class="fas fa-paper-plane"></i> Submit Transfer Notification
+                </button>
+              </div>
+
+              <!-- CARD -->
+              <div class="pm-panel pm-card" id="pm-card">
+                <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;">
+                  <div style="width:38px;height:38px;background:#faf5ff;border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#7c3aed;"><i class="fas fa-credit-card"></i></div>
+                  <div><div style="font-weight:700;font-size:.85rem;">Debit / Credit Card</div><div style="font-size:.72rem;color:var(--t3);">Visa, Mastercard, Amex · Secured by Stripe</div></div>
+                </div>
+                <div class="fg">
+                  <label class="fl">Card Number <span class="fl-req">*</span></label>
+                  <div class="ig"><span class="ig-pre"><i class="fas fa-credit-card"></i></span><input class="fc" placeholder="1234 5678 9012 3456" type="text" maxlength="19" oninput="fmtCard(this)"/></div>
+                </div>
+                <div class="fg2">
+                  <div class="fg"><label class="fl">Expiry Date</label><input class="fc" placeholder="MM / YY" maxlength="7"/></div>
+                  <div class="fg"><label class="fl">CVV / CVC</label><div class="ig"><input class="fc" placeholder="123" maxlength="4" type="password"/><span class="ig-suf"><i class="fas fa-lock"></i></span></div></div>
+                </div>
+                <div class="fg">
+                  <label class="fl">Cardholder Name</label>
+                  <input class="fc" placeholder="Name as on card"/>
+                </div>
+                <label class="chk-item"><input type="checkbox"/> Save card for auto-billing</label>
+                <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.75rem;" onclick="processPayment('Card','KES 79,533')">
+                  <i class="fas fa-lock"></i> Secure Pay — KES 79,533
+                </button>
+                <div style="font-size:.68rem;color:var(--t3);text-align:center;margin-top:.5rem;"><i class="fas fa-shield-halved" style="color:var(--ok);"></i> 256-bit SSL encrypted · PCI DSS compliant · Stripe Secure</div>
+              </div>
+
+              <!-- SACCOPAY WALLET -->
+              <div class="pm-panel pm-card" id="pm-wallet">
+                <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;">
+                  <div style="width:38px;height:38px;background:var(--gul);border-radius:var(--r1);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--gd);"><i class="fas fa-wallet"></i></div>
+                  <div><div style="font-weight:700;font-size:.85rem;">SACCOPay Admin Wallet</div><div style="font-size:.72rem;color:var(--t3);">Instant · No processing fees</div></div>
+                </div>
+                <div style="background:linear-gradient(135deg,var(--gul),#eff6ff);border-radius:var(--r2);padding:1.1rem;border:1px solid var(--gl);margin-bottom:1rem;">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.04em;">Available Wallet Balance</div>
+                  <div style="font-size:1.75rem;font-weight:900;color:var(--gd);">KES 124,850</div>
+                  <div style="font-size:.72rem;color:var(--t3);margin-top:.2rem;">Wallet ID: WLT-RONGO-0091 · Last topped up: Jan 20, 2026</div>
+                </div>
+                <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;margin-bottom:.85rem;font-size:.8rem;">
+                  <div style="display:flex;justify-content:space-between;"><span>Payment Amount:</span><strong style="color:var(--gd);">KES 79,533</strong></div>
+                  <div style="display:flex;justify-content:space-between;margin-top:.3rem;"><span>Remaining Balance:</span><strong>KES 45,317</strong></div>
+                  <div style="display:flex;justify-content:space-between;margin-top:.3rem;"><span>Processing Fee:</span><strong style="color:var(--ok);">KES 0 (Free)</strong></div>
+                </div>
+                <div class="fg">
+                  <label class="fl">Wallet PIN <span class="fl-req">*</span></label>
+                  <input class="fc" type="password" placeholder="Enter 4-digit wallet PIN" maxlength="4"/>
+                </div>
+                <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="processPayment('SACCOPay Wallet','KES 79,533')">
+                  <i class="fas fa-wallet"></i> Pay from Wallet — KES 79,533
+                </button>
+                <div style="font-size:.7rem;color:var(--t3);text-align:center;margin-top:.4rem;">Wallet payments are instant and generate immediate activation</div>
+              </div>
+
+              <!-- AGREEMENT -->
+              <div style="margin-top:1rem;">
+                <label class="chk-item"><input type="checkbox" id="chk-agree" onchange="togglePayBtn()"/> I have read and agree to the <a href="#" style="color:var(--blue);" onclick="openMo('mo-terms')">SACCOPay Service Agreement</a>, <a href="#" style="color:var(--blue);" onclick="openMo('mo-privacy')">Privacy Policy</a>, and the billing terms above.</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end wizard-body -->
+
+      <div class="wizard-footer">
+        <div>
+          <button class="btn btn-o btn-sm" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        </div>
+        <div style="font-size:.78rem;color:var(--t2);" id="step-indicator">Step <strong id="cur-step-num">2</strong> of <strong>6</strong></div>
+        <div style="display:flex;gap:.6rem;">
+          <button class="btn btn-o btn-sm" onclick="toast('Progress Saved','Your configuration has been saved as a draft','ok')"><i class="fas fa-floppy-disk"></i> Save Progress</button>
+          <button class="btn btn-p btn-sm" onclick="nextStep()" id="next-btn"><i class="fas fa-arrow-right"></i> Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FREE VS PAID BREAKDOWN TABLE -->
+    <div class="sh">
+      <h3 class="sh-title"><span class="sh-dot"></span> What's Free, Standard, Premium & Advanced</h3>
+      <span class="tag tgy" style="font-size:.7rem;">Full Feature Transparency</span>
+    </div>
+    <div class="card" style="margin-bottom:1.75rem;">
+      <div class="scroll-x">
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;min-width:700px;">
+          <thead>
+            <tr>
+              <th style="padding:.75rem 1.25rem;text-align:left;background:var(--bg3);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);border-bottom:1px solid var(--bd);min-width:220px;">Feature / Service</th>
+              <th style="padding:.75rem 1rem;text-align:center;background:#f0fdf4;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ok);border-bottom:1px solid var(--bd);">FREE FOREVER</th>
+              <th style="padding:.75rem 1rem;text-align:center;background:#eff6ff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1d4ed8;border-bottom:1px solid var(--bd);">STANDARD (Base)</th>
+              <th style="padding:.75rem 1rem;text-align:center;background:#faf5ff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7c3aed;border-bottom:1px solid var(--bd);">PREMIUM Add-on</th>
+              <th style="padding:.75rem 1rem;text-align:center;background:#1a2332;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#fff;border-bottom:1px solid var(--bd);">ENTERPRISE Only</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--bg3);"><td colspan="5" style="padding:.45rem 1.25rem;font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;">Core Banking & Members</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;font-weight:500;">Member Registration (Basic)</td><td style="text-align:center;color:var(--ok);"><i class="fas fa-check-circle"></i></td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Member Portal (Read-Only)</td><td style="text-align:center;color:var(--ok);"><i class="fas fa-check-circle"></i></td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">Full Member Management (CRUD)</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--blue);"><i class="fas fa-check-circle"></i> All plans</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">KYC & IPRS Auto-Verification</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">Diaspora / International Members</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr style="background:var(--bg3);"><td colspan="5" style="padding:.45rem 1.25rem;font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;">Loans & Credit</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Basic Loan Processing (1 product)</td><td style="text-align:center;color:var(--ok);"><i class="fas fa-check-circle"></i></td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">Multiple Loan Products</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--blue);"><i class="fas fa-check-circle"></i> All plans</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Loan Portfolio Management</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--blue);"><i class="fas fa-check-circle"></i> Basic+</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">AI Credit Scoring Engine</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 9K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr style="background:var(--bg3);"><td colspan="5" style="padding:.45rem 1.25rem;font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;">Finance & Payments</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Savings & Deposits (Basic)</td><td style="text-align:center;color:var(--ok);"><i class="fas fa-check-circle"></i></td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">M-Pesa Paybill Integration</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 5.5K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Bank API Reconciliation</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 7.5K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">Treasury & Wallet Management</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--blue);"><i class="fas fa-check-circle"></i> Growth+</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr style="background:var(--bg3);"><td colspan="5" style="padding:.45rem 1.25rem;font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;">CRM, HR & Operations</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Basic Member Notifications</td><td style="text-align:center;color:var(--ok);"><i class="fas fa-check-circle"></i></td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">Full CRM Suite (Ticketing, Scoring)</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 8.5K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">HR & Payroll Module</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 6.5K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">Staff Management & Permissions</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--blue);"><i class="fas fa-check-circle"></i> All plans (5 users)</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr style="background:var(--bg3);"><td colspan="5" style="padding:.45rem 1.25rem;font-size:.7rem;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;">Analytics, Reports & Compliance</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Basic Dashboard & Reports</td><td style="text-align:center;color:var(--ok);"><i class="fas fa-check-circle"></i></td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+            <tr><td style="padding:.65rem 1.25rem;">SASRA Auto-Compliance Reports</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 3.5K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+            <tr style="background:#fafafa;"><td style="padding:.65rem 1.25rem;">Advanced BI & Business Intelligence</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:#7c3aed;"><i class="fas fa-check-circle"></i> Add-on (KES 5K/mo)</td><td style="text-align:center;color:#fff;background:#1a2332;"><i class="fas fa-check-circle" style="color:var(--g);"></i> Included</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BILLING HISTORY -->
+    <div class="sh">
+      <h3 class="sh-title"><span class="sh-dot"></span> Billing History & Contracts</h3>
+      <button class="btn btn-o btn-sm" onclick="toast('Exported','Billing history exported to PDF','ok')"><i class="fas fa-download"></i> Export All</button>
+    </div>
+    <div class="card" style="margin-bottom:1.75rem;">
+      <div class="card-hd">
+        <div style="font-size:.84rem;font-weight:700;">Transaction Records — Rongo SACCO Admin Account</div>
+        <div style="display:flex;gap:.5rem;">
+          <select class="fc" style="width:auto;padding:.35rem .75rem;font-size:.75rem;"><option>All Time</option><option>2026</option><option>2025</option></select>
+          <select class="fc" style="width:auto;padding:.35rem .75rem;font-size:.75rem;"><option>All Status</option><option>Paid</option><option>Pending</option></select>
+        </div>
+      </div>
+      <div class="card-bd" style="padding:1.25rem;">
+        <div class="bh-item">
+          <div class="bh-icon" style="background:var(--gul);color:var(--gd);"><i class="fas fa-check-circle"></i></div>
+          <div class="bh-meta">
+            <strong>Growth Plan — January 2026 (Installment 4/6)</strong>
+            <span>Invoice #INV-2026-0048 · M-Pesa · Ref: QGH8KJ91 · Contract #SP-2025-0091</span>
+          </div>
+          <div class="bh-right">
+            <div class="bh-amount" style="color:var(--ok);">KES 68,500</div>
+            <div class="bh-date">Jan 1, 2026</div>
+            <span class="pill pill-ok" style="font-size:.62rem;">Paid</span>
+          </div>
+          <button class="btn btn-o btn-xs" onclick="toast('Invoice Downloaded','INV-2026-0048 PDF downloaded','ok')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="bh-item">
+          <div class="bh-icon" style="background:var(--gul);color:var(--gd);"><i class="fas fa-check-circle"></i></div>
+          <div class="bh-meta">
+            <strong>Growth Plan — December 2025 (Installment 3/6)</strong>
+            <span>Invoice #INV-2025-0191 · SACCOPay Wallet · Contract #SP-2025-0091</span>
+          </div>
+          <div class="bh-right">
+            <div class="bh-amount" style="color:var(--ok);">KES 68,500</div>
+            <div class="bh-date">Dec 1, 2025</div>
+            <span class="pill pill-ok" style="font-size:.62rem;">Paid</span>
+          </div>
+          <button class="btn btn-o btn-xs" onclick="toast('Invoice Downloaded','INV-2025-0191 PDF downloaded','ok')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="bh-item">
+          <div class="bh-icon" style="background:var(--gul);color:var(--gd);"><i class="fas fa-check-circle"></i></div>
+          <div class="bh-meta">
+            <strong>Growth Plan — November 2025 (Installment 2/6)</strong>
+            <span>Invoice #INV-2025-0168 · Bank Transfer · Equity Bank · Contract #SP-2025-0091</span>
+          </div>
+          <div class="bh-right">
+            <div class="bh-amount" style="color:var(--ok);">KES 68,500</div>
+            <div class="bh-date">Nov 1, 2025</div>
+            <span class="pill pill-ok" style="font-size:.62rem;">Paid</span>
+          </div>
+          <button class="btn btn-o btn-xs" onclick="toast('Invoice Downloaded','INV-2025-0168 PDF downloaded','ok')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="bh-item">
+          <div class="bh-icon" style="background:var(--gul);color:var(--gd);"><i class="fas fa-check-circle"></i></div>
+          <div class="bh-meta">
+            <strong>Growth Plan — October 2025 (Installment 1/6) + Onboarding Fee</strong>
+            <span>Invoice #INV-2025-0145 · M-Pesa · Ref: MKJ912AB · Contract signed Sep 1, 2025</span>
+          </div>
+          <div class="bh-right">
+            <div class="bh-amount" style="color:var(--ok);">KES 82,000</div>
+            <div class="bh-date">Oct 1, 2025</div>
+            <span class="pill pill-ok" style="font-size:.62rem;">Paid</span>
+          </div>
+          <button class="btn btn-o btn-xs" onclick="toast('Invoice Downloaded','INV-2025-0145 PDF downloaded','ok')"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="bh-item" style="opacity:.7;">
+          <div class="bh-icon" style="background:#fef9c3;color:#854d0e;"><i class="fas fa-rotate"></i></div>
+          <div class="bh-meta">
+            <strong>Basic Plan — Contract #SP-2025-0044 (Completed)</strong>
+            <span>6-month contract · Jan–Jun 2025 · KES 45,000/mo · Fully settled</span>
+          </div>
+          <div class="bh-right">
+            <div class="bh-amount">KES 270,000</div>
+            <div class="bh-date">Jun 30, 2025</div>
+            <span class="pill pill-warn" style="font-size:.62rem;">Completed</span>
+          </div>
+          <button class="btn btn-o btn-xs" onclick="toast('Contract Downloaded','Contract #SP-2025-0044 downloaded','ok')"><i class="fas fa-file-contract"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end body -->
+</main>
+</div>
+
+<!-- ══════ MODALS ══════ -->
+
+<!-- CONTRACT MODAL -->
+<div class="mo" id="mo-contract">
+  <div class="mo-box" style="max-width:660px;">
+    <div class="mo-hd">
+      <div class="mo-title"><div class="mo-ti" style="background:var(--gul);color:var(--gd);"><i class="fas fa-file-contract"></i></div> Contract #SP-2025-0091 — Active</div>
+      <button class="mo-x" onclick="closeMo('mo-contract')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="mo-bd">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem;">
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">SACCO Name</div><div style="font-weight:700;font-size:.85rem;">Rongo SACCO Ltd</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Contract Reference</div><div style="font-weight:700;font-size:.85rem;font-family:monospace;">SP-2025-0091</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Plan</div><div style="font-weight:700;font-size:.85rem;">Growth Plan</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Duration</div><div style="font-weight:700;font-size:.85rem;">6 Months (Sep 1 — Feb 28, 2026)</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Monthly Rate</div><div style="font-weight:700;font-size:.85rem;color:var(--gd);">KES 68,500 (10% discount applied)</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Total Contract Value</div><div style="font-weight:700;font-size:.85rem;">KES 411,000</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Signed By</div><div style="font-weight:700;font-size:.85rem;">Admin Operator (Director)</div></div>
+        <div style="background:var(--bg3);border-radius:var(--r2);padding:.85rem;"><div style="font-size:.7rem;color:var(--t3);">Status</div><div style="font-weight:700;"><span class="pill pill-ok">Active · 28 days remaining</span></div></div>
+      </div>
+      <div style="background:var(--gul);border:1px solid var(--gl);border-radius:var(--r2);padding:1rem;font-size:.78rem;color:var(--gd);">
+        <strong>Price Guarantee:</strong> Your rate of KES 68,500/month is locked until Feb 28, 2026. No price changes, no hidden fees during this contract.
+      </div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-o" onclick="closeMo('mo-contract')">Close</button>
+      <button class="btn btn-o" onclick="toast('Downloaded','Contract document downloaded as PDF','ok')"><i class="fas fa-download"></i> Download PDF</button>
+      <button class="btn btn-p" onclick="toast('Renewal Queued','Contract auto-renewal set for Mar 1, 2026','ok');closeMo('mo-contract')"><i class="fas fa-rotate"></i> Renew Early (Save 18%)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD-ON INFO MODALS -->
+<div class="mo" id="mo-addon-sms">
+  <div class="mo-box" style="max-width:520px;">
+    <div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:var(--gul);color:var(--gd);"><i class="fas fa-comment-dots"></i></div> Branded SMS Suite — KES 3,500/month</div><button class="mo-x" onclick="closeMo('mo-addon-sms')"><i class="fas fa-xmark"></i></button></div>
+    <div class="mo-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Custom Sender ID (Safaricom)</span><span class="pill pill-ok">Included</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Custom Sender ID (Airtel)</span><span class="pill pill-ok">Included</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Branded SMS / month</span><span style="font-weight:700;">1,000 credits</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Additional SMS rate</span><span style="font-weight:700;">KES 0.50 / SMS</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Loan disbursement alerts</span><span class="pill pill-ok">Auto</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Repayment reminders</span><span class="pill pill-ok">Auto</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Overdue alerts to members</span><span class="pill pill-ok">Auto</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Custom message composer</span><span class="pill pill-ok">Included</span></div>
+      </div>
+      <div class="info-box">Compared to competitors (Saccotek charges KES 10,000 one-off per network Sender ID + KES 0.40–0.80/SMS), SACCOPay's bundled SMS suite saves you approximately KES 8,000+ in year one.</div>
+    </div>
+    <div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-sms')">Close</button><button class="btn btn-p" onclick="toast('Added','Branded SMS Suite added to your plan','ok');closeMo('mo-addon-sms')"><i class="fas fa-plus"></i> Add to Plan</button></div>
+  </div>
+</div>
+
+<div class="mo" id="mo-addon-wa"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#f0fdf4;color:#16a34a;"><i class="fab fa-whatsapp"></i></div> WhatsApp Notifications — KES 4,200/month</div><button class="mo-x" onclick="closeMo('mo-addon-wa')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>WhatsApp Business API</span><span class="pill pill-ok">Verified</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Monthly messages</span><span style="font-weight:700;">2,000 messages</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>PDF statements via WA</span><span class="pill pill-ok">Supported</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Two-way member chat</span><span class="pill pill-ok">Included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Additional messages</span><span style="font-weight:700;">KES 1.20 / message</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-wa')">Close</button><button class="btn btn-p" onclick="toast('Added','WhatsApp Notifications added','ok');closeMo('mo-addon-wa')"><i class="fas fa-plus"></i> Add to Plan</button></div></div></div>
+
+<div class="mo" id="mo-addon-mpesa"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-mobile-screen-button"></i></div> M-Pesa Paybill — KES 5,500/month</div><button class="mo-x" onclick="closeMo('mo-addon-mpesa')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Live Paybill integration</span><span class="pill pill-ok">Safaricom Certified</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Real-time posting</span><span class="pill pill-ok">Instant</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Auto daily reconciliation</span><span class="pill pill-ok">Included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>B2C Disbursement (loans)</span><span class="pill pill-ok">Included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Transaction limit</span><span style="font-weight:700;">Unlimited</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Safaricom transaction fee</span><span style="font-weight:700;color:var(--t3);">Passed through at cost</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-mpesa')">Close</button><button class="btn btn-p" onclick="toast('Already Active','M-Pesa Paybill is already active on your account','ok');closeMo('mo-addon-mpesa')"><i class="fas fa-check"></i> Already Active</button></div></div></div>
+
+<div class="mo" id="mo-addon-bank"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-university"></i></div> Bank API Integration — KES 7,500/month</div><button class="mo-x" onclick="closeMo('mo-addon-bank')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Supported banks</span><span style="font-weight:700;">Equity, KCB, Co-op, Family, DTB</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Bank accounts included</span><span style="font-weight:700;">Up to 3 accounts</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Additional bank accounts</span><span style="font-weight:700;">KES 1,500 / account</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Daily auto-reconciliation</span><span class="pill pill-ok">6 AM daily</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Bank statement import (CSV/PDF)</span><span class="pill pill-ok">Supported</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-bank')">Close</button><button class="btn btn-p" onclick="toast('Added','Bank API Integration added to your plan','ok');closeMo('mo-addon-bank')"><i class="fas fa-plus"></i> Add to Plan</button></div></div></div>
+
+<div class="mo" id="mo-addon-ussd"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#faf5ff;color:#7c3aed;"><i class="fas fa-hashtag"></i></div> USSD Member Channel — KES 6,000/month</div><button class="mo-x" onclick="closeMo('mo-addon-ussd')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Dedicated USSD shortcode</span><span style="font-weight:700;">Assigned by Safaricom</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Works without internet</span><span class="pill pill-ok">All feature phones</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Balance check</span><span class="pill pill-ok">Supported</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Loan application via USSD</span><span class="pill pill-ok">Supported</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Statement request</span><span class="pill pill-ok">Supported</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>USSD session fee (Safaricom)</span><span style="font-weight:700;color:var(--t3);">Passed through</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-ussd')">Close</button><button class="btn btn-p" onclick="toast('Added','USSD Channel added to your plan','ok');closeMo('mo-addon-ussd')"><i class="fas fa-plus"></i> Add to Plan</button></div></div></div>
+
+<div class="mo" id="mo-addon-crm"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#fff7ed;color:#c2410c;"><i class="fas fa-headset"></i></div> Full CRM Suite — KES 8,500/month</div><button class="mo-x" onclick="closeMo('mo-addon-crm')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Member ticketing & support</span><span class="pill pill-ok">Full</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Member health scoring</span><span class="pill pill-ok">AI-based</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Communication log history</span><span class="pill pill-ok">Full</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Member lifecycle tracking</span><span class="pill pill-ok">Full</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Churn risk alerts</span><span class="pill pill-ok">Automated</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Campaign targeting</span><span class="pill pill-ok">Segmented</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-crm')">Close</button><button class="btn btn-p" onclick="toast('Already Active','CRM Suite is already active on your account','ok');closeMo('mo-addon-crm')"><i class="fas fa-check"></i> Already Active</button></div></div></div>
+
+<div class="mo" id="mo-addon-hr"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#faf5ff;color:#7c3aed;"><i class="fas fa-id-badge"></i></div> HR & Payroll Module — KES 6,500/month</div><button class="mo-x" onclick="closeMo('mo-addon-hr')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Payroll processing</span><span class="pill pill-ok">Automated</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>PAYE / NHIF / NSSF</span><span class="pill pill-ok">Auto-calculated</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Leave management</span><span class="pill pill-ok">Included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8sm;"><span>Attendance tracking</span><span class="pill pill-ok">Included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Performance reviews</span><span class="pill pill-ok">Quarterly cycle</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Staff count (included)</span><span style="font-weight:700;">Up to 50 staff</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-hr')">Close</button><button class="btn btn-p" onclick="toast('Already Active','HR Module is already active','ok');closeMo('mo-addon-hr')"><i class="fas fa-check"></i> Already Active</button></div></div></div>
+
+<div class="mo" id="mo-addon-kyc"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-fingerprint"></i></div> KYC & IPRS Verification — KES 4,500/month</div><button class="mo-x" onclick="closeMo('mo-addon-kyc')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>IPRS live verification</span><span class="pill pill-ok">Real-time</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Monthly verifications</span><span style="font-weight:700;">500 included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Additional verifications</span><span style="font-weight:700;">KES 15 each</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>KYC audit trail</span><span class="pill pill-ok">Immutable log</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>SASRA KYC compliance</span><span class="pill pill-ok">Certified</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-kyc')">Close</button><button class="btn btn-p" onclick="toast('Added','KYC & IPRS Verification added to your plan','ok');closeMo('mo-addon-kyc')"><i class="fas fa-plus"></i> Add to Plan</button></div></div></div>
+
+<div class="mo" id="mo-addon-email"><div class="mo-box" style="max-width:480px;"><div class="mo-hd"><div class="mo-title"><div class="mo-ti" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-envelope-open-text"></i></div> Email Campaign Engine — KES 2,800/month</div><button class="mo-x" onclick="closeMo('mo-addon-email')"><i class="fas fa-xmark"></i></button></div><div class="mo-bd"><div style="display:flex;flex-direction:column;gap:.5rem;"><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Monthly emails</span><span style="font-weight:700;">10,000 included</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Additional emails</span><span style="font-weight:700;">KES 0.30 per email</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Custom HTML templates</span><span class="pill pill-ok">5 templates</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Open & click analytics</span><span class="pill pill-ok">Real-time</span></div><div style="display:flex;justify-content:space-between;padding:.65rem;background:var(--bg3);border-radius:var(--r1);font-size:.8rem;"><span>Branded from address</span><span class="pill pill-ok">@yoursacco.co.ke</span></div></div></div><div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-addon-email')">Close</button><button class="btn btn-p" onclick="toast('Added','Email Campaign Engine added to your plan','ok');closeMo('mo-addon-email')"><i class="fas fa-plus"></i> Add to Plan</button></div></div></div>
+
+<!-- PAYMENT PROCESSING MODAL -->
+<div class="mo" id="mo-payment">
+  <div class="mo-box" style="max-width:440px;text-align:center;">
+    <div class="mo-bd" style="padding:2.5rem 2rem;">
+      <div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--teal));display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.8rem;color:#fff;" id="pay-icon"><i class="fas fa-spinner fa-spin"></i></div>
+      <div style="font-size:1.1rem;font-weight:800;margin-bottom:.4rem;" id="pay-title">Processing Payment...</div>
+      <div style="font-size:.82rem;color:var(--t2);margin-bottom:1.5rem;" id="pay-desc">Please complete the M-Pesa prompt on your phone. Do not close this window.</div>
+      <div class="pb-track" style="height:8px;border-radius:999px;margin-bottom:.5rem;"><div class="pb-fill pb-g" style="width:70%;animation:prg 3s ease forwards;" id="pay-bar"></div></div>
+      <div style="font-size:.72rem;color:var(--t3);" id="pay-status">Waiting for confirmation...</div>
+    </div>
+  </div>
+</div>
+
+<!-- TERMS MODAL -->
+<div class="mo" id="mo-terms">
+  <div class="mo-box" style="max-width:600px;">
+    <div class="mo-hd"><div class="mo-title"><i class="fas fa-file-contract" style="color:var(--g);"></i> SACCOPay Service Agreement</div><button class="mo-x" onclick="closeMo('mo-terms')"><i class="fas fa-xmark"></i></button></div>
+    <div class="mo-bd" style="font-size:.8rem;color:var(--t2);line-height:1.7;">
+      <p><strong>1. Services:</strong> SACCOPay provides cloud-based SACCO management software as a subscription service. All features described in the selected plan are available during the active contract period.</p>
+      <p style="margin-top:.75rem;"><strong>2. Payment Terms:</strong> Monthly billing occurs on the 1st of each month. A 5-day grace period applies before service suspension. PAYG installments are subject to a 1.5% service fee per installment unless auto-debit is enabled.</p>
+      <p style="margin-top:.75rem;"><strong>3. Data Ownership:</strong> All member data belongs to your SACCO. SACCOPay does not sell, share, or use your data for any commercial purpose. Full data export is available at any time, free of charge.</p>
+      <p style="margin-top:.75rem;"><strong>4. Uptime SLA:</strong> SACCOPay guarantees 99.95% monthly uptime. For each hour below this threshold, a service credit of 1x the hourly rate is applied to your next invoice.</p>
+      <p style="margin-top:.75rem;"><strong>5. Early Termination:</strong> Within minimum contract term: 30-day written notice + 10% remaining value fee. After minimum term: 30-day written notice, zero penalty.</p>
+      <p style="margin-top:.75rem;"><strong>6. Governing Law:</strong> This agreement is governed by the laws of Kenya. Any disputes shall be resolved through arbitration under the Nairobi Centre for International Arbitration (NCIA) rules.</p>
+    </div>
+    <div class="mo-ft"><button class="btn btn-o" onclick="closeMo('mo-terms')">Close</button><button class="btn btn-p" onclick="toast('Terms Accepted','Service agreement acknowledged','ok');closeMo('mo-terms')"><i class="fas fa-check"></i> I Understand</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="tc" id="tc"></div>
+
+<style>@keyframes prg{from{width:10%}to{width:95%}}</style>
+
+<script>
+// ── STATE ──
+let currentStep = 2;
+const totalSteps = 6;
+
+// ── STEP NAVIGATION ──
+function goStep(n){
+  if(n<1||n>totalSteps)return;
+  document.getElementById('sp'+currentStep).classList.remove('active');
+  document.getElementById('ws'+currentStep).classList.remove('ws-active');
+  if(currentStep<n){document.getElementById('ws'+currentStep).classList.add('ws-done');}
+  else{document.getElementById('ws'+currentStep).classList.remove('ws-done');}
+  currentStep=n;
+  document.getElementById('sp'+currentStep).classList.add('active');
+  document.getElementById('ws'+currentStep).classList.add('ws-active');
+  document.getElementById('cur-step-num').textContent=currentStep;
+  document.getElementById('next-btn').innerHTML = currentStep===totalSteps ? '<i class="fas fa-check"></i> Confirm & Activate' : '<i class="fas fa-arrow-right"></i> Continue';
+  document.getElementById('main-wizard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function nextStep(){
+  if(currentStep===totalSteps){submitOrder();return;}
+  goStep(currentStep+1);
+}
+function prevStep(){if(currentStep>1)goStep(currentStep-1);}
+
+function submitOrder(){
+  toast('Processing...','Your subscription configuration is being activated','ok');
+  setTimeout(()=>toast('Subscription Updated','Your new plan is live! All selected features are now active.','ok'),2000);
+}
+
+// ── PACKAGE SELECTION ──
+function selectPkg(el,name,price){
+  document.querySelectorAll('.pkg-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  toast('Plan Selected',name+' plan selected — KES '+price.toLocaleString()+'/month','ok');
+  calcBill();
+}
+
+// ── ADD-ON TOGGLE ──
+let addons={};
+function toggleAddon(el,name,price){
+  el.classList.toggle('selected');
+  if(el.classList.contains('selected')){
+    addons[name]=price;
+    toast('Add-on Enabled',name+' — KES '+price.toLocaleString()+'/month added','ok');
+  }else{
+    delete addons[name];
+    toast('Add-on Removed',name+' removed from your plan','warn');
+  }
+  calcBill();
+}
+
+// ── CONTRACT SELECTION ──
+function selectContract(el,months,disc){
+  document.querySelectorAll('.ct-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const label=disc===0?'No discount':'Save '+disc+'%';
+  toast('Contract Selected',months+'-month contract · '+label,'ok');
+}
+
+// ── PAYG SELECTION ──
+function selectPayg(el,label,pct){
+  document.querySelectorAll('.payg-opt').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  toast('Split Selected',pct+'% upfront selected ('+label+')','ok');
+}
+
+// ── PAYMENT ──
+function switchPm(id,btn){
+  document.querySelectorAll('.pm-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.pm-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pm-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function processPayment(method,amount){
+  openMo('mo-payment');
+  const icon=document.getElementById('pay-icon');
+  const title=document.getElementById('pay-title');
+  const desc=document.getElementById('pay-desc');
+  const status=document.getElementById('pay-status');
+  const bar=document.getElementById('pay-bar');
+  bar.style.animation='none';bar.style.width='10%';
+  setTimeout(()=>{bar.style.animation='prg 4s ease forwards';},50);
+  if(method==='M-Pesa'){desc.textContent='Complete the M-Pesa STK Push prompt on your phone. Do not close this window.';}
+  else if(method==='Card'){desc.textContent='Processing your card payment securely via Stripe...';}
+  else if(method==='SACCOPay Wallet'){desc.textContent='Debiting your SACCOPay Wallet balance...';}
+  setTimeout(()=>{
+    status.textContent='Payment received! Activating your plan...';
+    icon.innerHTML='<i class="fas fa-check"></i>';
+    icon.style.background='linear-gradient(135deg,var(--ok),#22c55e)';
+    title.textContent='Payment Confirmed!';
+    desc.innerHTML='<strong>'+amount+'</strong> received via '+method+'. Your subscription has been activated.';
+    bar.style.width='100%';
+    setTimeout(()=>{closeMo('mo-payment');toast('Subscription Active','Payment confirmed via '+method+'. All features are now live!','ok');},1800);
+  },4500);
+}
+
+function calcBill(){/* dynamic bill update placeholder */}
+
+// ── MODAL ──
+function openMo(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeMo(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){m.classList.remove('open');document.body.style.overflow='';}}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.mo.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';});}});
+
+// ── TOAST ──
+function toast(title,msg,type='ok'){
+  const icons={ok:'fa-check-circle',warn:'fa-triangle-exclamation',danger:'fa-circle-xmark'};
+  const colors={ok:'#16a34a',warn:'#92400e',danger:'#991b1b'};
+  const c=document.getElementById('tc');
+  const t=document.createElement('div');
+  t.className='toast t-'+type;
+  t.innerHTML=`<i class="fas ${icons[type]} t-icon" style="color:${colors[type]};"></i><div class="t-body"><strong>${title}</strong><span>${msg}</span></div><button class="t-x" onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>`;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(),5000);
+}
+
+// ── HELPERS ──
+function scrollToWizard(){document.getElementById('wizard-anchor').scrollIntoView({behavior:'smooth'});}
+function togglePayBtn(){/* agreement checkbox — UI only */}
+function fmtCard(inp){let v=inp.value.replace(/\D/g,'');v=v.match(/.{1,4}/g)?.join(' ')??v;inp.value=v.substr(0,19);}
+
+// ── INIT ──
+window.addEventListener('load',()=>{
+  // Set initial step display
+  document.getElementById('sp'+currentStep).classList.add('active');
+  document.getElementById('ws'+currentStep).classList.add('ws-active');
+  document.getElementById('ws1').classList.add('ws-done');
+
+  // Animate progress bars
+  setTimeout(()=>{
+    toast('Billing Dashboard','Your Growth Plan is active · 28 days remaining in current cycle','ok');
+  },800);
+});
+</script>
+</body>
+</html>
