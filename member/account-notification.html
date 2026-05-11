@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaccoPay - Member Notifications</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--cardh:#222;--input:#252525;--accent:#f97316;--acch:#ea580c;--text:#f5f5f5;--text2:#a3a3a3;--muted:#737373;--border:#2a2a2a;--ok:#22c55e;--bad:#ef4444;--warn:#eab308;--info:#3b82f6;--r:16px;--rs:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;position:sticky;top:0;z-index:100}
+.hc{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.lg-icon{width:40px;height:40px;background:var(--accent);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:20px}
+.lg-icon i{color:#fff}
+.lg-text h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.lg-text span{font-size:12px;color:var(--muted)}
+.h-actions{display:flex;align-items:center;gap:12px}
+.ibtn{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;position:relative}
+.ibtn:hover{border-color:var(--accent);background:var(--cardh)}
+.badge{position:absolute;top:-2px;right:-2px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;border:2px solid var(--bg2)}
+.btn{background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:var(--rs);font-weight:600;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:var(--acch);transform:translateY(-1px)}
+.btn2{background:var(--card);color:var(--text);border:1px solid var(--border);padding:10px 18px;border-radius:var(--rs);font-weight:600;cursor:pointer;font-size:13px;transition:.2s}
+.btn2:hover{border-color:var(--accent);background:var(--cardh)}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-ok{background:var(--ok);color:#fff;border:none}
+.btn-bad{background:var(--bad);color:#fff;border:none}
+.wrap{max-width:900px;margin:0 auto;padding:24px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;transition:.2s}
+.stat:hover{border-color:var(--accent);transform:translateY(-2px)}
+.stat i{font-size:20px;margin-bottom:8px;display:block}
+.stat .v{font-size:22px;font-weight:700}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat.s1 i{color:var(--info)}.stat.s2 i{color:var(--warn)}.stat.s3 i{color:var(--accent)}.stat.s4 i{color:var(--ok)}
+.tabs{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:6px;margin-bottom:20px;display:flex;gap:4px;overflow-x:auto}
+.tab{flex:1;min-width:90px;padding:10px 14px;border:none;background:transparent;color:var(--text2);font-weight:600;font-size:13px;border-radius:var(--rs);cursor:pointer;transition:.2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px}
+.tab:hover{color:var(--text);background:var(--cardh)}
+.tab.on{background:var(--accent);color:#fff}
+.tcount{background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;font-size:11px}
+.toolbar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.search{flex:1;min-width:220px;position:relative}
+.search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;padding:12px 12px 12px 40px;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:14px;outline:none}
+.search input:focus{border-color:var(--accent)}
+.list{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;gap:16px;transition:.2s;cursor:pointer;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent);opacity:0;transition:.2s}
+.card:hover::before{opacity:1}
+.card:hover{border-color:var(--accent);transform:translateX(4px)}
+.card.unread{background:linear-gradient(90deg,rgba(249,115,22,.05) 0%,var(--card) 100%)}
+.card.unread::before{opacity:1}
+.av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;position:relative}
+.av.sys{background:rgba(59,130,246,.15);color:var(--info)}
+.av.mem{background:rgba(234,179,8,.15);color:var(--warn)}
+.av.adm{background:rgba(249,115,22,.15);color:var(--accent)}
+.av.req{background:rgba(34,197,94,.15);color:var(--ok)}
+.av.trx{background:rgba(168,85,247,.15);color:#a855f7}
+.dot{position:absolute;bottom:2px;right:2px;width:12px;height:12px;border-radius:50%;border:2px solid var(--card);background:var(--ok)}
+.cnt{flex:1;min-width:0}
+.ch{display:flex;justify-content:space-between;align-items:start;margin-bottom:6px}
+.tit{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px}
+.time{font-size:12px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:4px}
+.body{color:var(--text2);font-size:14px;line-height:1.5;margin-bottom:12px}
+.meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tag{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.t-sys{background:rgba(59,130,246,.15);color:var(--info)}
+.t-mem{background:rgba(234,179,8,.15);color:var(--warn)}
+.t-adm{background:rgba(249,115,22,.15);color:var(--accent)}
+.t-req{background:rgba(34,197,94,.15);color:var(--ok)}
+.t-urg{background:rgba(239,68,68,.15);color:var(--bad)}
+.t-upd{background:rgba(168,85,247,.15);color:#a855f7}
+.acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.timeline{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-top:24px}
+.th{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.th h3{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}
+.th h3 i{color:var(--accent)}
+.tl{position:relative;padding-left:28px}
+.tl::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tli{position:relative;padding-bottom:24px}
+.tli:last-child{padding-bottom:0}
+.tld{position:absolute;left:-28px;width:18px;height:18px;border-radius:50%;background:var(--card);border:3px solid var(--accent);top:2px}
+.tld.new{background:var(--accent);box-shadow:0 0 0 4px rgba(249,115,22,.2)}
+.tlc h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.tlc p{font-size:13px;color:var(--text2);margin-bottom:6px}
+.tldate{font-size:12px;color:var(--muted)}
+.tlb{display:inline-block;padding:2px 8px;background:var(--accent);color:#fff;border-radius:4px;font-size:10px;font-weight:700;margin-left:8px;text-transform:uppercase}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:24px}
+.qc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px}
+.qc:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--cardh)}
+.qi{width:44px;height:44px;border-radius:var(--rs);background:rgba(249,115,22,.1);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px}
+.qc h4{font-size:14px;font-weight:600}
+.qc p{font-size:12px;color:var(--muted)}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty i{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty h3{font-size:18px;color:var(--text2);margin-bottom:8px}
+.load-more{text-align:center;padding:20px}
+.modal-o{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
+.modal-o.on{display:flex;opacity:1}
+.mod{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .3s;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.modal-o.on .mod{transform:scale(1)}
+.mh{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:start}
+.mh h2{font-size:20px;font-weight:700}
+.mc{padding:20px 24px}
+.mf{padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.x{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.x:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.rl{color:var(--muted);font-size:14px}
+.rv{font-weight:600;font-size:14px;text-align:right}
+.rv.ok{color:var(--ok)}.rv.warn{color:var(--warn)}.rv.bad{color:var(--bad)}
+.msg{background:var(--card);border-radius:var(--rs);padding:16px;font-size:14px;line-height:1.7;color:var(--text2);border-left:3px solid var(--accent)}
+.gp{display:flex;align-items:center;gap:16px;background:var(--card);padding:16px;border-radius:var(--rs);margin-bottom:20px}
+.ga{width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+.gi h4{font-size:16px;margin-bottom:4px}
+.gi p{font-size:13px;color:var(--muted)}
+.gi .gm{display:flex;gap:12px;margin-top:6px;font-size:12px;color:var(--text2);flex-wrap:wrap}
+.ls{background:var(--card);border-radius:var(--rs);padding:20px;margin-bottom:20px}
+.ls h3{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.la{font-size:32px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.lp{font-size:14px;color:var(--text2)}
+.div{height:1px;background:var(--border);margin:20px 0}
+.toasts{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);transform:translateX(120%);transition:transform .3s;min-width:300px}
+.toast.show{transform:translateX(0)}
+.toast i{font-size:18px}
+.toast.ok{border-color:var(--ok)}.toast.ok i{color:var(--ok)}
+.toast.err{border-color:var(--bad)}.toast.err i{color:var(--bad)}
+.toast.inf{border-color:var(--info)}.toast.inf i{color:var(--info)}
+.pref{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border)}
+.pref:last-child{border-bottom:none}
+.pf h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.pf p{font-size:13px;color:var(--muted)}
+.tog{width:48px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:.2s}
+.tog.on{background:var(--accent)}
+.tog::after{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.2s}
+.tog.on::after{left:24px}
+.footer{background:var(--bg2);border-top:1px solid var(--border);padding:24px;margin-top:40px;text-align:center;color:var(--muted);font-size:13px}
+.footer-links{display:flex;justify-content:center;gap:20px;margin-bottom:12px;flex-wrap:wrap}
+.footer-links a{color:var(--text2);text-decoration:none;transition:.2s}
+.footer-links a:hover{color:var(--accent)}
+.attachments{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.att-item{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px;border-radius:var(--rs);border:1px solid var(--border);cursor:pointer;transition:.2s}
+.att-item:hover{border-color:var(--accent)}
+.att-item i{font-size:20px;color:var(--accent)}
+.att-info{flex:1}
+.att-info h5{font-size:13px;font-weight:600}
+.att-info span{font-size:12px;color:var(--muted)}
+.att-dl{color:var(--accent);font-size:12px;font-weight:600}
+.pinned-label{font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pinned-label i{font-size:10px}
+.deadlines{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:24px}
+.deadline-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.deadline-item:last-child{border-bottom:none}
+.deadline-icon{width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--bad);display:flex;align-items:center;justify-content:center;font-size:14px}
+.deadline-info{flex:1}
+.deadline-info h4{font-size:14px;font-weight:600}
+.deadline-info p{font-size:12px;color:var(--muted)}
+.deadline-date{font-size:12px;color:var(--bad);font-weight:600;white-space:nowrap}
+.textarea{width:100%;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:14px;outline:none;resize:vertical;min-height:120px;font-family:inherit}
+.textarea:focus{border-color:var(--accent)}
+.select{width:100%;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:14px;outline:none}
+.select:focus{border-color:var(--accent)}
+.label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text2)}
+.form-group{margin-bottom:16px}
+.weekly-digest{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:24px}
+.digest-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.digest-header h3{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.digest-header h3 i{color:var(--accent)}
+.digest-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.digest-item:last-child{border-bottom:none}
+.digest-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+.digest-icon.ok{background:rgba(34,197,94,.15);color:var(--ok)}
+.digest-icon.warn{background:rgba(234,179,8,.15);color:var(--warn)}
+.digest-icon.info{background:rgba(59,130,246,.15);color:var(--info)}
+.digest-text{flex:1;font-size:13px;color:var(--text2)}
+.digest-count{font-size:13px;font-weight:600;color:var(--accent)}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.wrap{padding:16px}.card{padding:16px}.qa{grid-template-columns:1fr}.mh h2{font-size:16px}.gp{flex-direction:column;align-items:flex-start}}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.an{animation:in .3s ease forwards}
+</style>
+<base target="_blank">
+</head>
+<body>
+<header class="header"><div class="hc">
+<div class="logo"><div class="lg-icon"><i class="fas fa-wallet"></i></div><div class="lg-text"><h1>SaccoPay</h1><span>Member Portal</span></div></div>
+<div class="h-actions">
+<button class="ibtn" onclick="openPref()" title="Settings"><i class="fas fa-cog"></i></button>
+<button class="ibtn" onclick="markAll()" title="Mark all read"><i class="fas fa-check-double"></i><span class="badge" id="hb">6</span></button>
+</div>
+</div></header>
+
+<main class="wrap">
+<div class="stats">
+<div class="stat s1"><i class="fas fa-server"></i><div class="v" id="st1">4</div><div class="l">System</div></div>
+<div class="stat s2"><i class="fas fa-user-friends"></i><div class="v" id="st2">3</div><div class="l">Members</div></div>
+<div class="stat s3"><i class="fas fa-shield-alt"></i><div class="v" id="st3">5</div><div class="l">Admin</div></div>
+<div class="stat s4"><i class="fas fa-hand-holding-heart"></i><div class="v" id="st4">3</div><div class="l">Requests</div></div>
+</div>
+
+<div class="tabs">
+<button class="tab on" onclick="swTab('all',this)"><i class="fas fa-layer-group"></i> All <span class="tcount" id="ta">15</span></button>
+<button class="tab" onclick="swTab('system',this)"><i class="fas fa-microchip"></i> System <span class="tcount" id="ts">4</span></button>
+<button class="tab" onclick="swTab('members',this)"><i class="fas fa-users"></i> Members <span class="tcount" id="tm">3</span></button>
+<button class="tab" onclick="swTab('admin',this)"><i class="fas fa-bullhorn"></i> Admin <span class="tcount" id="td">5</span></button>
+<button class="tab" onclick="swTab('requests',this)"><i class="fas fa-clipboard-check"></i> Requests <span class="tcount" id="tr">3</span></button>
+</div>
+
+<div class="toolbar">
+<div class="search"><i class="fas fa-search"></i><input type="text" id="si" placeholder="Search notifications..." onkeyup="filter()"></div>
+<button class="btn2" onclick="toggleUrg()"><i class="fas fa-exclamation-circle"></i> Urgent</button>
+<button class="btn2" onclick="toggleUnr()"><i class="fas fa-envelope"></i> Unread</button>
+</div>
+
+<div class="list" id="list">
+<div class="pinned-label"><i class="fas fa-thumbtack"></i> Pinned</div>
+<div class="card unread an" data-c="admin" data-id="3" onclick="openAdm(3)">
+<div class="av adm"><i class="fas fa-exclamation-triangle"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">AGM - Mandatory Attendance</div><div class="time"><i class="fas fa-clock"></i> 8 hrs ago</div></div>
+<div class="body">AGM scheduled for Saturday, 24th May 2026 at 10:00 AM at Sarova Stanley Hotel. All members must attend per bylaws.</div>
+<div class="meta"><span class="tag t-urg">Urgent</span><span class="tag t-adm">Admin</span><span style="font-size:12px;color:var(--muted)"><i class="fas fa-calendar"></i> May 24, 2026</span></div></div></div>
+
+<div class="card unread an" data-c="members" data-id="2" onclick="openGuar(2)">
+<div class="av mem"><span>JM</span><span class="dot"></span></div>
+<div class="cnt"><div class="ch"><div class="tit">Guarantor Request from James Mwangi</div><div class="time"><i class="fas fa-clock"></i> 5 hrs ago</div></div>
+<div class="body">James Mwangi requests you as guarantor for a KES 150,000 loan. Approval needed within 48 hours for processing to continue.</div>
+<div class="meta"><span class="tag t-req">Action Required</span><span class="tag t-mem">Member</span></div>
+<div class="acts"><button class="btn btn-sm" onclick="e(event);acc(2)"><i class="fas fa-check"></i> Accept</button><button class="btn2 btn-sm" onclick="e(event);dec(2)"><i class="fas fa-times"></i> Decline</button><button class="btn2 btn-sm" onclick="e(event);vprof('James Mwangi')"><i class="fas fa-user"></i> Profile</button></div></div></div>
+
+<div class="card unread an" data-c="system" data-id="1" onclick="openSys(1)">
+<div class="av sys"><i class="fas fa-rocket"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">New Feature: Instant M-Pesa Withdrawals</div><div class="time"><i class="fas fa-clock"></i> 2 hrs ago</div></div>
+<div class="body">Withdraw funds directly to your M-Pesa wallet in under 30 seconds. No more waiting for batch processing on weekends and holidays.</div>
+<div class="meta"><span class="tag t-upd">Update</span><span class="tag t-sys">System</span><span style="font-size:12px;color:var(--muted)"><i class="fas fa-code-branch"></i> v2.4.0</span></div></div></div>
+
+<div class="card an" data-c="system" data-id="4" onclick="openTrx(4)">
+<div class="av trx"><i class="fas fa-check-circle"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Loan Application Approved</div><div class="time"><i class="fas fa-clock"></i> Yesterday</div></div>
+<div class="body">Your KES 75,000 development loan is approved. Funds disbursed to your SaccoPay wallet. First repayment due June 9th.</div>
+<div class="meta"><span class="tag" style="background:rgba(34,197,94,.15);color:var(--ok)">Approved</span><span class="tag t-sys">System</span><span style="font-size:12px;color:var(--ok);font-weight:600">+KES 75,000</span></div></div></div>
+
+<div class="card unread an" data-c="members" data-id="5" onclick="openSec(5)">
+<div class="av mem"><span>AK</span><span class="dot"></span></div>
+<div class="cnt"><div class="ch"><div class="tit">Loan Seconding Request from Alice Kamau</div><div class="time"><i class="fas fa-clock"></i> Yesterday</div></div>
+<div class="body">Alice Kamau needs a seconder for her KES 200,000 education loan. Your savings balance of KES 500K qualifies you.</div>
+<div class="meta"><span class="tag t-req">Action Required</span><span class="tag t-mem">Member</span></div>
+<div class="acts"><button class="btn btn-sm" onclick="e(event);sec(5)"><i class="fas fa-handshake"></i> Second</button><button class="btn2 btn-sm" onclick="e(event);dec(5)"><i class="fas fa-times"></i> Decline</button></div></div></div>
+
+<div class="card an" data-c="admin" data-id="6" onclick="openAdm(6)">
+<div class="av adm"><i class="fas fa-file-alt"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Dividend Declaration - FY 2025/2026</div><div class="time"><i class="fas fa-clock"></i> 2 days ago</div></div>
+<div class="body">Board declared 8.5% dividend per share for FY ending March 2026. Payments processed by May 31st to your wallet.</div>
+<div class="meta"><span class="tag t-adm">Admin</span><span style="font-size:12px;color:var(--muted)"><i class="fas fa-paperclip"></i> Policy PDF</span></div></div></div>
+
+<div class="card an" data-c="system" data-id="7" onclick="openSys(7)">
+<div class="av sys"><i class="fas fa-tools"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Scheduled Maintenance - May 15th</div><div class="time"><i class="fas fa-clock"></i> 3 days ago</div></div>
+<div class="body">Systems maintenance May 15th 2:00-5:00 AM EAT. Mobile app and USSD may be unavailable. Plan transactions accordingly.</div>
+<div class="meta"><span class="tag t-sys">System</span><span style="font-size:12px;color:var(--warn)"><i class="fas fa-wrench"></i> Maintenance</span></div></div></div>
+
+<div class="card an" data-c="members" data-id="8" onclick="openGrp(8)">
+<div class="av mem"><span>PO</span></div>
+<div class="cnt"><div class="ch"><div class="tit">Group Join Request - Unity Savings</div><div class="time"><i class="fas fa-clock"></i> 4 days ago</div></div>
+<div class="body">Peter Ochieng wants to join your savings group. As group admin, review his profile and savings history before deciding.</div>
+<div class="meta"><span class="tag t-mem">Member</span><span style="font-size:12px;color:var(--muted)"><i class="fas fa-users"></i> Unity Savings</span></div>
+<div class="acts"><button class="btn btn-sm" onclick="e(event);apg(8)"><i class="fas fa-check"></i> Approve</button><button class="btn2 btn-sm" onclick="e(event);reg(8)"><i class="fas fa-times"></i> Reject</button></div></div></div>
+
+<div class="card unread an" data-c="admin" data-id="9" onclick="openAdm(9)">
+<div class="av adm"><i class="fas fa-envelope"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Message from Manager - Mary Wanjiku</div><div class="time"><i class="fas fa-clock"></i> 5 days ago</div></div>
+<div class="body">Your April 2026 statement is ready. Please review transactions and confirm accuracy within 7 days.</div>
+<div class="meta"><span class="tag t-adm">Admin</span><span style="font-size:12px;color:var(--muted)"><i class="fas fa-paperclip"></i> Statement.pdf</span></div></div></div>
+
+<div class="card unread an" data-c="admin" data-id="10" onclick="openAdm(10)">
+<div class="av adm"><i class="fas fa-lock"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Security Alert: New Device Login</div><div class="time"><i class="fas fa-clock"></i> 1 week ago</div></div>
+<div class="body">Login detected from new device in Nairobi. If not you, reset your PIN immediately and contact support.</div>
+<div class="meta"><span class="tag t-urg">Security</span><span class="tag t-adm">Admin</span></div>
+<div class="acts"><button class="btn btn-sm" onclick="e(event);rpin()"><i class="fas fa-lock"></i> Reset PIN</button><button class="btn2 btn-sm" onclick="e(event);rep()"><i class="fas fa-flag"></i> Report</button></div></div></div>
+
+<div class="card an" data-c="system" data-id="11" onclick="openTrx(11)">
+<div class="av trx"><i class="fas fa-arrow-down"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Monthly Contribution Received</div><div class="time"><i class="fas fa-clock"></i> 1 week ago</div></div>
+<div class="body">Your KES 5,000 monthly contribution received and credited. Thank you for your consistency and commitment.</div>
+<div class="meta"><span class="tag t-sys">System</span><span style="font-size:12px;color:var(--ok);font-weight:600">+KES 5,000</span><span style="font-size:12px;color:var(--muted)">Ref: MPESA123456</span></div></div></div>
+
+<div class="card an" data-c="system" data-id="12" onclick="openSys(12)">
+<div class="av sys"><i class="fas fa-gift"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Referral Bonus Credited</div><div class="time"><i class="fas fa-clock"></i> 1 week ago</div></div>
+<div class="body">Your referral bonus of KES 1,000 credited for inviting Grace Otieno. Keep inviting and earn more rewards.</div>
+<div class="meta"><span class="tag t-sys">System</span><span style="font-size:12px;color:var(--ok);font-weight:600">+KES 1,000</span></div></div></div>
+
+<div class="card unread an" data-c="admin" data-id="13" onclick="openAdm(13)">
+<div class="av adm"><i class="fas fa-calendar-check"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Monthly Meeting Reminder</div><div class="time"><i class="fas fa-clock"></i> 2 weeks ago</div></div>
+<div class="body">Reminder: Monthly members meeting this Friday at 6:00 PM. Location: Sacco Hall, 3rd Floor. Tea will be served.</div>
+<div class="meta"><span class="tag t-adm">Admin</span><span style="font-size:12px;color:var(--muted)"><i class="fas fa-map-marker-alt"></i> Sacco Hall</span></div></div></div>
+
+<div class="card an" data-c="members" data-id="14" onclick="openGuar(14)">
+<div class="av mem"><span>WO</span></div>
+<div class="cnt"><div class="ch"><div class="tit">Guarantor Request from William Omondi</div><div class="time"><i class="fas fa-clock"></i> 2 weeks ago</div></div>
+<div class="body">William Omondi requested you as guarantor for KES 300,000 business loan. This request expired automatically.</div>
+<div class="meta"><span class="tag" style="background:rgba(115,115,115,.15);color:var(--muted)">Expired</span><span class="tag t-mem">Member</span></div></div></div>
+
+<div class="card an" data-c="admin" data-id="15" onclick="openAdm(15)">
+<div class="av adm"><i class="fas fa-chart-line"></i></div>
+<div class="cnt"><div class="ch"><div class="tit">Interest Rate Change Notice</div><div class="time"><i class="fas fa-clock"></i> 3 weeks ago</div></div>
+<div class="body">Development loan interest reduced from 14% to 12% p.a effective June 1st. Existing loans adjusted automatically.</div>
+<div class="meta"><span class="tag t-adm">Admin</span><span style="font-size:12px;color:var(--ok)"><i class="fas fa-arrow-down"></i> 2% reduction</span></div></div></div>
+</div>
+
+<div class="load-more"><button class="btn2" onclick="loadMore()"><i class="fas fa-chevron-down"></i> Load Older Notifications</button></div>
+
+<div class="weekly-digest">
+<div class="digest-header"><h3><i class="fas fa-chart-bar"></i> This Week's Digest</h3><button class="btn2 btn-sm" onclick="exportDigest()"><i class="fas fa-download"></i> Export</button></div>
+<div class="digest-item"><div class="digest-icon ok"><i class="fas fa-check"></i></div><div class="digest-text">Loan applications approved</div><div class="digest-count">1</div></div>
+<div class="digest-item"><div class="digest-icon warn"><i class="fas fa-hand-holding-heart"></i></div><div class="digest-text">Guarantor requests pending</div><div class="digest-count">2</div></div>
+<div class="digest-item"><div class="digest-icon info"><i class="fas fa-bell"></i></div><div class="digest-text">Admin announcements</div><div class="digest-count">3</div></div>
+<div class="digest-item"><div class="digest-icon ok"><i class="fas fa-coins"></i></div><div class="digest-text">Transactions processed</div><div class="digest-count">4</div></div>
+</div>
+
+<div class="deadlines">
+<div class="th"><h3><i class="fas fa-hourglass-half"></i> Upcoming Deadlines</h3></div>
+<div class="deadline-item">
+<div class="deadline-icon"><i class="fas fa-hand-holding-heart"></i></div>
+<div class="deadline-info"><h4>Respond to James Mwangi's Guarantor Request</h4><p>Loan application on hold pending your decision</p></div>
+<div class="deadline-date">2 days left</div>
+</div>
+<div class="deadline-item">
+<div class="deadline-icon"><i class="fas fa-calendar"></i></div>
+<div class="deadline-info"><h4>Confirm AGM Attendance</h4><p>Mandatory meeting - confirm by May 20th</p></div>
+<div class="deadline-date">10 days left</div>
+</div>
+<div class="deadline-item">
+<div class="deadline-icon"><i class="fas fa-handshake"></i></div>
+<div class="deadline-info"><h4>Second Alice Kamau's Loan</h4><p>Education loan awaiting seconder approval</p></div>
+<div class="deadline-date">5 days left</div>
+</div>
+</div>
+
+<div class="timeline">
+<div class="th"><h3><i class="fas fa-history"></i> SaccoPay Update Timeline</h3><button class="btn2 btn-sm" onclick="vup()"><i class="fas fa-external-link-alt"></i> View All</button></div>
+<div class="tl">
+<div class="tli"><div class="tld new"></div><div class="tlc"><h4>Instant M-Pesa Withdrawals <span class="tlb">New</span></h4><p>Withdraw to M-Pesa in under 30 seconds with real-time processing engine and 24/7 availability.</p><div class="tldate"><i class="fas fa-calendar-alt"></i> Released May 10, 2026</div></div></div>
+<div class="tli"><div class="tld"></div><div class="tlc"><h4>Group Savings Goals</h4><p>Create shared targets with group members, track progress, and celebrate milestones together.</p><div class="tldate"><i class="fas fa-calendar-alt"></i> Released April 28, 2026</div></div></div>
+<div class="tli"><div class="tld"></div><div class="tlc"><h4>Loan Calculator v2.0</h4><p>Amortization schedules, early repayment simulations, and interest comparison tools.</p><div class="tldate"><i class="fas fa-calendar-alt"></i> Released April 15, 2026</div></div></div>
+<div class="tli"><div class="tld"></div><div class="tlc"><h4>Biometric Authentication</h4><p>Secure login with fingerprint and Face ID. Enhanced security without sacrificing convenience.</p><div class="tldate"><i class="fas fa-calendar-alt"></i> Released March 22, 2026</div></div></div>
+<div class="tli"><div class="tld"></div><div class="tlc"><h4>Shared Accounts</h4><p>Joint savings accounts for couples and business partners with dual approval for withdrawals.</p><div class="tldate"><i class="fas fa-calendar-alt"></i> Released February 10, 2026</div></div></div>
+</div>
+</div>
+
+<div class="qa">
+<div class="qc" onclick="go('loan')"><div class="qi"><i class="fas fa-hand-holding-usd"></i></div><div><h4>Apply for Loan</h4><p>Quick application process</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
+<div class="qc" onclick="go('deposit')"><div class="qi"><i class="fas fa-plus-circle"></i></div><div><h4>Make Deposit</h4><p>Contribute to savings</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
+<div class="qc" onclick="go('statement')"><div class="qi"><i class="fas fa-file-invoice"></i></div><div><h4>View Statement</h4><p>Download account statement</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
+<div class="qc" onclick="go('support')"><div class="qi"><i class="fas fa-headset"></i></div><div><h4>Contact Support</h4><p>Get help from our team</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
+<div class="qc" onclick="go('shares')"><div class="qi"><i class="fas fa-chart-pie"></i></div><div><h4>Buy Shares</h4><p>Invest in Sacco shares</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
+<div class="qc" onclick="go('groups')"><div class="qi"><i class="fas fa-users"></i></div><div><h4>My Groups</h4><p>Manage savings groups</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
+</div>
+</main>
+
+<footer class="footer">
+<div class="footer-links">
+<a href="#" onclick="go('terms')">Terms of Service</a>
+<a href="#" onclick="go('privacy')">Privacy Policy</a>
+<a href="#" onclick="go('help')">Help Center</a>
+<a href="#" onclick="go('contact')">Contact Us</a>
+<a href="#" onclick="go('faq')">FAQs</a>
+</div>
+<div>&copy; 2026 SaccoPay. All rights reserved. Licensed by Central Bank of Kenya.</div>
+</footer>
+
+<!-- Guarantor Modal -->
+<div class="modal-o" id="m1"><div class="mod">
+<div class="mh"><h2><i class="fas fa-hand-holding-heart" style="color:var(--accent)"></i> Guarantor Request</h2><button class="x" onclick="cl('m1')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div class="gp"><div class="ga">JM</div><div class="gi"><h4>James Mwangi</h4><p>Member since 2023 · Savings: KES 450K</p><div class="gm"><span><i class="fas fa-star" style="color:var(--warn)"></i> 4.8 Rating</span><span><i class="fas fa-check-circle" style="color:var(--ok)"></i> Good Standing</span><span><i class="fas fa-history"></i> 0 Defaults</span></div></div></div>
+<div class="ls"><h3>Loan Details</h3><div class="la">KES 150,000</div><div class="lp"><i class="fas fa-tag"></i> Business - Dairy Farm Equipment Purchase</div></div>
+<div class="row"><span class="rl">Loan Term</span><span class="rv">12 Months</span></div>
+<div class="row"><span class="rl">Interest Rate</span><span class="rv">12% per annum</span></div>
+<div class="row"><span class="rl">Monthly Repayment</span><span class="rv ok">KES 14,000</span></div>
+<div class="row"><span class="rl">Your Liability (if default)</span><span class="rv bad">KES 75,000 (50%)</span></div>
+<div class="row"><span class="rl">Request Expires</span><span class="rv warn">May 12, 2026 at 11:59 PM</span></div>
+<div class="div"></div>
+<p style="font-size:13px;color:var(--muted);line-height:1.6"><i class="fas fa-info-circle" style="color:var(--accent)"></i> By accepting, you agree to cover 50% of outstanding balance if borrower defaults. This will be deducted from your savings account. Review borrower's repayment history before deciding.</p>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m1')">Cancel</button><button class="btn btn-bad" onclick="decg()"><i class="fas fa-times"></i> Decline</button><button class="btn btn-ok" onclick="accg()"><i class="fas fa-check"></i> Accept</button></div>
+</div></div>
+
+<!-- Admin Modal -->
+<div class="modal-o" id="m2"><div class="mod">
+<div class="mh"><h2><i class="fas fa-bullhorn" style="color:var(--accent)"></i> Admin Notice</h2><button class="x" onclick="cl('m2')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div class="row"><span class="rl">From</span><span class="rv">Sacco Management Board</span></div>
+<div class="row"><span class="rl">Priority</span><span class="rv bad"><i class="fas fa-exclamation-circle"></i> High Priority</span></div>
+<div class="row"><span class="rl">Date</span><span class="rv">May 10, 2026 at 09:30 AM</span></div>
+<div class="row"><span class="rl">Category</span><span class="rv">Annual General Meeting</span></div>
+<div class="row"><span class="rl">Reference</span><span class="rv">AGM-2026-001</span></div>
+<div class="div"></div>
+<div class="msg">
+<p><strong>Dear Valued Member,</strong></p><br>
+<p>We are pleased to invite you to our Annual General Meeting scheduled as follows:</p><br>
+<p><strong>Date:</strong> Saturday, 24th May 2026<br><strong>Time:</strong> 10:00 AM - 2:00 PM EAT<br><strong>Venue:</strong> Sarova Stanley Hotel, Nairobi<br><strong>Agenda:</strong> Financial Review, Dividend Declaration, Board Elections, Bylaw Amendments</p><br>
+<p>Attendance is mandatory for all active members. Please confirm your attendance through this portal by May 20th.</p><br>
+<p>Kind regards,<br><em>Sacco Management Committee</em></p>
+</div>
+<div class="div"></div>
+<div class="attachments">
+<div class="att-item" onclick="dag()"><i class="fas fa-file-pdf"></i><div class="att-info"><h5>AGM_Agenda_2026.pdf</h5><span>245 KB</span></div><span class="att-dl"><i class="fas fa-download"></i></span></div>
+<div class="att-item" onclick="dag()"><i class="fas fa-file-excel"></i><div class="att-info"><h5>Financial_Statements_FY2026.xlsx</h5><span>1.2 MB</span></div><span class="att-dl"><i class="fas fa-download"></i></span></div>
+</div>
+<div class="div"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn btn-sm" onclick="catt()"><i class="fas fa-calendar-check"></i> Confirm Attendance</button>
+<button class="btn2 btn-sm" onclick="dag()"><i class="fas fa-download"></i> Download All</button>
+<button class="btn2 btn-sm" onclick="cal()"><i class="fas fa-calendar-plus"></i> Add to Calendar</button>
+</div>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m2')">Close</button><button class="btn" onclick="rep()"><i class="fas fa-reply"></i> Reply to Admin</button></div>
+</div></div>
+
+<!-- System Modal -->
+<div class="modal-o" id="m3"><div class="mod">
+<div class="mh"><h2><i class="fas fa-rocket" style="color:var(--info)"></i> System Update</h2><button class="x" onclick="cl('m3')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div class="row"><span class="rl">Version</span><span class="rv">v2.4.0</span></div>
+<div class="row"><span class="rl">Release Date</span><span class="rv">May 10, 2026</span></div>
+<div class="row"><span class="rl">Category</span><span class="rv">Feature Release</span></div>
+<div class="row"><span class="rl">Rollout</span><span class="rv">100% of members</span></div>
+<div class="div"></div>
+<h4 style="margin-bottom:12px;font-size:15px">What's New</h4>
+<div class="msg" style="border-left-color:var(--info)">
+<p><strong>Instant M-Pesa Withdrawals</strong> - Our most requested feature is here! Withdraw funds directly to your M-Pesa wallet in under 30 seconds.</p><br>
+<p><strong>Key improvements:</strong></p>
+<ul style="margin-left:20px;margin-top:8px">
+<li>Real-time processing engine with sub-30s delivery</li>
+<li>Daily withdrawal limits increased to KES 150,000</li>
+<li>Transaction fees reduced by 40%</li>
+<li>24/7 availability including weekends and holidays</li>
+<li>Instant SMS and push confirmation</li>
+</ul>
+</div>
+<div class="div"></div>
+<div style="background:var(--card);padding:16px;border-radius:var(--rs);border:1px solid var(--border)">
+<h4 style="font-size:13px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Coming Next</h4>
+<p style="font-size:14px;color:var(--text2)"><i class="fas fa-sparkles" style="color:var(--accent)"></i> SaccoPay Card integration with Visa for international payments and ATM withdrawals.</p>
+</div>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m3')">Dismiss</button><button class="btn" onclick="tnf()"><i class="fas fa-rocket"></i> Try It Now</button></div>
+</div></div>
+
+<!-- Transaction Modal -->
+<div class="modal-o" id="m4"><div class="mod">
+<div class="mh"><h2><i class="fas fa-receipt" style="color:var(--ok)"></i> Transaction Details</h2><button class="x" onclick="cl('m4')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div style="text-align:center;padding:20px 0">
+<div style="width:64px;height:64px;background:rgba(34,197,94,.15);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="fas fa-check" style="font-size:28px;color:var(--ok)"></i></div>
+<div style="font-size:32px;font-weight:700;color:var(--ok)">+KES 75,000.00</div>
+<div style="color:var(--muted);margin-top:4px">Loan Disbursement</div>
+</div>
+<div class="div"></div>
+<div class="row"><span class="rl">Transaction ID</span><span class="rv">SAC-2026-05489</span></div>
+<div class="row"><span class="rl">Date & Time</span><span class="rv">May 9, 2026 at 14:30 EAT</span></div>
+<div class="row"><span class="rl">Loan Type</span><span class="rv">Development Loan</span></div>
+<div class="row"><span class="rl">Interest Rate</span><span class="rv">12% p.a (Reducing Balance)</span></div>
+<div class="row"><span class="rl">Repayment Period</span><span class="rv">12 Months</span></div>
+<div class="row"><span class="rl">Monthly Installment</span><span class="rv ok">KES 6,650</span></div>
+<div class="row"><span class="rl">First Due Date</span><span class="rv warn">June 9, 2026</span></div>
+<div class="row"><span class="rl">Status</span><span class="rv" style="color:var(--ok)"><i class="fas fa-check-circle"></i> Completed</span></div>
+<div class="div"></div>
+<div style="display:flex;gap:10px">
+<button class="btn btn-sm" style="flex:1" onclick="dlr()"><i class="fas fa-download"></i> Download Receipt</button>
+<button class="btn2 btn-sm" style="flex:1" onclick="shr()"><i class="fas fa-share-alt"></i> Share</button>
+</div>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m4')">Close</button><button class="btn" onclick="vrs()"><i class="fas fa-calendar-alt"></i> Repayment Schedule</button></div>
+</div></div>
+
+<!-- Seconding Modal -->
+<div class="modal-o" id="m5"><div class="mod">
+<div class="mh"><h2><i class="fas fa-handshake" style="color:var(--warn)"></i> Loan Seconding Request</h2><button class="x" onclick="cl('m5')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div class="gp"><div class="ga" style="background:var(--warn)">AK</div><div class="gi"><h4>Alice Kamau</h4><p>Member since 2022 · Savings: KES 320K</p><div class="gm"><span><i class="fas fa-star" style="color:var(--warn)"></i> 4.9 Rating</span><span><i class="fas fa-check-circle" style="color:var(--ok)"></i> Excellent Standing</span><span><i class="fas fa-history"></i> 2 Loans Repaid</span></div></div></div>
+<div class="ls"><h3>Loan Application Summary</h3><div class="la">KES 200,000</div><div class="lp"><i class="fas fa-tag"></i> Education - University Tuition Fees</div></div>
+<div class="row"><span class="rl">Your Savings Balance</span><span class="rv ok">KES 500,000</span></div>
+<div class="row"><span class="rl">Required Seconder Balance</span><span class="rv">KES 200,000 or more</span></div>
+<div class="row"><span class="rl">Your Eligibility</span><span class="rv" style="color:var(--ok)"><i class="fas fa-check-circle"></i> Fully Qualified</span></div>
+<div class="row"><span class="rl">Loan Term</span><span class="rv">24 Months</span></div>
+<div class="div"></div>
+<p style="font-size:13px;color:var(--muted);line-height:1.6"><i class="fas fa-info-circle" style="color:var(--warn)"></i> As a seconder, you vouch for this member's credibility. If they default, you may be restricted from taking new loans until the matter is resolved. Your savings act as a guarantee of trust.</p>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m5')">Cancel</button><button class="btn" onclick="csec()"><i class="fas fa-handshake"></i> Second This Loan</button></div>
+</div></div>
+
+<!-- Preferences Modal -->
+<div class="modal-o" id="m6"><div class="mod">
+<div class="mh"><h2><i class="fas fa-cog" style="color:var(--accent)"></i> Notification Preferences</h2><button class="x" onclick="cl('m6')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div class="pref"><div class="pf"><h4>Push Notifications</h4><p>Receive alerts on your device instantly</p></div><div class="tog on" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>Email Notifications</h4><p>Get daily summaries via email</p></div><div class="tog on" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>SMS Alerts</h4><p>Critical alerts via text message</p></div><div class="tog on" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>Guarantor Requests</h4><p>Notify when someone needs you as guarantor</p></div><div class="tog on" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>Loan Updates</h4><p>Application status and repayment reminders</p></div><div class="tog on" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>Admin Announcements</h4><p>Meeting notices and dividend declarations</p></div><div class="tog" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>System Updates</h4><p>New features and maintenance alerts</p></div><div class="tog on" onclick="tg(this)"></div></div>
+<div class="pref"><div class="pf"><h4>Marketing & Promotions</h4><p>Special offers and partner deals</p></div><div class="tog" onclick="tg(this)"></div></div>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m6')">Cancel</button><button class="btn" onclick="spref()"><i class="fas fa-save"></i> Save Changes</button></div>
+</div></div>
+
+<!-- Compose Modal -->
+<div class="modal-o" id="m7"><div class="mod">
+<div class="mh"><h2><i class="fas fa-pen" style="color:var(--accent)"></i> Compose Message</h2><button class="x" onclick="cl('m7')"><i class="fas fa-times"></i></button></div>
+<div class="mc">
+<div class="form-group">
+<label class="label">Recipient</label>
+<select class="select"><option>Sacco Management Board</option><option>Loan Department</option><option>Customer Support</option><option>Chairman</option></select>
+</div>
+<div class="form-group">
+<label class="label">Subject</label>
+<input type="text" class="search" style="padding-left:12px" placeholder="Enter subject...">
+</div>
+<div class="form-group">
+<label class="label">Message</label>
+<textarea class="textarea" placeholder="Type your message here..."></textarea>
+</div>
+<div class="attachments">
+<div class="att-item"><i class="fas fa-paperclip"></i><div class="att-info"><h5>Attach files (optional)</h5><span>Max 5MB per file</span></div><span class="att-dl"><i class="fas fa-plus"></i></span></div>
+</div>
+</div>
+<div class="mf"><button class="btn2" onclick="cl('m7')">Cancel</button><button class="btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i> Send Message</button></div>
+</div></div>
+
+<div class="toasts" id="tc"></div>
+
+<script>
+let ct='all',uo=false,ug=false;
+function swTab(t,b){ct=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');filter()}
+function filter(){
+let s=document.getElementById('si').value.toLowerCase(),v=0;
+document.querySelectorAll('.card').forEach(c=>{
+let cat=c.dataset.c,txt=c.innerText.toLowerCase(),un=c.classList.contains('unread'),urg=c.querySelector('.t-urg')!==null;
+let show=true;
+if(ct!=='all'&&cat!==ct&&!(ct==='requests'&&cat==='members'&&c.querySelector('.t-req')))show=false;
+if(s&&!txt.includes(s))show=false;
+if(uo&&!un)show=false;
+if(ug&&!urg)show=false;
+c.style.display=show?'flex':'none';if(show)v++;
+});
+let list=document.getElementById('list'),ex=list.querySelector('.empty');
+if(ex)ex.remove();
+if(v===0)list.innerHTML+=`<div class="empty"><i class="fas fa-bell-slash"></i><h3>No notifications found</h3><p>Try adjusting your filters or check back later.</p></div>`;
+}
+function toggleUnr(){uo=!uo;ug=false;filter();toast(uo?'Showing unread only':'Showing all notifications','inf')}
+function toggleUrg(){ug=!ug;uo=false;filter();toast(ug?'Showing urgent only':'Showing all notifications','inf')}
+function markAll(){document.querySelectorAll('.card.unread').forEach(c=>c.classList.remove('unread'));upc();toast('All notifications marked as read','ok')}
+function upc(){
+let c={all:0,s:0,m:0,a:0,r:0},un=0;
+document.querySelectorAll('.card').forEach(x=>{
+let cat=x.dataset.c,ur=x.classList.contains('unread');
+c.all++;if(cat==='system')c.s++;if(cat==='members')c.m++;if(cat==='admin')c.a++;if(x.querySelector('.t-req'))c.r++;if(ur)un++;
+});
+document.getElementById('ta').textContent=c.all;document.getElementById('ts').textContent=c.s;document.getElementById('tm').textContent=c.m;
+document.getElementById('td').textContent=c.a;document.getElementById('tr').textContent=c.r;
+document.getElementById('hb').textContent=un;document.getElementById('hb').style.display=un>0?'block':'none';
+document.getElementById('st1').textContent=c.s;document.getElementById('st2').textContent=c.m;
+document.getElementById('st3').textContent=c.a;document.getElementById('st4').textContent=c.r;
+}
+function op(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden'}
+function cl(id){document.getElementById(id).classList.remove('on');document.body.style.overflow=''}
+function mr(id){let c=document.querySelector(`[data-id="${id}"]`);if(c&&c.classList.contains('unread')){c.classList.remove('unread');upc()}}
+function openGuar(id){op('m1');mr(id)}
+function openAdm(id){op('m2');mr(id)}
+function openSys(id){op('m3');mr(id)}
+function openTrx(id){op('m4');mr(id)}
+function openSec(id){op('m5');mr(id)}
+function openPref(){op('m6')}
+function openCompose(){op('m7')}
+function openGrp(id){toast('Reviewing group join request...','inf');mr(id)}
+function e(ev){ev.stopPropagation()}
+function acc(id){toast('Guarantor request accepted successfully','ok');mr(id);setTimeout(()=>cl('m1'),400)}
+function dec(id){toast('Request declined. Member has been notified.','inf');mr(id)}
+function sec(id){toast('You have successfully seconded this loan','ok');mr(id);setTimeout(()=>cl('m5'),400)}
+function apg(id){toast('Group join request approved','ok');mr(id)}
+function reg(id){toast('Group join request rejected','inf');mr(id)}
+function accg(){toast('You are now listed as guarantor for James Mwangi','ok');cl('m1')}
+function decg(){toast('Guarantor request declined','inf');cl('m1')}
+function csec(){toast('Loan seconding confirmed. Good luck to Alice!','ok');cl('m5')}
+function catt(){toast('AGM attendance confirmed. See you there!','ok')}
+function dag(){toast('Downloading AGM agenda...','inf')}
+function cal(){toast('Event added to your calendar','ok')}
+function rpin(){toast('PIN reset link sent to your phone','ok')}
+function rep(){toast('Support ticket #4892 created','inf')}
+function tnf(){toast('Redirecting to withdrawals...','inf');cl('m3')}
+function dlr(){toast('Receipt downloaded successfully','ok')}
+function shr(){toast('Share dialog opened','inf')}
+function vrs(){toast('Loading repayment schedule...','inf')}
+function vprof(n){toast('Viewing profile: '+n,'inf')}
+function vup(){toast('Loading full changelog...','inf')}
+function go(p){toast('Navigating to '+p+'...','inf')}
+function tg(el){el.classList.toggle('on')}
+function spref(){toast('Notification preferences saved successfully','ok');cl('m6')}
+function sendMsg(){toast('Message sent to Sacco Management','ok');cl('m7')}
+function loadMore(){toast('Loading older notifications...','inf')}
+function exportDigest(){toast('Weekly digest exported as PDF','ok')}
+function toast(m,t='inf'){
+let tc=document.getElementById('tc'),d=document.createElement('div');
+d.className='toast '+t;
+let i=t==='ok'?'check-circle':t==='err'?'exclamation-circle':'info-circle';
+d.innerHTML=`<i class="fas fa-${i}"></i><span>${m}</span>`;
+tc.appendChild(d);requestAnimationFrame(()=>d.classList.add('show'));
+setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),300)},3000);
+}
+document.querySelectorAll('.modal-o').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on')}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-o.on').forEach(m=>m.classList.remove('on'))});
+upc();
+</script>
+</body>
+</html>

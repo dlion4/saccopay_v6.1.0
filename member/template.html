@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statements | SACCOPay Member</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="./member-style2.css" rel="stylesheet">
+   
+    <style>
+        :root {
+            --primary:#00d084;--primary-dark:#00a866;--primary-ultra:#e6faf4;
+            --teal:#00bcd4;--blue:#2196f3;--purple:#9c27b0;--orange:#ff9800;--red:#f44336;
+            --bg:#f8fafb;--bg2:#ffffff;--bg3:#f0f4f7;--glass:rgba(255,255,255,0.85);--border:#e2e8f0;
+            --text1:#1a2332;--text2:#64748b;--text3:#94a3b8;
+            --shadow-sm:0 2px 8px rgba(0,0,0,0.04);--shadow-md:0 4px 16px rgba(0,0,0,0.08);
+            --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;--r-full:9999px;
+            --sp-xs:.25rem;--sp-sm:.5rem;--sp-md:1rem;--sp-lg:1.5rem;--sp-xl:2rem;--sp-2xl:3rem;
+            --font:'Inter',-apple-system,sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:var(--font);background:linear-gradient(135deg,#f8fafb,#e6faf4);color:var(--text1);min-height:100vh;}
+        .member-layout{display:flex;min-height:100vh;}
+
+        /* Sidebar */
+        .member-sidebar{width:260px;background:var(--glass);backdrop-filter:blur(20px);border-right:1px solid rgba(0,208,132,0.15);position:fixed;height:100vh;overflow-y:auto;z-index:1000;}
+        .sidebar-brand{padding:var(--sp-xl);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:var(--sp-md);}
+        .brand-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--primary),var(--teal));border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:1.1rem;}
+        .brand-text h2{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .member-info-bar{padding:var(--sp-md) var(--sp-xl);border-bottom:1px solid var(--border);background:var(--primary-ultra);}
+        .member-info-bar .m-name{font-size:.88rem;font-weight:700;}
+        .member-info-bar .m-id{font-size:.7rem;color:var(--text2);}
+        .nav-section-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:var(--sp-sm) var(--sp-xl);margin-top:var(--sp-sm);}
+        .nav-item{margin:2px var(--sp-md);}
+        .nav-link{display:flex;align-items:center;gap:var(--sp-sm);padding:10px var(--sp-md);color:var(--text2);text-decoration:none;border-radius:var(--r-md);font-size:.85rem;font-weight:500;transition:all .2s;}
+        .nav-link:hover{background:var(--primary-ultra);color:var(--primary-dark);transform:translateX(4px);}
+        .nav-link.active{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;box-shadow:0 4px 12px rgba(0,208,132,0.3);}
+        .nav-link i{width:18px;flex-shrink:0;}
+        .nav-badge{margin-left:auto;background:var(--red);color:white;padding:1px 6px;border-radius:var(--r-full);font-size:.65rem;font-weight:700;}
+
+        .member-main{flex:1;margin-left:260px;min-height:100vh;}
+
+        /* Topbar */
+        .member-topbar{background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,208,132,0.15);padding:var(--sp-md) var(--sp-xl);position:sticky;top:0;z-index:100;}
+        .topbar-inner{display:flex;justify-content:space-between;align-items:center;}
+        .page-breadcrumb{font-size:.8rem;color:var(--text2);}
+        .page-breadcrumb span{color:var(--primary);font-weight:600;}
+        .topbar-right{display:flex;align-items:center;gap:var(--sp-md);}
+        .topbar-btn{width:36px;height:36px;border-radius:var(--r-full);background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;text-decoration:none;color:var(--text2);}
+        .topbar-btn:hover{background:var(--primary-ultra);border-color:var(--primary);color:var(--primary);}
+        .topbar-notif{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--red);border-radius:50%;font-size:.6rem;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid white;}
+        .user-chip{display:flex;align-items:center;gap:var(--sp-sm);padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-full);cursor:pointer;transition:all .2s;}
+        .user-chip:hover{border-color:var(--primary);}
+        .user-chip-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.68rem;}
+
+        .page-content{padding:var(--sp-xl);max-width:1100px;}
+
+        /* Header */
+        .pg-header{margin-bottom:var(--sp-xl);}
+        .pg-header h2{font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:var(--sp-sm);}
+        .pg-header p{font-size:.88rem;color:var(--text2);margin:4px 0 0;}
+
+        /* Stat strip */
+        .stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-md);margin-bottom:var(--sp-xl);}
+        .stat-tile{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(0,208,132,0.15);border-radius:var(--r-md);padding:var(--sp-lg);transition:all .2s;cursor:pointer;}
+        .stat-tile:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:rgba(0,208,132,0.3);}
+        .stat-tile .st-icon{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:var(--sp-sm);}
+        .stat-tile .st-label{font-size:.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+        .stat-tile .st-value{font-size:1.4rem;font-weight:700;margin-top:2px;}
+        .stat-tile .st-sub{font-size:.7rem;color:var(--text3);margin-top:2px;}
+
+        /* Glass Card */
+        .g-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid rgba(0,208,132,0.15);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow:hidden;}
+        .g-card-header{padding:var(--sp-lg) var(--sp-xl);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--sp-md);}
+        .g-card-header h3{font-size:1rem;font-weight:700;margin:0;}
+        .g-card-body{padding:var(--sp-xl);}
+
+        /* Filter Bar */
+        .filter-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-md);margin-bottom:var(--sp-lg);align-items:end;}
+        .filter-bar label{font-size:.72rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;}
+        .finput{border:2px solid var(--border);border-radius:var(--r-md);padding:9px 14px;font-size:.85rem;width:100%;transition:all .3s;}
+        .finput:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,208,132,0.12);outline:none;}
+        .fselect{border:2px solid var(--border);border-radius:var(--r-md);padding:9px 14px;font-size:.85rem;width:100%;}
+
+        /* Quick Range */
+        .quick-range{display:flex;gap:var(--sp-sm);flex-wrap:wrap;margin-bottom:var(--sp-lg);}
+        .qr-btn{padding:6px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-full);font-size:.78rem;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;}
+        .qr-btn:hover{background:var(--primary-ultra);border-color:rgba(0,208,132,0.3);color:var(--primary-dark);}
+        .qr-btn.active{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border-color:transparent;}
+
+        /* Statement Type Cards */
+        .stype-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-md);}
+        .stype-card{background:var(--bg2);border:2px solid var(--border);border-radius:var(--r-md);padding:var(--sp-md);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:var(--sp-md);}
+        .stype-card:hover{border-color:rgba(0,208,132,0.3);background:var(--primary-ultra);}
+        .stype-card.sel{border-color:var(--primary);background:var(--primary-ultra);box-shadow:0 0 0 3px rgba(0,208,132,0.12);}
+        .stype-icon{width:40px;height:40px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+        .stype-card h6{font-size:.85rem;font-weight:700;margin:0;}
+        .stype-card p{font-size:.7rem;color:var(--text3);margin:2px 0 0;}
+
+        /* Format Pills */
+        .fmt-pills{display:flex;gap:8px;flex-wrap:wrap;}
+        .fmt-pill{padding:8px 16px;border:2px solid var(--border);border-radius:var(--r-md);background:var(--bg2);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text2);transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .fmt-pill:hover{border-color:rgba(0,208,132,0.3);}
+        .fmt-pill.sel{border-color:var(--primary);background:var(--primary-ultra);color:var(--primary-dark);}
+
+        /* Status Badges */
+        .sbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--r-full);font-size:.7rem;font-weight:700;}
+        .sbadge.ready{background:rgba(0,208,132,0.1);color:var(--primary-dark);}
+        .sbadge.processing{background:rgba(255,152,0,0.1);color:#e65100;}
+        .sbadge.expired{background:rgba(158,158,158,0.1);color:#616161;}
+        .sbadge.scheduled{background:rgba(33,150,243,0.1);color:#1565c0;}
+
+        /* Statement Row */
+        .stmt-row{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-md);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:var(--sp-sm);background:var(--bg2);transition:all .2s;}
+        .stmt-row:hover{border-color:rgba(0,208,132,0.3);box-shadow:var(--shadow-sm);transform:translateX(3px);}
+        .stmt-icon{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+        .stmt-icon.pdf{background:rgba(244,67,54,0.1);color:#e53935;}
+        .stmt-icon.excel{background:rgba(76,175,80,0.1);color:#43a047;}
+        .stmt-icon.csv{background:rgba(33,150,243,0.1);color:#1e88e5;}
+        .stmt-info{flex:1;min-width:0;}
+        .stmt-info h6{font-size:.88rem;font-weight:700;margin:0 0 2px;}
+        .stmt-info p{font-size:.72rem;color:var(--text3);margin:0;}
+        .stmt-meta{text-align:right;flex-shrink:0;}
+        .stmt-meta .stmt-date{font-size:.78rem;color:var(--text2);font-weight:500;}
+        .stmt-meta .stmt-size{font-size:.7rem;color:var(--text3);margin-top:1px;}
+        .stmt-actions{display:flex;gap:4px;flex-shrink:0;}
+
+        /* Schedule Row */
+        .sched-row{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-md);background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:var(--sp-sm);}
+        .sched-row .sched-info h6{font-size:.85rem;font-weight:600;margin:0 0 2px;}
+        .sched-row .sched-info p{font-size:.7rem;color:var(--text3);margin:0;}
+
+        /* Buttons */
+        .btn-g{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:var(--r-md);padding:10px 20px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-g:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,208,132,0.4);color:white;}
+        .btn-o{background:transparent;border:2px solid var(--primary);color:var(--primary);border-radius:var(--r-md);padding:8px 16px;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-o:hover{background:var(--primary);color:white;}
+        .btn-ghost-s{background:transparent;border:none;color:var(--text2);border-radius:var(--r-md);padding:8px 14px;font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-ghost-s:hover{background:var(--bg3);color:var(--primary);}
+        .btn-icon-s{width:32px;height:32px;border-radius:var(--r-sm);background:var(--bg3);border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--text2);font-size:.85rem;}
+        .btn-icon-s:hover{background:var(--primary);color:white;}
+        .btn-icon-s.danger:hover{background:var(--red);}
+
+        /* Modal */
+        .modal-content{border:none;border-radius:var(--r-lg);box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+        .mh-green{background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-blue{background:linear-gradient(135deg,#1565c0,#1976d2);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-orange{background:linear-gradient(135deg,#e65100,#f57c00);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .mh-dark{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;border:none;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--sp-lg) var(--sp-xl);}
+        .modal-header .btn-close{filter:brightness(0) invert(1);}
+        .modal-body{padding:var(--sp-xl);}
+        .modal-footer{border-top:1px solid var(--border);padding:var(--sp-lg) var(--sp-xl);}
+
+        .drow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+        .drow:last-child{border-bottom:none;}
+        .drow .dl{color:var(--text3);font-weight:500;}
+        .drow .dv{font-weight:600;color:var(--text1);}
+
+        /* Tabs */
+        .m-tabs{display:flex;gap:var(--sp-sm);border-bottom:2px solid var(--border);margin-bottom:var(--sp-xl);overflow-x:auto;}
+        .m-tab{padding:10px 20px;border:none;background:none;font-size:.88rem;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+        .m-tab:hover{color:var(--primary);}
+        .m-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+        .tab-pane{display:none;}.tab-pane.active{display:block;}
+
+        /* Generated Doc Preview */
+        .doc-preview{background:white;border:1px solid var(--border);border-radius:var(--r-md);padding:var(--sp-xl);max-height:400px;overflow-y:auto;}
+        .doc-preview h2{font-size:1rem;font-weight:700;text-align:center;}
+        .doc-preview .doc-meta{font-size:.72rem;color:var(--text2);text-align:center;margin-bottom:var(--sp-md);}
+        .doc-preview table{width:100%;font-size:.78rem;border-collapse:collapse;margin-top:var(--sp-md);}
+        .doc-preview th{background:var(--bg3);padding:6px 10px;text-align:left;font-weight:700;border-bottom:2px solid var(--border);font-size:.7rem;text-transform:uppercase;}
+        .doc-preview td{padding:6px 10px;border-bottom:1px solid var(--border);}
+        .doc-preview tr:last-child td{border-bottom:none;}
+
+        /* Empty */
+        .empty-row{text-align:center;padding:var(--sp-xl);color:var(--text3);font-size:.85rem;}
+
+        @media(max-width:768px){
+            .member-sidebar{transform:translateX(-100%);transition:.3s;}
+            .member-sidebar.open{transform:translateX(0);}
+            .member-main{margin-left:0;}
+            .stat-strip{grid-template-columns:repeat(2,1fr);}
+            .stmt-row{flex-wrap:wrap;}
+            .stmt-actions{width:100%;justify-content:flex-end;}
+        }
+
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+        .fade-in{animation:fadeIn .4s ease-out;}
+    </style>
+</head>
+<body>
+<div class="member-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="member-sidebar" id="sidebar">
+        <div class="sidebar-brand"><div class="brand-logo">S</div><div class="brand-text"><h2>SACCOPay</h2><p style="font-size:.7rem;color:var(--text3);">Member Portal</p></div></div>
+        <div class="member-info-bar"><div class="m-name">John Kamau</div><div class="m-id">SP-10015 · Rongo SACCO</div></div>
+        <nav style="padding:var(--sp-sm) 0;">
+            <div class="nav-section-title">Overview</div>
+            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
+            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i>My Profile</a></div>
+            <div class="nav-section-title">Savings & Shares</div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings Accounts</a></div>
+            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i>Share Capital</a></div>
+            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i>Dividends</a></div>
+            <div class="nav-section-title">Loans</div>
+            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans</a></div>
+            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i>Apply for Loan</a></div>
+            <div class="nav-item"><a href="guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantorship<span class="nav-badge">2</span></a></div>
+            <div class="nav-section-title">Transactions</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2"></i>Wallet</a></div>
+            <div class="nav-item"><a href="statements.html" class="nav-link active"><i class="bi bi-file-text"></i>Statements</a></div>
+            <div class="nav-section-title">Account</div>
+            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">3</span></a></div>
+            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
+            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="member-main">
+        <div class="member-topbar">
+            <div class="topbar-inner">
+                <div><button class="btn-ghost-s d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button><div class="page-breadcrumb">Home / Transactions / <span>Statements</span></div></div>
+                <div class="topbar-right"><a href="notifications.html" class="topbar-btn"><i class="bi bi-bell"></i><span class="topbar-notif">3</span></a><div class="user-chip" data-bs-toggle="modal" data-bs-target="#profileModal"><div class="user-chip-av">JK</div><span style="font-size:.8rem;font-weight:600;">John K.</span></div></div>
+            </div>
+        </div>
+
+        <div class="page-content">
+        
+
+            <div class="content-wrapper">
+
+      <!-- ===================== MODULE 1: QUICK STATS ===================== -->
+      <div id="overview-stats" class="row g-3 mb-4 scroll-mt">
+        <!-- Using col-12 for mobile to prevent card breakage -->
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card stat-card--primary h-100">
+            <div class="stat-card-body">
+              <div class="stat-icon">
+                <i class="bi bi-wallet-fill"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Total Savings</span>
+                <h3 class="stat-value">KES 245,000</h3>
+                <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>12.5%</span>
+              </div>
+            </div>
+            <div class="stat-card-footer">
+              <a href="#overview-contributions" class="stat-link">Contributions Data <i class="bi bi-arrow-down"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card stat-card--success h-100">
+            <div class="stat-card-body">
+              <div class="stat-icon">
+                <i class="bi bi-graph-up-arrow"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Share Capital</span>
+                <h3 class="stat-value">KES 50,000</h3>
+                <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>8.2%</span>
+              </div>
+            </div>
+            <div class="stat-card-footer">
+              <a href="#overview-statements" class="stat-link">Dividends Data <i class="bi bi-arrow-down"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card stat-card--warning h-100">
+            <div class="stat-card-body">
+              <div class="stat-icon">
+                <i class="bi bi-bank"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Loan Balance</span>
+                <h3 class="stat-value">KES 80,000</h3>
+                <span class="stat-change negative"><i class="bi bi-arrow-down-short"></i>5.3%</span>
+              </div>
+            </div>
+            <div class="stat-card-footer">
+              <a href="#overview-loans" class="stat-link">Loans Data <i class="bi bi-arrow-down"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card stat-card--info h-100">
+            <div class="stat-card-body">
+              <div class="stat-icon">
+                <i class="bi bi-currency-exchange"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Dividends Earned</span>
+                <h3 class="stat-value">KES 12,300</h3>
+                <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>18.7%</span>
+              </div>
+            </div>
+            <div class="stat-card-footer">
+              <a href="#overview-statements" class="stat-link">Statements Data <i class="bi bi-arrow-down"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODULE 2: QUICK ACTIONS + SUMMARY ===================== -->
+      <div id="overview-actions" class="row g-3 mb-4 scroll-mt">
+        <div class="col-12 col-lg-8">
+          <div class="card dashboard-card h-100">
+            <div class="card-header">
+              <h6 class="card-title mb-0"><i class="bi bi-lightning-charge-fill text-accent me-2"></i>Quick Action Operations</h6>
+            </div>
+            <div class="card-body">
+              <!-- Grid forces col-12 stacked buttons on extra small mobile screens -->
+              <div class="row g-2">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalContribute">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    <span>Contribute Funds</span>
+                  </button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalLoanApply">
+                    <i class="bi bi-bank"></i>
+                    <span>Apply for Loan</span>
+                  </button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalWithdraw">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>Request Withdrawal</span>
+                  </button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalTransfer">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Internal Transfer</span>
+                  </button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                  <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalRepayLoan">
+                    <i class="bi bi-credit-card-fill"></i>
+                    <span>Repay Active Loan</span>
+                  </button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                  <a href="#overview-statements" class="btn btn-action w-100 text-decoration-none">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>View Statements</span>
+                  </a>
+                </div>
+                <div class="col-12 col-sm-12 col-md-4">
+                  <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalNewTicket">
+                    <i class="bi bi-headset"></i>
+                    <span>Raise Support Ticket</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card dashboard-card h-100">
+            <div class="card-header">
+              <h6 class="card-title mb-0"><i class="bi bi-person-badge-fill text-accent me-2"></i>Account Summary</h6>
+            </div>
+            <div class="card-body p-0">
+              <ul class="list-group list-group-flush summary-list">
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Member No.</span>
+                  <strong>SP-2024-0451</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Joined Date</span>
+                  <strong>Jan 15, 2020</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Account Status</span>
+                  <span class="badge bg-success-subtle text-success">Active</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Max Loan Limit</span>
+                  <strong>KES 500,000</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Guarantors Available</span>
+                  <strong>3 Active</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Next Contribution Due</span>
+                  <strong class="text-accent">Dec 1, 2024</strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODULE 3: CONTRIBUTIONS & CHART ===================== -->
+      <div id="overview-contributions" class="row g-3 mb-4 scroll-mt">
+        <div class="col-12 col-lg-8">
+          <div class="card dashboard-card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h6 class="card-title mb-0"><i class="bi bi-bar-chart-line-fill text-accent me-2"></i>Contributions Trend Overview (2024)</h6>
+              <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalContribute">
+                <i class="bi bi-plus-circle me-1"></i>Add Contribution
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="row g-3 mb-4 text-center">
+                <div class="col-12 col-sm-4 border-end-sm">
+                  <small class="text-muted d-block">Monthly Minimum</small>
+                  <strong class="fs-5">KES 5,000</strong>
+                </div>
+                <div class="col-12 col-sm-4 border-end-sm">
+                  <small class="text-muted d-block">Total Deposited YTD</small>
+                  <strong class="fs-5 text-success">KES 60,000</strong>
+                </div>
+                <div class="col-12 col-sm-4">
+                  <small class="text-muted d-block">Auto-Deduction Status</small>
+                  <span class="badge bg-success mt-1">Active via M-Pesa</span>
+                </div>
+              </div>
+              <div class="chart-placeholder" id="contributionChart">
+                <div class="chart-bars">
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:40%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>Jan</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>Feb</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:45%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>Mar</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:60%;" data-bs-toggle="tooltip" title="KES 7,500"></div><span>Apr</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:55%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>May</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:70%;" data-bs-toggle="tooltip" title="KES 10,000"></div><span>Jun</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>Jul</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:65%;" data-bs-toggle="tooltip" title="KES 8,000"></div><span>Aug</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>Sep</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar" style="height:75%;" data-bs-toggle="tooltip" title="KES 10,000"></div><span>Oct</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar active-bar" style="height:80%;" data-bs-toggle="tooltip" title="KES 5,000"></div><span>Nov</span></div>
+                  <div class="chart-bar-item"><div class="chart-bar upcoming" style="height:30%;" data-bs-toggle="tooltip" title="Upcoming"></div><span>Dec</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card dashboard-card h-100">
+            <div class="card-header">
+              <h6 class="card-title mb-0"><i class="bi bi-megaphone-fill text-accent me-2"></i>System Announcements</h6>
+            </div>
+            <div class="card-body p-0">
+              <div class="announcement-list">
+                <a href="#" class="announcement-item" data-bs-toggle="modal" data-bs-target="#modalAnnouncement">
+                  <div class="announce-badge"><span class="badge bg-danger">Important</span></div>
+                  <h6>Annual General Meeting</h6>
+                  <p class="mb-1 small text-muted">AGM scheduled for December 15, 2024. Confirm attendance.</p>
+                  <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 28, 2024</small>
+                </a>
+                <div class="announcement-item">
+                  <h6>Dividend Declaration</h6>
+                  <p class="mb-1 small text-muted">Year 2024 dividends will be credited by January 15, 2025.</p>
+                  <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 20, 2024</small>
+                </div>
+                <div class="announcement-item">
+                  <h6>New Education Loan Rate</h6>
+                  <p class="mb-1 small text-muted">Education and Asset Finance product rates dropped to 8% p.a.</p>
+                  <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 10, 2024</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODULE 4: ACTIVE LOANS ===================== -->
+      <div id="overview-loans" class="row g-3 mb-4 scroll-mt">
+        <div class="col-12">
+          <div class="card dashboard-card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h6 class="card-title mb-0"><i class="bi bi-pie-chart-fill text-accent me-2"></i>Active Loans Portfolio Overview</h6>
+              <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalLoanApply">
+                <i class="bi bi-bank me-1"></i>Apply for Loan
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <!-- Loan Card 1 (Stack to col-12 on mobile) -->
+                <div class="col-12 col-md-6">
+                  <div class="card border loan-detail-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-1">
+                        <div>
+                          <h6 class="mb-1">Normal Loan Account</h6>
+                          <small class="text-muted">Ref: LN-2024-0089</small>
+                        </div>
+                        <span class="badge bg-accent">Active Service</span>
+                      </div>
+                      <div class="row g-2 mb-3">
+                        <div class="col-6">
+                          <small class="text-muted d-block">Principal Borrowed</small>
+                          <strong>KES 100,000</strong>
+                        </div>
+                        <div class="col-6">
+                          <small class="text-muted d-block">Outstanding Balance</small>
+                          <strong class="text-danger">KES 40,000</strong>
+                        </div>
+                        <div class="col-6">
+                          <small class="text-muted d-block">Interest Rate</small>
+                          <strong>12% p.a.</strong>
+                        </div>
+                        <div class="col-6">
+                          <small class="text-muted d-block">Monthly Installment</small>
+                          <strong>KES 8,500</strong>
+                        </div>
+                      </div>
+                      <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-accent" style="width: 60%"></div>
+                      </div>
+                      <div class="d-flex justify-content-between mb-3">
+                        <small class="text-muted">60% Repaid</small>
+                        <small class="text-muted">Due Date: Mar 2025</small>
+                      </div>
+                      <button class="btn btn-sm btn-outline-accent w-100" data-bs-toggle="modal" data-bs-target="#modalRepayLoan">
+                        <i class="bi bi-credit-card me-1"></i>Submit Installment Repayment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- Loan Card 2 (Stack to col-12 on mobile) -->
+                <div class="col-12 col-md-6">
+                  <div class="card border loan-detail-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-1">
+                        <div>
+                          <h6 class="mb-1">Emergency Loan Account</h6>
+                          <small class="text-muted">Ref: LN-2024-0112</small>
+                        </div>
+                        <span class="badge bg-accent">Active Service</span>
+                      </div>
+                      <div class="row g-2 mb-3">
+                        <div class="col-6">
+                          <small class="text-muted d-block">Principal Borrowed</small>
+                          <strong>KES 20,000</strong>
+                        </div>
+                        <div class="col-6">
+                          <small class="text-muted d-block">Outstanding Balance</small>
+                          <strong class="text-danger">KES 5,000</strong>
+                        </div>
+                        <div class="col-6">
+                          <small class="text-muted d-block">Interest Rate</small>
+                          <strong>10% p.a.</strong>
+                        </div>
+                        <div class="col-6">
+                          <small class="text-muted d-block">Monthly Installment</small>
+                          <strong>KES 3,500</strong>
+                        </div>
+                      </div>
+                      <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 75%"></div>
+                      </div>
+                      <div class="d-flex justify-content-between mb-3">
+                        <small class="text-muted">75% Repaid</small>
+                        <small class="text-muted">Due Date: Jan 2025</small>
+                      </div>
+                      <button class="btn btn-sm btn-outline-accent w-100" data-bs-toggle="modal" data-bs-target="#modalRepayLoan">
+                        <i class="bi bi-credit-card me-1"></i>Submit Installment Repayment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-info-custom mt-3 mb-0 d-flex align-items-center">
+                <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                <div>
+                  <strong>Total Overall Outstanding Portfolio:</strong> KES 45,000 | Next combined auto-deduction: KES 12,000 on Dec 5, 2024
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODULE 5: FINANCE ACTIVITY ===================== -->
+      <div id="overview-finance" class="row g-3 mb-4 scroll-mt">
+        <div class="col-12">
+          <div class="card dashboard-card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h6 class="card-title mb-0"><i class="bi bi-clock-history text-accent me-2"></i>Financial Transactions & Withdrawals Log</h6>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-accent" onclick="showToast('info','CSV file generated successfully.')"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV</button>
+                <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalWithdraw"><i class="bi bi-cash-stack me-1"></i>Withdraw Funds</button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Transaction ID</th>
+                      <th>Process Date</th>
+                      <th>Operation Type</th>
+                      <th>Routing Account</th>
+                      <th class="text-end">Debit Log</th>
+                      <th class="text-end">Credit Log</th>
+                      <th class="text-center">Approval Status</th>
+                      <th class="text-center">Receipt File</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><small>TXN-2024-001</small></td>
+                      <td>Nov 28, 2024</td>
+                      <td><span class="badge bg-success-subtle text-success">Monthly Deposit</span></td>
+                      <td>M-Pesa Paybill</td>
+                      <td class="text-end">-</td>
+                      <td class="text-end text-success fw-semibold">+KES 5,000</td>
+                      <td class="text-center"><span class="badge bg-success">Completed</span></td>
+                      <td class="text-center"><button class="btn btn-sm btn-outline-secondary" onclick="showToast('info','Receipt downloaded.')"><i class="bi bi-download me-1"></i>Get PDF</button></td>
+                    </tr>
+                    <tr>
+                      <td><small>WDL-2024-015</small></td>
+                      <td>Nov 15, 2024</td>
+                      <td><span class="badge bg-warning-subtle text-warning">Withdrawal Out</span></td>
+                      <td>M-Pesa ***456</td>
+                      <td class="text-end text-danger fw-semibold">-KES 15,000</td>
+                      <td class="text-end">-</td>
+                      <td class="text-center"><span class="badge bg-warning text-dark">Pending Audit</span></td>
+                      <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="showToast('success','Request cancelled.')"><i class="bi bi-x-circle me-1"></i>Abort</button></td>
+                    </tr>
+                    <tr>
+                      <td><small>TXN-2024-002</small></td>
+                      <td>Nov 10, 2024</td>
+                      <td><span class="badge bg-success-subtle text-success">Capital Deposit</span></td>
+                      <td>KCB Bank Transfer</td>
+                      <td class="text-end">-</td>
+                      <td class="text-end text-success fw-semibold">+KES 20,000</td>
+                      <td class="text-center"><span class="badge bg-success">Completed</span></td>
+                      <td class="text-center"><button class="btn btn-sm btn-outline-secondary" onclick="showToast('info','Receipt downloaded.')"><i class="bi bi-download me-1"></i>Get PDF</button></td>
+                    </tr>
+                    <tr>
+                      <td><small>TXN-2024-003</small></td>
+                      <td>Oct 25, 2024</td>
+                      <td><span class="badge bg-danger-subtle text-danger">Loan Auto-Debit</span></td>
+                      <td>Savings Deduction</td>
+                      <td class="text-end text-danger fw-semibold">-KES 8,500</td>
+                      <td class="text-end">-</td>
+                      <td class="text-center"><span class="badge bg-success">Completed</span></td>
+                      <td class="text-center"><button class="btn btn-sm btn-outline-secondary" onclick="showToast('info','Receipt downloaded.')"><i class="bi bi-download me-1"></i>Get PDF</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODULE 6: STATEMENTS & DIVIDENDS ===================== -->
+      <div id="overview-statements" class="row g-3 mb-4 scroll-mt">
+        <div class="col-12 col-lg-6">
+          <div class="card dashboard-card h-100">
+            <div class="card-header">
+              <h6 class="card-title mb-0"><i class="bi bi-folder2-open text-accent me-2"></i>Account Statements Explorer</h6>
+            </div>
+            <div class="card-body">
+              <form class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-sm-4">
+                  <label class="form-label small mb-1">Target Account</label>
+                  <select class="form-select form-select-sm">
+                    <option>All Accounts Combined</option>
+                    <option>Savings Portfolio</option>
+                    <option>Share Capital</option>
+                  </select>
+                </div>
+                <div class="col-12 col-sm-4">
+                  <label class="form-label small mb-1">Extraction Range</label>
+                  <select class="form-select form-select-sm">
+                    <option>Last 3 Months</option>
+                    <option>Full Year 2024</option>
+                    <option>Custom Date Range</option>
+                  </select>
+                </div>
+                <div class="col-12 col-sm-4">
+                  <button type="button" class="btn btn-sm btn-accent w-100" onclick="showToast('success','Statement generation initialized!')"><i class="bi bi-gear-fill me-1"></i>Compile Data</button>
+                </div>
+              </form>
+              <div class="table-responsive">
+                <table class="table align-middle mb-0 small">
+                  <thead>
+                    <tr>
+                      <th>Statement Archival Period</th>
+                      <th>Extracted Structure</th>
+                      <th class="text-center">Download Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>October 2024 Complete Summary</td>
+                      <td>PDF Optimized</td>
+                      <td class="text-center"><button class="btn btn-sm btn-outline-accent" onclick="showToast('info','Downloading statement PDF.')"><i class="bi bi-download me-1"></i>Save</button></td>
+                    </tr>
+                    <tr>
+                      <td>Q3 2024 Consolidated Return</td>
+                      <td>Spreadsheet CSV</td>
+                      <td class="text-center"><button class="btn btn-sm btn-outline-accent" onclick="showToast('info','Downloading statement CSV.')"><i class="bi bi-download me-1"></i>Save</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="card dashboard-card h-100">
+            <div class="card-header">
+              <h6 class="card-title mb-0"><i class="bi bi-award-fill text-accent me-2"></i>Dividends & Shares Yield History</h6>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Financial Fiscal Year</th>
+                      <th>Yield Categorization</th>
+                      <th class="text-end">Disbursed Yield</th>
+                      <th class="text-center">Status Trace</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>2024 Anticipated Cycle</td>
+                      <td>Annual Statutory Yield</td>
+                      <td class="text-end fw-semibold text-success">KES 7,500</td>
+                      <td class="text-center"><span class="badge bg-warning text-dark">Pending Audit</span></td>
+                    </tr>
+                    <tr>
+                      <td>2023 Audited Closure</td>
+                      <td>Annual Statutory Yield</td>
+                      <td class="text-end fw-semibold text-success">KES 4,800</td>
+                      <td class="text-center"><span class="badge bg-success">Fully Credited</span></td>
+                    </tr>
+                    <tr>
+                      <td>2023 Audited Closure</td>
+                      <td>Interest on Liquid Deposits</td>
+                      <td class="text-end fw-semibold text-success">KES 8,500</td>
+                      <td class="text-center"><span class="badge bg-success">Fully Credited</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="p-3 bg-body border-top">
+                <small class="text-muted d-block text-center">Current Base Dividend Policy Interest Yield Rate stands at <strong>15% p.a.</strong></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODULE 7: PROFILE & SUPPORT ===================== -->
+      <div id="overview-account" class="row g-3 scroll-mt">
+        <div class="col-12 col-lg-6">
+          <div class="card dashboard-card h-100 text-center">
+            <div class="card-header text-start">
+              <h6 class="card-title mb-0"><i class="bi bi-person-gear text-accent me-2"></i>Registered Profile Verification Snapshot</h6>
+            </div>
+            <div class="card-body py-4">
+              <div class="d-flex align-items-center justify-content-center gap-3 mb-3 flex-wrap">
+                <img src="https://ui-avatars.com/api/?name=John+Doe&background=FF6B00&color=fff&size=90&bold=true&font-size=0.4" alt="Profile Avatar" class="rounded-circle border border-3 border-accent-subtle" width="90" height="90" />
+                <div class="text-start">
+                  <h5 class="mb-1">John Doe</h5>
+                  <p class="text-muted mb-1 small">john.doe@enterprise-email.com</p>
+                  <span class="badge bg-success">KYC Documents Completely Verified</span>
+                </div>
+              </div>
+              <hr>
+              <div class="row g-2 text-start small">
+                <div class="col-12 col-sm-6"><i class="bi bi-telephone text-accent me-2"></i><strong>Mobile:</strong> +254 712 345 678</div>
+                <div class="col-12 col-sm-6"><i class="bi bi-card-text text-accent me-2"></i><strong>National ID:</strong> 12345678</div>
+                <div class="col-12 col-sm-6"><i class="bi bi-geo-alt text-accent me-2"></i><strong>Residence:</strong> Nairobi Zone</div>
+                <div class="col-12 col-sm-6"><i class="bi bi-people text-accent me-2"></i><strong>Next of Kin:</strong> Jane Doe (Spouse)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="card dashboard-card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <h6 class="card-title mb-0"><i class="bi bi-ticket-detailed text-accent me-2"></i>Support Helpdesk Resolution Trace</h6>
+              <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalNewTicket">
+                <i class="bi bi-plus-circle me-1"></i>New Ticket
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0 small">
+                  <thead>
+                    <tr>
+                      <th>Ticket Anchor Code</th>
+                      <th>Resolution Brief Subject</th>
+                      <th class="text-center">Priority Trace</th>
+                      <th class="text-center">Status Flag</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>#TK-2024-089</strong></td>
+                      <td>M-Pesa payment not reflecting on portal log</td>
+                      <td class="text-center"><span class="badge bg-danger">Urgent Call</span></td>
+                      <td class="text-center"><span class="badge bg-warning text-dark">Processing</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#TK-2024-085</strong></td>
+                      <td>Loan portfolio archival extraction validation</td>
+                      <td class="text-center"><span class="badge bg-info">Low Baseline</span></td>
+                      <td class="text-center"><span class="badge bg-success">Closed Done</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="p-3 bg-body border-top d-flex justify-content-around flex-wrap gap-2 text-center small">
+                <span><i class="bi bi-telephone-fill text-accent me-1"></i> Call: <strong>+254 700 000 000</strong></span>
+                <span><i class="bi bi-envelope-fill text-accent me-1"></i> Mail: <strong>support@saccopay.co.ke</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== FOOTER ========== -->
+      <footer class="content-footer mt-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center">
+          <p class="mb-1 mb-md-0 small text-muted">&copy; 2024 SaccoPay Enterprise Unified Architecture. All rights reserved.</p>
+          <div class="d-flex gap-3 small justify-content-center">
+            <a href="#" class="text-muted text-decoration-none" onclick="showToast('info','Privacy specifications accessible on primary web portal.')">Privacy Regulations</a>
+            <a href="#" class="text-muted text-decoration-none" onclick="showToast('info','Service terms active.')">Terms of Use</a>
+            <a href="#overview-account" class="text-muted text-decoration-none">Helpdesk Portal</a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+
+
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS
+==================================================================== -->
+
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="toast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<!-- MODAL: Make Contribution -->
+  <div class="modal fade" id="modalContribute" tabindex="-1" aria-labelledby="modalContributeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalContributeLabel"><i class="bi bi-plus-circle-fill text-accent me-2"></i>Contribute Funds Operation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formContribute">
+            <div class="mb-3">
+              <label class="form-label">Routing Processing Category</label>
+              <select class="form-select" required>
+                <option value="">Select configuration...</option>
+                <option>Monthly Mandatory Savings Reserve</option>
+                <option>Voluntary Liquidity Boost</option>
+                <option>Share Capital Investment</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Transfer Principal Sum (KES)</label>
+              <input type="number" class="form-control" placeholder="Specify monetary integer value" min="100" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Remittance Bridge Mechanism</label>
+              <select class="form-select" required>
+                <option value="">Select clearing pipeline...</option>
+                <option>M-Pesa STK Direct Integration</option>
+                <option>Corporate RTGS/EFT Bank Connection</option>
+                <option>Card Point Remittance</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">MSISDN Mobile Anchor (for M-Pesa push)</label>
+              <input type="tel" class="form-control" placeholder="Standard protocol format e.g. 0712345678" />
+            </div>
+            <div class="alert alert-info-custom small">
+              <i class="bi bi-info-circle-fill me-1"></i>M-Pesa validation triggers real-time network handshake. Keep mobile terminal active.
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Dismiss Request</button>
+          <button type="button" class="btn btn-accent" onclick="handleContribute()">
+            <i class="bi bi-send-fill me-2"></i>Execute Handshake
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Apply Loan -->
+  <div class="modal fade" id="modalLoanApply" tabindex="-1" aria-labelledby="modalLoanApplyLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLoanApplyLabel"><i class="bi bi-bank text-accent me-2"></i>Loan Advance Credit Allocation Form</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formLoanApply">
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label">Product Allocation Profile</label>
+                <select class="form-select" required>
+                  <option value="">Select structured product variant...</option>
+                  <option>Normal Amortization Standard Credit</option>
+                  <option>Emergency Flash Processing Facility</option>
+                  <option>Academic Tuition Bridge Reserve</option>
+                  <option>Asset Liquidity Backed Leverage</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Requested Advance Allocation (KES)</label>
+                <input type="number" class="form-control" placeholder="Specify nominal requirement" min="1000" required />
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Amortization Maturity Window</label>
+                <select class="form-select" required>
+                  <option value="">Select calendar window...</option>
+                  <option>6 Monthly Intervals</option>
+                  <option>12 Monthly Intervals</option>
+                  <option>24 Monthly Intervals</option>
+                  <option>36 Monthly Intervals</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Primary Capital Destination Category</label>
+                <select class="form-select" required>
+                  <option value="">Select capital application intent...</option>
+                  <option>Enterprise Expansion</option>
+                  <option>Academic Overhead</option>
+                  <option>Clinical Remittance</option>
+                  <option>Residential Property Optimization</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Guarantor Registration Identity 1</label>
+                <input type="text" class="form-control" placeholder="Specify member allocation ID e.g. SP-2024-0123" />
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label">Guarantor Registration Identity 2</label>
+                <input type="text" class="form-control" placeholder="Specify member allocation ID e.g. SP-2024-0456" />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Audit Context Verification Directives</label>
+                <textarea class="form-control" rows="2" placeholder="Detail any critical risk management contexts..."></textarea>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="loanTerms" required>
+                  <label class="form-check-label small" for="loanTerms">I bindingly attest to structural compliance with <a href="#" class="text-accent" onclick="showToast('info','Compliance policy displayed.')">credit disbursement guidelines</a></label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Abort Compilation</button>
+          <button type="button" class="btn btn-accent" onclick="handleLoanApply()">
+            <i class="bi bi-send-fill me-2"></i>Submit Application Package
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Withdraw -->
+  <div class="modal fade" id="modalWithdraw" tabindex="-1" aria-labelledby="modalWithdrawLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalWithdrawLabel"><i class="bi bi-cash-stack text-accent me-2"></i>Fund Extraction Clearance Operations</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formWithdraw">
+            <div class="mb-3">
+              <label class="form-label">Extraction Source Repository</label>
+              <select class="form-select" required>
+                <option value="">Select target fund baseline...</option>
+                <option>Liquid Savings Account (KES 245,000 baseline)</option>
+                <option>Retained Statutory Dividend Yield (KES 12,300)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Extraction Integer Sum (KES)</label>
+              <input type="number" class="form-control" placeholder="Specify monetary output value" min="100" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Destination Financial Pipeline</label>
+              <select class="form-select" required>
+                <option value="">Select target termination framework...</option>
+                <option>M-Pesa Wallet Clearing (0712***456 link)</option>
+                <option>Commercial RTGS Line (KCB ***789 link)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Audit Remittance Rationale</label>
+              <textarea class="form-control" rows="2" placeholder="Document specific allocation logic..."></textarea>
+            </div>
+            <div class="alert alert-warning small">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>Clearances face internal compliance audits. Processing timeline scales up to 48 operational hours.
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Cancel Directive</button>
+          <button type="button" class="btn btn-accent" onclick="handleWithdraw()">
+            <i class="bi bi-send-fill me-2"></i>Confirm Extraction Request
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Transfer -->
+  <div class="modal fade" id="modalTransfer" tabindex="-1" aria-labelledby="modalTransferLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTransferLabel"><i class="bi bi-arrow-left-right text-accent me-2"></i>Internal Cross-Portfolio Reallocation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formTransfer">
+            <div class="mb-3">
+              <label class="form-label">Debit Depletion Account</label>
+              <select class="form-select" required>
+                <option value="">Select depletion base...</option>
+                <option>Liquid Savings Account</option>
+                <option>Statutory Liquidated Dividend Pool</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Credit Infusion Target Destination</label>
+              <select class="form-select" required>
+                <option value="">Select injection base...</option>
+                <option>Share Capital Reserve Boost</option>
+                <option>Active Amortization Debt Offset</option>
+                <option>Internal Peer Account Route (Specify member code)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Monetary Integer Output (KES)</label>
+              <input type="number" class="form-control" placeholder="Specify numerical requirement" min="100" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Trace Allocation Narration</label>
+              <input type="text" class="form-control" placeholder="Provide transaction identifier context string..." />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Dismiss Directive</button>
+          <button type="button" class="btn btn-accent" onclick="handleTransfer()">
+            <i class="bi bi-send-fill me-2"></i>Execute Reallocation Link
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Repay Loan -->
+  <div class="modal fade" id="modalRepayLoan" tabindex="-1" aria-labelledby="modalRepayLoanLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalRepayLoanLabel"><i class="bi bi-credit-card-fill text-accent me-2"></i>Loan Portfolio Amortization Clearance</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formRepayLoan">
+            <div class="mb-3">
+              <label class="form-label">Target Credit Amortization Identity</label>
+              <select class="form-select" required>
+                <option value="">Select target credit pipeline...</option>
+                <option>Normal Amortization Account (LN-2024-0089) — Target Deficit: KES 40,000</option>
+                <option>Flash Processing Account (LN-2024-0112) — Target Deficit: KES 5,000</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Clearing Remittance Value (KES)</label>
+              <input type="number" class="form-control" placeholder="Input numerical settlement offset" min="100" required />
+              <div class="form-text">Active minimum baseline monthly amortization quota currently set at KES 8,500</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Remittance Processing Bridge</label>
+              <select class="form-select" required>
+                <option value="">Select liquidation clearing option...</option>
+                <option>M-Pesa STK Handshake</option>
+                <option>Corporate EFT Line Clearing</option>
+                <option>Direct Debit from Liquidity Deposit Pool</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Cancel Clearance</button>
+          <button type="button" class="btn btn-accent" onclick="handleRepayLoan()">
+            <i class="bi bi-send-fill me-2"></i>Authorize Amortization Credit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: New Support Ticket -->
+  <div class="modal fade" id="modalNewTicket" tabindex="-1" aria-labelledby="modalNewTicketLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalNewTicketLabel"><i class="bi bi-ticket-detailed-fill text-accent me-2"></i>Helpdesk Resolution Anchor Generation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formNewTicket">
+            <div class="mb-3">
+              <label class="form-label">Resolution Reference Rationale Subject</label>
+              <input type="text" class="form-control" placeholder="Define critical malfunction context brief" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Context Operational Taxonomy</label>
+              <select class="form-select" required>
+                <option value="">Select functional taxonomy branch...</option>
+                <option>Remittance Verification Processing</option>
+                <option>Amortization Auditing Rules</option>
+                <option>Profile Access Rights Authentication</option>
+                <option>Platform Technical Diagnostics</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Critical Operational Prioritization</label>
+              <select class="form-select" required>
+                <option>Low Baseline Trace</option>
+                <option selected>Standard Medium Queue</option>
+                <option>Urgent Processing Alert</option>
+                <option>Critical Architecture Disruption</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Comprehensive Diagnostics Profile</label>
+              <textarea class="form-control" rows="4" placeholder="Detail the precise functional metrics triggering error logs..." required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Abort Initialization</button>
+          <button type="button" class="btn btn-accent" onclick="handleNewTicket()">
+            <i class="bi bi-send-fill me-2"></i>Deploy Resolution Anchor
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Announcement Detail -->
+  <div class="modal fade" id="modalAnnouncement" tabindex="-1" aria-labelledby="modalAnnouncementLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAnnouncementLabel"><i class="bi bi-megaphone-fill text-accent me-2"></i>Regulatory Executive Announcement Notification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>Annual General Meeting Archival Program 2024</h5>
+          <p class="text-muted small mb-3"><i class="bi bi-calendar3 me-1"></i>Broadcast Processing Timestamp: November 28, 2024</p>
+          <p>Esteemed Member Base,</p>
+          <p>By executive corporate resolution, formal notice is provided regarding the Annual General Meeting convocation scheduled precisely for <strong>December 15, 2024 at exactly 10:00 AM operational hours</strong> within the Nairobi Central Convention Center.</p>
+          <p><strong>Approved Parliamentary Agenda Structure:</strong></p>
+          <ul>
+            <li>Exhaustive Audited Fiscal Review of 2024 Corporate Balance Performance</li>
+            <li>Formalized Authorization of Liquidity Dividends & Reallocation Metrics</li>
+            <li>Constitutional Renewal Balloting for Governing Trustee Council Seats</li>
+            <li>System Release Architecture Proposals for 2025 Calendar Quarters</li>
+          </ul>
+          <p>Mandatory digital credential certification tracking enforces attendance logging deadlines closing precisely on December 10, 2024.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-check-lg me-1"></i>Acknowledge Notice</button>
+          <button type="button" class="btn btn-accent" onclick="showToast('success','Digital credential attendance logs confirmed!')">
+            <i class="bi bi-check-circle me-2"></i>Certify Digital Registration
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Logout Confirmation -->
+  <div class="modal fade" id="modalLogout" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLogoutLabel"><i class="bi bi-box-arrow-left text-danger me-2"></i>Termination Authentication Handshake</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <i class="bi bi-question-circle display-4 text-warning mb-3"></i>
+          <p>Confirm execution of access log token invalidation to safely close portal session?</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i>Retain Access</button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='../index.html'">
+            <i class="bi bi-box-arrow-left me-2"></i>Confirm Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ===== SIDEBAR TOGGLE =====
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    sidebarToggleBtn?.addEventListener('click', openSidebar);
+    sidebarCloseBtn?.addEventListener('click', closeSidebar);
+    sidebarOverlay?.addEventListener('click', closeSidebar);
+
+    // Close sidebar on navigation click (mobile optimization)
+    document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        document.querySelectorAll('.sidebar-nav .nav-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        closeSidebar();
+      });
+    });
+
+    // ===== TOAST NOTIFICATION ENGINE =====
+    function showToast(type, message) {
+      let toastEl, msgEl;
+      switch(type) {
+        case 'success':
+          toastEl = document.getElementById('toastSuccess');
+          msgEl = document.getElementById('toastSuccessMsg');
+          toastEl.className = 'toast align-items-center text-bg-success border-0';
+          break;
+        case 'error':
+          toastEl = document.getElementById('toastError');
+          msgEl = document.getElementById('toastErrorMsg');
+          break;
+        case 'info':
+          toastEl = document.getElementById('toastInfo');
+          msgEl = document.getElementById('toastInfoMsg');
+          break;
+        default:
+          toastEl = document.getElementById('toastInfo');
+          msgEl = document.getElementById('toastInfoMsg');
+      }
+      if (msgEl) msgEl.textContent = message;
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    }
+
+    // ===== MODAL SUBMISSION ROUTING HANDLERS =====
+    function handleContribute() {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalContribute'));
+      modal.hide();
+      showToast('success', 'Contribution instructions routed! Real-time network handshake STK push transmitted.');
+    }
+
+    function handleLoanApply() {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalLoanApply'));
+      modal.hide();
+      showToast('success', 'Amortization package validation successfully logged. System response pipeline activates within 24 operational hours.');
+    }
+
+    function handleWithdraw() {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalWithdraw'));
+      modal.hide();
+      showToast('success', 'Extraction request received! Standard processing clearance initiated.');
+    }
+
+    function handleTransfer() {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalTransfer'));
+      modal.hide();
+      showToast('success', 'Internal reallocation processing complete!');
+    }
+
+    function handleRepayLoan() {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalRepayLoan'));
+      modal.hide();
+      showToast('success', 'Amortization credit allocation processing registered!');
+    }
+
+    function handleNewTicket() {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalNewTicket'));
+      modal.hide();
+      showToast('success', 'Support helpdesk ticket anchor deployed successfully! Unique reference assigned: #TK-2024-090.');
+    }
+
+    // ===== TERMINATION TRIGGER LISTENERS =====
+    document.getElementById('logoutBtn')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      new bootstrap.Modal(document.getElementById('modalLogout')).show();
+    });
+    document.getElementById('logoutBtn2')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      new bootstrap.Modal(document.getElementById('modalLogout')).show();
+    });
+
+    // ===== SYSTEM INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize interactive tooltips
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+
+      // Trigger automatic welcome toast sequence
+      setTimeout(() => {
+        const welcomeToast = new bootstrap.Toast(document.getElementById('toastWelcome'));
+        welcomeToast.show();
+      }, 800);
+    });
+  </script>
+
+</body>
+</html>
