@@ -1,885 +1,1604 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SaccoPay - Member Settings</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root{--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--cardh:#222;--input:#252525;--accent:#f97316;--acch:#ea580c;--text:#f5f5f5;--text2:#a3a3a3;--muted:#737373;--border:#2a2a2a;--ok:#22c55e;--bad:#ef4444;--warn:#eab308;--info:#3b82f6;--r:16px;--rs:10px}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;position:sticky;top:0;z-index:100}
-.hc{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:12px}
-.lg-icon{width:40px;height:40px;background:var(--accent);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:20px}
-.lg-icon i{color:#fff}
-.lg-text h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
-.lg-text span{font-size:12px;color:var(--muted)}
-.h-actions{display:flex;align-items:center;gap:12px}
-.ibtn{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;position:relative}
-.ibtn:hover{border-color:var(--accent);background:var(--cardh)}
-.badge{position:absolute;top:-2px;right:-2px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;border:2px solid var(--bg2)}
-.btn{background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:var(--rs);font-weight:600;cursor:pointer;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:8px}
-.btn:hover{background:var(--acch);transform:translateY(-1px)}
-.btn2{background:var(--card);color:var(--text);border:1px solid var(--border);padding:10px 18px;border-radius:var(--rs);font-weight:600;cursor:pointer;font-size:13px;transition:.2s}
-.btn2:hover{border-color:var(--accent);background:var(--cardh)}
-.btn-sm{padding:6px 14px;font-size:12px}
-.btn-ok{background:var(--ok);color:#fff;border:none}
-.btn-bad{background:var(--bad);color:#fff;border:none}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
-.wrap{max-width:900px;margin:0 auto;padding:24px}
-.profile-header{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:32px;display:flex;align-items:center;gap:24px;margin-bottom:24px;position:relative;overflow:hidden}
-.profile-header::before{content:'';position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(135deg,var(--accent),#c2410c)}
-.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;border:4px solid var(--card);position:relative;z-index:1;cursor:pointer;transition:.2s}
-.profile-avatar:hover{transform:scale(1.05)}
-.profile-info{position:relative;z-index:1;flex:1;padding-top:24px}
-.profile-info h2{font-size:22px;font-weight:700;margin-bottom:4px}
-.profile-info p{font-size:14px;color:var(--text2)}
-.profile-meta{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}
-.profile-meta span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
-.profile-actions{display:flex;gap:10px;position:relative;z-index:1;padding-top:24px}
-.tabs{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:6px;margin-bottom:24px;display:flex;gap:4px;overflow-x:auto}
-.tab{flex:1;min-width:100px;padding:10px 14px;border:none;background:transparent;color:var(--text2);font-weight:600;font-size:13px;border-radius:var(--rs);cursor:pointer;transition:.2s;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px}
-.tab:hover{color:var(--text);background:var(--cardh)}
-.tab.on{background:var(--accent);color:#fff}
-.section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
-.section-title{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.section-title i{color:var(--accent);font-size:18px}
-.section-desc{font-size:13px;color:var(--muted);margin-bottom:20px;margin-top:-12px}
-.setting-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border-bottom:none}
-.setting-info h4{font-size:14px;font-weight:600;margin-bottom:4px}
-.setting-info p{font-size:13px;color:var(--muted)}
-.tog{width:48px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
-.tog.on{background:var(--accent)}
-.tog::after{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.2s}
-.tog.on::after{left:24px}
-.form-group{margin-bottom:16px}
-.label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text2)}
-.inp{width:100%;padding:12px;background:var(--input);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:14px;outline:none;font-family:inherit}
-.inp:focus{border-color:var(--accent)}
-.inp::placeholder{color:var(--muted)}
-.select{width:100%;padding:12px;background:var(--input);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:14px;outline:none}
-.select:focus{border-color:var(--accent)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.device-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
-.device-item:last-child{border-bottom:none}
-.device-icon{width:40px;height:40px;border-radius:var(--rs);background:rgba(59,130,246,.15);color:var(--info);display:flex;align-items:center;justify-content:center;font-size:16px}
-.device-info{flex:1}
-.device-info h4{font-size:14px;font-weight:600}
-.device-info p{font-size:12px;color:var(--muted)}
-.device-status{font-size:12px;color:var(--ok);font-weight:600;display:flex;align-items:center;gap:4px}
-.kyc-status{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600}
-.kyc-verified{background:rgba(34,197,94,.15);color:var(--ok)}
-.kyc-pending{background:rgba(234,179,8,.15);color:var(--warn)}
-.kyc-rejected{background:rgba(239,68,68,.15);color:var(--bad)}
-.payment-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer;transition:.2s}
-.payment-card:hover{border-color:var(--accent)}
-.payment-card i{font-size:24px;color:var(--accent)}
-.payment-info{flex:1}
-.payment-info h4{font-size:14px;font-weight:600}
-.payment-info p{font-size:12px;color:var(--muted)}
-.payment-default{font-size:11px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-weight:600}
-.nominee-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:12px}
-.nominee-card h4{font-size:14px;font-weight:600;margin-bottom:4px}
-.nominee-card p{font-size:13px;color:var(--muted);margin-bottom:10px}
-.danger-zone{border:1px solid rgba(239,68,68,.3);border-radius:var(--r);padding:24px;margin-top:24px;background:rgba(239,68,68,.05)}
-.danger-zone h3{color:var(--bad);font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.danger-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(239,68,68,.15)}
-.danger-row:last-child{border-bottom:none}
-.danger-row h4{font-size:14px;font-weight:600;color:var(--text)}
-.danger-row p{font-size:13px;color:var(--muted)}
-.modal-o{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
-.modal-o.on{display:flex;opacity:1}
-.mod{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .3s;box-shadow:0 4px 20px rgba(0,0,0,.5)}
-.modal-o.on .mod{transform:scale(1)}
-.mh{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:start}
-.mh h2{font-size:20px;font-weight:700}
-.mc{padding:20px 24px}
-.mf{padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
-.x{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
-.x:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
-.toasts{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:10px}
-.toast{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);transform:translateX(120%);transition:transform .3s;min-width:300px}
-.toast.show{transform:translateX(0)}
-.toast i{font-size:18px}
-.toast.ok{border-color:var(--ok)}.toast.ok i{color:var(--ok)}
-.toast.err{border-color:var(--bad)}.toast.err i{color:var(--bad)}
-.toast.inf{border-color:var(--info)}.toast.inf i{color:var(--info)}
-.footer{background:var(--bg2);border-top:1px solid var(--border);padding:24px;margin-top:40px;text-align:center;color:var(--muted);font-size:13px}
-.footer-links{display:flex;justify-content:center;gap:20px;margin-bottom:12px;flex-wrap:wrap}
-.footer-links a{color:var(--text2);text-decoration:none;transition:.2s}
-.footer-links a:hover{color:var(--accent)}
-.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:24px}
-.qc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px}
-.qc:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--cardh)}
-.qi{width:44px;height:44px;border-radius:var(--rs);background:rgba(249,115,22,.1);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px}
-.qc h4{font-size:14px;font-weight:600}
-.qc p{font-size:12px;color:var(--muted)}
-.div{height:1px;background:var(--border);margin:20px 0}
-.activity-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-.activity-item:last-child{border-bottom:none}
-.activity-icon{width:32px;height:32px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
-.activity-text{flex:1;font-size:13px;color:var(--text2)}
-.activity-time{font-size:12px;color:var(--muted);white-space:nowrap}
-.standing-order{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px}
-.so-info{flex:1}
-.so-info h4{font-size:14px;font-weight:600}
-.so-info p{font-size:12px;color:var(--muted)}
-.so-amount{font-size:16px;font-weight:700;color:var(--accent)}
-.trusted-contact{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-.trusted-contact:last-child{border-bottom:none}
-.tc-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
-.tc-info{flex:1}
-.tc-info h4{font-size:13px;font-weight:600}
-.tc-info p{font-size:12px;color:var(--muted)}
-.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
-.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
-@media(max-width:640px){.wrap{padding:16px}.profile-header{flex-direction:column;text-align:center;padding:24px}.profile-actions{justify-content:center;width:100%}.row2{grid-template-columns:1fr}.mh h2{font-size:16px}}
-@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.an{animation:in .3s ease forwards}
-</style>
-<base target="_blank">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaccoPay – Account Settings</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+  <style>
+    /* ===========================
+       GLOBAL / RESET
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #f5f6fa;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #212529;
+    }
+
+    /* ===========================
+       LAYOUT SHELL
+    =========================== */
+    .app-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ===========================
+       TOP NAVBAR
+    =========================== */
+    .top-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1040;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      height: 60px;
+      flex-shrink: 0;
+    }
+    .top-navbar .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #1a56db;
+      text-decoration: none;
+    }
+    .top-navbar .brand .brand-icon {
+      background: #1a56db;
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .top-navbar .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .top-navbar .nav-right .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #1a56db;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .top-navbar .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #6b7280;
+      cursor: pointer;
+      position: relative;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .top-navbar .icon-btn:hover { background: #f3f4f6; }
+    .top-navbar .badge-dot {
+      position: absolute;
+      top: 5px; right: 5px;
+      width: 8px; height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      border: 1.5px solid #fff;
+    }
+
+    /* ===========================
+       SIDEBAR TOGGLE BUTTON (dot-line)
+    =========================== */
+    .sidebar-toggle-btn {
+      background: none;
+      border: none;
+      padding: 6px 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .sidebar-toggle-btn:hover { background: #f3f4f6; }
+    .sidebar-toggle-btn span {
+      display: block;
+      width: 20px;
+      height: 0;
+      border-top: 2px dotted #374151;
+      border-radius: 2px;
+    }
+
+    /* ===========================
+       BODY WRAPPER (sidebar + main)
+    =========================== */
+    .body-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    /* ===========================
+       SIDEBAR
+    =========================== */
+    .sidebar {
+      width: 240px;
+      min-width: 240px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      transition: width 0.28s ease, min-width 0.28s ease, transform 0.28s ease;
+      flex-shrink: 0;
+      height: calc(100vh - 60px);
+      position: sticky;
+      top: 60px;
+    }
+    .sidebar.collapsed {
+      width: 0;
+      min-width: 0;
+    }
+
+    /* Mobile: sidebar overlays */
+    @media (max-width: 767.98px) {
+      .sidebar {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        height: calc(100vh - 60px);
+        z-index: 1030;
+        transform: translateX(-100%);
+        width: 240px;
+        min-width: 240px;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+      }
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      /* overlay backdrop */
+      .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 60px 0 0 0;
+        background: rgba(0,0,0,0.35);
+        z-index: 1020;
+      }
+      .sidebar-backdrop.active { display: block; }
+    }
+
+    .sidebar-inner {
+      padding: 1rem 0;
+      flex: 1;
+    }
+
+    /* Member card */
+    .member-card {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .member-card .m-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1a56db, #4f83f1);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .member-card .m-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #111827;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .member-card .m-id {
+      font-size: 0.75rem;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    .member-card .m-badge {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      background: #d1fae5;
+      color: #065f46;
+      border-radius: 20px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Nav sections */
+    .nav-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      padding: 0.75rem 1.25rem 0.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .nav-item-link {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.52rem 1.25rem;
+      color: #4b5563;
+      text-decoration: none;
+      font-size: 0.87rem;
+      font-weight: 500;
+      border-radius: 0;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .nav-item-link i { font-size: 1rem; flex-shrink: 0; }
+    .nav-item-link:hover { background: #f0f4ff; color: #1a56db; }
+    .nav-item-link.active {
+      background: #eff6ff;
+      color: #1a56db;
+      font-weight: 600;
+      border-left: 3px solid #1a56db;
+    }
+    .nav-item-link .badge-count {
+      margin-left: auto;
+      background: #1a56db;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .nav-item-link .badge-alert {
+      margin-left: auto;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* Sidebar bottom */
+    .sidebar-bottom {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #f1f5f9;
+    }
+    .sidebar-bottom .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #ef4444;
+      font-size: 0.87rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 0.5rem;
+      border-radius: 6px;
+      width: 100%;
+      transition: background .15s;
+    }
+    .sidebar-bottom .logout-btn:hover { background: #fef2f2; }
+
+    /* ===========================
+       MAIN CONTENT
+    =========================== */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-width: 0;
+      padding: 1.5rem;
+      transition: none;
+    }
+
+    /* ===========================
+       PAGE HEADER
+    =========================== */
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+    .page-header h4 {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #111827;
+      margin: 0;
+    }
+    .page-header p {
+      color: #6b7280;
+      font-size: 0.88rem;
+      margin: 0.2rem 0 0;
+    }
+
+    /* ===========================
+       SETTINGS TABS NAV
+    =========================== */
+    .settings-tabs {
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .settings-tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      margin-bottom: -2px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .settings-tab-btn.active {
+      color: #1a56db;
+      border-bottom-color: #1a56db;
+    }
+    .settings-tab-btn:hover:not(.active) { color: #374151; }
+
+    /* ===========================
+       CARD SECTIONS
+    =========================== */
+    .section-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+    .section-card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-card-header .icon-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1a56db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .section-card-header h6 {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #111827;
+      margin: 0;
+    }
+    .section-card-header p {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    .section-card-body {
+      padding: 1.25rem;
+    }
+
+    /* ===========================
+       FORM INPUTS
+    =========================== */
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.3rem;
+    }
+    .form-control, .form-select {
+      font-size: 0.87rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      color: #111827;
+      background: #f9fafb;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #1a56db;
+      box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+      background: #fff;
+      outline: none;
+    }
+    .form-control[readonly] {
+      background: #f3f4f6;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+    .lock-hint {
+      font-size: 0.73rem;
+      color: #9ca3af;
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* ===========================
+       KYC ITEMS
+    =========================== */
+    .kyc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 0.75rem;
+    }
+    .kyc-item:last-child { border-bottom: none; }
+    .kyc-item-info { flex: 1; min-width: 0; }
+    .kyc-item-info h6 {
+      font-size: 0.87rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 0.1rem;
+    }
+    .kyc-item-info p {
+      font-size: 0.77rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    .kyc-badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .kyc-badge.verified   { background: #d1fae5; color: #065f46; }
+    .kyc-badge.pending    { background: #fef3c7; color: #92400e; }
+    .kyc-badge.approved   { background: #dbeafe; color: #1e40af; }
+
+    .kyc-badge-action {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .btn-upload {
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: #1a56db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-upload:hover { background: #1447c0; }
+
+    /* ===========================
+       SAVE BUTTON ROW
+    =========================== */
+    .save-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn-cancel {
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #374151;
+      font-size: 0.87rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-cancel:hover { background: #f9fafb; }
+    .btn-save {
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      background: #1a56db;
+      color: #fff;
+      font-size: 0.87rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background .15s;
+    }
+    .btn-save:hover { background: #1447c0; }
+
+    /* ===========================
+       TAB PANE DISPLAY
+    =========================== */
+    .tab-pane-content { display: none; }
+    .tab-pane-content.active { display: block; }
+
+    /* ===========================
+       NOTIFICATION TAB
+    =========================== */
+    .notif-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 1rem;
+    }
+    .notif-row:last-child { border-bottom: none; }
+    .notif-row-info h6 {
+      font-size: 0.87rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 0.1rem;
+    }
+    .notif-row-info p {
+      font-size: 0.77rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    .form-switch .form-check-input {
+      width: 2.4em;
+      height: 1.3em;
+      cursor: pointer;
+    }
+    .form-check-input:checked { background-color: #1a56db; border-color: #1a56db; }
+
+    /* ===========================
+       SECURITY TAB
+    =========================== */
+    .security-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .security-action-row:last-child { border-bottom: none; }
+    .security-action-row .info h6 {
+      font-size: 0.87rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 0.1rem;
+    }
+    .security-action-row .info p {
+      font-size: 0.77rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    .btn-outline-primary-sm {
+      font-size: 0.78rem;
+      padding: 4px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: #fff;
+      color: #1a56db;
+      border: 1px solid #1a56db;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn-outline-primary-sm:hover { background: #eff6ff; }
+    .btn-outline-danger-sm {
+      font-size: 0.78rem;
+      padding: 4px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: #fff;
+      color: #ef4444;
+      border: 1px solid #ef4444;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn-outline-danger-sm:hover { background: #fef2f2; }
+
+    /* ===========================
+       SUPPORT TAB
+    =========================== */
+    .support-ticket-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 0.5rem;
+    }
+    .support-ticket-row:last-child { border-bottom: none; }
+    .ticket-id { font-size: 0.8rem; font-weight: 700; color: #1a56db; }
+    .ticket-subject { font-size: 0.85rem; color: #111827; font-weight: 500; }
+    .ticket-priority-urgent { font-size: 0.72rem; background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .ticket-priority-low { font-size: 0.72rem; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .ticket-status-processing { font-size: 0.72rem; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .ticket-status-closed { font-size: 0.72rem; background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+
+    /* ===========================
+       TOAST / ALERT
+    =========================== */
+    .toast-container-custom {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+    }
+    .toast-msg {
+      background: #fff;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 0.75rem 1.1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.87rem;
+      font-weight: 500;
+      color: #111827;
+      animation: slideUp .3s ease;
+      min-width: 240px;
+    }
+    .toast-msg .toast-icon { font-size: 1.1rem; color: #22c55e; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===========================
+       RESPONSIVE TWEAKS
+    =========================== */
+    @media (max-width: 575.98px) {
+      .main-content { padding: 1rem 0.75rem; }
+      .section-card-body { padding: 1rem; }
+      .settings-tab-btn { font-size: 0.78rem; padding: 0.5rem 0.6rem; }
+      .save-row { justify-content: stretch; }
+      .btn-save, .btn-cancel { flex: 1; justify-content: center; }
+    }
+    @media (min-width: 768px) {
+      /* On md+, sidebar is always in-flow (not overlay) */
+      .sidebar-backdrop { display: none !important; }
+    }
+  </style>
 </head>
 <body>
-<header class="header"><div class="hc">
-<div class="logo"><div class="lg-icon"><i class="fas fa-wallet"></i></div><div class="lg-text"><h1>SaccoPay</h1><span>Member Portal</span></div></div>
-<div class="h-actions">
-<button class="ibtn" onclick="go('notifications')" title="Notifications"><i class="fas fa-bell"></i><span class="badge">6</span></button>
-<button class="ibtn" onclick="go('home')" title="Dashboard"><i class="fas fa-home"></i></button>
-</div>
-</div></header>
 
-<main class="wrap">
-<div class="profile-header an">
-<div class="profile-avatar" onclick="openChangePhoto()">JM</div>
-<div class="profile-info">
-<h2>John Mwangi Maina</h2>
-<p>Member ID: SAC-2023-004892 · Active since March 2023</p>
-<div class="profile-meta">
-<span><i class="fas fa-shield-alt"></i> KYC Verified</span>
-<span><i class="fas fa-star"></i> Gold Member</span>
-<span><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</span>
-<span><i class="fas fa-phone"></i> +254 712 345 678</span>
-</div>
-</div>
-<div class="profile-actions">
-<button class="btn btn-sm" onclick="openChangePhoto()"><i class="fas fa-camera"></i> Change Photo</button>
-<button class="btn2 btn-sm" onclick="openEditProfile()"><i class="fas fa-pen"></i> Edit Profile</button>
-</div>
-</div>
+<!-- =======================================
+     TOP NAVBAR
+======================================= -->
+<div class="app-shell">
+  <nav class="top-navbar">
+    <div class="d-flex align-items-center gap-3">
+      <!-- Dotted-line sidebar toggle -->
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle Sidebar" aria-label="Toggle Sidebar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <a href="#" class="brand">
+        <div class="brand-icon"><i class="bi bi-bank2"></i></div>
+        SaccoPay
+      </a>
+    </div>
+    <div class="nav-right">
+      <button class="icon-btn" title="Notifications">
+        <i class="bi bi-bell"></i>
+        <span class="badge-dot"></span>
+      </button>
+      <button class="icon-btn" title="Messages">
+        <i class="bi bi-chat-dots"></i>
+      </button>
+      <div class="avatar" title="John Doe">JD</div>
+    </div>
+  </nav>
 
-<div class="tabs">
-<button class="tab on" onclick="swTab('profile',this)"><i class="fas fa-user"></i> Profile</button>
-<button class="tab" onclick="swTab('security',this)"><i class="fas fa-lock"></i> Security</button>
-<button class="tab" onclick="swTab('payments',this)"><i class="fas fa-credit-card"></i> Payments</button>
-<button class="tab" onclick="swTab('sacco',this)"><i class="fas fa-university"></i> Sacco</button>
-<button class="tab" onclick="swTab('privacy',this)"><i class="fas fa-eye-slash"></i> Privacy</button>
-</div>
+  <!-- Body wrapper -->
+  <div class="body-wrapper">
 
-<div id="tab-profile" class="tab-content">
-<div class="section an">
-<div class="section-title"><i class="fas fa-id-card"></i> Personal Information</div>
-<p class="section-desc">Your basic information as registered with the Sacco. Some fields are locked for security.</p>
-<div class="row2">
-<div class="form-group"><label class="label">First Name</label><input type="text" class="inp" value="John"></div>
-<div class="form-group"><label class="label">Last Name</label><input type="text" class="inp" value="Mwangi Maina"></div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">Email Address</label><input type="email" class="inp" value="john.mwangi@email.com"></div>
-<div class="form-group"><label class="label">Phone Number</label><input type="tel" class="inp" value="+254 712 345 678"></div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">National ID <i class="fas fa-lock" style="font-size:10px;color:var(--muted)"></i></label><input type="text" class="inp" value="12345678" readonly style="color:var(--muted);cursor:not-allowed"></div>
-<div class="form-group"><label class="label">Date of Birth <i class="fas fa-lock" style="font-size:10px;color:var(--muted)"></i></label><input type="text" class="inp" value="15/08/1985" readonly style="color:var(--muted);cursor:not-allowed"></div>
-</div>
-<div class="form-group"><label class="label">Physical Address</label><input type="text" class="inp" value="Ngong Road, House 45, Nairobi"></div>
-<div class="row2">
-<div class="form-group"><label class="label">County</label>
-<select class="select"><option selected>Nairobi</option><option>Mombasa</option><option>Kisumu</option><option>Nakuru</option><option>Kiambu</option></select>
-</div>
-<div class="form-group"><label class="label">Postal Code</label><input type="text" class="inp" value="00100"></div>
-</div>
-<div style="display:flex;gap:10px;margin-top:8px">
-<button class="btn" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
-<button class="btn2" onclick="toast('Changes discarded','inf')">Cancel</button>
-</div>
-</div>
+    <!-- Sidebar backdrop (mobile overlay) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-file-alt"></i> KYC & Verification Status</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Identity Verification</h4><p>National ID verified with Huduma Center on 12 Mar 2023</p></div>
-<span class="kyc-status kyc-verified"><i class="fas fa-check-circle"></i> Verified</span>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Address Verification</h4><p>Utility bill uploaded and approved on 15 Mar 2023</p></div>
-<span class="kyc-status kyc-verified"><i class="fas fa-check-circle"></i> Verified</span>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Tax PIN (KRA)</h4><p>Required for dividend withholding tax compliance</p></div>
-<span class="kyc-status kyc-pending"><i class="fas fa-clock"></i> Pending Upload</span>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Passport Photo</h4><p>Recent passport-size photo for member card</p></div>
-<span class="kyc-status kyc-verified"><i class="fas fa-check-circle"></i> Approved</span>
-</div>
-<div class="div"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn btn-sm" onclick="openKyc()"><i class="fas fa-upload"></i> Upload KRA PIN</button>
-<button class="btn2 btn-sm" onclick="openKyc()"><i class="fas fa-id-card"></i> Update ID Copy</button>
-<button class="btn2 btn-sm" onclick="openKyc()"><i class="fas fa-file-image"></i> Change Photo</button>
-</div>
-</div>
+   <!-- =======================================
+         SIDEBAR
+    ======================================= -->
+    <aside class="sidebar" id="mainSidebar">
+      <div class="sidebar-inner">
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-briefcase"></i> Employment & Income</div>
-<p class="section-desc">Used to determine your loan eligibility and credit limit.</p>
-<div class="row2">
-<div class="form-group"><label class="label">Employer Name</label><input type="text" class="inp" value="Safaricom PLC"></div>
-<div class="form-group"><label class="label">Job Title</label><input type="text" class="inp" value="Senior Network Engineer"></div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">Monthly Gross Income (KES)</label><input type="text" class="inp" value="180,000"></div>
-<div class="form-group"><label class="label">Payroll Number</label><input type="text" class="inp" value="SF-44521"></div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">Employment Type</label>
-<select class="select"><option selected>Permanent</option><option>Contract</option><option>Self-Employed</option><option>Retired</option></select>
-</div>
-<div class="form-group"><label class="label">Years at Current Job</label><input type="text" class="inp" value="5"></div>
-</div>
-<div class="form-group"><label class="label">Employer Contact (HR)</label><input type="text" class="inp" value="hr@safaricom.co.ke"></div>
-<div style="display:flex;gap:10px;margin-top:8px">
-<button class="btn btn-sm" onclick="saveProfile()"><i class="fas fa-save"></i> Save Employment Info</button>
-</div>
-</div>
+        <!-- Member mini-card -->
+        <div class="member-card">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="m-avatar">JD</div>
+            <div style="min-width:0;">
+              <div class="m-name">John Doe</div>
+              <div class="m-id">ID: MBR-2024-00142</div>
+            </div>
+          </div>
+          <span class="m-badge"><i class="bi bi-shield-check"></i> KYC Verified</span>
+        </div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-phone-alt"></i> Emergency Contact</div>
-<div class="row2">
-<div class="form-group"><label class="label">Contact Name</label><input type="text" class="inp" value="Jane Wanjiku Mwangi"></div>
-<div class="form-group"><label class="label">Relationship</label>
-<select class="select"><option selected>Spouse</option><option>Parent</option><option>Sibling</option><option>Child</option><option>Friend</option></select>
-</div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">Phone Number</label><input type="tel" class="inp" value="+254 723 456 789"></div>
-<div class="form-group"><label class="label">Alternative Phone</label><input type="tel" class="inp" value="+254 734 567 890"></div>
-</div>
-<div style="display:flex;gap:10px;margin-top:8px">
-<button class="btn btn-sm" onclick="saveProfile()"><i class="fas fa-save"></i> Save Emergency Contact</button>
-</div>
-</div>
+        <!-- MAIN -->
+        <div class="nav-section-label">Main</div>
+        <a href="./index-main.html" class="nav-item-link">
+          <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+        <a href="./wallet.html" class="nav-item-link">
+          <i class="bi bi-wallet2"></i> Wallet
+        </a>
+        <a href="./member-profile.html" class="nav-item-link">
+          <i class="bi bi-currency-exchange"></i> Sacco Profile
+        </a>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-globe"></i> Regional Preferences</div>
-<div class="row2">
-<div class="form-group"><label class="label">Language</label>
-<select class="select" onchange="toast('Language preference saved','ok')"><option selected>English</option><option>Swahili</option><option>Kikuyu</option><option>Luo</option></select>
-</div>
-<div class="form-group"><label class="label">Currency Display</label>
-<select class="select" onchange="toast('Currency display updated','ok')"><option selected>Kenyan Shilling (KES)</option><option>US Dollar (USD)</option><option>British Pound (GBP)</option></select>
-</div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">Time Zone</label>
-<select class="select" onchange="toast('Time zone updated','ok')"><option selected>Africa/Nairobi (EAT)</option><option>UTC</option><option>Europe/London</option></select>
-</div>
-<div class="form-group"><label class="label">Date Format</label>
-<select class="select" onchange="toast('Date format updated','ok')"><option selected>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select>
-</div>
-</div>
-</div>
-</div>
+        <!-- FINANCE -->
+        <div class="nav-section-label">Finance</div>
+        <a href="./finance-savings.html" class="nav-item-link">
+          <i class="bi bi-piggy-bank"></i> Savings
+        </a>
+        <a href="./finance-deposits.html" class="nav-item-link">
+          <i class="bi bi-arrow-down-circle"></i> Deposits
+        </a>
+        <a href="./finance-withdrawals.html" class="nav-item-link">
+          <i class="bi bi-arrow-up-circle"></i> Withdrawals
+        </a>
 
-<div id="tab-security" class="tab-content" style="display:none">
-<div class="section an">
-<div class="section-title"><i class="fas fa-key"></i> Login Credentials</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Change PIN</h4><p>Update your 4-digit SaccoPay mobile PIN</p></div>
-<button class="btn btn-sm" onclick="openChangePin()"><i class="fas fa-pen"></i> Change</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Change Password</h4><p>Update your web portal login password</p></div>
-<button class="btn btn-sm" onclick="openChangePassword()"><i class="fas fa-pen"></i> Change</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Biometric Login</h4><p>Use fingerprint or Face ID to sign in on mobile</p></div>
-<div class="tog on" onclick="tg(this);toast('Biometric login updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Auto-Lock Timeout</h4><p>Automatically lock app after period of inactivity</p></div>
-<select class="select" style="width:140px" onchange="toast('Auto-lock timeout updated','ok')"><option>1 minute</option><option selected>5 minutes</option><option>15 minutes</option><option>30 minutes</option></select>
-</div>
-</div>
+        <!-- LOANS -->
+        <div class="nav-section-label">Loans</div>
+        <a href="./loans.html" class="nav-item-link">
+          <i class="bi bi-cash-stack"></i> My Loans
+          <span class="badge-alert">2</span>
+        </a>
+        <a href="./loan-repayments.html" class="nav-item-link">
+          <i class="bi bi-calendar-check"></i> Loan Repayment
+        </a>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-mobile-alt"></i> Two-Factor Authentication</div>
-<div class="setting-row">
-<div class="setting-info"><h4>SMS Authentication</h4><p>Receive OTP via SMS for sensitive actions</p></div>
-<div class="tog on" onclick="tg(this);toast('SMS 2FA updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Email Authentication</h4><p>Receive OTP via email for large transfers above KES 50K</p></div>
-<div class="tog" onclick="tg(this);toast('Email 2FA updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Authenticator App</h4><p>Use Google Authenticator, Authy, or Microsoft Authenticator</p></div>
-<button class="btn btn-sm" onclick="openAuthApp()"><i class="fas fa-qrcode"></i> Setup</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Trusted Contacts</h4><p>Allow trusted members to verify your identity if locked out</p></div>
-<div class="tog on" onclick="tg(this);toast('Trusted contacts updated','ok')"></div>
-</div>
-<div class="div"></div>
-<div class="trusted-contact">
-<div class="tc-avatar">AK</div>
-<div class="tc-info"><h4>Alice Kamau</h4><p>Trusted since Jan 2024</p></div>
-<button class="btn2 btn-sm" onclick="toast('Trusted contact removed','inf')"><i class="fas fa-times"></i></button>
-</div>
-<div class="trusted-contact">
-<div class="tc-avatar">PO</div>
-<div class="tc-info"><h4>Peter Ochieng</h4><p>Trusted since Mar 2024</p></div>
-<button class="btn2 btn-sm" onclick="toast('Trusted contact removed','inf')"><i class="fas fa-times"></i></button>
-</div>
-<button class="btn btn-sm" style="margin-top:10px" onclick="toast('Add trusted contact coming soon','inf')"><i class="fas fa-plus"></i> Add Trusted Contact</button>
-</div>
+        <!-- MEMBERSHIP -->
+        <div class="nav-section-label">Membership</div>
+        <a href="./membership-shares.html" class="nav-item-link">
+          <i class="bi bi-bar-chart"></i> Shares
+        </a>
+        <a href="./membership-dividends.html" class="nav-item-link">
+          <i class="bi bi-gift"></i> Dividends
+        </a>
+        <a href="./membership-guarantors.html" class="nav-item-link">
+          <i class="bi bi-people"></i> Guarantors
+        </a>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-laptop"></i> Device Management</div>
-<div class="device-item">
-<div class="device-icon"><i class="fas fa-mobile-alt"></i></div>
-<div class="device-info"><h4>iPhone 15 Pro</h4><p>Nairobi, Kenya · Last active 2 mins ago · iOS 18.1</p></div>
-<div class="device-status"><i class="fas fa-circle" style="font-size:8px"></i> Current Device</div>
-</div>
-<div class="device-item">
-<div class="device-icon" style="background:rgba(168,85,247,.15);color:#a855f7"><i class="fas fa-desktop"></i></div>
-<div class="device-info"><h4>Chrome on Windows 11</h4><p>Nairobi, Kenya · Last active yesterday at 8:30 PM</p></div>
-<button class="btn2 btn-sm" onclick="revokeDevice('Chrome Windows')"><i class="fas fa-sign-out-alt"></i> Revoke</button>
-</div>
-<div class="device-item">
-<div class="device-icon" style="background:rgba(234,179,8,.15);color:var(--warn)"><i class="fas fa-tablet-alt"></i></div>
-<div class="device-info"><h4>Safari on iPad Air</h4><p>Mombasa, Kenya · Last active 3 weeks ago</p></div>
-<button class="btn2 btn-sm" onclick="revokeDevice('Safari iPad')"><i class="fas fa-sign-out-alt"></i> Revoke</button>
-</div>
-<div class="device-item">
-<div class="device-icon" style="background:rgba(59,130,246,.15);color:var(--info)"><i class="fas fa-mobile-alt"></i></div>
-<div class="device-info"><h4>Android - Samsung Galaxy S23</h4><p>Kisumu, Kenya · Last active 2 months ago</p></div>
-<button class="btn2 btn-sm" onclick="revokeDevice('Samsung Android')"><i class="fas fa-sign-out-alt"></i> Revoke</button>
-</div>
-<div class="div"></div>
-<button class="btn btn-sm btn-bad" onclick="revokeAll()"><i class="fas fa-ban"></i> Revoke All Other Devices</button>
-</div>
+        <!-- REPORTS -->
+        <div class="nav-section-label">Reports</div>
+        <a href="./reports-statements.html" class="nav-item-link">
+          <i class="bi bi-receipt"></i> Statements
+        </a>
+        <a href="./reports-transactions.html" class="nav-item-link">
+          <i class="bi bi-clock-history"></i> Transactions
+        </a>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-history"></i> Recent Login Activity</div>
-<div class="activity-item">
-<div class="activity-icon"><i class="fas fa-mobile-alt"></i></div>
-<div class="activity-text">Successful login from iPhone 15 Pro in Nairobi</div>
-<div class="activity-time">2 mins ago</div>
-</div>
-<div class="activity-item">
-<div class="activity-icon"><i class="fas fa-desktop"></i></div>
-<div class="activity-text">Successful login from Chrome on Windows in Nairobi</div>
-<div class="activity-time">Yesterday</div>
-</div>
-<div class="activity-item">
-<div class="activity-icon" style="color:var(--warn)"><i class="fas fa-exclamation-triangle"></i></div>
-<div class="activity-text">Failed login attempt from unknown device in Mombasa</div>
-<div class="activity-time">3 days ago</div>
-</div>
-<div class="activity-item">
-<div class="activity-icon"><i class="fas fa-key"></i></div>
-<div class="activity-text">Password changed successfully</div>
-<div class="activity-time">2 weeks ago</div>
-</div>
-<div class="activity-item">
-<div class="activity-icon"><i class="fas fa-shield-alt"></i></div>
-<div class="activity-text">Two-factor authentication enabled</div>
-<div class="activity-time">1 month ago</div>
-</div>
-<div class="div"></div>
-<button class="btn2 btn-sm" onclick="toast('Full activity log exported','ok')"><i class="fas fa-download"></i> Export Full Log</button>
-</div>
-</div>
+        <!-- ACCOUNT -->
+        <div class="nav-section-label">Account</div>
+        <a href="./account-notifications.html" class="nav-item-link active">
+          <i class="bi bi-person-circle"></i> Notifications
+        </a>
+        <a href="./account-settings.html" class="nav-item-link">
+          <i class="bi bi-gear"></i> Settings
+        </a>
+        <a href="./support.html" class="nav-item-link">
+          <i class="bi bi-headset"></i> Support
+        </a>
+      </div>
 
-<div id="tab-payments" class="tab-content" style="display:none">
-<div class="section an">
-<div class="section-title"><i class="fas fa-wallet"></i> M-Pesa Numbers</div>
-<div class="payment-card">
-<i class="fas fa-mobile-alt" style="color:var(--ok)"></i>
-<div class="payment-info"><h4>+254 712 345 678</h4><p>Registered name: John Mwangi Maina · Safaricom</p></div>
-<span class="payment-default">Default</span>
-</div>
-<div class="payment-card">
-<i class="fas fa-mobile-alt" style="color:var(--text2)"></i>
-<div class="payment-info"><h4>+254 734 567 890</h4><p>Registered name: John M Maina · Safaricom</p></div>
-<button class="btn2 btn-sm" onclick="toast('Set as default M-Pesa','ok')">Set Default</button>
-</div>
-<div style="display:flex;gap:10px">
-<button class="btn btn-sm" onclick="openAddMpesa()"><i class="fas fa-plus"></i> Add M-Pesa Number</button>
-</div>
-</div>
+      <div class="sidebar-bottom">
+        <a href="./logout.html" class="logout-btn">
+          <i class="bi bi-box-arrow-left"></i> Logout
+        </a>
+      </div>
+    </aside>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-university"></i> Linked Bank Accounts</div>
-<div class="payment-card">
-<i class="fas fa-building" style="color:var(--info)"></i>
-<div class="payment-info"><h4>KCB Bank Kenya - 1234567890</h4><p>Account name: John M Maina · Savings Account · Kipande Road Branch</p></div>
-<button class="btn2 btn-sm" onclick="toast('Set as default bank','ok')">Set Default</button>
-</div>
-<div class="payment-card">
-<i class="fas fa-building" style="color:var(--warn)"></i>
-<div class="payment-info"><h4>Equity Bank - 0987654321</h4><p>Account name: John M Maina · Current Account · Moi Avenue Branch</p></div>
-<button class="btn2 btn-sm" onclick="toast('Set as default bank','ok')">Set Default</button>
-</div>
-<div style="display:flex;gap:10px">
-<button class="btn btn-sm" onclick="openAddBank()"><i class="fas fa-plus"></i> Add Bank Account</button>
-</div>
-</div>
+    <!-- =======================================
+         MAIN CONTENT
+    ======================================= -->
+    <main class="main-content">
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-credit-card"></i> Cards</div>
-<div class="payment-card" style="opacity:.6">
-<i class="fas fa-credit-card" style="color:var(--muted)"></i>
-<div class="payment-info"><h4>No cards added yet</h4><p>Add a debit or credit card for faster checkout and automatic repayments</p></div>
-</div>
-<button class="btn btn-sm" onclick="openAddCard()"><i class="fas fa-plus"></i> Add Card</button>
-</div>
+      <!-- Page header -->
+      <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2">
+        <div>
+          <h4><i class="bi bi-gear me-2" style="color:#1a56db;"></i>Account Settings</h4>
+          <p>Manage your personal information, security, and preferences.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span style="font-size:0.78rem; color:#6b7280;">Last updated: <strong>Feb 23, 2025</strong></span>
+        </div>
+      </div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-sync-alt"></i> Standing Orders & Auto-Pay</div>
-<div class="standing-order">
-<div class="so-info"><h4>Monthly Sacco Contribution</h4><p>Auto-deposit KES 5,000 on the 5th of every month</p></div>
-<div class="so-amount">KES 5,000</div>
-<button class="btn2 btn-sm" onclick="openStandingOrder()"><i class="fas fa-pen"></i> Edit</button>
-</div>
-<div class="standing-order">
-<div class="so-info"><h4>Loan Repayment - SAC-2026-05489</h4><p>Auto-deduct KES 6,650 on the 9th of every month</p></div>
-<div class="so-amount">KES 6,650</div>
-<button class="btn2 btn-sm" onclick="openStandingOrder()"><i class="fas fa-pen"></i> Edit</button>
-</div>
-<button class="btn btn-sm" style="margin-top:8px" onclick="openStandingOrder()"><i class="fas fa-plus"></i> Create Standing Order</button>
-</div>
-</div>
+      <!-- Settings Tabs -->
+      <div class="settings-tabs" role="tablist">
+        <button class="settings-tab-btn active" data-tab="profile" role="tab">
+          <i class="bi bi-person"></i> Profile
+        </button>
+        <button class="settings-tab-btn" data-tab="employment" role="tab">
+          <i class="bi bi-briefcase"></i> Employment
+        </button>
+        <button class="settings-tab-btn" data-tab="emergency" role="tab">
+          <i class="bi bi-telephone-plus"></i> Emergency
+        </button>
+        <button class="settings-tab-btn" data-tab="preferences" role="tab">
+          <i class="bi bi-globe"></i> Preferences
+        </button>
+        <button class="settings-tab-btn" data-tab="notifications" role="tab">
+          <i class="bi bi-bell"></i> Notifications
+        </button>
+        <button class="settings-tab-btn" data-tab="security" role="tab">
+          <i class="bi bi-shield-lock"></i> Security
+        </button>
+        <button class="settings-tab-btn" data-tab="support" role="tab">
+          <i class="bi bi-headset"></i> Support
+        </button>
+      </div>
 
-<div id="tab-sacco" class="tab-content" style="display:none">
-<div class="section an">
-<div class="section-title"><i class="fas fa-users"></i> Next of Kin & Beneficiaries</div>
-<div class="nominee-card">
-<h4>Jane Wanjiku Mwangi (Spouse)</h4>
-<p>National ID: 87654321 · Phone: +254 723 456 789 · Email: jane.w@email.com</p>
-<div style="display:flex;gap:8px">
-<button class="btn2 btn-sm" onclick="openEditNominee()"><i class="fas fa-pen"></i> Edit</button>
-<button class="btn2 btn-sm" onclick="toast('Nominee removed','inf')"><i class="fas fa-trash"></i> Remove</button>
-</div>
-</div>
-<div class="nominee-card">
-<h4>Michael Mwangi (Son)</h4>
-<p>National ID: 11223344 · Phone: +254 711 222 333 · Beneficiary: 50%</p>
-<div style="display:flex;gap:8px">
-<button class="btn2 btn-sm" onclick="openEditNominee()"><i class="fas fa-pen"></i> Edit</button>
-<button class="btn2 btn-sm" onclick="toast('Nominee removed','inf')"><i class="fas fa-trash"></i> Remove</button>
-</div>
-</div>
-<button class="btn btn-sm" onclick="openAddNominee()"><i class="fas fa-plus"></i> Add Nominee</button>
-</div>
+      <!-- =============================
+           TAB: PROFILE
+      ============================= -->
+      <div class="tab-pane-content active" id="tab-profile">
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-chart-pie"></i> Dividend Preferences</div>
-<div class="form-group">
-<label class="label">Dividend Payout Method</label>
-<select class="select" onchange="toast('Dividend preference saved','ok')">
-<option>Reinvest into shares automatically</option>
-<option selected>Deposit to SaccoPay wallet</option>
-<option>Transfer to M-Pesa</option>
-<option>Transfer to primary bank account</option>
-</select>
-</div>
-<div class="form-group">
-<label class="label">Withholding Tax Option</label>
-<select class="select" onchange="toast('Tax preference saved','ok')">
-<option selected>Deduct 5% withholding tax automatically (WHT)</option>
-<option>Pay tax manually at year end via KRA</option>
-<option>Exempt - provide tax exemption certificate</option>
-</select>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Dividend Notification</h4><p>Get alerted when dividends are declared and paid</p></div>
-<div class="tog on" onclick="tg(this);toast('Dividend alerts updated','ok')"></div>
-</div>
-</div>
+        <!-- Personal Information -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle"><i class="bi bi-person-fill"></i></div>
+            <div>
+              <h6>Personal Information</h6>
+              <p>Your basic information as registered with the Sacco. Some fields are locked for security.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">First Name <i class="bi bi-lock-fill text-secondary" style="font-size:0.72rem;"></i></label>
+                <input type="text" class="form-control" value="John" readonly />
+                <div class="lock-hint"><i class="bi bi-lock-fill"></i> Locked – contact admin to change</div>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Last Name <i class="bi bi-lock-fill text-secondary" style="font-size:0.72rem;"></i></label>
+                <input type="text" class="form-control" value="Doe" readonly />
+                <div class="lock-hint"><i class="bi bi-lock-fill"></i> Locked – contact admin to change</div>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" value="john.doe@enterprise-email.com" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" value="+254 712 345 678" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">National ID <i class="bi bi-lock-fill text-secondary" style="font-size:0.72rem;"></i></label>
+                <input type="text" class="form-control" value="12345678" readonly />
+                <div class="lock-hint"><i class="bi bi-lock-fill"></i> Locked – contact admin to change</div>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Date of Birth <i class="bi bi-lock-fill text-secondary" style="font-size:0.72rem;"></i></label>
+                <input type="date" class="form-control" value="1985-04-15" readonly />
+                <div class="lock-hint"><i class="bi bi-lock-fill"></i> Locked – contact admin to change</div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Physical Address</label>
+                <input type="text" class="form-control" value="P.O Box 12345, Nairobi" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">County</label>
+                <select class="form-select">
+                  <option>Nairobi</option>
+                  <option>Mombasa</option>
+                  <option>Kisumu</option>
+                  <option>Nakuru</option>
+                  <option>Eldoret</option>
+                  <option>Kiambu</option>
+                  <option>Machakos</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Postal Code</label>
+                <input type="text" class="form-control" value="00100" />
+              </div>
+            </div>
+            <div class="save-row">
+              <button class="btn-cancel">Cancel</button>
+              <button class="btn-save" onclick="showToast('Personal information saved successfully.')">
+                <i class="bi bi-check2"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-hand-holding-usd"></i> Loan Preferences</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Auto-Approve Guarantor Requests</h4><p>Automatically accept requests from members with 4.5+ rating and good standing</p></div>
-<div class="tog" onclick="tg(this);toast('Auto-approve updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Loan Limit Alerts</h4><p>Notify when you are within 20% of your maximum loan limit</p></div>
-<div class="tog on" onclick="tg(this);toast('Limit alerts updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Repayment Auto-Debit</h4><p>Automatically deduct loan repayments from wallet on due date</p></div>
-<div class="tog on" onclick="tg(this);toast('Auto-debit updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Early Repayment Reminders</h4><p>Remind 3 days before due date to encourage early payment</p></div>
-<div class="tog on" onclick="tg(this);toast('Reminder preference updated','ok')"></div>
-</div>
-</div>
+        <!-- KYC & Verification Status -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#fef3c7; color:#92400e;"><i class="bi bi-shield-check"></i></div>
+            <div>
+              <h6>KYC &amp; Verification Status</h6>
+              <p>Know Your Customer documents and verification progress.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-user-plus"></i> Share Nomination</div>
-<p class="section-desc">Nominate a member to receive your shares if you voluntarily exit the Sacco.</p>
-<div class="form-group">
-<label class="label">Nominated Member</label>
-<select class="select">
-<option selected>-- Select member --</option>
-<option>Peter Ochieng (SAC-2022-001) · 3 years membership</option>
-<option>Alice Kamau (SAC-2021-045) · 4 years membership</option>
-<option>James Mwangi (SAC-2023-089) · 2 years membership</option>
-</select>
-</div>
-<div class="form-group">
-<label class="label">Transfer Conditions</label>
-<select class="select">
-<option selected>Upon voluntary exit only</option>
-<option>Upon exit or death</option>
-<option>After 6-month cooling period</option>
-</select>
-</div>
-<button class="btn btn-sm" onclick="toast('Share nomination saved','ok')"><i class="fas fa-save"></i> Save Nomination</button>
-</div>
+            <div class="kyc-item">
+              <div class="kyc-item-info">
+                <h6>Identity Verification</h6>
+                <p>National ID verified with Huduma Center on 12 Mar 2023</p>
+              </div>
+              <div class="kyc-badge-action">
+                <span class="kyc-badge verified"><i class="bi bi-check-circle-fill"></i> Verified</span>
+              </div>
+            </div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-calendar-alt"></i> Meeting Preferences</div>
-<div class="setting-row">
-<div class="setting-info"><h4>AGM Reminders</h4><p>Get reminded 7 days, 3 days, and 1 day before the AGM</p></div>
-<div class="tog on" onclick="tg(this);toast('AGM reminders updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Monthly Meeting Alerts</h4><p>Notifications for monthly members meetings</p></div>
-<div class="tog on" onclick="tg(this);toast('Meeting alerts updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Committee Interest</h4><p>Express interest in joining the Credit or Welfare Committee</p></div>
-<button class="btn btn-sm" onclick="toast('Committee interest registered','ok')"><i class="fas fa-hand-paper"></i> Express Interest</button>
-</div>
-</div>
-</div>
+            <div class="kyc-item">
+              <div class="kyc-item-info">
+                <h6>Address Verification</h6>
+                <p>Utility bill uploaded and approved on 15 Mar 2023</p>
+              </div>
+              <div class="kyc-badge-action">
+                <span class="kyc-badge verified"><i class="bi bi-check-circle-fill"></i> Verified</span>
+              </div>
+            </div>
 
-<div id="tab-privacy" class="tab-content" style="display:none">
-<div class="section an">
-<div class="section-title"><i class="fas fa-user-shield"></i> Data Privacy Controls</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Profile Visibility</h4><p>Allow other members to see your name and profile photo in group listings</p></div>
-<div class="tog on" onclick="tg(this);toast('Visibility updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Share Savings Balance</h4><p>Let guarantors and seconders see your savings balance when requesting you</p></div>
-<div class="tog on" onclick="tg(this);toast('Balance sharing updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Marketing Communications</h4><p>Receive offers and promotions from SaccoPay partners</p></div>
-<div class="tog" onclick="tg(this);toast('Marketing preference updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Analytics & Improvements</h4><p>Share anonymous usage data to help improve the platform</p></div>
-<div class="tog on" onclick="tg(this);toast('Analytics preference updated','ok')"></div>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Third-Party Credit Checks</h4><p>Allow Sacco to share your repayment history with CRB for credit scoring</p></div>
-<div class="tog on" onclick="tg(this);toast('Credit check consent updated','ok')"></div>
-</div>
-</div>
+            <div class="kyc-item">
+              <div class="kyc-item-info">
+                <h6>Tax PIN (KRA)</h6>
+                <p>Required for dividend withholding tax compliance</p>
+              </div>
+              <div class="kyc-badge-action">
+                <span class="kyc-badge pending"><i class="bi bi-clock-fill"></i> Pending Upload</span>
+                <button class="btn-upload"><i class="bi bi-upload"></i> Upload</button>
+              </div>
+            </div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-download"></i> Your Data</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Download Your Data</h4><p>Get a copy of all personal data SaccoPay holds about you (GDPR/ODPA compliant)</p></div>
-<button class="btn btn-sm" onclick="toast('Data export requested. You will receive an email within 24 hours.','ok')"><i class="fas fa-download"></i> Request Export</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Account Activity Log</h4><p>View all actions taken on your account in the last 90 days</p></div>
-<button class="btn btn-sm" onclick="toast('Activity log exported as CSV','ok')"><i class="fas fa-file-csv"></i> Export Log</button>
-</div>
-</div>
+            <div class="kyc-item">
+              <div class="kyc-item-info">
+                <h6>Passport Photo</h6>
+                <p>Recent passport-size photo for member card</p>
+              </div>
+              <div class="kyc-badge-action">
+                <span class="kyc-badge approved"><i class="bi bi-image"></i> Approved</span>
+              </div>
+            </div>
 
-<div class="section an">
-<div class="section-title"><i class="fas fa-file-contract"></i> Legal Documents</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Terms of Service</h4><p>Last updated: 1st May 2026 · Version 3.2</p></div>
-<button class="btn2 btn-sm" onclick="toast('Opening Terms of Service...','inf')"><i class="fas fa-external-link-alt"></i> View</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Privacy Policy</h4><p>Last updated: 1st May 2026 · Version 2.1</p></div>
-<button class="btn2 btn-sm" onclick="toast('Opening Privacy Policy...','inf')"><i class="fas fa-external-link-alt"></i> View</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Sacco Bylaws & Constitution</h4><p>Member rules, regulations, and constitutional provisions</p></div>
-<button class="btn2 btn-sm" onclick="toast('Opening Bylaws...','inf')"><i class="fas fa-external-link-alt"></i> View</button>
-</div>
-<div class="setting-row">
-<div class="setting-info"><h4>Loan Agreement Template</h4><p>Standard terms and conditions for Sacco loans</p></div>
-<button class="btn2 btn-sm" onclick="toast('Opening Loan Agreement...','inf')"><i class="fas fa-external-link-alt"></i> View</button>
-</div>
-</div>
+          </div>
+        </div>
 
-<div class="danger-zone an">
-<h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
-<div class="danger-row">
-<div><h4>Deactivate Account</h4><p>Temporarily disable your account. You can reactivate anytime by contacting support.</p></div>
-<button class="btn2 btn-sm" onclick="openDeactivate()">Deactivate</button>
-</div>
-<div class="danger-row">
-<div><h4>Delete Account Permanently</h4><p>This will close your membership, forfeit all shares and savings, and cancel active loans. Cannot be undone.</p></div>
-<button class="btn btn-sm btn-bad" onclick="openDelete()"><i class="fas fa-trash"></i> Delete</button>
-</div>
-</div>
-</div>
+      </div><!-- /tab-profile -->
 
-<div class="qa">
-<div class="qc" onclick="go('notifications')"><div class="qi"><i class="fas fa-bell"></i></div><div><h4>Notifications</h4><p>Manage alerts & preferences</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
-<div class="qc" onclick="go('statements')"><div class="qi"><i class="fas fa-file-invoice"></i></div><div><h4>Statements</h4><p>Download account history</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
-<div class="qc" onclick="go('support')"><div class="qi"><i class="fas fa-headset"></i></div><div><h4>Support</h4><p>Get help from our team</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
-<div class="qc" onclick="go('loan')"><div class="qi"><i class="fas fa-hand-holding-usd"></i></div><div><h4>Apply for Loan</h4><p>Quick application process</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
-<div class="qc" onclick="go('deposit')"><div class="qi"><i class="fas fa-plus-circle"></i></div><div><h4>Make Deposit</h4><p>Contribute to savings</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
-<div class="qc" onclick="go('logout')"><div class="qi"><i class="fas fa-sign-out-alt"></i></div><div><h4>Log Out</h4><p>End your session securely</p></div><i class="fas fa-chevron-right" style="margin-left:auto;color:var(--muted)"></i></div>
-</div>
-</main>
 
-<footer class="footer">
-<div class="footer-links">
-<a href="#" onclick="go('terms')">Terms of Service</a>
-<a href="#" onclick="go('privacy')">Privacy Policy</a>
-<a href="#" onclick="go('help')">Help Center</a>
-<a href="#" onclick="go('contact')">Contact Us</a>
-<a href="#" onclick="go('faq')">FAQs</a>
-</div>
-<div>SaccoPay v2.4.0 &copy; 2026. All rights reserved. Licensed by Central Bank of Kenya.</div>
-</footer>
+      <!-- =============================
+           TAB: EMPLOYMENT
+      ============================= -->
+      <div class="tab-pane-content" id="tab-employment">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#f0fdf4; color:#166534;"><i class="bi bi-briefcase-fill"></i></div>
+            <div>
+              <h6>Employment &amp; Income</h6>
+              <p>Used to determine your loan eligibility and credit limit.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Employer Name</label>
+                <input type="text" class="form-control" value="Kenya Revenue Authority" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Job Title</label>
+                <input type="text" class="form-control" value="Senior Tax Analyst" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Monthly Gross Income (KES)</label>
+                <input type="number" class="form-control" value="125000" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Payroll Number</label>
+                <input type="text" class="form-control" value="KRA-0042891" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Employment Type</label>
+                <select class="form-select">
+                  <option selected>Permanent &amp; Pensionable</option>
+                  <option>Contract</option>
+                  <option>Casual</option>
+                  <option>Self-Employed</option>
+                  <option>Retired</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Years at Current Job</label>
+                <input type="number" class="form-control" value="7" min="0" />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Employer Contact (HR)</label>
+                <input type="tel" class="form-control" value="+254 722 000 111" />
+              </div>
+            </div>
+            <div class="save-row">
+              <button class="btn-cancel">Cancel</button>
+              <button class="btn-save" onclick="showToast('Employment details saved successfully.')">
+                <i class="bi bi-check2"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /tab-employment -->
 
-<!-- Change PIN Modal -->
-<div class="modal-o" id="m1"><div class="mod">
-<div class="mh"><h2><i class="fas fa-key" style="color:var(--accent)"></i> Change PIN</h2><button class="x" onclick="cl('m1')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div class="form-group"><label class="label">Current PIN</label><input type="password" class="inp" placeholder="Enter current 4-digit PIN" maxlength="4"></div>
-<div class="form-group"><label class="label">New PIN</label><input type="password" class="inp" placeholder="Enter new 4-digit PIN" maxlength="4"></div>
-<div class="form-group"><label class="label">Confirm New PIN</label><input type="password" class="inp" placeholder="Confirm new PIN" maxlength="4"></div>
-<p style="font-size:12px;color:var(--muted)"><i class="fas fa-info-circle"></i> PIN must be 4 digits and different from your last 3 PINs. Avoid sequential numbers like 1234.</p>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m1')">Cancel</button><button class="btn" onclick="savePin()"><i class="fas fa-save"></i> Update PIN</button></div>
-</div></div>
 
-<!-- Change Password Modal -->
-<div class="modal-o" id="m2"><div class="mod">
-<div class="mh"><h2><i class="fas fa-lock" style="color:var(--accent)"></i> Change Password</h2><button class="x" onclick="cl('m2')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div class="form-group"><label class="label">Current Password</label><input type="password" class="inp" placeholder="Enter current password"></div>
-<div class="form-group"><label class="label">New Password</label><input type="password" class="inp" placeholder="Min 8 chars, 1 number, 1 symbol"></div>
-<div class="form-group"><label class="label">Confirm Password</label><input type="password" class="inp" placeholder="Confirm new password"></div>
-<div style="background:var(--card);padding:12px;border-radius:var(--rs);border:1px solid var(--border)">
-<p style="font-size:12px;color:var(--muted);margin-bottom:6px">Password strength:</p>
-<div style="display:flex;gap:4px">
-<div style="flex:1;height:4px;background:var(--ok);border-radius:2px"></div>
-<div style="flex:1;height:4px;background:var(--ok);border-radius:2px"></div>
-<div style="flex:1;height:4px;background:var(--ok);border-radius:2px"></div>
-<div style="flex:1;height:4px;background:var(--border);border-radius:2px"></div>
-</div>
-<p style="font-size:11px;color:var(--text2);margin-top:6px"><i class="fas fa-check" style="color:var(--ok)"></i> 8+ characters &nbsp; <i class="fas fa-check" style="color:var(--ok)"></i> 1 number &nbsp; <i class="fas fa-times" style="color:var(--bad)"></i> 1 special symbol</p>
-</div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m2')">Cancel</button><button class="btn" onclick="savePassword()"><i class="fas fa-save"></i> Update Password</button></div>
-</div></div>
+      <!-- =============================
+           TAB: EMERGENCY CONTACT
+      ============================= -->
+      <div class="tab-pane-content" id="tab-emergency">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#fef2f2; color:#991b1b;"><i class="bi bi-telephone-plus-fill"></i></div>
+            <div>
+              <h6>Emergency Contact</h6>
+              <p>Contact details to reach in case of emergency or loan guarantorship.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Contact Name</label>
+                <input type="text" class="form-control" value="Jane Doe" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Relationship</label>
+                <select class="form-select">
+                  <option selected>Spouse</option>
+                  <option>Parent</option>
+                  <option>Sibling</option>
+                  <option>Child</option>
+                  <option>Friend</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" value="+254 723 456 789" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Alternative Phone</label>
+                <input type="tel" class="form-control" value="+254 700 987 654" />
+              </div>
+            </div>
+            <div class="save-row">
+              <button class="btn-cancel">Cancel</button>
+              <button class="btn-save" onclick="showToast('Emergency contact saved successfully.')">
+                <i class="bi bi-check2"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /tab-emergency -->
 
-<!-- Add M-Pesa Modal -->
-<div class="modal-o" id="m3"><div class="mod">
-<div class="mh"><h2><i class="fas fa-mobile-alt" style="color:var(--ok)"></i> Add M-Pesa Number</h2><button class="x" onclick="cl('m3')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div class="form-group"><label class="label">M-Pesa Number</label><input type="tel" class="inp" placeholder="e.g. 254712345678"></div>
-<div class="form-group"><label class="label">Registered Name</label><input type="text" class="inp" placeholder="Name as registered on M-Pesa"></div>
-<div class="form-group"><label class="label">Network</label>
-<select class="select"><option>Safaricom</option><option>Airtel</option><option>Telkom</option></select>
-</div>
-<p style="font-size:12px;color:var(--muted)"><i class="fas fa-info-circle"></i> You will receive an OTP on this number to verify ownership before linking.</p>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m3')">Cancel</button><button class="btn" onclick="verifyMpesa()"><i class="fas fa-check"></i> Verify & Add</button></div>
-</div></div>
 
-<!-- Add Bank Modal -->
-<div class="modal-o" id="m4"><div class="mod">
-<div class="mh"><h2><i class="fas fa-university" style="color:var(--info)"></i> Add Bank Account</h2><button class="x" onclick="cl('m4')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div class="form-group"><label class="label">Bank Name</label>
-<select class="select"><option>KCB Bank</option><option>Equity Bank</option><option>Co-operative Bank</option><option>Absa Bank Kenya</option><option>Standard Chartered</option><option>NCBA Bank</option><option>I&M Bank</option><option>Family Bank</option></select>
-</div>
-<div class="form-group"><label class="label">Account Number</label><input type="text" class="inp" placeholder="Enter account number"></div>
-<div class="form-group"><label class="label">Account Name</label><input type="text" class="inp" placeholder="Name as it appears on bank records"></div>
-<div class="row2">
-<div class="form-group"><label class="label">Branch Code</label><input type="text" class="inp" placeholder="e.g. 012"></div>
-<div class="form-group"><label class="label">Account Type</label>
-<select class="select"><option>Savings</option><option>Current</option><option>Fixed Deposit</option></select>
-</div>
-</div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m4')">Cancel</button><button class="btn" onclick="saveBank()"><i class="fas fa-save"></i> Add Account</button></div>
-</div></div>
+      <!-- =============================
+           TAB: PREFERENCES
+      ============================= -->
+      <div class="tab-pane-content" id="tab-preferences">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#f0f9ff; color:#0369a1;"><i class="bi bi-globe2"></i></div>
+            <div>
+              <h6>Regional Preferences</h6>
+              <p>Localisation, currency, date and timezone settings.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Language</label>
+                <select class="form-select">
+                  <option selected>English (Kenya)</option>
+                  <option>Swahili</option>
+                  <option>English (US)</option>
+                  <option>English (UK)</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Currency Display</label>
+                <select class="form-select">
+                  <option selected>KES – Kenyan Shilling</option>
+                  <option>USD – US Dollar</option>
+                  <option>EUR – Euro</option>
+                  <option>GBP – British Pound</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Time Zone</label>
+                <select class="form-select">
+                  <option selected>Africa/Nairobi (GMT+3)</option>
+                  <option>Africa/Lagos (GMT+1)</option>
+                  <option>Europe/London (GMT+0)</option>
+                  <option>America/New_York (GMT-5)</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Date Format</label>
+                <select class="form-select">
+                  <option selected>DD/MM/YYYY</option>
+                  <option>MM/DD/YYYY</option>
+                  <option>YYYY-MM-DD</option>
+                  <option>D MMM YYYY</option>
+                </select>
+              </div>
+            </div>
+            <div class="save-row">
+              <button class="btn-cancel">Cancel</button>
+              <button class="btn-save" onclick="showToast('Regional preferences saved.')">
+                <i class="bi bi-check2"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /tab-preferences -->
 
-<!-- Deactivate Modal -->
-<div class="modal-o" id="m5"><div class="mod">
-<div class="mh"><h2><i class="fas fa-user-slash" style="color:var(--warn)"></i> Deactivate Account</h2><button class="x" onclick="cl('m5')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<p style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:16px">Deactivating your account will temporarily suspend access with the following effects:</p>
-<ul style="margin-left:20px;color:var(--text2);font-size:14px;line-height:1.8;margin-bottom:20px">
-<li>Prevent all new logins to your account immediately</li>
-<li>Pause automatic standing orders and repayments</li>
-<li>Freeze loan applications and guarantor requests</li>
-<li>Keep your shares, savings, and loan history intact</li>
-<li>Allow reactivation by visiting a branch or calling support</li>
-</ul>
-<div class="form-group"><label class="label">Reason for deactivation (optional)</label>
-<select class="select"><option>Taking a financial break</option><option>Switching to another Sacco</option><option>Temporary financial constraints</option><option>Traveling abroad long-term</option><option>Other</option></select>
-</div>
-<div class="form-group"><label class="label">Enter your password to confirm</label><input type="password" class="inp" placeholder="Your login password"></div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m5')">Cancel</button><button class="btn btn-bad" onclick="confirmDeactivate()"><i class="fas fa-user-slash"></i> Deactivate</button></div>
-</div></div>
 
-<!-- Delete Modal -->
-<div class="modal-o" id="m6"><div class="mod">
-<div class="mh"><h2><i class="fas fa-trash" style="color:var(--bad)"></i> Delete Account Permanently</h2><button class="x" onclick="cl('m6')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:var(--rs);padding:16px;margin-bottom:20px">
-<p style="font-size:14px;color:var(--bad);font-weight:600;margin-bottom:8px"><i class="fas fa-exclamation-triangle"></i> This action is irreversible</p>
-<p style="font-size:13px;color:var(--text2);line-height:1.6">Deleting your account will permanently close your Sacco membership, forfeit all accumulated shares and savings, write off any guarantor liabilities, and cancel all active loans. You will need to reapply as a new member with fresh KYC if you ever wish to return.</p>
-</div>
-<div class="form-group"><label class="label">Type DELETE to confirm</label><input type="text" class="inp" placeholder="DELETE"></div>
-<div class="form-group"><label class="label">Enter your password</label><input type="password" class="inp" placeholder="Your login password"></div>
-<div class="form-group"><label class="label">Reason for leaving (helps us improve)</label>
-<select class="select"><option>Moving abroad permanently</option><option>Dissatisfied with services</option><option>Found better rates elsewhere</option><option>Financial hardship</option><option>Other</option></select>
-</div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m6')">Cancel</button><button class="btn btn-bad" onclick="confirmDelete()"><i class="fas fa-trash"></i> Permanently Delete</button></div>
-</div></div>
+      <!-- =============================
+           TAB: NOTIFICATIONS
+      ============================= -->
+      <div class="tab-pane-content" id="tab-notifications">
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#fefce8; color:#a16207;"><i class="bi bi-bell-fill"></i></div>
+            <div>
+              <h6>Notification Preferences</h6>
+              <p>Control how and when you receive alerts from SaccoPay.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
 
-<!-- Edit Nominee Modal -->
-<div class="modal-o" id="m7"><div class="mod">
-<div class="mh"><h2><i class="fas fa-users" style="color:var(--accent)"></i> Edit Nominee</h2><button class="x" onclick="cl('m7')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div class="row2">
-<div class="form-group"><label class="label">Full Name</label><input type="text" class="inp" value="Jane Wanjiku Mwangi"></div>
-<div class="form-group"><label class="label">Relationship</label>
-<select class="select"><option selected>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option><option>Other</option></select>
-</div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">National ID</label><input type="text" class="inp" value="87654321"></div>
-<div class="form-group"><label class="label">Phone Number</label><input type="tel" class="inp" value="+254 723 456 789"></div>
-</div>
-<div class="form-group"><label class="label">Email Address</label><input type="email" class="inp" value="jane.w@email.com"></div>
-<div class="form-group"><label class="label">Physical Address</label><input type="text" class="inp" value="Ngong Road, House 45, Nairobi"></div>
-<div class="form-group"><label class="label">Beneficiary Percentage</label>
-<select class="select"><option selected>100%</option><option>75%</option><option>50%</option><option>25%</option></select>
-</div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m7')">Cancel</button><button class="btn" onclick="saveNominee()"><i class="fas fa-save"></i> Save Nominee</button></div>
-</div></div>
+            <p class="mb-2" style="font-size:0.8rem; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.05em;">Email Notifications</p>
 
-<!-- Standing Order Modal -->
-<div class="modal-o" id="m8"><div class="mod">
-<div class="mh"><h2><i class="fas fa-sync-alt" style="color:var(--accent)"></i> Standing Order</h2><button class="x" onclick="cl('m8')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div class="form-group"><label class="label">Order Name</label><input type="text" class="inp" value="Monthly Sacco Contribution"></div>
-<div class="row2">
-<div class="form-group"><label class="label">Amount (KES)</label><input type="text" class="inp" value="5000"></div>
-<div class="form-group"><label class="label">Frequency</label>
-<select class="select"><option selected>Monthly</option><option>Weekly</option><option>Bi-weekly</option><option>Quarterly</option></select>
-</div>
-</div>
-<div class="row2">
-<div class="form-group"><label class="label">Start Date</label><input type="text" class="inp" value="05/05/2026"></div>
-<div class="form-group"><label class="label">End Date (Optional)</label><input type="text" class="inp" placeholder="Leave blank for ongoing"></div>
-</div>
-<div class="form-group"><label class="label">Source Account</label>
-<select class="select"><option selected>M-Pesa - +254 712 345 678</option><option>SaccoPay Wallet</option><option>KCB Bank - 1234567890</option></select>
-</div>
-<div class="form-group"><label class="label">Destination</label>
-<select class="select"><option selected>Sacco Savings Account</option><option>Loan Repayment</option><option>Share Capital</option></select>
-</div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m8')">Cancel</button><button class="btn btn-bad" onclick="toast('Standing order cancelled','inf');cl('m8')"><i class="fas fa-trash"></i> Cancel Order</button><button class="btn" onclick="toast('Standing order saved','ok');cl('m8')"><i class="fas fa-save"></i> Save Order</button></div>
-</div></div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>Transaction Alerts</h6>
+                <p>Receive email when deposits, withdrawals or repayments are processed.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" checked id="notifEmailTxn" />
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>Loan Status Updates</h6>
+                <p>Email when your loan application changes status.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" checked id="notifEmailLoan" />
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>Dividend Declarations</h6>
+                <p>Email when the board declares dividends or share earnings.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" id="notifEmailDiv" />
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>Monthly Statements</h6>
+                <p>Receive your monthly account statement via email.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" checked id="notifEmailStmt" />
+              </div>
+            </div>
 
-<!-- Auth App Modal -->
-<div class="modal-o" id="m9"><div class="mod">
-<div class="mh"><h2><i class="fas fa-qrcode" style="color:var(--accent)"></i> Setup Authenticator</h2><button class="x" onclick="cl('m9')"><i class="fas fa-times"></i></button></div>
-<div class="mc">
-<div style="text-align:center;padding:20px">
-<div style="width:180px;height:180px;background:#fff;border-radius:var(--rs);margin:0 auto 16px;display:flex;align-items:center;justify-content:center">
-<i class="fas fa-qrcode" style="font-size:120px;color:var(--bg)"></i>
-</div>
-<p style="font-size:14px;color:var(--text2);margin-bottom:8px">Scan this QR code with Google Authenticator, Authy, or Microsoft Authenticator</p>
-<p style="font-size:12px;color:var(--muted);font-family:monospace">SACCO-JM3N-9K2P-7LQW</p>
-</div>
-<div class="form-group"><label class="label">Enter 6-digit code from app</label><input type="text" class="inp" placeholder="000000" maxlength="6"></div>
-</div>
-<div class="mf"><button class="btn2" onclick="cl('m9')">Cancel</button><button class="btn" onclick="toast('Authenticator enabled','ok');cl('m9')"><i class="fas fa-check"></i> Verify & Enable</button></div>
-</div></div>
+            <p class="mt-3 mb-2" style="font-size:0.8rem; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:.05em;">SMS Notifications</p>
 
-<div class="toasts" id="tc"></div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>Payment Reminders</h6>
+                <p>SMS reminders 5 days before each loan installment is due.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" checked id="notifSmsRemind" />
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>OTP &amp; Security Codes</h6>
+                <p>Always on – required for login and sensitive actions.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" checked disabled id="notifSmsOtp" />
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <h6>AGM &amp; Sacco Announcements</h6>
+                <p>SMS alerts for meetings, AGM dates, and official announcements.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" id="notifSmsAgm" />
+              </div>
+            </div>
+
+            <div class="save-row">
+              <button class="btn-cancel">Cancel</button>
+              <button class="btn-save" onclick="showToast('Notification preferences saved.')">
+                <i class="bi bi-check2"></i> Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /tab-notifications -->
+
+
+      <!-- =============================
+           TAB: SECURITY
+      ============================= -->
+      <div class="tab-pane-content" id="tab-security">
+
+        <!-- Change Password -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#fef2f2; color:#991b1b;"><i class="bi bi-key-fill"></i></div>
+            <div>
+              <h6>Change Password</h6>
+              <p>We recommend using a strong, unique password.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <label class="form-label">Current Password</label>
+                <input type="password" class="form-control" placeholder="Enter current password" />
+              </div>
+              <div class="col-12 col-sm-6"></div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label">New Password</label>
+                <input type="password" class="form-control" id="newPassInput" placeholder="Min 8 characters" />
+                <div id="passStrengthBar" class="mt-2" style="height:5px; border-radius:4px; background:#e5e7eb; transition:background .3s; width:0%;"></div>
+                <div id="passStrengthLabel" style="font-size:0.72rem; color:#6b7280; margin-top:3px;"></div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" class="form-control" id="confirmPassInput" placeholder="Repeat new password" />
+              </div>
+            </div>
+            <div class="save-row">
+              <button class="btn-cancel">Cancel</button>
+              <button class="btn-save" onclick="showToast('Password changed successfully.')">
+                <i class="bi bi-check2"></i> Update Password
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Actions -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#eff6ff; color:#1e40af;"><i class="bi bi-shield-lock-fill"></i></div>
+            <div>
+              <h6>Security &amp; Access</h6>
+              <p>Manage two-factor authentication, active sessions and access logs.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+
+            <div class="security-action-row">
+              <div class="info">
+                <h6>Two-Factor Authentication (2FA)</h6>
+                <p>Add an extra layer of protection via SMS OTP on login.</p>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span style="font-size:0.75rem; background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:10px; font-weight:600;">Enabled</span>
+                <button class="btn-outline-danger-sm">Disable 2FA</button>
+              </div>
+            </div>
+
+            <div class="security-action-row">
+              <div class="info">
+                <h6>Active Sessions</h6>
+                <p>You have 2 active sessions. Last login: Chrome, Nairobi — Feb 23, 2025</p>
+              </div>
+              <button class="btn-outline-danger-sm">Sign Out All</button>
+            </div>
+
+            <div class="security-action-row">
+              <div class="info">
+                <h6>Login Activity Log</h6>
+                <p>View recent sign-in history and detect suspicious activity.</p>
+              </div>
+              <button class="btn-outline-primary-sm">View Log</button>
+            </div>
+
+            <div class="security-action-row">
+              <div class="info">
+                <h6>Download My Data</h6>
+                <p>Request a full export of your account data and transaction history.</p>
+              </div>
+              <button class="btn-outline-primary-sm" onclick="showToast('Data export request submitted. You will receive an email within 24hrs.')">Request Export</button>
+            </div>
+
+            <div class="security-action-row">
+              <div class="info">
+                <h6>Close Account</h6>
+                <p>Permanently deactivate your SaccoPay account. This action is irreversible.</p>
+              </div>
+              <button class="btn-outline-danger-sm">Close Account</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /tab-security -->
+
+
+      <!-- =============================
+           TAB: SUPPORT
+      ============================= -->
+      <div class="tab-pane-content" id="tab-support">
+
+        <!-- Member Summary -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#f0fdf4; color:#166534;"><i class="bi bi-person-badge-fill"></i></div>
+            <div>
+              <h6>Member Profile Summary</h6>
+              <p>Your verified account details on record.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="row g-3 align-items-center">
+              <div class="col-auto">
+                <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1a56db,#4f83f1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;">JD</div>
+              </div>
+              <div class="col">
+                <div style="font-weight:700; font-size:1rem; color:#111827;">John Doe</div>
+                <div style="font-size:0.82rem; color:#6b7280;">john.doe@enterprise-email.com</div>
+                <div style="margin-top:4px;"><span style="font-size:0.72rem; background:#d1fae5; color:#065f46; padding:2px 8px; border-radius:10px; font-weight:600;"><i class="bi bi-shield-check"></i> KYC Documents Completely Verified</span></div>
+              </div>
+            </div>
+            <hr style="border-color:#f1f5f9;" />
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <div style="font-size:0.82rem; color:#4b5563;"><i class="bi bi-phone me-2 text-primary"></i>Mobile: +254 712 345 678</div>
+              </div>
+              <div class="col-sm-6">
+                <div style="font-size:0.82rem; color:#4b5563;"><i class="bi bi-card-text me-2 text-primary"></i>National ID: 12345678</div>
+              </div>
+              <div class="col-sm-6">
+                <div style="font-size:0.82rem; color:#4b5563;"><i class="bi bi-geo-alt me-2 text-primary"></i>Residence: Nairobi Zone</div>
+              </div>
+              <div class="col-sm-6">
+                <div style="font-size:0.82rem; color:#4b5563;"><i class="bi bi-heart me-2 text-primary"></i>Next of Kin: Jane Doe (Spouse)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Support Tickets -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="icon-circle" style="background:#fef3c7; color:#92400e;"><i class="bi bi-headset"></i></div>
+            <div>
+              <h6>Support Tickets</h6>
+              <p>Track your open and resolved support requests.</p>
+            </div>
+          </div>
+          <div class="section-card-body">
+            <div class="support-ticket-row">
+              <div>
+                <div class="ticket-id">#TK-2024-089</div>
+                <div class="ticket-subject">M-Pesa payment not reflecting on portal log</div>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <span class="ticket-priority-urgent">Urgent</span>
+                <span class="ticket-status-processing">Processing</span>
+              </div>
+            </div>
+            <div class="support-ticket-row">
+              <div>
+                <div class="ticket-id">#TK-2024-085</div>
+                <div class="ticket-subject">Loan portfolio archival extraction validation</div>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <span class="ticket-priority-low">Low</span>
+                <span class="ticket-status-closed">Closed</span>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-top d-flex flex-wrap gap-3 align-items-center">
+              <div style="font-size:0.83rem; color:#4b5563;"><i class="bi bi-telephone me-1 text-primary"></i>Call: <strong>+254 700 000 000</strong></div>
+              <div style="font-size:0.83rem; color:#4b5563;"><i class="bi bi-envelope me-1 text-primary"></i>Mail: <strong>support@saccopay.co.ke</strong></div>
+              <button class="btn-save ms-auto" onclick="showToast('Redirecting to new ticket form...')">
+                <i class="bi bi-plus"></i> New Ticket
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /tab-support -->
+
+    </main><!-- /main-content -->
+  </div><!-- /body-wrapper -->
+</div><!-- /app-shell -->
+
+<!-- Toast container -->
+<div class="toast-container-custom" id="toastContainer"></div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function swTab(t,b){
-document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none');
-document.getElementById('tab-'+t).style.display='block';
-}
-function op(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden'}
-function cl(id){document.getElementById(id).classList.remove('on');document.body.style.overflow=''}
-function tg(el){el.classList.toggle('on')}
-function openEditProfile(){toast('Opening profile editor...','inf')}
-function openChangePhoto(){toast('Opening photo upload...','inf')}
-function openKyc(){toast('Opening KYC upload portal...','inf')}
-function openChangePin(){op('m1')}
-function openChangePassword(){op('m2')}
-function openAuthApp(){op('m9')}
-function openAddMpesa(){op('m3')}
-function openAddBank(){op('m4')}
-function openAddCard(){toast('Card payments coming in v2.5','inf')}
-function openDeactivate(){op('m5')}
-function openDelete(){op('m6')}
-function openEditNominee(){op('m7')}
-function openAddNominee(){op('m7')}
-function openStandingOrder(){op('m8')}
-function saveProfile(){toast('Profile updated successfully','ok')}
-function savePin(){toast('PIN changed successfully','ok');cl('m1')}
-function savePassword(){toast('Password updated successfully','ok');cl('m2')}
-function verifyMpesa(){toast('OTP sent to your M-Pesa number','ok');cl('m3')}
-function saveBank(){toast('Bank account added successfully','ok');cl('m4')}
-function revokeDevice(d){toast('Device revoked: '+d,'ok')}
-function revokeAll(){toast('All other devices revoked','ok')}
-function saveNominee(){toast('Nominee saved successfully','ok');cl('m7')}
-function confirmDeactivate(){toast('Account deactivated. Contact support to reactivate.','ok');cl('m5')}
-function confirmDelete(){toast('Account deletion request submitted for admin approval.','ok');cl('m6')}
-function go(p){toast('Navigating to '+p+'...','inf')}
-function toast(m,t='inf'){
-let tc=document.getElementById('tc'),d=document.createElement('div');
-d.className='toast '+t;
-let i=t==='ok'?'check-circle':t==='err'?'exclamation-circle':'info-circle';
-d.innerHTML=`<i class="fas fa-${i}"></i><span>${m}</span>`;
-tc.appendChild(d);requestAnimationFrame(()=>d.classList.add('show'));
-setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),300)},3000);
-}
-document.querySelectorAll('.modal-o').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on')}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-o.on').forEach(m=>m.classList.remove('on'))});
+  /* ===========================
+     SIDEBAR TOGGLE LOGIC
+  =========================== */
+  const sidebar        = document.getElementById('mainSidebar');
+  const backdrop       = document.getElementById('sidebarBackdrop');
+  const toggleBtn      = document.getElementById('sidebarToggleBtn');
+  const MOBILE_BP      = 768; // px
+
+  function isMobile() { return window.innerWidth < MOBILE_BP; }
+
+  // Desktop: sidebar is collapsed (width:0) or open (width:240)
+  // Mobile:  sidebar slides in as overlay (transform)
+
+  let desktopCollapsed = false; // desktop starts open
+
+  function toggleSidebar() {
+    if (isMobile()) {
+      const isOpen = sidebar.classList.contains('mobile-open');
+      if (isOpen) {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('active');
+      } else {
+        sidebar.classList.add('mobile-open');
+        backdrop.classList.add('active');
+      }
+    } else {
+      desktopCollapsed = !desktopCollapsed;
+      if (desktopCollapsed) {
+        sidebar.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+    }
+  }
+
+  toggleBtn.addEventListener('click', toggleSidebar);
+  backdrop.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('active');
+  });
+
+  // On resize, clean up state
+  window.addEventListener('resize', () => {
+    if (!isMobile()) {
+      // Ensure overlay classes removed
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+      // Restore desktop state
+      if (desktopCollapsed) {
+        sidebar.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+    } else {
+      // On mobile, ensure no desktop collapsed class interfering
+      sidebar.classList.remove('collapsed');
+    }
+  });
+
+  /* ===========================
+     SETTINGS TABS
+  =========================== */
+  const tabBtns  = document.querySelectorAll('.settings-tab-btn');
+  const tabPanes = document.querySelectorAll('.tab-pane-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanes.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const pane = document.getElementById('tab-' + target);
+      if (pane) pane.classList.add('active');
+    });
+  });
+
+  /* ===========================
+     PASSWORD STRENGTH METER
+  =========================== */
+  const newPassInput     = document.getElementById('newPassInput');
+  const passStrengthBar  = document.getElementById('passStrengthBar');
+  const passStrengthLabel= document.getElementById('passStrengthLabel');
+
+  if (newPassInput) {
+    newPassInput.addEventListener('input', () => {
+      const val = newPassInput.value;
+      let score = 0;
+      if (val.length >= 8)              score++;
+      if (/[A-Z]/.test(val))            score++;
+      if (/[0-9]/.test(val))            score++;
+      if (/[^A-Za-z0-9]/.test(val))     score++;
+
+      const levels = [
+        { label: '',          color: '#e5e7eb', w: '0%'   },
+        { label: 'Weak',      color: '#ef4444', w: '25%'  },
+        { label: 'Fair',      color: '#f97316', w: '50%'  },
+        { label: 'Good',      color: '#eab308', w: '75%'  },
+        { label: 'Strong',    color: '#22c55e', w: '100%' },
+      ];
+      const lv = val.length === 0 ? levels[0] : levels[score];
+      passStrengthBar.style.width    = lv.w;
+      passStrengthBar.style.background = lv.color;
+      passStrengthLabel.textContent  = val.length === 0 ? '' : lv.label;
+      passStrengthLabel.style.color  = lv.color;
+    });
+  }
+
+  /* ===========================
+     TOAST NOTIFICATION
+  =========================== */
+  function showToast(message) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerHTML = `<i class="bi bi-check-circle-fill toast-icon"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'opacity .3s, transform .3s';
+      setTimeout(() => toast.remove(), 350);
+    }, 3200);
+  }
 </script>
+
 </body>
 </html>

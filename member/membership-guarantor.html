@@ -17,9 +17,9 @@
            SACCOPAY MEMBER — DESIGN SYSTEM
         ============================================ */
         :root {
-            --primary: #00d084;
-            --primary-dark: #00a866;
-            --primary-light: #66e5b8;
+            --primary: #1a73e8;
+            --primary-dark: #1558b0;
+            --primary-light: #e8f0fe;
             --primary-ultra: #e6faf4;
             --teal: #00bcd4;
             --blue: #2196f3;
@@ -64,6 +64,7 @@
             position: fixed; height: 100vh;
             overflow-y: auto; z-index: 1000;
             box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease;
         }
         .sidebar-brand {
             padding: var(--sp-xl);
@@ -430,12 +431,98 @@
         .empty-state h5 { font-weight: 600; margin-bottom: var(--sp-sm); }
         .empty-state p { font-size: 0.85rem; color: var(--text2); }
 
-        @media (max-width: 768px) {
-            .member-sidebar { transform: translateX(-100%); transition: 0.3s; }
+        /* Mobile Overlay */
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* Mobile Toggle */
+        .mobile-toggle { display: none; width: 36px; height: 36px; border-radius: var(--r-md); background: var(--bg2); border: 1px solid var(--border); align-items: center; justify-content: center; cursor: pointer; color: var(--text1); font-size: 1.1rem; }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 991px) {
+            .member-sidebar { transform: translateX(-100%); }
             .member-sidebar.open { transform: translateX(0); }
             .member-main { margin-left: 0; }
+            .mobile-toggle { display: inline-flex; }
+            .page-content { padding: var(--sp-md); }
             .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+            .hero-card { border-radius: var(--r-lg); padding: var(--sp-xl); }
+            .hero-value { font-size: 2rem; }
+            .g-card-header, .g-card-body { padding: var(--sp-md); }
+            .m-tabs { gap: 0; }
+            .m-tab { padding: 10px 14px; font-size: 0.82rem; }
             .gc-details { grid-template-columns: repeat(2, 1fr); }
+            .guarantor-card { padding: var(--sp-md); }
+            .request-card, .incoming-card { padding: var(--sp-md); }
+            .otp-box { width: 44px; height: 52px; font-size: 1.3rem; }
+        }
+
+        @media (max-width: 768px) {
+            .member-topbar { padding: var(--sp-sm) var(--sp-md); }
+            .topbar-inner { flex-wrap: wrap; gap: var(--sp-sm); }
+            .page-breadcrumb { width: 100%; order: 3; margin-top: var(--sp-xs); }
+            .user-chip span { display: none; }
+            .page-content { padding: var(--sp-sm); max-width: 100%; }
+            .hero-card { padding: var(--sp-lg); }
+            .hero-value { font-size: 1.6rem; }
+            .hero-sub { font-size: 0.75rem; }
+            .hero-kpis { grid-template-columns: 1fr; }
+            .kpi-box { padding: var(--sp-sm); }
+            .kpi-box .k-value { font-size: 1rem; }
+            .g-card { border-radius: var(--r-md); }
+            .g-card-header { flex-wrap: wrap; gap: var(--sp-sm); }
+            .m-tab { padding: 8px 12px; font-size: 0.78rem; }
+            .gc-top { flex-wrap: wrap; gap: var(--sp-sm); }
+            .gc-details { grid-template-columns: 1fr; gap: var(--sp-sm); }
+            .guarantor-card { padding: var(--sp-sm); }
+            .gc-av { width: 36px; height: 36px; font-size: 0.78rem; }
+            .gc-name { font-size: 0.85rem; }
+            .exposure-label { font-size: 0.65rem; }
+            .sbadge { font-size: 0.62rem; padding: 2px 8px; }
+            .btn-g, .btn-o, .btn-red { padding: 8px 14px; font-size: 0.82rem; }
+            .otp-box { width: 40px; height: 48px; font-size: 1.2rem; }
+            .modal-body { padding: var(--sp-md); }
+            .modal-footer { padding: var(--sp-md); flex-wrap: wrap; gap: var(--sp-sm); }
+            .drow { font-size: 0.8rem; flex-direction: column; gap: 2px; }
+            .finput, .fselect { padding: 8px 12px; font-size: 0.85rem; }
+            .rule-box, .tip-box { padding: var(--sp-md); }
+            .tip-box { font-size: 0.75rem; }
+            .chk-item { font-size: 0.8rem; }
+            .empty-state { padding: var(--sp-xl); }
+            .empty-icon { font-size: 2.5rem; }
+            .chart-wrap { height: 180px; }
+            .score-ring { width: 120px; height: 120px; }
+            .score-ring .sr-center { inset: 12px; }
+            .guar-timeline { padding-left: 20px; }
+            .gt-item { padding-left: var(--sp-sm); padding-bottom: var(--sp-md); }
+            .gt-item::before { left: -16px; width: 10px; height: 10px; }
+            .gt-content { padding: var(--sp-sm); font-size: 0.78rem; }
+            .nav-link { padding: 8px var(--sp-sm); font-size: 0.82rem; }
+            .nav-section-title { padding: var(--sp-sm) var(--sp-md); }
+            .sidebar-brand { padding: var(--sp-md); }
+            .member-info-bar { padding: var(--sp-sm) var(--sp-md); }
+        }
+
+        @media (max-width: 480px) {
+            .hero-card { padding: var(--sp-md); border-radius: var(--r-md); }
+            .hero-value { font-size: 1.4rem; }
+            .hero-status { font-size: 0.65rem; padding: 4px 10px; }
+            .action-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-sm); }
+            .topbar-btn { width: 32px; height: 32px; font-size: 0.9rem; }
+            .topbar-notif { width: 16px; height: 16px; font-size: 0.55rem; }
+            .user-chip { padding: 4px 8px; }
+            .user-chip-av { width: 24px; height: 24px; font-size: 0.6rem; }
+            .page-breadcrumb { font-size: 0.72rem; }
+            .m-tab { padding: 6px 10px; font-size: 0.75rem; }
+            .tab-badge { padding: 1px 5px; font-size: 0.55rem; }
+            .gc-details { grid-template-columns: 1fr; }
+            .modal-dialog { margin: var(--sp-sm); }
+            .modal-body { padding: var(--sp-sm); }
+            .btn-g, .btn-o, .btn-red { width: 100%; justify-content: center; }
+            .otp-row { gap: 6px; }
+            .otp-box { width: 36px; height: 44px; font-size: 1.1rem; }
+            .kpi-box .k-value { font-size: 0.9rem; }
+            .kpi-box .k-label { font-size: 0.6rem; }
         }
 
         .fade-in { animation: fadeIn 0.4s ease-out; }
@@ -453,37 +540,39 @@
         </div>
 
         <div class="member-info-bar">
-            <div class="m-name">John Kamau</div>
-            <div class="m-id">SP-10015 · Rongo SACCO</div>
+            <div class="m-name">James Kamau</div>
+            <div class="m-id">SCO-2024-00142 · Rongo SACCO</div>
         </div>
 
         <nav class="nav-group">
-            <div class="nav-section-title">Overview</div>
-            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a></div>
-            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i><span>My Profile</span></a></div>
+            <div class="nav-section-title">Main</div>
+            <div class="nav-item"><a href="./index-main.html" class="nav-link"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="./wallet.html" class="nav-link"><i class="bi bi-wallet2"></i><span>Wallet</span></a></div>
+            <div class="nav-item"><a href="./member-profile.html" class="nav-link"><i class="bi bi-person-vcard"></i><span>Sacco Profile</span></a></div>
 
-            <div class="nav-section-title">Savings & Shares</div>
-            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i><span>Savings Accounts</span></a></div>
-            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i><span>Share Capital</span></a></div>
-            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i><span>Dividends & Returns</span></a></div>
+            <div class="nav-section-title">Finance</div>
+            <div class="nav-item"><a href="./finance-savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="./finance-deposits.html" class="nav-link"><i class="bi bi-arrow-down-circle"></i><span>Deposits</span></a></div>
+            <div class="nav-item"><a href="./finance-withdrawals.html" class="nav-link"><i class="bi bi-arrow-up-circle"></i><span>Withdrawals</span></a></div>
+            <div class="nav-item"><a href="./reports-transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="./reports-statements.html" class="nav-link"><i class="bi bi-file-text"></i><span>Statements</span></a></div>
 
             <div class="nav-section-title">Loans</div>
-            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i><span>My Loans</span></a></div>
-            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i><span>Apply for Loan</span></a></div>
-            <div class="nav-item"><a href="guarantors.html" class="nav-link active"><i class="bi bi-people"></i><span>Guarantorship</span><span class="nav-badge">2</span></a></div>
+            <div class="nav-item"><a href="./loans.html" class="nav-link"><i class="bi bi-cash-stack"></i><span>My Loans</span><span class="nav-badge">2</span></a></div>
+            <div class="nav-item"><a href="./loan-repayments.html" class="nav-link"><i class="bi bi-calendar-check"></i><span>Loan Repayment</span></a></div>
 
-            <div class="nav-section-title">Transactions</div>
-            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i><span>Transactions</span></a></div>
-            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2"></i><span>Wallet</span></a></div>
-            <div class="nav-item"><a href="statements.html" class="nav-link"><i class="bi bi-file-text"></i><span>Statements</span></a></div>
+            <div class="nav-section-title">Membership</div>
+            <div class="nav-item"><a href="./membership-shares.html" class="nav-link"><i class="bi bi-bar-chart"></i><span>Shares</span></a></div>
+            <div class="nav-item"><a href="./membership-dividends.html" class="nav-link"><i class="bi bi-gift"></i><span>Dividends</span></a></div>
+            <div class="nav-item"><a href="./membership-guarantors.html" class="nav-link"><i class="bi bi-people"></i><span>Guarantors</span></a></div>
 
             <div class="nav-section-title">Account</div>
-            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i><span>Notifications</span><span class="nav-badge">3</span></a></div>
-            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i><span>Settings</span></a></div>
-            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i><span>Support</span></a></div>
+            <div class="nav-item"><a href="./account-notifications.html" class="nav-link"><i class="bi bi-bell"></i><span>Notifications</span><span class="nav-badge">5</span></a></div>
+            <div class="nav-item"><a href="./account-settings.html" class="nav-link"><i class="bi bi-gear"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="./support.html" class="nav-link"><i class="bi bi-headset"></i><span>Support</span></a></div>
+            <div class="nav-item"><a href="./logout.html" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a></div>
         </nav>
     </aside>
-
     <!-- ===================== MAIN ===================== -->
     <main class="member-main">
 
@@ -1501,10 +1590,10 @@ document.addEventListener('DOMContentLoaded',function(){
                 datasets:[{
                     label:'Guarantor Score',
                     data:[72,74,75,76,78,79,80,81,82,83,84,85],
-                    borderColor:'#00d084',
+                    borderColor:'#1a73e8',
                     backgroundColor:'rgba(0,208,132,0.1)',
                     borderWidth:3,fill:true,tension:0.4,
-                    pointBackgroundColor:'#00d084',pointRadius:4
+                    pointBackgroundColor:'#1a73e8',pointRadius:4
                 }]
             },
             options:{

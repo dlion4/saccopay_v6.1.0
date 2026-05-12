@@ -10,9 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #FF6B00;
-            --primary-light: #FF8C38;
-            --primary-dark: #CC5500;
+            --primary: #1a73e8;
+      --primary-dark: #1558b0;
+      --primary-light: #e8f0fe;
             --primary-subtle: rgba(255,107,0,0.06);
             --primary-border: rgba(255,107,0,0.20);
             --bg-base: #F5F6FA;
@@ -25,7 +25,7 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
             --shadow-orange: 0 4px 16px rgba(255,107,0,0.18);
-            --gradient-primary: linear-gradient(135deg, #FF6B00 0%, #FF8C38 50%, #FFAA00 100%);
+            --gradient-primary: linear-gradient(135deg, #1a73e8 0%, #1558b0 50%, #00f7ff 100%);
             --sidebar-width: 260px;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg-base); color: var(--text-primary); }
@@ -1002,7 +1002,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // === Toast ===
-function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#FF6B00'};const t=document.createElement('div');t.className=`sp-toast ${type}`;t.innerHTML=`<i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${msg}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},5000);}
+function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#1a73e8'};const t=document.createElement('div');t.className=`sp-toast ${type}`;t.innerHTML=`<i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${msg}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},5000);}
 
 // === Sidebar (mobile) ===
 function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
@@ -1163,14 +1163,14 @@ if(wCtx) {
                 {
                     label: 'Cumulative Compounded Capital',
                     data: [45000, 52000, 60000, 68000, 76000, 84000, 95000, 108000, 120000, 135000, 148000, 158750],
-                    borderColor: '#FF6B00',
+                    borderColor: '#1a73e8',
                     backgroundColor: 'rgba(255,107,0,0.06)',
                     borderWidth: 2.5,
                     fill: true,
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#FF6B00',
+                    pointHoverBackgroundColor: '#1a73e8',
                     pointHoverBorderColor: '#fff',
                     pointHoverBorderWidth: 2
                 },
@@ -1200,7 +1200,7 @@ if(wCtx) {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(255,255,255,0.97)',
-                    titleColor: '#FF6B00',
+                    titleColor: '#1a73e8',
                     bodyColor: '#1A1D2E',
                     borderColor: 'rgba(255,107,0,0.2)',
                     borderWidth: 1,

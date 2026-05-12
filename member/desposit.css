@@ -1,8 +1,8 @@
 
         :root {
-            --primary: #FF6B00;
-            --primary-light: #FF8C38;
-            --primary-dark: #CC5500;
+            --primary: #1a73e8;
+      --primary-dark: #1558b0;
+      --primary-light: #e8f0fe;
             --primary-subtle: rgba(255,107,0,0.06);
             --primary-border: rgba(255,107,0,0.20);
             --bg-base: #F5F6FA;
@@ -15,7 +15,7 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
             --shadow-orange: 0 4px 16px rgba(255,107,0,0.18);
-            --gradient-primary: linear-gradient(135deg, #FF6B00 0%, #FF8C38 50%, #FFAA00 100%);
+            --gradient-primary: linear-gradient(135deg, #1a73e8 0%, #1558b0 50%, #00f7ff 100%);
             --sidebar-width: 260px;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg-base); color: var(--text-primary); }

@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --primary:#00d084;--primary-dark:#00a866;--primary-ultra:#e6faf4;
+            --primary:#1a73e8;--primary-dark:#1558b0;--primary-ultra:#e6faf4;
             --teal:#00bcd4;--blue:#2196f3;--purple:#9c27b0;--orange:#ff9800;--red:#f44336;--green:#4caf50;
             --bg:#f8fafb;--bg2:#ffffff;--bg3:#f0f4f7;--glass:rgba(255,255,255,0.85);--border:#e2e8f0;
             --text1:#1a2332;--text2:#64748b;--text3:#94a3b8;
@@ -23,7 +23,7 @@
         .member-layout{display:flex;min-height:100vh;}
 
         /* Sidebar */
-        .member-sidebar{width:260px;background:var(--glass);backdrop-filter:blur(20px);border-right:1px solid rgba(0,208,132,0.15);position:fixed;height:100vh;overflow-y:auto;z-index:1000;}
+        .member-sidebar{width:260px;background:var(--glass);backdrop-filter:blur(20px);border-right:1px solid rgba(0,208,132,0.15);position:fixed;height:100vh;overflow-y:auto;z-index:1000;transition:transform .3s ease;}
         .sidebar-brand{padding:var(--sp-xl);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:var(--sp-md);}
         .brand-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--primary),var(--teal));border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:1.1rem;}
         .brand-text h2{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -216,12 +216,60 @@
         .success-screen{text-align:center;padding:var(--sp-2xl);}
         .success-ring{width:80px;height:80px;border-radius:50%;background:rgba(0,208,132,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-lg);}
 
-        @media(max-width:768px){
-            .member-sidebar{transform:translateX(-100%);transition:.3s;}
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;opacity:0;visibility:hidden;transition:all .3s;}
+        .sidebar-overlay.active{opacity:1;visibility:visible;}
+
+        /* Mobile Toggle Button */
+        .mobile-toggle{display:none;width:40px;height:40px;border-radius:var(--r-md);background:var(--bg2);border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;color:var(--text1);font-size:1.2rem;}
+
+        @media(max-width:991px){
+            .member-sidebar{transform:translateX(-100%);}
             .member-sidebar.open{transform:translateX(0);}
             .member-main{margin-left:0;}
+            .mobile-toggle{display:flex;}
+            .page-content{padding:var(--sp-md);}
+            .wh-inner{padding:var(--sp-lg);}
+            .wh-balance{font-size:2rem;}
             .wh-kpis{grid-template-columns:repeat(2,1fr);}
-            .action-grid{grid-template-columns:repeat(3,1fr);}
+            .action-grid{grid-template-columns:repeat(2,1fr);}
+            .g-card-header,.g-card-body{padding:var(--sp-md);}
+            .m-tabs{gap:0;}
+            .m-tab{padding:10px 14px;font-size:.82rem;}
+            .step-bar{overflow-x:auto;padding-bottom:var(--sp-sm);}
+            .step-item{min-width:50px;}
+            .step-line{width:16px;}
+            .txn-row{flex-wrap:wrap;}
+            .txn-amt{width:100%;text-align:left;margin-top:var(--sp-xs);padding-left:54px;}
+            .sidebar-brand{padding:var(--sp-lg);}
+        }
+
+        @media(max-width:576px){
+            .member-topbar{padding:var(--sp-sm) var(--sp-md);}
+            .topbar-inner{flex-wrap:wrap;gap:var(--sp-sm);}
+            .page-content{padding:var(--sp-sm);}
+            .wh-inner{padding:var(--sp-md);}
+            .wh-balance{font-size:1.6rem;}
+            .wh-balance .currency{font-size:1rem;}
+            .wh-kpis{grid-template-columns:1fr;}
+            .action-grid{grid-template-columns:repeat(2,1fr);gap:var(--sp-sm);}
+            .action-tile{padding:var(--sp-md);}
+            .action-tile-icon{width:36px;height:36px;font-size:1rem;}
+            .kpi-box{padding:var(--sp-sm);}
+            .wallet-id-pill{font-size:.7rem;padding:4px 10px;}
+            .pin-box{width:40px;height:48px;font-size:1.2rem;}
+            .ch-opt{padding:var(--sp-sm);}
+            .ch-icon{width:36px;height:36px;font-size:1rem;}
+            .modal-body{padding:var(--sp-md);}
+            .modal-footer{padding:var(--sp-md);flex-wrap:wrap;gap:var(--sp-sm);}
+            .user-chip{padding:4px 8px;}
+            .user-chip-av{width:24px;height:24px;font-size:.6rem;}
+            .topbar-right{gap:var(--sp-sm);}
+            .topbar-btn{width:32px;height:32px;}
+            .nav-link{padding:8px var(--sp-sm);font-size:.8rem;}
+            .nav-section-title{padding:var(--sp-sm) var(--sp-md);}
+            .sidebar-brand{padding:var(--sp-md);}
+            .member-info-bar{padding:var(--sp-sm) var(--sp-md);}
         }
     </style>
 </head>
@@ -231,30 +279,32 @@
     <!-- SIDEBAR -->
     <aside class="member-sidebar" id="sidebar">
         <div class="sidebar-brand"><div class="brand-logo">S</div><div class="brand-text"><h2>SACCOPay</h2><p style="font-size:.7rem;color:var(--text3);">Member Portal</p></div></div>
-        <div class="member-info-bar"><div class="m-name">John Kamau</div><div class="m-id">SP-10015 · Rongo SACCO</div></div>
+        <div class="member-info-bar"><div class="m-name">James Kamau</div><div class="m-id">SCO-2024-00142 · Rongo SACCO</div></div>
         <nav class="nav-group">
-            <div class="nav-section-title">Overview</div>
-            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
-            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i>My Profile</a></div>
-            <div class="nav-section-title">Savings & Shares</div>
-            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings Accounts</a></div>
-            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i>Share Capital</a></div>
-            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i>Dividends</a></div>
+            <div class="nav-section-title">Main</div>
+            <div class="nav-item"><a href="./index-main.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
+            <div class="nav-item"><a href="./wallet.html" class="nav-link"><i class="bi bi-wallet2"></i>Wallet</a></div>
+            <div class="nav-item"><a href="./member-profile.html" class="nav-link"><i class="bi bi-person-vcard"></i>Sacco Profile</a></div>
+            <div class="nav-section-title">Finance</div>
+            <div class="nav-item"><a href="./finance-savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings</a></div>
+            <div class="nav-item"><a href="./finance-deposits.html" class="nav-link"><i class="bi bi-arrow-down-circle"></i>Deposits</a></div>
+            <div class="nav-item"><a href="./finance-withdrawals.html" class="nav-link"><i class="bi bi-arrow-up-circle"></i>Withdrawals</a></div>
+            <div class="nav-item"><a href="./reports-transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
+            <div class="nav-item"><a href="./reports-statements.html" class="nav-link"><i class="bi bi-file-text"></i>Statements</a></div>
             <div class="nav-section-title">Loans</div>
-            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans</a></div>
-            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i>Apply for Loan</a></div>
-            <div class="nav-item"><a href="guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantorship<span class="nav-badge">2</span></a></div>
-            <div class="nav-section-title">Transactions</div>
-            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
-            <div class="nav-item"><a href="wallet.html" class="nav-link active"><i class="bi bi-wallet2"></i>Wallet</a></div>
-            <div class="nav-item"><a href="statements.html" class="nav-link"><i class="bi bi-file-text"></i>Statements</a></div>
+            <div class="nav-item"><a href="./loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans<span class="nav-badge">2</span></a></div>
+            <div class="nav-item"><a href="./loan-repayments.html" class="nav-link"><i class="bi bi-calendar-check"></i>Loan Repayment</a></div>
+            <div class="nav-section-title">Membership</div>
+            <div class="nav-item"><a href="./membership-shares.html" class="nav-link"><i class="bi bi-bar-chart"></i>Shares</a></div>
+            <div class="nav-item"><a href="./membership-dividends.html" class="nav-link"><i class="bi bi-gift"></i>Dividends</a></div>
+            <div class="nav-item"><a href="./membership-guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantors</a></div>
             <div class="nav-section-title">Account</div>
-            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">3</span></a></div>
-            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
-            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+            <div class="nav-item"><a href="./account-notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">5</span></a></div>
+            <div class="nav-item"><a href="./account-settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
+            <div class="nav-item"><a href="./support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+            <div class="nav-item"><a href="./logout.html" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i>Logout</a></div>
         </nav>
     </aside>
-
     <!-- MAIN -->
     <main class="member-main">
         <div class="member-topbar">
@@ -289,7 +339,7 @@
                         </div>
                     </div>
                     <div class="wh-kpis">
-                        <div class="kpi-box" onclick="switchTab('history')"><div class="k-label">This Month In</div><div class="k-value" style="color:#00d084;">+KES 185K</div><div class="k-sub">12 deposits</div></div>
+                        <div class="kpi-box" onclick="switchTab('history')"><div class="k-label">This Month In</div><div class="k-value" style="color:#1a73e8;">+KES 185K</div><div class="k-sub">12 deposits</div></div>
                         <div class="kpi-box" onclick="switchTab('history')"><div class="k-label">This Month Out</div><div class="k-value" style="color:#f44336;">-KES 92K</div><div class="k-sub">8 withdrawals</div></div>
                         <div class="kpi-box" data-bs-toggle="modal" data-bs-target="#limitsModal"><div class="k-label">Daily Limit</div><div class="k-value">KES 35K</div><div class="k-sub">of KES 100K used</div></div>
                         <div class="kpi-box" data-bs-toggle="modal" data-bs-target="#pinSetupModal"><div class="k-label">Transaction PIN</div><div class="k-value" style="color:#4caf50;">Set ✓</div><div class="k-sub">Last changed Dec 1</div></div>

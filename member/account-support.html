@@ -1,472 +1,1719 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Member Support — SaccoPay</title>
-<style>
-:root{--p:#0d7a3d;--pd:#095c2e;--pl:#e6f5ec;--s:#1e3a5f;--a:#f59e0b;--al:#fff7e6;--d:#dc2626;--dl:#fef2f2;--ok:#16a34a;--ol:#f0fdf4;--w:#d97706;--wl:#fffbeb;--i:#2563eb;--il:#eff6ff;--g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;--g400:#9ca3af;--g500:#6b7280;--g600:#4b5563;--g700:#374151;--g800:#1f2937;--g900:#111827;--wht:#fff;--sh:0 1px 3px rgb(0 0 0 / .1);--shmd:0 4px 6px rgb(0 0 0 / .1);--r:.5rem;--rl:.75rem;--sw:260px}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--g50);color:var(--g800);line-height:1.5}
-.layout{display:flex;min-height:100vh}
-.sidebar{width:var(--sw);background:var(--wht);border-right:1px solid var(--g200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:50}
-.sb-brand{padding:1.5rem;border-bottom:1px solid var(--g100);display:flex;align-items:center;gap:.75rem}
-.sb-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--pd));border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--wht);font-weight:700;font-size:.875rem}
-.sb-text{font-weight:700;font-size:1.125rem;color:var(--g900)}.sb-text span{color:var(--p)}
-.sb-nav{flex:1;padding:1rem;overflow-y:auto}
-.nav-sec{margin-bottom:1.5rem}
-.nav-sec-t{font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);padding:0 .75rem;margin-bottom:.5rem}
-.nav-link{display:flex;align-items:center;gap:.75rem;padding:.625rem .75rem;border-radius:var(--r);color:var(--g600);text-decoration:none;font-size:.875rem;font-weight:500;transition:all .15s;cursor:pointer}
-.nav-link:hover{background:var(--g50);color:var(--g900)}
-.nav-link.active{background:var(--pl);color:var(--p)}
-.nav-link svg{width:20px;height:20px;flex-shrink:0;opacity:.7}
-.nav-link.active svg{opacity:1}
-.sb-foot{padding:1rem 1.5rem;border-top:1px solid var(--g100);font-size:.75rem;color:var(--g400)}
-.main{flex:1;margin-left:var(--sw);min-height:100vh}
-.header{background:var(--wht);border-bottom:1px solid var(--g200);padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
-.h-left{display:flex;align-items:center;gap:1rem}
-.page-title{font-size:1.25rem;font-weight:700;color:var(--g900)}
-.bc{font-size:.8125rem;color:var(--g400)}.bc a{color:var(--g500);text-decoration:none}.bc a:hover{color:var(--p)}
-.h-right{display:flex;align-items:center;gap:.75rem}
-.h-btn{width:40px;height:40px;border-radius:var(--r);border:1px solid var(--g200);background:var(--wht);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g500);position:relative;transition:all .15s}
-.h-btn:hover{background:var(--g50);border-color:var(--g300)}
-.bdg{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 5px;background:var(--d);color:var(--wht);font-size:.6875rem;font-weight:600;border-radius:999px;display:flex;align-items:center;justify-content:center;border:2px solid var(--wht)}
-.profile{display:flex;align-items:center;gap:.75rem;padding:.375rem .75rem .375rem .375rem;border-radius:var(--rl);border:1px solid var(--g200);background:var(--wht);cursor:pointer;transition:all .15s}
-.profile:hover{border-color:var(--g300);background:var(--g50)}
-.p-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--p));display:flex;align-items:center;justify-content:center;color:var(--wht);font-weight:600;font-size:.8125rem}
-.p-name{font-size:.8125rem;font-weight:600;color:var(--g900);line-height:1.25}
-.p-role{font-size:.6875rem;color:var(--g400);line-height:1.25}
-.content{padding:1.5rem;max-width:1200px}
-.alert{background:linear-gradient(90deg,var(--il),var(--wht));border:1px solid var(--il);border-left:4px solid var(--i);border-radius:var(--rl);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
-.alert.warn{background:linear-gradient(90deg,var(--wl),var(--wht));border-color:var(--wl);border-left-color:var(--w)}
-.alert-ic{width:40px;height:40px;border-radius:var(--r);background:var(--il);display:flex;align-items:center;justify-content:center;color:var(--i);flex-shrink:0}
-.alert.warn .alert-ic{background:var(--wl);color:var(--w)}
-.alert-c h4{font-size:.9375rem;font-weight:600;color:var(--g900);margin-bottom:.125rem}
-.alert-c p{font-size:.8125rem;color:var(--g500)}
-.alert-a{margin-left:auto;padding:.5rem 1rem;background:var(--i);color:var(--wht);border:none;border-radius:var(--r);font-size:.8125rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-.alert-a:hover{background:var(--s)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
-.stat{background:var(--wht);border:1px solid var(--g200);border-radius:var(--rl);padding:1.25rem;display:flex;align-items:flex-start;gap:1rem;transition:box-shadow .15s}
-.stat:hover{box-shadow:var(--shmd)}
-.s-ic{width:44px;height:44px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.s-ic.g{background:var(--pl);color:var(--p)}.s-ic.b{background:var(--il);color:var(--i)}.s-ic.am{background:var(--wl);color:var(--w)}.s-ic.r{background:var(--dl);color:var(--d)}
-.sv{font-size:1.5rem;font-weight:700;color:var(--g900);line-height:1.2}
-.sl{font-size:.8125rem;color:var(--g500);margin-top:.125rem}
-.sc{font-size:.75rem;font-weight:600;margin-top:.25rem}.sc.up{color:var(--ok)}.sc.dn{color:var(--d)}
-.qa{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem}
-.qa-btn{display:flex;align-items:center;gap:.5rem;padding:.625rem 1rem;background:var(--wht);border:1px solid var(--g200);border-radius:var(--r);font-size:.8125rem;font-weight:600;color:var(--g700);cursor:pointer;transition:all .15s}
-.qa-btn:hover{border-color:var(--p);color:var(--p);background:var(--pl)}
-.qa-btn svg{width:18px;height:18px}
-.tabs{margin-bottom:1.5rem}
-.th{display:flex;gap:.25rem;background:var(--g100);padding:.375rem;border-radius:var(--rl);border:1px solid var(--g200);overflow-x:auto}
-.tbtn{padding:.625rem 1.25rem;border-radius:var(--r);border:none;background:transparent;color:var(--g500);font-size:.875rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
-.tbtn:hover{color:var(--g700)}
-.tbtn.on{background:var(--wht);color:var(--p);box-shadow:var(--sh)}
-.tbtn .tb{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:.375rem;background:var(--g200);color:var(--g600);font-size:.6875rem;font-weight:700;border-radius:999px}
-.tbtn.on .tb{background:var(--pl);color:var(--p)}
-.tp{display:none;animation:fi .2s ease}
-.tp.on{display:block}
-@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.card{background:var(--wht);border:1px solid var(--g200);border-radius:var(--rl);overflow:hidden}
-.ch{padding:1.25rem 1.5rem;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
-.ct{font-size:1rem;font-weight:700;color:var(--g900)}
-.cst{font-size:.8125rem;color:var(--g500);margin-top:.125rem}
-.cb{padding:1.5rem}
-.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.ch-card{border:1px solid var(--g200);border-radius:var(--rl);padding:1.5rem;background:var(--wht);cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.ch-card:hover{border-color:var(--p);box-shadow:var(--shmd);transform:translateY(-2px)}
-.ch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--p),var(--pd));opacity:0;transition:opacity .15s}
-.ch-card:hover::before{opacity:1}
-.ch-ic{width:52px;height:52px;border-radius:var(--rl);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
-.ch-ic.ad{background:var(--pl);color:var(--p)}.ch-ic.pl{background:var(--il);color:var(--i)}.ch-ic.ph{background:var(--al);color:var(--a)}.ch-ic.em{background:var(--dl);color:var(--d)}.ch-ic.ok{background:var(--ol);color:var(--ok)}.ch-ic.wa{background:var(--wl);color:var(--w)}
-.ch-t{font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.375rem}
-.ch-d{font-size:.8125rem;color:var(--g500);margin-bottom:1rem;line-height:1.5}
-.ch-m{display:flex;align-items:center;gap:.75rem;font-size:.75rem;color:var(--g400)}
-.ch-m span{display:flex;align-items:center;gap:.25rem}
-.ch-a{margin-top:1rem;width:100%;padding:.625rem;background:var(--p);color:var(--wht);border:none;border-radius:var(--r);font-size:.8125rem;font-weight:600;cursor:pointer;transition:all .15s}
-.ch-a:hover{background:var(--pd)}
-.ch-a.ol{background:var(--wht);color:var(--p);border:1px solid var(--p)}
-.ch-a.ol:hover{background:var(--pl)}
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.875rem}
-th{text-align:left;padding:.875rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--g500);background:var(--g50);border-bottom:1px solid var(--g200)}
-td{padding:1rem;border-bottom:1px solid var(--g100);color:var(--g700);vertical-align:middle}
-tr:hover{background:var(--g50)}
-tr:last-child td{border-bottom:none}
-.tid{font-family:ui-monospace,monospace;font-size:.8125rem;color:var(--p);font-weight:600}
-.tsub{font-weight:600;color:var(--g900);margin-bottom:.125rem}
-.tpre{font-size:.8125rem;color:var(--g500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
-.st{display:inline-flex;align-items:center;gap:.375rem;padding:.25rem .625rem;border-radius:999px;font-size:.75rem;font-weight:600}
-.sd{width:6px;height:6px;border-radius:50%}
-.st.op{background:var(--il);color:var(--i)}.st.op .sd{background:var(--i)}
-.st.pn{background:var(--wl);color:var(--w)}.st.pn .sd{background:var(--w)}
-.st.rs{background:var(--ol);color:var(--ok)}.st.rs .sd{background:var(--ok)}
-.st.cl{background:var(--g100);color:var(--g500)}.st.cl .sd{background:var(--g400)}
-.pr{font-size:.75rem;font-weight:700;padding:.125rem .5rem;border-radius:var(--r)}
-.pr.hi{background:var(--dl);color:var(--d)}.pr.md{background:var(--wl);color:var(--w)}.pr.lo{background:var(--g100);color:var(--g500)}
-.tac{padding:.375rem .75rem;border-radius:var(--r);border:1px solid var(--g200);background:var(--wht);font-size:.75rem;font-weight:600;color:var(--g600);cursor:pointer;transition:all .15s}
-.tac:hover{border-color:var(--p);color:var(--p)}
-.fq{border-bottom:1px solid var(--g100)}
-.fq:last-child{border-bottom:none}
-.fqq{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1.125rem 0;background:none;border:none;font-size:.9375rem;font-weight:600;color:var(--g800);cursor:pointer;text-align:left}
-.fqq:hover{color:var(--p)}
-.fqi{transition:transform .2s;color:var(--g400)}
-.fq.on .fqi{transform:rotate(180deg);color:var(--p)}
-.fqa{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;font-size:.875rem;color:var(--g600);line-height:1.6}
-.fq.on .fqa{max-height:300px;padding-bottom:1.125rem}
-.fg{margin-bottom:1.25rem}
-.fl{display:block;font-size:.8125rem;font-weight:600;color:var(--g700);margin-bottom:.375rem}
-.fl .rq{color:var(--d)}
-.fi,.fs,.ft{width:100%;padding:.625rem .875rem;border:1px solid var(--g300);border-radius:var(--r);font-size:.875rem;color:var(--g800);background:var(--wht);transition:all .15s;font-family:inherit}
-.fi:focus,.fs:focus,.ft:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px var(--pl)}
-.ft{min-height:120px;resize:vertical}
-.fs{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2.5rem}
-.fr{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
-.fh{font-size:.75rem;color:var(--g400);margin-top:.25rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.625rem 1.25rem;border-radius:var(--r);font-size:.875rem;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:inherit}
-.btn-p{background:var(--p);color:var(--wht)}.btn-p:hover{background:var(--pd)}
-.btn-s{background:var(--g100);color:var(--g700);border:1px solid var(--g200)}.btn-s:hover{background:var(--g200)}
-.btn-g{background:transparent;color:var(--g500)}.btn-g:hover{color:var(--g800);background:var(--g100)}
-.btn-sm{padding:.5rem 1rem;font-size:.8125rem}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem;backdrop-filter:blur(4px)}
-.mo.on{display:flex}
-.md{background:var(--wht);border-radius:1rem;width:100%;max-width:560px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shmd);animation:mi .2s ease}
-.md.wd{max-width:720px}
-@keyframes mi{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.mh{padding:1.25rem 1.5rem;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
-.mt{font-size:1.0625rem;font-weight:700;color:var(--g900)}
-.mc{width:32px;height:32px;border-radius:var(--r);border:none;background:var(--g100);color:var(--g500);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
-.mc:hover{background:var(--g200);color:var(--g800)}
-.mb{padding:1.5rem;overflow-y:auto;flex:1}
-.mf{padding:1rem 1.5rem;border-top:1px solid var(--g100);display:flex;justify-content:flex-end;gap:.75rem}
-.cms{display:flex;flex-direction:column;gap:.875rem;margin-bottom:1rem;max-height:320px;overflow-y:auto;padding-right:.5rem}
-.cm{display:flex;gap:.75rem}
-.cm.ow{flex-direction:row-reverse}
-.ca{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:var(--wht)}
-.ca.u{background:linear-gradient(135deg,var(--p),var(--pd))}.ca.ag{background:linear-gradient(135deg,var(--s),var(--i))}
-.cbu{max-width:75%;padding:.75rem 1rem;border-radius:var(--rl);font-size:.875rem;line-height:1.5}
-.cm:not(.ow) .cbu{background:var(--g100);color:var(--g800);border-bottom-left-radius:.25rem}
-.cm.ow .cbu{background:var(--p);color:var(--wht);border-bottom-right-radius:.25rem}
-.cti{font-size:.6875rem;color:var(--g400);margin-top:.25rem;text-align:right}
-.cm:not(.ow) .cti{text-align:left}
-.ciw{display:flex;gap:.5rem}
-.ciw .fi{flex:1}
-.tdh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem}
-.tdm{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem}
-.tdmi{font-size:.8125rem;color:var(--g500)}
-.tdmi strong{color:var(--g800);display:block;font-size:.875rem;margin-top:.125rem}
-.thr{display:flex;flex-direction:column;gap:1rem}
-.thi{display:flex;gap:.875rem;padding:1rem;border-radius:var(--rl);background:var(--g50)}
-.thi.ag{background:var(--il)}
-.tc{flex:1}
-.thdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.375rem}
-.ta{font-weight:600;font-size:.875rem;color:var(--g900)}
-.ttm{font-size:.75rem;color:var(--g400)}
-.tb{font-size:.875rem;color:var(--g700);line-height:1.5}
-.rc{border:1px solid var(--g200);border-radius:var(--rl);padding:1.25rem;background:var(--wht);transition:all .15s}
-.rc:hover{box-shadow:var(--shmd);border-color:var(--p)}
-.rt{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--p);margin-bottom:.5rem}
-.rtt{font-size:.9375rem;font-weight:700;color:var(--g900);margin-bottom:.375rem}
-.rd{font-size:.8125rem;color:var(--g500);margin-bottom:1rem;line-height:1.5}
-.rl{font-size:.8125rem;font-weight:600;color:var(--p);text-decoration:none;display:inline-flex;align-items:center;gap:.25rem}
-.rl:hover{text-decoration:underline}
-.rs{display:flex;gap:.375rem;margin-bottom:1rem}
-.rst{width:36px;height:36px;border-radius:var(--r);border:1px solid var(--g300);background:var(--wht);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;color:var(--g400);font-size:1.125rem}
-.rst:hover,.rst.on{border-color:var(--a);background:var(--al);color:var(--a)}
-.es{text-align:center;padding:3rem 1.5rem}
-.ei{width:64px;height:64px;margin:0 auto 1rem;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g400)}
-.et{font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.375rem}
-.ed{font-size:.875rem;color:var(--g500);margin-bottom:1.25rem}
-.tc-toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:110;display:flex;flex-direction:column;gap:.5rem}
-.toast{background:var(--g900);color:var(--wht);padding:.875rem 1.25rem;border-radius:var(--rl);font-size:.875rem;font-weight:500;box-shadow:var(--shmd);display:flex;align-items:center;gap:.75rem;animation:ti .3s ease;max-width:360px}
-.toast.ok{background:var(--ok)}.toast.er{background:var(--d)}
-@keyframes ti{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-@media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}}
-@media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform .2s}.sidebar.on{transform:translateX(0)}.main{margin-left:0}.stats{grid-template-columns:1fr}.fr{grid-template-columns:1fr}}
-::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--g300);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--g400)}
-.txp{color:var(--p)}.txo{color:var(--ok)}.txd{color:var(--d)}.txw{color:var(--w)}.txg{color:var(--g500)}.fm{font-family:ui-monospace,monospace}
-.mb0{margin-bottom:0}.mb1{margin-bottom:.5rem}.mb2{margin-bottom:1rem}.mb3{margin-bottom:1.5rem}.mt1{margin-top:.5rem}
-</style>
-<base target="_blank">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Support — SaccoPay</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-light: #1558b0;
+      --primary-dark: #e8f0fe;
+      --primary-glow: rgba(255,107,0,0.18);
+      --primary-subtle: rgba(255,107,0,0.06);
+      --primary-border: rgba(255,107,0,0.20);
+      --bg-base: #F5F6FA;
+      --bg-card: #FFFFFF;
+      --bg-sidebar: #FFFFFF;
+      --text-primary: #1A1D2E;
+      --text-secondary: rgba(26,29,46,0.72);
+      --text-muted: rgba(26,29,46,0.50);
+      --text-accent: #1a73e8;
+      --border-subtle: rgba(26,29,46,0.08);
+      --border-default: rgba(26,29,46,0.12);
+      --success: #00C853;
+      --success-bg: rgba(0,200,83,0.09);
+      --warning: #F9A825;
+      --warning-bg: rgba(249,168,37,0.09);
+      --danger: #E53935;
+      --danger-bg: rgba(229,57,53,0.07);
+      --info: #0288D1;
+      --info-bg: rgba(2,136,209,0.07);
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 28px rgba(0,0,0,0.10);
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --sidebar-width: 260px;
+      --header-height: 60px;
+      --transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-size: 0.835rem;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SCROLLBAR ───────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f0f0f0; }
+    ::-webkit-scrollbar-thumb { background: var(--primary-border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* ═══════════════════════════════════════
+       LAYOUT WRAPPER
+    ═══════════════════════════════════════ */
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ═══════════════════════════════════════
+       SIDEBAR
+    ═══════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1050;
+      transition: var(--transition);
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: var(--shadow-md);
+      flex-shrink: 0;
+    }
+
+    /* Mobile: hidden off-canvas */
+    @media (max-width: 991.98px) {
+      .sidebar {
+        transform: translateX(-110%);
+      }
+      .sidebar.sidebar-open {
+        transform: translateX(0);
+      }
+    }
+
+    /* Desktop: always visible, part of flow */
+    @media (min-width: 992px) {
+      .sidebar {
+        position: sticky;
+        transform: none !important;
+        box-shadow: none;
+      }
+    }
+
+    .sidebar-brand {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+    }
+    .sidebar-brand .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg,#1a73e8,#1558b0);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+    .sidebar-brand .brand-text {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .sidebar-brand .brand-text span {
+      color: var(--primary);
+    }
+
+    .sidebar-user {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .sidebar-user .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--primary-border);
+    }
+    .sidebar-user .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .sidebar-user .user-info .user-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .sidebar-user .user-info .user-id {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .sidebar-user .user-status {
+      margin-left: auto;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(0,200,83,0.2);
+    }
+
+    .sidebar-nav { flex: 1; padding: 0.75rem 0; }
+    .sidebar-section-label {
+      font-size: 0.615rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0.85rem 1.25rem 0.35rem;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 1.25rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.815rem;
+      font-weight: 500;
+      border-radius: 0;
+      transition: var(--transition);
+      position: relative;
+    }
+    .sidebar-link:hover {
+      color: var(--primary);
+      background: var(--primary-subtle);
+    }
+    .sidebar-link.active {
+      color: var(--primary);
+      background: var(--primary-subtle);
+      font-weight: 700;
+    }
+    .sidebar-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--primary);
+    }
+    .sidebar-link .nav-icon {
+      width: 20px;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .sidebar-link .badge-pill {
+      margin-left: auto;
+      font-size: 0.6rem;
+      padding: 0.2em 0.55em;
+      border-radius: 99px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .sidebar-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+    /* ═══════════════════════════════════════
+       SIDEBAR OVERLAY (mobile)
+    ═══════════════════════════════════════ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.38);
+      z-index: 1040;
+      backdrop-filter: blur(2px);
+    }
+    @media (max-width: 991.98px) {
+      .sidebar-overlay.active { display: block; }
+    }
+
+    /* ═══════════════════════════════════════
+       MAIN CONTENT AREA
+    ═══════════════════════════════════════ */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    @media (min-width: 992px) {
+      .app-wrapper {
+        display: grid;
+        grid-template-columns: var(--sidebar-width) 1fr;
+        grid-template-rows: auto;
+      }
+      .sidebar {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        align-self: start;
+      }
+      .main-content {
+        grid-column: 2;
+      }
+    }
+
+    /* ── TOPBAR ──────────────────────────── */
+    .topbar {
+      height: var(--header-height);
+      background: #fff;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 1.25rem;
+      gap: 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      box-shadow: var(--shadow-sm);
+    }
+    .topbar .sidebar-toggle {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--bg-base);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .topbar .sidebar-toggle:hover {
+      background: var(--primary-subtle);
+      color: var(--primary);
+    }
+
+    /* Dashed toggle on mobile */
+    @media (max-width: 991.98px) {
+      .topbar .sidebar-toggle {
+        border: 2px dashed var(--primary-border);
+        background: var(--primary-subtle);
+        color: var(--primary);
+      }
+      .topbar .sidebar-toggle:hover {
+        border-color: var(--primary);
+        background: rgba(255,107,0,0.14);
+      }
+    }
+
+    /* Hide toggle on desktop */
+    @media (min-width: 992px) {
+      .topbar .sidebar-toggle { display: none; }
+    }
+
+    .topbar .topbar-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .topbar .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .topbar .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      position: relative;
+    }
+    .topbar .icon-btn:hover { background: var(--primary-subtle); color: var(--primary); border-color: var(--primary-border); }
+    .topbar .icon-btn .notif-dot {
+      position: absolute;
+      top: 5px;
+      right: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--danger);
+      border: 2px solid #fff;
+    }
+    .topbar .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.25rem 0.65rem 0.25rem 0.25rem;
+      border-radius: 99px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: var(--transition);
+    }
+    .topbar .user-chip:hover { border-color: var(--primary-border); background: var(--primary-subtle); }
+    .topbar .user-chip img { width: 26px; height: 26px; border-radius: 50%; }
+    .topbar .user-chip .chip-name { font-size: 0.75rem; font-weight: 600; }
+
+    /* ── PAGE CONTENT ────────────────────── */
+    .page-content { padding: 1.25rem; flex: 1; }
+    @media (min-width: 768px) { .page-content { padding: 1.5rem 1.75rem; } }
+    @media (min-width: 1200px) { .page-content { padding: 1.75rem 2rem; } }
+
+    /* ── ALERT BANNER ────────────────────── */
+    .alert-banner {
+      background: linear-gradient(135deg,rgba(229,57,53,0.07),rgba(249,168,37,0.07));
+      border: 1px solid rgba(229,57,53,0.18);
+      border-radius: var(--radius-lg);
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .alert-banner .alert-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(229,57,53,0.10);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .alert-banner .alert-title { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.1rem; }
+    .alert-banner .alert-text { font-size: 0.775rem; color: var(--text-secondary); }
+    .alert-banner .alert-text strong { color: var(--danger); }
+    .alert-banner .btn-alert {
+      margin-left: auto;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 7px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: center;
+      transition: var(--transition);
+    }
+    .alert-banner .btn-alert:hover { background: var(--danger); opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── STATS CARDS ─────────────────────── */
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .stat-card .stat-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+    .stat-card .stat-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-top: 0.2rem; }
+    .stat-card .stat-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* ── SECTION HEADER ──────────────────── */
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .section-header .section-title { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); }
+    .section-header .section-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* ── CARD BASE ───────────────────────── */
+    .sp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .sp-card .sp-card-header {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: #fafbfe;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sp-card .sp-card-header .card-title { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+    .sp-card .sp-card-body { padding: 1.1rem; }
+
+    /* ── TABLE ───────────────────────────── */
+    .sp-table { width: 100%; border-collapse: collapse; font-size: 0.795rem; }
+    .sp-table thead th {
+      padding: 0.65rem 0.9rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-default);
+      white-space: nowrap;
+      background: #fafbfe;
+    }
+    .sp-table tbody td {
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+    .sp-table tbody tr:last-child td { border-bottom: none; }
+    .sp-table tbody tr:hover td { background: var(--primary-subtle); }
+    .ticket-id {
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--primary);
+      background: var(--primary-subtle);
+      padding: 0.2em 0.55em;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+    .ticket-subject { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+    .ticket-preview { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* ── BADGES ──────────────────────────── */
+    .sp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      padding: 0.25em 0.65em;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .sp-badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .badge-open { background: var(--success-bg); color: var(--success); border: 1px solid rgba(0,200,83,0.2); }
+    .badge-open .dot { background: var(--success); }
+    .badge-pending { background: var(--warning-bg); color: #b07800; border: 1px solid rgba(249,168,37,0.2); }
+    .badge-pending .dot { background: var(--warning); }
+    .badge-resolved { background: var(--info-bg); color: var(--info); border: 1px solid rgba(2,136,209,0.2); }
+    .badge-resolved .dot { background: var(--info); }
+    .badge-closed { background: rgba(26,29,46,0.06); color: var(--text-muted); border: 1px solid var(--border-subtle); }
+    .badge-closed .dot { background: var(--text-muted); }
+    .priority-high { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(229,57,53,0.18); padding: 0.2em 0.55em; border-radius: 6px; font-size: 0.67rem; font-weight: 700; }
+    .priority-medium { background: var(--warning-bg); color: #b07800; border: 1px solid rgba(249,168,37,0.18); padding: 0.2em 0.55em; border-radius: 6px; font-size: 0.67rem; font-weight: 700; }
+    .priority-low { background: var(--success-bg); color: #00884a; border: 1px solid rgba(0,200,83,0.18); padding: 0.2em 0.55em; border-radius: 6px; font-size: 0.67rem; font-weight: 700; }
+
+    .btn-view {
+      padding: 0.3rem 0.7rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 7px;
+      border: 1px solid var(--primary-border);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-view:hover { background: var(--primary); color: #fff; }
+
+    /* Table wrapper scrollable on small screens */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    /* ── FAQ SECTION ─────────────────────── */
+    .faq-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 768px) { .faq-grid { grid-template-columns: 1fr 1fr; } }
+
+    .accordion-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0.85rem 1rem;
+      font-size: 0.815rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .accordion-btn:hover { color: var(--primary); }
+    .accordion-btn .acc-icon { color: var(--primary); font-size: 0.85rem; flex-shrink: 0; transition: var(--transition); }
+    .accordion-btn[aria-expanded="true"] .acc-icon { transform: rotate(180deg); }
+    .accordion-body-text {
+      padding: 0 1rem 0.9rem;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .accordion-item {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .accordion-item + .accordion-item { margin-top: 0.5rem; }
+
+    /* ── TOP SEARCHES & VIDEO ─────────────── */
+    .search-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+    .search-pill {
+      padding: 0.35rem 0.85rem;
+      border-radius: 99px;
+      border: 1px solid var(--border-default);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: #fff;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .search-pill:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-subtle); }
+
+    .video-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .video-card:hover { border-color: var(--primary-border); background: var(--primary-subtle); }
+    .video-card .play-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,var(--primary),var(--primary-light));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+    .video-card .video-title { font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
+    .video-card .video-dur { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* ── RESOURCES ───────────────────────── */
+    .resource-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    .resource-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-border); transform: translateY(-2px); }
+    .resource-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3em;
+      padding: 0.2em 0.6em;
+      border-radius: 6px;
+      font-size: 0.63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .rtype-document { background: var(--info-bg); color: var(--info); }
+    .rtype-form { background: var(--success-bg); color: #008c40; }
+    .rtype-policy { background: rgba(171,0,217,0.07); color: #7a00a0; }
+    .rtype-calendar { background: var(--warning-bg); color: #916000; }
+    .rtype-contact { background: var(--primary-subtle); color: var(--primary); }
+    .resource-name { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+    .resource-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+    .resource-link {
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2em;
+      margin-top: auto;
+    }
+    .resource-link:hover { text-decoration: underline; }
+
+    /* ── STAR RATING ─────────────────────── */
+    .stars-widget { display: flex; gap: 0.35rem; }
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.6rem;
+      color: #e0e0e0;
+      transition: color 0.15s;
+      padding: 0;
+      line-height: 1;
+    }
+    .star-btn.active, .star-btn.hover { color: #00f7ff; }
+
+    .form-label-sp { font-size: 0.775rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.35rem; display: block; }
+    .form-label-sp span { color: var(--danger); }
+    .sp-input {
+      width: 100%;
+      padding: 0.5rem 0.85rem;
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      background: #f7f8fc;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .sp-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px var(--primary-glow); }
+    .sp-select { appearance: none; cursor: pointer; }
+    .sp-textarea { resize: vertical; min-height: 80px; }
+    .sp-checkbox { display: flex; align-items: flex-start; gap: 0.55rem; cursor: pointer; }
+    .sp-checkbox input { width: 15px; height: 15px; accent-color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+    .sp-checkbox span { font-size: 0.775rem; color: var(--text-secondary); line-height: 1.5; }
+    .btn-submit {
+      padding: 0.55rem 1.4rem;
+      background: linear-gradient(135deg,var(--primary),var(--primary-light));
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 3px 12px var(--primary-glow);
+    }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 5px 18px var(--primary-glow); }
+    .btn-secondary-sp {
+      padding: 0.55rem 1.2rem;
+      background: var(--bg-base);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-secondary-sp:hover { border-color: var(--primary-border); color: var(--primary); }
+
+    /* ── FEEDBACK HISTORY ────────────────── */
+    .feedback-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .feedback-card:hover { border-color: var(--primary-border); box-shadow: var(--shadow-md); }
+    .feedback-card .fb-ticket { font-size: 0.72rem; font-weight: 700; color: var(--primary); font-family: monospace; }
+    .feedback-card .fb-stars { font-size: 0.9rem; color: #00f7ff; }
+    .feedback-card .fb-quote { font-size: 0.78rem; color: var(--text-secondary); font-style: italic; line-height: 1.6; margin: 0.45rem 0; }
+    .feedback-card .fb-date { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* ── METRICS CARDS ───────────────────── */
+    .metric-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .metric-item:last-child { border-bottom: none; }
+    .metric-label { font-size: 0.78rem; color: var(--text-secondary); font-weight: 500; }
+    .metric-value { font-size: 0.85rem; font-weight: 800; color: var(--primary); }
+
+    /* ── NAV TABS ────────────────────────── */
+    .sp-tabs { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--border-subtle); margin-bottom: 1.25rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .sp-tab {
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .sp-tab:hover { color: var(--primary); }
+    .sp-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+    .sp-tab-count { font-size: 0.6rem; padding: 0.1em 0.45em; border-radius: 99px; background: var(--primary); color: #fff; font-weight: 700; }
+
+    /* ── PAGE SECTION TABS ───────────────── */
+    .page-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .page-tab-btn {
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-card);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .page-tab-btn:hover { border-color: var(--primary-border); color: var(--primary); }
+    .page-tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .page-tab-btn.active i { color: rgba(255,255,255,0.85); }
+
+    /* ── TAB SECTIONS ────────────────────── */
+    .tab-section { display: none; }
+    .tab-section.visible { display: block; }
+
+    /* ── NEW TICKET BTN ──────────────────── */
+    .btn-new-ticket {
+      padding: 0.45rem 1rem;
+      background: linear-gradient(135deg,var(--primary),var(--primary-light));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+    .btn-new-ticket:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── TOAST ───────────────────────────── */
+    #toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 9999;
+    }
+    .toast-msg {
+      min-width: 240px;
+      max-width: 320px;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: slideInToast 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast-msg.toast-ok { background: var(--success); }
+    .toast-msg.toast-info { background: var(--info); }
+    .toast-msg.toast-warn { background: var(--warning); color: #1a1d2e; }
+    .toast-msg.toast-error { background: var(--danger); }
+    @keyframes slideInToast {
+      from { opacity: 0; transform: translateX(40px) scale(0.9); }
+      to   { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    /* ── FOOTER ──────────────────────────── */
+    .app-footer {
+      padding: 0.85rem 1.75rem;
+      border-top: 1px solid var(--border-subtle);
+      background: #fff;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .app-footer a { color: var(--primary); text-decoration: none; }
+
+    /* ── MISC ────────────────────────────── */
+    .divider { height: 1px; background: var(--border-subtle); margin: 1rem 0; }
+    .text-orange { color: var(--primary) !important; }
+    .text-muted-sp { color: var(--text-muted) !important; }
+    .fw-800 { font-weight: 800 !important; }
+    .gap-section { margin-bottom: 1.5rem; }
+
+    /* Responsive: hide non-essential columns on small screens */
+    @media (max-width: 575.98px) {
+      .hide-xs { display: none !important; }
+    }
+    @media (max-width: 767.98px) {
+      .hide-sm { display: none !important; }
+    }
+  </style>
 </head>
 <body>
-<div class="layout">
-<aside class="sidebar" id="sidebar">
-<div class="sb-brand"><div class="sb-icon">SP</div><div class="sb-text">Sacco<span>Pay</span></div></div>
-<nav class="sb-nav">
-<div class="nav-sec"><div class="nav-sec-t">Main</div>
-<a class="nav-link" onclick="toast('Navigate to Dashboard','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
-<a class="nav-link" onclick="toast('Navigate to My Loans','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>My Loans</a>
-<a class="nav-link" onclick="toast('Navigate to Savings','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>Savings</a>
-<a class="nav-link" onclick="toast('Navigate to Transactions','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h3v3h-3zM8 3h3v3H8zM5 8h14v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8zM12 12v4"/></svg>Transactions</a>
-</div>
-<div class="nav-sec"><div class="nav-sec-t">Services</div>
-<a class="nav-link" onclick="toast('Navigate to Withdrawals','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/><path d="m15 7-5 5-5-5"/></svg>Withdrawals</a>
-<a class="nav-link" onclick="toast('Navigate to Shares','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7"/><path d="M15 7h6v6"/></svg>Shares & Dividends</a>
-<a class="nav-link" onclick="toast('Navigate to Guarantors','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Guarantors</a>
-</div>
-<div class="nav-sec"><div class="nav-sec-t">Account</div>
-<a class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>Support Center</a>
-<a class="nav-link" onclick="toast('Navigate to Profile','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
-<a class="nav-link" onclick="toast('Navigate to Settings','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
-</div>
-</nav>
-<div class="sb-foot">SaccoPay v6.1.0 — Member Portal</div>
-</aside>
-<div class="main">
-<header class="header">
-<div class="h-left"><span class="page-title">Support Center</span><span class="bc"><a onclick="toast('Navigate to Home','info')">Home</a> / Support</span></div>
-<div class="h-right">
-<button class="h-btn" onclick="toast('No new notifications','info')" title="Notifications"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bdg">2</span></button>
-<button class="h-btn" onclick="toast('Messages opened','info')" title="Messages"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
-<div class="profile" onclick="toast('Profile menu toggled','info')"><div class="p-av">JK</div><div><div class="p-name">John Kamau</div><div class="p-role">MEM-2024-0045</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--g400)"><path d="m6 9 6 6 6-6"/></svg></div>
-</div>
-</header>
 
-<div class="content">
-<div class="alert warn">
-<div class="alert-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
-<div class="alert-c"><h4>Loan Payment Due in 4 Days</h4><p>Your Emergency Loan installment of <strong>KES 3,200</strong> is due on <strong>Mar 1, 2025</strong>. Need help with repayment options?</p></div>
-<button class="alert-a" onclick="openM('payModal')">Get Help</button>
-</div>
+<!-- ══════════════════════════════════════
+     SIDEBAR OVERLAY (mobile tap-to-close)
+══════════════════════════════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-<div class="stats">
-<div class="stat"><div class="s-ic g"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="sv">3</div><div class="sl">Open Tickets</div><div class="sc up">2 resolved this week</div></div></div>
-<div class="stat"><div class="s-ic b"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="sv">2h</div><div class="sl">Avg. Response Time</div><div class="sc up">Faster than last week</div></div></div>
-<div class="stat"><div class="s-ic am"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="sv">1</div><div class="sl">Pending Escalation</div><div class="sc dn">Awaiting admin review</div></div></div>
-<div class="stat"><div class="s-ic r"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div><div><div class="sv">92%</div><div class="sl">Satisfaction Score</div><div class="sc up">Based on 12 ratings</div></div></div>
-</div>
+<!-- ══════════════════════════════════════
+     APP WRAPPER
+══════════════════════════════════════ -->
+<div class="app-wrapper">
 
-<div class="qa">
-<button class="qa-btn" onclick="openM('newTModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>New Support Ticket</button>
-<button class="qa-btn" onclick="openM('chatModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Live Chat</button>
-<button class="qa-btn" onclick="openM('callModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Request Callback</button>
-<button class="qa-btn" onclick="goFaq()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Browse FAQ</button>
-<button class="qa-btn" onclick="toast('Community forum coming soon','info')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Member Forum</button>
-</div>
+ <!-- ══════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
 
-<div class="tabs">
-<div class="th">
-<button class="tbtn on" data-t="contact" onclick="swT(this,'contact')">Contact Support</button>
-<button class="tbtn" data-t="tickets" onclick="swT(this,'tickets')">My Tickets <span class="tb">5</span></button>
-<button class="tbtn" data-t="faq" onclick="swT(this,'faq')">FAQ & Guides</button>
-<button class="tbtn" data-t="resources" onclick="swT(this,'resources')">Resources</button>
-<button class="tbtn" data-t="feedback" onclick="swT(this,'feedback')">Feedback</button>
-</div>
-</div>
-<div class="tp on" id="tp-contact">
-<div class="g2">
-<div class="card"><div class="ch"><div><div class="ct">SACCO Admin Support</div><div class="cst">Get help from your SACCO administrators directly</div></div></div>
-<div class="cb">
-<div class="ch-card" onclick="openM('newTModal')">
-<div class="ch-ic ad"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-<div class="ch-t">Submit a Ticket to Admin</div><div class="ch-d">Raise an official request for loan disputes, savings corrections, share transfers, AGM queries, or any SACCO-specific matter.</div>
-<div class="ch-m"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Avg. 4h response</span><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Mon–Fri 8am–5pm</span></div>
-<button class="ch-a">Create Admin Ticket</button>
-</div>
-<div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
-<div class="ch-card" style="padding:1rem" onclick="openM('callModal')"><div class="ch-ic ph" style="width:40px;height:40px;margin-bottom:.75rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div class="ch-t" style="font-size:.9375rem">Call SACCO Office</div><div class="ch-d" style="font-size:.75rem">+254 720 123 456</div></div>
-<div class="ch-card" style="padding:1rem" onclick="toast('Opening email client...','info')"><div class="ch-ic em" style="width:40px;height:40px;margin-bottom:.75rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div><div class="ch-t" style="font-size:.9375rem">Email Admin</div><div class="ch-d" style="font-size:.75rem">support@sacco.co.ke</div></div>
-</div>
-</div></div>
+    <!-- Brand -->
+    <a href="./index-main.html" class="sidebar-brand">
+      <div class="brand-icon">S</div>
+      <span class="brand-text">Sacco<span>Pay</span></span>
+    </a>
 
-<div class="card"><div class="ch"><div><div class="ct">SaccoPay Platform Support</div><div class="cst">Technical help, M-Pesa issues, app guidance & more</div></div></div>
-<div class="cb">
-<div class="ch-card" onclick="openM('chatModal')"><div class="ch-ic pl"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-<div class="ch-t">Live Chat with Support</div><div class="ch-d">Get instant help for M-Pesa integration errors, failed transactions, login issues, PIN resets, and platform navigation.</div>
-<div class="ch-m"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Avg. 5 min response</span><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 24/7 Available</span></div>
-<button class="ch-a ol">Start Live Chat</button>
-</div>
-<div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
-<div class="ch-card" style="padding:1rem" onclick="openM('newTModal')"><div class="ch-ic pl" style="width:40px;height:40px;margin-bottom:.75rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="ch-t" style="font-size:.9375rem">Platform Ticket</div><div class="ch-d" style="font-size:.75rem">Bug reports & feature requests</div></div>
-<div class="ch-card" style="padding:1rem" onclick="toast('WhatsApp chat opening...','ok')"><div class="ch-ic ok" style="width:40px;height:40px;margin-bottom:.75rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div class="ch-t" style="font-size:.9375rem">WhatsApp Support</div><div class="ch-d" style="font-size:.75rem">+254 711 987 654</div></div>
-</div>
-</div></div>
-</div>
+    <!-- User -->
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=90&bold=true&font-size=0.4" alt="John Doe" />
+      </div>
+      <div class="user-info">
+        <div class="user-name">John Doe</div>
+        <div class="user-id">MEM-2024-4821</div>
+      </div>
+      <div class="user-status"></div>
+    </div>
 
-<div class="card" style="margin-top:1.5rem"><div class="ch"><div class="ct">Common Support Categories</div></div>
-<div class="cb"><div class="g3">
-<div class="ch-card" onclick="preT('Loan Issues')"><div class="ch-ic ad"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="ch-t">Loan Issues</div><div class="ch-d">Repayment errors, guarantor disputes, loan calculator questions, clearance certificates.</div></div>
-<div class="ch-card" onclick="preT('Savings & Deposits')"><div class="ch-ic pl"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></div><div class="ch-t">Savings & Deposits</div><div class="ch-d">Missing deposits, interest calculation queries, deposit receipts, standing orders.</div></div>
-<div class="ch-card" onclick="preT('Withdrawals')"><div class="ch-ic wa"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/><path d="m15 7-5 5-5-5"/></svg></div><div class="ch-t">Withdrawals</div><div class="ch-d">Failed withdrawals, delay in processing, M-Pesa reversal, withdrawal limits.</div></div>
-<div class="ch-card" onclick="preT('Shares & Dividends')"><div class="ch-ic ok"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.2 7.8l-7.7 7.7-4-4-5.7 5.7"/><path d="M15 7h6v6"/></svg></div><div class="ch-t">Shares & Dividends</div><div class="ch-d">Share purchase issues, dividend payments, share transfer requests, AGM voting.</div></div>
-<div class="ch-card" onclick="preT('M-Pesa / Payments')"><div class="ch-ic pl"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></div><div class="ch-t">M-Pesa / Payments</div><div class="ch-d">STK push failures, wrong PayBill, transaction reversals, payment confirmation delays.</div></div>
-<div class="ch-card" onclick="preT('Account & Security')"><div class="ch-ic em"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ch-t">Account & Security</div><div class="ch-d">Login problems, PIN reset, KYC updates, suspicious activity, device management.</div></div>
-</div></div></div>
-</div>
-<div class="tp" id="tp-tickets">
-<div class="card"><div class="ch"><div><div class="ct">My Support Tickets</div><div class="cst">Track and manage all your support requests</div></div><button class="btn btn-p btn-sm" onclick="openM('newTModal')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>New Ticket</button></div>
-<div class="cb" style="padding:0"><div class="tw"><table>
-<thead><tr><th>Ticket ID</th><th>Subject & Preview</th><th>Category</th><th>Priority</th><th>Status</th><th>Last Update</th><th>Action</th></tr></thead>
-<tbody>
-<tr><td><span class="tid">#SUP-2025-0042</span></td><td><div class="tsub">Emergency Loan Disbursement Delay</div><div class="tpre">Applied 3 days ago but funds not yet reflected in my M-Pesa...</div></td><td>Loan Issues</td><td><span class="pr hi">High</span></td><td><span class="st op"><span class="sd"></span> Open</span></td><td>2 hours ago</td><td><button class="tac" onclick="openTD('SUP-2025-0042')">View</button></td></tr>
-<tr><td><span class="tid">#SUP-2025-0038</span></td><td><div class="tsub">Missing Monthly Interest Credit</div><div class="tpre">January interest of KES 720 not credited to savings account...</div></td><td>Savings</td><td><span class="pr md">Medium</span></td><td><span class="st pn"><span class="sd"></span> Pending</span></td><td>Yesterday</td><td><button class="tac" onclick="openTD('SUP-2025-0038')">View</button></td></tr>
-<tr><td><span class="tid">#SUP-2025-0031</span></td><td><div class="tsub">M-Pesa STK Push Not Working</div><div class="tpre">When trying to repay loan via M-Pesa, STK push prompt does not appear...</div></td><td>Payments</td><td><span class="pr hi">High</span></td><td><span class="st op"><span class="sd"></span> Open</span></td><td>4 hours ago</td><td><button class="tac" onclick="openTD('SUP-2025-0031')">View</button></td></tr>
-<tr><td><span class="tid">#SUP-2025-0025</span></td><td><div class="tsub">Request for Dividend Statement</div><div class="tpre">Need official FY 2024 dividend statement for tax filing purposes...</div></td><td>Shares</td><td><span class="pr lo">Low</span></td><td><span class="st rs"><span class="sd"></span> Resolved</span></td><td>Feb 20, 2025</td><td><button class="tac" onclick="openTD('SUP-2025-0025')">View</button></td></tr>
-<tr><td><span class="tid">#SUP-2025-0019</span></td><td><div class="tsub">Update KYC Documents</div><div class="tpre">Submitted new ID copy and utility bill for address update...</div></td><td>Account</td><td><span class="pr md">Medium</span></td><td><span class="st cl"><span class="sd"></span> Closed</span></td><td>Feb 15, 2025</td><td><button class="tac" onclick="openTD('SUP-2025-0019')">View</button></td></tr>
-</tbody>
-</table></div></div>
-<div style="padding:1rem 1.5rem;border-top:1px solid var(--g100);background:var(--g50);display:flex;justify-content:flex-end;gap:.75rem">
-<button class="btn btn-g btn-sm" onclick="toast('Exporting ticket history...','ok')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export History</button>
-<button class="btn btn-s btn-sm" onclick="toast('Showing all 5 tickets','info')">View All</button>
-</div></div>
-</div>
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
 
-<div class="tp" id="tp-faq">
-<div class="g2">
-<div class="card"><div class="ch"><div class="ct">Frequently Asked Questions</div></div>
-<div class="cb">
-<div class="fq on"><button class="fqq" onclick="tF(this)">How do I apply for a new loan?<svg class="fqi" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="fqa">Navigate to <strong>My Loans &gt; Apply New Loan</strong>, select your desired product, fill in the amount and purpose, upload required documents, and nominate guarantors if needed. Approval typically takes 1–3 business days. You will receive SMS and email notifications at each stage.</div></div>
-<div class="fq"><button class="fqq" onclick="tF(this)">Why is my M-Pesa payment not reflecting?<svg class="fqi" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="fqa">M-Pesa payments may take up to <strong>15 minutes</strong> to reflect during peak hours. If it exceeds 30 minutes, check your M-Pesa confirmation message, then raise a ticket under <strong>M-Pesa / Payments</strong> with the transaction code. Our team will reconcile within 2 hours.</div></div>
-<div class="fq"><button class="fqq" onclick="tF(this)">How do I change my guarantor?<svg class="fqi" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="fqa">Guarantor changes are only permitted <strong>before loan disbursement</strong>. Go to your pending loan application, click <strong>Manage Guarantors</strong>, remove the existing guarantor, and send a new request. The new guarantor must accept within 48 hours.</div></div>
-<div class="fq"><button class="fqq" onclick="tF(this)">What is the minimum savings contribution?<svg class="fqi" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="fqa">The minimum monthly savings contribution is <strong>KES 1,000</strong>. However, to maintain loan eligibility at 3x multiplier, we recommend contributing at least <strong>KES 5,000</strong> monthly. You can set up a standing order via M-Pesa PayBill 522522.</div></div>
-<div class="fq"><button class="fqq" onclick="tF(this)">How are dividends calculated and paid?<svg class="fqi" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="fqa">Dividends are calculated as a percentage of your <strong>share capital</strong> at the end of the financial year. The Board declares the rate at the AGM. For FY 2024, the rate is <strong>12.5%</strong>. Payments are processed via M-Pesa or bank transfer by March 31.</div></div>
-<div class="fq"><button class="fqq" onclick="tF(this)">Can I withdraw my savings anytime?<svg class="fqi" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="fqa">You may request a withdrawal anytime, but <strong>minimum balance rules apply</strong>. You must retain at least KES 2,000 as a retention amount. Withdrawals are processed within 24 hours on business days. Large withdrawals above KES 50,000 require SACCO admin approval.</div></div>
-</div></div>
-<div>
-<div class="card mb3"><div class="ch"><div class="ct">Top Searches</div></div><div class="cb"><div class="qa" style="margin-bottom:0">
-<button class="qa-btn" onclick="toast('Searching: Loan repayment','info')">Loan repayment</button>
-<button class="qa-btn" onclick="toast('Searching: M-Pesa failed','info')">M-Pesa failed</button>
-<button class="qa-btn" onclick="toast('Searching: Guarantor request','info')">Guarantor request</button>
-<button class="qa-btn" onclick="toast('Searching: Interest rates','info')">Interest rates</button>
-<button class="qa-btn" onclick="toast('Searching: Withdrawal limit','info')">Withdrawal limit</button>
-<button class="qa-btn" onclick="toast('Searching: Share transfer','info')">Share transfer</button>
-<button class="qa-btn" onclick="toast('Searching: PIN reset','info')">PIN reset</button>
-<button class="qa-btn" onclick="toast('Searching: AGM voting','info')">AGM voting</button>
-</div></div></div>
-<div class="card"><div class="ch"><div class="ct">Video Guides</div></div><div class="cb"><div style="display:flex;flex-direction:column;gap:1rem">
-<div class="ch-card" style="padding:1rem" onclick="toast('Playing video: How to Apply for a Loan','info')"><div style="display:flex;align-items:center;gap:.875rem"><div style="width:56px;height:40px;background:var(--g800);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--wht)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div><div style="font-weight:600;font-size:.875rem;color:var(--g900)">How to Apply for a Loan</div><div style="font-size:.75rem;color:var(--g400);margin-top:.125rem">3 min 42 sec</div></div></div></div>
-<div class="ch-card" style="padding:1rem" onclick="toast('Playing video: M-Pesa Payment Guide','info')"><div style="display:flex;align-items:center;gap:.875rem"><div style="width:56px;height:40px;background:var(--g800);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--wht)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div><div style="font-weight:600;font-size:.875rem;color:var(--g900)">M-Pesa Payment Guide</div><div style="font-size:.75rem;color:var(--g400);margin-top:.125rem">2 min 15 sec</div></div></div></div>
-<div class="ch-card" style="padding:1rem" onclick="toast('Playing video: Understanding Your Dashboard','info')"><div style="display:flex;align-items:center;gap:.875rem"><div style="width:56px;height:40px;background:var(--g800);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--wht)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div><div style="font-weight:600;font-size:.875rem;color:var(--g900)">Understanding Your Dashboard</div><div style="font-size:.75rem;color:var(--g400);margin-top:.125rem">5 min 08 sec</div></div></div></div>
-</div></div></div>
-</div>
-</div>
-</div>
-<div class="tp" id="tp-resources">
-<div class="g3">
-<div class="rc"><div class="rt">Document</div><div class="rtt">SACCO Constitution & Bylaws</div><div class="rd">Full governing document covering membership rights, loan policies, dividend distribution, and AGM procedures.</div><a href="#" class="rl" onclick="toast('Downloading SACCO Constitution PDF...','ok')">Download PDF →</a></div>
-<div class="rc"><div class="rt">Document</div><div class="rtt">Loan Application Checklist</div><div class="rd">Step-by-step checklist for all loan products including required documents, guarantor rules, and approval timelines.</div><a href="#" class="rl" onclick="toast('Downloading Loan Checklist PDF...','ok')">Download PDF →</a></div>
-<div class="rc"><div class="rt">Document</div><div class="rtt">M-Pesa PayBill Guide</div><div class="rd">Detailed instructions for deposits, loan repayments, and share purchases using our M-Pesa PayBill number.</div><a href="#" class="rl" onclick="toast('Downloading M-Pesa Guide PDF...','ok')">Download PDF →</a></div>
-<div class="rc"><div class="rt">Form</div><div class="rtt">Withdrawal Request Form</div><div class="rd">Official form for processing savings withdrawals. Must be submitted 48 hours before the desired processing date.</div><a href="#" class="rl" onclick="toast('Downloading Withdrawal Form...','ok')">Download Form →</a></div>
-<div class="rc"><div class="rt">Form</div><div class="rtt">Guarantor Nomination Form</div><div class="rd">Use this form when nominating guarantors for Development, School Fees, or Business loans.</div><a href="#" class="rl" onclick="toast('Downloading Guarantor Form...','ok')">Download Form →</a></div>
-<div class="rc"><div class="rt">Policy</div><div class="rtt">Data Privacy Policy</div><div class="rd">How SaccoPay collects, stores, and protects your personal and financial data in compliance with Kenyan Data Protection Act.</div><a href="#" class="rl" onclick="toast('Opening Privacy Policy...','info')">Read Policy →</a></div>
-<div class="rc"><div class="rt">Policy</div><div class="rtt">Interest & Penalty Schedule</div><div class="rd">Current interest rates for all loan products, late payment penalties, and default recovery procedures.</div><a href="#" class="rl" onclick="toast('Downloading Interest Schedule...','ok')">Download PDF →</a></div>
-<div class="rc"><div class="rt">Calendar</div><div class="rtt">2025 SACCO Events Calendar</div><div class="rd">Key dates for AGMs, dividend declarations, loan product launches, and member education days.</div><a href="#" class="rl" onclick="toast('Downloading Events Calendar...','ok')">Download Calendar →</a></div>
-<div class="rc"><div class="rt">Contact</div><div class="rtt">SACCO Office Directory</div><div class="rd">Phone numbers, email addresses, and office hours for all SACCO departments including loans, savings, and shares.</div><a href="#" class="rl" onclick="toast('Opening Office Directory...','info')">View Directory →</a></div>
-</div>
-</div>
+      <a href="./index-main.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
+        Dashboard
+      </a>
+      <a href="./wallet.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
+        Wallet
+      </a>
+      <a href="./member-profile.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-currency-exchange"></i></span>
+        Sacco Profile
+      </a>
 
-<div class="tp" id="tp-feedback">
-<div class="g2">
-<div class="card"><div class="ch"><div><div class="ct">Rate Your Support Experience</div><div class="cst">Your feedback helps us serve you better</div></div></div>
-<div class="cb">
-<div class="fg"><label class="fl">How would you rate our support? <span class="rq">*</span></label><div class="rs" id="ratingStars">
-<button class="rst" onclick="setR(1)">★</button><button class="rst" onclick="setR(2)">★</button><button class="rst" onclick="setR(3)">★</button><button class="rst" onclick="setR(4)">★</button><button class="rst" onclick="setR(5)">★</button>
-</div><div class="fh" id="ratingLabel">Click a star to rate</div></div>
-<div class="fg"><label class="fl">Which ticket are you rating?</label><select class="fs"><option value="">Select a recent ticket...</option><option value="SUP-2025-0042">#SUP-2025-0042 — Emergency Loan Disbursement Delay</option><option value="SUP-2025-0038">#SUP-2025-0038 — Missing Monthly Interest Credit</option><option value="SUP-2025-0031">#SUP-2025-0031 — M-Pesa STK Push Not Working</option><option value="SUP-2025-0025">#SUP-2025-0025 — Request for Dividend Statement</option><option value="general">General platform experience</option></select></div>
-<div class="fg"><label class="fl">What went well?</label><textarea class="ft" placeholder="Tell us what you liked about the support you received..."></textarea></div>
-<div class="fg"><label class="fl">What can we improve?</label><textarea class="ft" placeholder="Share suggestions for how we can do better..."></textarea></div>
-<div class="fg mb0"><label class="fl" style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--p)"><span style="font-weight:500">I consent to my feedback being used for service improvement</span></label></div>
-</div>
-<div class="mf"><button class="btn btn-s" onclick="toast('Feedback draft saved','info')">Save Draft</button><button class="btn btn-p" onclick="subF()">Submit Feedback</button></div></div>
-<div>
-<div class="card mb3"><div class="ch"><div class="ct">Your Feedback History</div></div><div class="cb"><div style="display:flex;flex-direction:column;gap:1rem">
-<div style="padding:1rem;border:1px solid var(--g200);border-radius:var(--rl)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem"><div style="font-weight:600;font-size:.875rem;color:var(--g900)">#SUP-2025-0025 — Dividend Statement</div><div style="color:var(--a);font-size:1rem">★★★★★</div></div><div style="font-size:.8125rem;color:var(--g500);margin-bottom:.5rem">"The admin team responded within 2 hours and sent the statement immediately. Very impressed!"</div><div style="font-size:.75rem;color:var(--g400)">Submitted on Feb 21, 2025</div></div>
-<div style="padding:1rem;border:1px solid var(--g200);border-radius:var(--rl)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem"><div style="font-weight:600;font-size:.875rem;color:var(--g900)">General — Platform Usability</div><div style="color:var(--a);font-size:1rem">★★★★☆</div></div><div style="font-size:.8125rem;color:var(--g500);margin-bottom:.5rem">"Great app but would love dark mode and biometric login. Otherwise very smooth experience."</div><div style="font-size:.75rem;color:var(--g400)">Submitted on Jan 15, 2025</div></div>
-</div></div></div>
-<div class="card"><div class="ch"><div class="ct">Support Metrics</div></div><div class="cb"><div style="display:flex;flex-direction:column;gap:1rem">
-<div><div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.375rem"><span style="color:var(--g600)">First Response Time</span><span style="font-weight:600;color:var(--g900)">2.1 hours</span></div><div style="height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="width:78%;height:100%;background:var(--p);border-radius:3px"></div></div></div>
-<div><div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.375rem"><span style="color:var(--g600)">Resolution Rate</span><span style="font-weight:600;color:var(--g900)">94%</span></div><div style="height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="width:94%;height:100%;background:var(--ok);border-radius:3px"></div></div></div>
-<div><div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.375rem"><span style="color:var(--g600)">Member Satisfaction</span><span style="font-weight:600;color:var(--g900)">4.6 / 5.0</span></div><div style="height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="width:92%;height:100%;background:var(--a);border-radius:3px"></div></div></div>
-<div><div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:.375rem"><span style="color:var(--g600)">Tickets Resolved This Month</span><span style="font-weight:600;color:var(--g900)">142</span></div><div style="height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="width:65%;height:100%;background:var(--i);border-radius:3px"></div></div></div>
-</div></div></div>
-</div>
-</div>
-</div>
+      <div class="sidebar-section-label">Finance</div>
+      <a href="./finance-savings.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-piggy-bank"></i></span>
+        Savings
+      </a>
+      <a href="./finance-deposits.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-arrow-down-circle"></i></span>
+        Deposits
+      </a>
+      <a href="./finance-withdrawals.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-arrow-up-circle"></i></span>
+        Withdrawals
+      </a>
 
-</div></div></div>
-<!-- MODALS -->
-<div class="mo" id="newTModal"><div class="md wd"><div class="mh"><div class="mt">Create New Support Ticket</div><button class="mc" onclick="closeM('newTModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
-<div class="mb">
-<div class="fr"><div class="fg"><label class="fl">Support Channel <span class="rq">*</span></label><select class="fs" id="tCh"><option value="admin">SACCO Admin</option><option value="platform">SaccoPay Platform</option></select></div>
-<div class="fg"><label class="fl">Category <span class="rq">*</span></label><select class="fs" id="tCat"><option value="">Select category...</option><option value="Loan Issues">Loan Issues</option><option value="Savings & Deposits">Savings & Deposits</option><option value="Withdrawals">Withdrawals</option><option value="Shares & Dividends">Shares & Dividends</option><option value="M-Pesa / Payments">M-Pesa / Payments</option><option value="Account & Security">Account & Security</option><option value="Technical Bug">Technical Bug</option><option value="Feature Request">Feature Request</option><option value="General Inquiry">General Inquiry</option></select></div></div>
-<div class="fr"><div class="fg"><label class="fl">Priority <span class="rq">*</span></label><select class="fs" id="tPr"><option value="low">Low — General question</option><option value="medium" selected>Medium — Needs attention soon</option><option value="high">High — Urgent issue affecting transactions</option></select></div>
-<div class="fg"><label class="fl">Related Loan/Transaction (optional)</label><select class="fs"><option value="">None / Not applicable</option><option value="LN-2025-0042">Emergency Loan — LN-2025-0042</option><option value="LN-2024-0028">Development Loan — LN-2024-0028</option><option value="LN-2025-0058">School Fees Loan — LN-2025-0058</option><option value="TXN-2025-0891">Withdrawal — TXN-2025-0891</option><option value="TXN-2025-0880">Deposit — TXN-2025-0880</option></select></div></div>
-<div class="fg"><label class="fl">Subject <span class="rq">*</span></label><input type="text" class="fi" id="tSub" placeholder="Brief summary of your issue"></div>
-<div class="fg"><label class="fl">Description <span class="rq">*</span></label><textarea class="ft" id="tDesc" placeholder="Provide detailed information about your issue. Include dates, amounts, transaction codes, and any error messages you encountered."></textarea><div class="fh">Tip: The more details you provide, the faster we can resolve your issue.</div></div>
-<div class="fg mb0"><label class="fl">Attachments (optional)</label><div style="border:2px dashed var(--g300);border-radius:var(--r);padding:1.5rem;text-align:center;cursor:pointer;transition:all .15s" ondragover="this.style.borderColor='var(--p)';this.style.background='var(--pl)'" ondragleave="this.style.borderColor='var(--g300)';this.style.background='transparent'" onclick="toast('File upload dialog would open here','info')"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--g400)" stroke-width="1.5" style="margin:0 auto .5rem;display:block"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg><div style="font-size:.875rem;font-weight:600;color:var(--g700)">Click to upload or drag and drop</div><div style="font-size:.75rem;color:var(--g400);margin-top:.25rem">PDF, PNG, JPG up to 5MB each</div></div></div>
-</div>
-<div class="mf"><button class="btn btn-s" onclick="closeM('newTModal')">Cancel</button><button class="btn btn-p" onclick="subT()">Submit Ticket</button></div></div></div>
+      <div class="sidebar-section-label">Loans</div>
+      <a href="./loans.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-cash-stack"></i></span>
+        My Loans
+        <span class="badge-pill">2</span>
+      </a>
+      <a href="./loan-repayments.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-calendar-check"></i></span>
+        Loan Repayment
+      </a>
 
-<div class="mo" id="chatModal"><div class="md"><div class="mh"><div style="display:flex;align-items:center;gap:.75rem"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--i));display:flex;align-items:center;justify-content:center;color:var(--wht);font-weight:700;font-size:.8125rem">SP</div><div><div class="mt">SaccoPay Support</div><div style="font-size:.75rem;color:var(--ok);display:flex;align-items:center;gap:.25rem"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block"></span> Online — Typically replies in 5 min</div></div></div><button class="mc" onclick="closeM('chatModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
-<div class="mb">
-<div class="cms" id="chatMsgs">
-<div class="cm"><div class="ca ag">SP</div><div><div class="cbu">Hello John! Welcome to SaccoPay Support. How can I assist you today?</div><div class="cti">12:45 PM</div></div></div>
-<div class="cm ow"><div class="ca u">JK</div><div><div class="cbu">Hi, my M-Pesa STK push is not appearing when I try to repay my loan.</div><div class="cti">12:46 PM</div></div></div>
-<div class="cm"><div class="ca ag">SP</div><div><div class="cbu">I understand that can be frustrating. Let me help you troubleshoot this. Are you using the mobile app or the web portal?</div><div class="cti">12:47 PM</div></div></div>
-<div class="cm ow"><div class="ca u">JK</div><div><div class="cbu">I'm using the web portal on Chrome.</div><div class="cti">12:48 PM</div></div></div>
-<div class="cm"><div class="ca ag">SP</div><div><div class="cbu">Thank you. Please try these steps:<br>1. Clear your browser cache<br>2. Ensure pop-ups are allowed for saccopay.co.ke<br>3. Try using the PayBill option as a backup: <strong>522522</strong>, Account: <strong>MEM-2024-0045</strong><br><br>Let me know if the issue persists!</div><div class="cti">12:50 PM</div></div></div>
-</div>
-<div class="ciw"><input type="text" class="fi" id="chatIn" placeholder="Type your message..." onkeypress="if(event.key==='Enter')sendChat()"><button class="btn btn-p" onclick="sendChat()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
-<div style="text-align:center;margin-top:.5rem"><button class="btn btn-g btn-sm" onclick="toast('Chat transcript emailed','ok')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email Transcript</button><button class="btn btn-g btn-sm" onclick="openM('newTModal');closeM('chatModal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>Create Ticket from Chat</button></div>
-</div></div></div>
+      <div class="sidebar-section-label">Membership</div>
+      <a href="./membership-shares.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-bar-chart"></i></span>
+        Shares
+      </a>
+      <a href="./membership-dividends.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-gift"></i></span>
+        Dividends
+      </a>
+      <a href="./membership-guarantors.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-people"></i></span>
+        Guarantors
+      </a>
 
-<div class="mo" id="callModal"><div class="md"><div class="mh"><div class="mt">Request a Callback</div><button class="mc" onclick="closeM('callModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
-<div class="mb">
-<div class="fg"><label class="fl">Preferred Contact Number <span class="rq">*</span></label><input type="tel" class="fi" value="+254 712 345 678" placeholder="e.g. +254 7XX XXX XXX"></div>
-<div class="fr"><div class="fg"><label class="fl">Best Date <span class="rq">*</span></label><input type="date" class="fi" value="2025-03-01"></div><div class="fg"><label class="fl">Best Time <span class="rq">*</span></label><select class="fs"><option>Morning (8am – 12pm)</option><option selected>Afternoon (12pm – 4pm)</option><option>Evening (4pm – 6pm)</option></select></div></div>
-<div class="fg"><label class="fl">Topic <span class="rq">*</span></label><select class="fs"><option>Loan Repayment Issues</option><option>Account Access Problems</option><option>M-Pesa Transaction Dispute</option><option>Shares & Dividends Query</option><option>General SACCO Inquiry</option><option>Technical Support</option></select></div>
-<div class="fg mb0"><label class="fl">Brief Description</label><textarea class="ft" placeholder="What should we know before calling you?"></textarea></div>
-</div>
-<div class="mf"><button class="btn btn-s" onclick="closeM('callModal')">Cancel</button><button class="btn btn-p" onclick="subCB()">Request Callback</button></div></div></div>
+      <div class="sidebar-section-label">Reports</div>
+      <a href="./reports-statements.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-receipt"></i></span>
+        Statements
+      </a>
+      <a href="./reports-transactions.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
+        Transactions
+      </a>
 
-<div class="mo" id="tdModal"><div class="md wd"><div class="mh"><div class="mt" id="tdTitle">Ticket #SUP-2025-0042</div><button class="mc" onclick="closeM('tdModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
-<div class="mb">
-<div class="tdh"><div><div style="font-size:1.125rem;font-weight:700;color:var(--g900);margin-bottom:.25rem">Emergency Loan Disbursement Delay</div><div style="font-size:.8125rem;color:var(--g500)">Created on Feb 24, 2025 · Last updated 2 hours ago</div></div><span class="st op"><span class="sd"></span> Open</span></div>
-<div class="tdm"><div class="tdmi">Channel<strong>SACCO Admin</strong></div><div class="tdmi">Category<strong>Loan Issues</strong></div><div class="tdmi">Priority<strong style="color:var(--d)">High</strong></div><div class="tdmi">Related Loan<strong>LN-2025-0042</strong></div><div class="tdmi">Assigned To<strong>Grace Muthoni (Loans Officer)</strong></div></div>
-<div style="border-top:1px solid var(--g100);padding-top:1.25rem"><div style="font-size:.875rem;font-weight:600;color:var(--g700);margin-bottom:.75rem">Conversation Thread</div>
-<div class="thr">
-<div class="thi"><div class="ca u" style="flex-shrink:0">JK</div><div class="tc"><div class="thdr"><span class="ta">John Kamau (You)</span><span class="ttm">Feb 24, 2025 at 9:15 AM</span></div><div class="tb">I applied for an Emergency Loan (LN-2025-0042) three days ago. The status shows "Approved" but the funds have not been disbursed to my M-Pesa. My M-Pesa number is 0712 345 678. Please assist urgently as I need the funds for a medical emergency.</div></div></div>
-<div class="thi ag"><div class="ca ag" style="flex-shrink:0;background:linear-gradient(135deg,var(--s),var(--i))">GM</div><div class="tc"><div class="thdr"><span class="ta">Grace Muthoni — Loans Officer</span><span class="ttm">Feb 24, 2025 at 11:30 AM</span></div><div class="tb">Hi John, thank you for reaching out. I have checked your application and can confirm it was approved by the credit committee. There seems to be a delay with the M-Pesa B2C disbursement queue. I have escalated this to our finance team and will update you within 2 hours.</div></div></div>
-<div class="thi ag"><div class="ca ag" style="flex-shrink:0;background:linear-gradient(135deg,var(--s),var(--i))">GM</div><div class="tc"><div class="thdr"><span class="ta">Grace Muthoni — Loans Officer</span><span class="ttm">Feb 24, 2025 at 1:45 PM</span></div><div class="tb">Update: The finance team has re-queued your disbursement. You should receive the STK push or direct deposit within the next 30 minutes. Please confirm once received.</div><div style="margin-top:.75rem"><div style="display:inline-flex;align-items:center;gap:.5rem;padding:.375rem .75rem;background:var(--wht);border:1px solid var(--g200);border-radius:var(--r);font-size:.75rem;color:var(--g600);cursor:pointer" onclick="toast('Opening disbursement receipt...','info')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>Disbursement_Queue_Receipt.pdf</div></div></div></div>
-<div class="thi"><div class="ca u" style="flex-shrink:0">JK</div><div class="tc"><div class="thdr"><span class="ta">John Kamau (You)</span><span class="ttm">Feb 24, 2025 at 3:00 PM</span></div><div class="tb">I still haven't received the funds. It's been over 90 minutes now. This is urgent.</div></div></div>
-</div></div>
-<div style="margin-top:1.25rem;border-top:1px solid var(--g100);padding-top:1.25rem"><label class="fl">Add Reply</label><textarea class="ft" placeholder="Type your reply here..."></textarea></div>
-</div>
-<div class="mf"><button class="btn btn-g" onclick="toast('Ticket escalation requested','w')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 15 7-7 7 7"/><path d="m5 9 7-7 7 7"/></svg>Escalate</button><button class="btn btn-s" onclick="closeM('tdModal')">Close</button><button class="btn btn-p" onclick="toast('Reply sent successfully','ok')">Send Reply</button></div></div></div>
+      <div class="sidebar-section-label">Account</div>
+      <a href="./account-notifications.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-bell"></i></span>
+        Notifications
+        <span class="badge-pill">3</span>
+      </a>
+      <a href="./account-settings.html" class="sidebar-link">
+        <span class="nav-icon"><i class="bi bi-gear"></i></span>
+        Settings
+      </a>
+      <a href="./support.html" class="sidebar-link active">
+        <span class="nav-icon"><i class="bi bi-headset"></i></span>
+        Support
+      </a>
+    </nav>
 
-<div class="mo" id="payModal"><div class="md"><div class="mh"><div class="mt">Loan Repayment Help</div><button class="mc" onclick="closeM('payModal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
-<div class="mb">
-<div style="background:var(--pl);border-radius:var(--rl);padding:1rem;margin-bottom:1rem"><div style="font-weight:700;color:var(--p);margin-bottom:.25rem">Emergency Loan — KES 3,200 due Mar 1, 2025</div><div style="font-size:.8125rem;color:var(--g600)">Loan #LN-2025-0042 · Installment #4 of 12</div></div>
-<div style="font-size:.9375rem;font-weight:600;color:var(--g800);margin-bottom:.75rem">Repayment Options</div>
-<div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem">
-<div class="ch-card" style="padding:1rem" onclick="toast('Opening M-Pesa STK push...','ok')"><div style="display:flex;align-items:center;gap:.75rem"><div style="width:40px;height:40px;border-radius:var(--r);background:var(--ol);color:var(--ok);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></div><div><div style="font-weight:600;font-size:.875rem;color:var(--g900)">M-Pesa STK Push</div><div style="font-size:.75rem;color:var(--g500)">Enter PIN on your phone</div></div></div></div>
-<div class="ch-card" style="padding:1rem" onclick="toast('PayBill details copied to clipboard','ok')"><div style="display:flex;align-items:center;gap:.75rem"><div style="width:40px;height:40px;border-radius:var(--r);background:var(--il);color:var(--i);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/></svg></div><div><div style="font-weight:600;font-size:.875rem;color:var(--g900)">Manual PayBill</div><div style="font-size:.75rem;color:var(--g500)">522522 · Acc: MEM-2024-0045</div></div></div></div>
-<div class="ch-card" style="padding:1rem" onclick="toast('Bank transfer details sent via SMS','ok')"><div style="display:flex;align-items:center;gap:.75rem"><div style="width:40px;height:40px;border-radius:var(--r);background:var(--wl);color:var(--w);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M14 21v-6H10v6"/></svg></div><div><div style="font-weight:600;font-size:.875rem;color:var(--g900)">Bank Transfer</div><div style="font-size:.75rem;color:var(--g500)">KCB Acc: 1234567890</div></div></div></div>
-</div>
-<div style="font-size:.8125rem;color:var(--g500);text-align:center">Need more help? <a href="#" style="color:var(--p);font-weight:600;text-decoration:none" onclick="closeM('payModal');openM('newTModal')">Create a ticket</a></div>
-</div></div></div>
+    <div class="sidebar-footer">
+      SaccoPay v6.1.0 &nbsp;·&nbsp; <a href="#">Help</a> &nbsp;·&nbsp; <a href="./logout.html">Logout</a>
+    </div>
+  </aside>
 
-<div class="tc-toast" id="tcToast"></div>
+  <!-- ══════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════ -->
+  <div class="main-content">
+
+    <!-- ── TOPBAR ─────────────────────── -->
+    <header class="topbar">
+      <!-- Dashed toggle (mobile only) -->
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+        <i class="bi bi-list" id="toggleIcon"></i>
+      </button>
+
+      <span class="topbar-title">
+        <i class="bi bi-headset text-orange me-1"></i>
+        Member Support
+      </span>
+
+      <div class="topbar-actions">
+        <a href="#" class="icon-btn" title="Notifications">
+          <i class="bi bi-bell-fill"></i>
+          <span class="notif-dot"></span>
+        </a>
+        <a href="#" class="icon-btn hide-xs" title="Search">
+          <i class="bi bi-search"></i>
+        </a>
+        <a href="#" class="user-chip hide-xs">
+          <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=90&bold=true&font-size=0.4" alt="John Doe" />
+          <span class="chip-name">John Doe</span>
+          <i class="bi bi-chevron-down" style="font-size:0.6rem;color:var(--text-muted)"></i>
+        </a>
+      </div>
+    </header>
+
+    <!-- ── PAGE CONTENT ───────────────── -->
+    <main class="page-content">
+
+      <!-- ── ALERT BANNER ─────────────── -->
+      <div class="alert-banner gap-section">
+        <div class="alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <div>
+          <div class="alert-title">Loan Payment Due in 4 Days</div>
+          <div class="alert-text">
+            Your Emergency Loan installment of <strong>KES 3,200</strong> is due on <strong>Mar 1, 2025</strong>. Need help with repayment options?
+          </div>
+        </div>
+        <button class="btn-alert" onclick="toast('Redirecting to loan repayment...','info')">Pay Now</button>
+      </div>
+
+      <!-- ── STATS CARDS ───────────────── -->
+      <div class="row g-3 gap-section">
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Open Tickets</div>
+            <div class="stat-sub">2 resolved this week</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-value">2h</div>
+            <div class="stat-label">Avg. Response Time</div>
+            <div class="stat-sub">Faster than last week</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-value">1</div>
+            <div class="stat-label">Pending Escalation</div>
+            <div class="stat-sub">Awaiting admin review</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-value" style="color:#00C853">92%</div>
+            <div class="stat-label">Satisfaction Score</div>
+            <div class="stat-sub">Based on 12 ratings</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PAGE TABS ─────────────────── -->
+      <div class="page-tabs">
+        <button class="page-tab-btn active" onclick="showTab('tickets',this)">
+          <i class="bi bi-ticket-perforated-fill"></i> My Tickets
+        </button>
+        <button class="page-tab-btn" onclick="showTab('faq',this)">
+          <i class="bi bi-patch-question-fill"></i> FAQ
+        </button>
+        <button class="page-tab-btn" onclick="showTab('resources',this)">
+          <i class="bi bi-folder2-open"></i> Resources
+        </button>
+        <button class="page-tab-btn" onclick="showTab('feedback',this)">
+          <i class="bi bi-star-fill"></i> Feedback
+        </button>
+      </div>
+
+      <!-- ════════════════════════════════
+           TAB 1: MY TICKETS
+      ════════════════════════════════ -->
+      <div id="tab-tickets" class="tab-section visible">
+        <div class="sp-card gap-section">
+          <div class="sp-card-header">
+            <div>
+              <div class="card-title"><i class="bi bi-ticket-perforated-fill text-orange me-2"></i>My Support Tickets</div>
+              <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">Track and manage all your support requests</div>
+            </div>
+            <button class="btn-new-ticket" onclick="toast('Opening new ticket form...','info')">
+              <i class="bi bi-plus-lg"></i> New Ticket
+            </button>
+          </div>
+          <div class="sp-card-body p-0">
+            <div class="table-wrap">
+              <table class="sp-table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Subject &amp; Preview</th>
+                    <th class="hide-sm">Category</th>
+                    <th class="hide-xs">Priority</th>
+                    <th>Status</th>
+                    <th class="hide-sm">Last Update</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="ticket-id">#SUP-2025-0042</span></td>
+                    <td>
+                      <div class="ticket-subject">Emergency Loan Disbursement Delay</div>
+                      <div class="ticket-preview">Applied 3 days ago but funds not yet reflected in my M-Pesa...</div>
+                    </td>
+                    <td class="hide-sm"><span style="font-size:0.75rem">Loan Issues</span></td>
+                    <td class="hide-xs"><span class="priority-high">High</span></td>
+                    <td><span class="sp-badge badge-open"><span class="dot"></span>Open</span></td>
+                    <td class="hide-sm" style="font-size:0.72rem;color:var(--text-muted)">2 hours ago</td>
+                    <td><a href="#" class="btn-view" onclick="toast('Viewing ticket #SUP-2025-0042','info');return false;">View</a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ticket-id">#SUP-2025-0038</span></td>
+                    <td>
+                      <div class="ticket-subject">Missing Monthly Interest Credit</div>
+                      <div class="ticket-preview">January interest of KES 720 not credited to savings account...</div>
+                    </td>
+                    <td class="hide-sm"><span style="font-size:0.75rem">Savings</span></td>
+                    <td class="hide-xs"><span class="priority-medium">Medium</span></td>
+                    <td><span class="sp-badge badge-pending"><span class="dot"></span>Pending</span></td>
+                    <td class="hide-sm" style="font-size:0.72rem;color:var(--text-muted)">Yesterday</td>
+                    <td><a href="#" class="btn-view" onclick="toast('Viewing ticket #SUP-2025-0038','info');return false;">View</a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ticket-id">#SUP-2025-0031</span></td>
+                    <td>
+                      <div class="ticket-subject">M-Pesa STK Push Not Working</div>
+                      <div class="ticket-preview">When trying to repay loan via M-Pesa, STK push prompt does not appear...</div>
+                    </td>
+                    <td class="hide-sm"><span style="font-size:0.75rem">Payments</span></td>
+                    <td class="hide-xs"><span class="priority-high">High</span></td>
+                    <td><span class="sp-badge badge-open"><span class="dot"></span>Open</span></td>
+                    <td class="hide-sm" style="font-size:0.72rem;color:var(--text-muted)">4 hours ago</td>
+                    <td><a href="#" class="btn-view" onclick="toast('Viewing ticket #SUP-2025-0031','info');return false;">View</a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ticket-id">#SUP-2025-0025</span></td>
+                    <td>
+                      <div class="ticket-subject">Request for Dividend Statement</div>
+                      <div class="ticket-preview">Need official FY 2024 dividend statement for tax filing purposes...</div>
+                    </td>
+                    <td class="hide-sm"><span style="font-size:0.75rem">Shares</span></td>
+                    <td class="hide-xs"><span class="priority-low">Low</span></td>
+                    <td><span class="sp-badge badge-resolved"><span class="dot"></span>Resolved</span></td>
+                    <td class="hide-sm" style="font-size:0.72rem;color:var(--text-muted)">Feb 20, 2025</td>
+                    <td><a href="#" class="btn-view" onclick="toast('Viewing ticket #SUP-2025-0025','info');return false;">View</a></td>
+                  </tr>
+                  <tr>
+                    <td><span class="ticket-id">#SUP-2025-0019</span></td>
+                    <td>
+                      <div class="ticket-subject">Update KYC Documents</div>
+                      <div class="ticket-preview">Submitted new ID copy and utility bill for address update...</div>
+                    </td>
+                    <td class="hide-sm"><span style="font-size:0.75rem">Account</span></td>
+                    <td class="hide-xs"><span class="priority-medium">Medium</span></td>
+                    <td><span class="sp-badge badge-closed"><span class="dot"></span>Closed</span></td>
+                    <td class="hide-sm" style="font-size:0.72rem;color:var(--text-muted)">Feb 15, 2025</td>
+                    <td><a href="#" class="btn-view" onclick="toast('Viewing ticket #SUP-2025-0019','info');return false;">View</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════
+           TAB 2: FAQ
+      ════════════════════════════════ -->
+      <div id="tab-faq" class="tab-section">
+        <div class="row g-3 gap-section">
+          <div class="col-12 col-lg-8">
+            <div class="sp-card">
+              <div class="sp-card-header">
+                <div class="card-title"><i class="bi bi-patch-question-fill text-orange me-2"></i>Frequently Asked Questions</div>
+              </div>
+              <div class="sp-card-body p-0">
+                <!-- Accordion items -->
+                <div class="accordion-item" id="faq1">
+                  <button class="accordion-btn" onclick="toggleFaq('faq1-body','faq1')" aria-expanded="false">
+                    How do I apply for a loan?
+                    <i class="bi bi-chevron-down acc-icon"></i>
+                  </button>
+                  <div id="faq1-body" style="display:none" class="accordion-body-text">
+                    Navigate to <strong>My Loans &gt; Apply New Loan</strong>, select your desired product, fill in the amount and purpose, upload required documents, and nominate guarantors if needed. Approval typically takes 1–3 business days. You will receive SMS and email notifications at each stage.
+                  </div>
+                </div>
+                <div class="accordion-item" id="faq2" style="border-top:none;border-radius:0">
+                  <button class="accordion-btn" onclick="toggleFaq('faq2-body','faq2')" aria-expanded="false">
+                    Why is my M-Pesa payment not reflecting?
+                    <i class="bi bi-chevron-down acc-icon"></i>
+                  </button>
+                  <div id="faq2-body" style="display:none" class="accordion-body-text">
+                    M-Pesa payments may take up to <strong>15 minutes</strong> to reflect during peak hours. If it exceeds 30 minutes, check your M-Pesa confirmation message, then raise a ticket under <strong>M-Pesa / Payments</strong> with the transaction code. Our team will reconcile within 2 hours.
+                  </div>
+                </div>
+                <div class="accordion-item" id="faq3" style="border-top:none;border-radius:0">
+                  <button class="accordion-btn" onclick="toggleFaq('faq3-body','faq3')" aria-expanded="false">
+                    Can I change my loan guarantor?
+                    <i class="bi bi-chevron-down acc-icon"></i>
+                  </button>
+                  <div id="faq3-body" style="display:none" class="accordion-body-text">
+                    Guarantor changes are only permitted <strong>before loan disbursement</strong>. Go to your pending loan application, click <strong>Manage Guarantors</strong>, remove the existing guarantor, and send a new request. The new guarantor must accept within 48 hours.
+                  </div>
+                </div>
+                <div class="accordion-item" id="faq4" style="border-top:none;border-radius:0">
+                  <button class="accordion-btn" onclick="toggleFaq('faq4-body','faq4')" aria-expanded="false">
+                    What is the minimum monthly savings contribution?
+                    <i class="bi bi-chevron-down acc-icon"></i>
+                  </button>
+                  <div id="faq4-body" style="display:none" class="accordion-body-text">
+                    The minimum monthly savings contribution is <strong>KES 1,000</strong>. However, to maintain loan eligibility at 3x multiplier, we recommend contributing at least <strong>KES 5,000</strong> monthly. You can set up a standing order via M-Pesa PayBill 522522.
+                  </div>
+                </div>
+                <div class="accordion-item" id="faq5" style="border-top:none;border-radius:0">
+                  <button class="accordion-btn" onclick="toggleFaq('faq5-body','faq5')" aria-expanded="false">
+                    How are dividends calculated and paid?
+                    <i class="bi bi-chevron-down acc-icon"></i>
+                  </button>
+                  <div id="faq5-body" style="display:none" class="accordion-body-text">
+                    Dividends are calculated as a percentage of your <strong>share capital</strong> at the end of the financial year. The Board declares the rate at the AGM. For FY 2024, the rate is <strong>12.5%</strong>. Payments are processed via M-Pesa or bank transfer by March 31.
+                  </div>
+                </div>
+                <div class="accordion-item" id="faq6" style="border-top:none;border-radius:0;border-bottom-left-radius:var(--radius-md);border-bottom-right-radius:var(--radius-md)">
+                  <button class="accordion-btn" onclick="toggleFaq('faq6-body','faq6')" aria-expanded="false">
+                    How do I withdraw from my savings?
+                    <i class="bi bi-chevron-down acc-icon"></i>
+                  </button>
+                  <div id="faq6-body" style="display:none" class="accordion-body-text">
+                    You may request a withdrawal anytime, but <strong>minimum balance rules apply</strong>. You must retain at least KES 2,000 as a retention amount. Withdrawals are processed within 24 hours on business days. Large withdrawals above KES 50,000 require SACCO admin approval.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-4">
+            <!-- Top Searches -->
+            <div class="sp-card mb-3">
+              <div class="sp-card-header">
+                <div class="card-title"><i class="bi bi-search text-orange me-2"></i>Top Searches</div>
+              </div>
+              <div class="sp-card-body">
+                <div class="search-pills">
+                  <span class="search-pill" onclick="toast('Searching: Loan application','info')">Loan application</span>
+                  <span class="search-pill" onclick="toast('Searching: M-Pesa payment','info')">M-Pesa payment</span>
+                  <span class="search-pill" onclick="toast('Searching: Guarantor','info')">Guarantor</span>
+                  <span class="search-pill" onclick="toast('Searching: Dividends','info')">Dividends</span>
+                  <span class="search-pill" onclick="toast('Searching: Withdrawal rules','info')">Withdrawal rules</span>
+                  <span class="search-pill" onclick="toast('Searching: KYC update','info')">KYC update</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video Guides -->
+            <div class="sp-card">
+              <div class="sp-card-header">
+                <div class="card-title"><i class="bi bi-play-circle-fill text-orange me-2"></i>Video Guides</div>
+              </div>
+              <div class="sp-card-body d-flex flex-column gap-2">
+                <div class="video-card" onclick="toast('Playing video: How to Apply for a Loan','info')">
+                  <div class="play-icon"><i class="bi bi-play-fill"></i></div>
+                  <div>
+                    <div class="video-title">How to Apply for a Loan</div>
+                    <div class="video-dur"><i class="bi bi-clock me-1"></i>3 min 42 sec</div>
+                  </div>
+                </div>
+                <div class="video-card" onclick="toast('Playing video: M-Pesa Payment Guide','info')">
+                  <div class="play-icon"><i class="bi bi-play-fill"></i></div>
+                  <div>
+                    <div class="video-title">M-Pesa Payment Guide</div>
+                    <div class="video-dur"><i class="bi bi-clock me-1"></i>2 min 15 sec</div>
+                  </div>
+                </div>
+                <div class="video-card" onclick="toast('Playing video: Understanding Your Dashboard','info')">
+                  <div class="play-icon"><i class="bi bi-play-fill"></i></div>
+                  <div>
+                    <div class="video-title">Understanding Your Dashboard</div>
+                    <div class="video-dur"><i class="bi bi-clock me-1"></i>5 min 08 sec</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════
+           TAB 3: RESOURCES
+      ════════════════════════════════ -->
+      <div id="tab-resources" class="tab-section">
+        <div class="row g-3 gap-section">
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-document"><i class="bi bi-file-earmark-pdf-fill me-1"></i>Document</span>
+              <div class="resource-name">SACCO Constitution &amp; Bylaws</div>
+              <div class="resource-desc">Full governing document covering membership rights, loan policies, dividend distribution, and AGM procedures.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading SACCO Constitution PDF...','ok');return false;">
+                Download PDF <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-document"><i class="bi bi-file-earmark-check-fill me-1"></i>Document</span>
+              <div class="resource-name">Loan Application Checklist</div>
+              <div class="resource-desc">Step-by-step checklist for all loan products including required documents, guarantor rules, and approval timelines.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading Loan Checklist PDF...','ok');return false;">
+                Download PDF <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-document"><i class="bi bi-phone-fill me-1"></i>Document</span>
+              <div class="resource-name">M-Pesa PayBill Guide</div>
+              <div class="resource-desc">Detailed instructions for deposits, loan repayments, and share purchases using our M-Pesa PayBill number.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading M-Pesa Guide PDF...','ok');return false;">
+                Download PDF <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-form"><i class="bi bi-file-earmark-text-fill me-1"></i>Form</span>
+              <div class="resource-name">Withdrawal Request Form</div>
+              <div class="resource-desc">Official form for processing savings withdrawals. Must be submitted 48 hours before the desired processing date.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading Withdrawal Form...','ok');return false;">
+                Download Form <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-form"><i class="bi bi-people-fill me-1"></i>Form</span>
+              <div class="resource-name">Guarantor Nomination Form</div>
+              <div class="resource-desc">Use this form when nominating guarantors for Development, School Fees, or Business loans.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading Guarantor Form...','ok');return false;">
+                Download Form <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-policy"><i class="bi bi-shield-lock-fill me-1"></i>Policy</span>
+              <div class="resource-name">Data Privacy Policy</div>
+              <div class="resource-desc">How SaccoPay collects, stores, and protects your personal and financial data in compliance with Kenyan Data Protection Act.</div>
+              <a href="#" class="resource-link" onclick="toast('Opening Privacy Policy...','info');return false;">
+                Read Policy <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-policy"><i class="bi bi-percent me-1"></i>Policy</span>
+              <div class="resource-name">Interest &amp; Penalty Schedule</div>
+              <div class="resource-desc">Current interest rates for all loan products, late payment penalties, and default recovery procedures.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading Interest Schedule...','ok');return false;">
+                Download PDF <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-calendar"><i class="bi bi-calendar-event-fill me-1"></i>Calendar</span>
+              <div class="resource-name">2025 SACCO Events Calendar</div>
+              <div class="resource-desc">Key dates for AGMs, dividend declarations, loan product launches, and member education days.</div>
+              <a href="#" class="resource-link" onclick="toast('Downloading Events Calendar...','ok');return false;">
+                Download Calendar <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-4">
+            <div class="resource-card">
+              <span class="resource-type-badge rtype-contact"><i class="bi bi-telephone-fill me-1"></i>Contact</span>
+              <div class="resource-name">SACCO Office Directory</div>
+              <div class="resource-desc">Phone numbers, email addresses, and office hours for all SACCO departments including loans, savings, and shares.</div>
+              <a href="#" class="resource-link" onclick="toast('Opening Office Directory...','info');return false;">
+                View Directory <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════
+           TAB 4: FEEDBACK
+      ════════════════════════════════ -->
+      <div id="tab-feedback" class="tab-section">
+        <div class="row g-3">
+
+          <!-- Feedback Form -->
+          <div class="col-12 col-lg-7">
+            <div class="sp-card">
+              <div class="sp-card-header">
+                <div>
+                  <div class="card-title"><i class="bi bi-star-fill text-orange me-2"></i>Rate Your Support Experience</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">Your feedback helps us serve you better</div>
+                </div>
+              </div>
+              <div class="sp-card-body">
+                <div class="mb-3">
+                  <label class="form-label-sp">How would you rate our support? <span>*</span></label>
+                  <div class="stars-widget" id="starWidget">
+                    <button class="star-btn" onclick="setRating(1)" data-star="1">&#9733;</button>
+                    <button class="star-btn" onclick="setRating(2)" data-star="2">&#9733;</button>
+                    <button class="star-btn" onclick="setRating(3)" data-star="3">&#9733;</button>
+                    <button class="star-btn" onclick="setRating(4)" data-star="4">&#9733;</button>
+                    <button class="star-btn" onclick="setRating(5)" data-star="5">&#9733;</button>
+                  </div>
+                  <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.35rem;" id="starLabel">Click a star to rate</div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label-sp">Which ticket are you rating?</label>
+                  <select class="sp-input sp-select">
+                    <option value="">— Select a ticket —</option>
+                    <option>#SUP-2025-0042 — Emergency Loan Disbursement Delay</option>
+                    <option>#SUP-2025-0038 — Missing Monthly Interest Credit</option>
+                    <option>#SUP-2025-0031 — M-Pesa STK Push Not Working</option>
+                    <option>#SUP-2025-0025 — Request for Dividend Statement</option>
+                    <option>#SUP-2025-0019 — Update KYC Documents</option>
+                    <option>General — Platform Usability</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label-sp">What went well?</label>
+                  <textarea class="sp-input sp-textarea" placeholder="Tell us what you appreciated about the support experience..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label-sp">What can we improve?</label>
+                  <textarea class="sp-input sp-textarea" placeholder="Share suggestions or areas that need improvement..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label class="sp-checkbox">
+                    <input type="checkbox" id="consentCheck" />
+                    <span>I consent to my feedback being used for service improvement</span>
+                  </label>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                  <button class="btn-submit" onclick="submitFeedback()">
+                    <i class="bi bi-send-fill me-2"></i>Submit Feedback
+                  </button>
+                  <button class="btn-secondary-sp" onclick="clearFeedback()">
+                    <i class="bi bi-x-lg me-1"></i>Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feedback History + Metrics -->
+          <div class="col-12 col-lg-5">
+            <!-- History -->
+            <div class="sp-card mb-3">
+              <div class="sp-card-header">
+                <div class="card-title"><i class="bi bi-clock-history text-orange me-2"></i>Your Feedback History</div>
+              </div>
+              <div class="sp-card-body d-flex flex-column gap-3">
+
+                <div class="feedback-card">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div class="fb-ticket">#SUP-2025-0025 — Dividend Statement</div>
+                    <div class="fb-stars">★★★★★</div>
+                  </div>
+                  <div class="fb-quote">"The admin team responded within 2 hours and sent the statement immediately. Very impressed!"</div>
+                  <div class="fb-date"><i class="bi bi-calendar3 me-1"></i>Submitted on Feb 21, 2025</div>
+                </div>
+
+                <div class="feedback-card">
+                  <div class="d-flex align-items-start justify-content-between">
+                    <div class="fb-ticket">General — Platform Usability</div>
+                    <div class="fb-stars">★★★★☆</div>
+                  </div>
+                  <div class="fb-quote">"Great app but would love dark mode and biometric login. Otherwise very smooth experience."</div>
+                  <div class="fb-date"><i class="bi bi-calendar3 me-1"></i>Submitted on Jan 15, 2025</div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Support Metrics -->
+            <div class="sp-card">
+              <div class="sp-card-header">
+                <div class="card-title"><i class="bi bi-bar-chart-fill text-orange me-2"></i>Support Metrics</div>
+              </div>
+              <div class="sp-card-body">
+                <div class="metric-item">
+                  <span class="metric-label"><i class="bi bi-stopwatch me-2 text-orange"></i>First Response Time</span>
+                  <span class="metric-value">2.1 hours</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label"><i class="bi bi-check-circle me-2 text-orange"></i>Resolution Rate</span>
+                  <span class="metric-value">94%</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label"><i class="bi bi-emoji-smile me-2 text-orange"></i>Member Satisfaction</span>
+                  <span class="metric-value">4.6 / 5.0</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label"><i class="bi bi-ticket-perforated me-2 text-orange"></i>Tickets Resolved This Month</span>
+                  <span class="metric-value">142</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── FOOTER ──────────────────────── -->
+    <footer class="app-footer">
+      <span>&copy; 2025 <a href="#">SaccoPay</a>. All rights reserved.</span>
+      <span>
+        <a href="#" onclick="toast('Opening Help Center...','info');return false;">Help Center</a> &nbsp;·&nbsp;
+        <a href="#" onclick="toast('Opening Privacy Policy...','info');return false;">Privacy Policy</a> &nbsp;·&nbsp;
+        <a href="#" onclick="toast('Opening Terms...','info');return false;">Terms</a>
+      </span>
+    </footer>
+  </div><!-- /main-content -->
+
+</div><!-- /app-wrapper -->
+
+<!-- ══════════════════════════════════════
+     TOAST CONTAINER
+══════════════════════════════════════ -->
+<div id="toast-container"></div>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function swT(btn,tid){document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));btn.classList.add('on');document.getElementById('tp-'+tid).classList.add('on')}
-function tF(btn){btn.parentElement.classList.toggle('on')}
-function openM(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden'}
-function closeM(id){document.getElementById(id).classList.remove('on');document.body.style.overflow=''}
-document.querySelectorAll('.mo').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this){this.classList.remove('on');document.body.style.overflow=''}})})
-function toast(msg,type){const c=document.getElementById('tcToast');const t=document.createElement('div');t.className='toast '+(type||'');let ic='';if(type==='ok')ic='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';else if(type==='er')ic='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';else if(type==='w')ic='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';else ic='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>';t.innerHTML=ic+'<span>'+msg+'</span>';c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(()=>t.remove(),300)},3500)}
-function preT(cat){document.getElementById('tCat').value=cat;openM('newTModal')}
-function subT(){const cat=document.getElementById('tCat').value,sub=document.getElementById('tSub').value,desc=document.getElementById('tDesc').value;if(!cat||!sub||!desc){toast('Please fill in all required fields','er');return}closeM('newTModal');toast('Ticket submitted successfully! You will receive a confirmation SMS shortly.','ok');document.getElementById('tCat').value='';document.getElementById('tSub').value='';document.getElementById('tDesc').value=''}
-function sendChat(){const i=document.getElementById('chatIn'),m=i.value.trim();if(!m)return;const c=document.getElementById('chatMsgs'),tm=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});c.insertAdjacentHTML('beforeend','<div class="cm ow"><div class="ca u">JK</div><div><div class="cbu">'+esc(m)+'</div><div class="cti">'+tm+'</div></div></div>');i.value='';c.scrollTop=c.scrollHeight;setTimeout(()=>{c.insertAdjacentHTML('beforeend','<div class="cm"><div class="ca ag">SP</div><div><div class="cbu">Thank you for that information. Let me check our system and get back to you shortly.</div><div class="cti">'+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</div></div></div>');c.scrollTop=c.scrollHeight},1500)}
-function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
-function subCB(){closeM('callModal');toast('Callback requested! Expect a call from +254 720 123 456 within your selected time window.','ok')}
-function openTD(id){document.getElementById('tdTitle').textContent='Ticket #'+id;openM('tdModal')}
-let cr=0;function setR(n){cr=n;const s=document.querySelectorAll('#ratingStars .rst'),l=['Poor','Fair','Good','Very Good','Excellent'];s.forEach((x,i)=>x.classList.toggle('on',i<n));document.getElementById('ratingLabel').textContent=l[n-1]+' — '+n+' star'+(n>1?'s':'');document.getElementById('ratingLabel').style.color='var(--a)'}
-function subF(){if(cr===0){toast('Please select a star rating first','er');return}toast('Thank you! Your feedback has been recorded.','ok')}
-function goFaq(){swT(document.querySelector('[data-t="faq"]'),'faq');document.querySelector('#tp-faq').scrollIntoView({behavior:'smooth',block:'start'})}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelectorAll('.mo.on').forEach(m=>{m.classList.remove('on');document.body.style.overflow=''})}})
+  /* ── SIDEBAR TOGGLE ─────────────────────── */
+  let sidebarOpen = false;
+
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon    = document.getElementById('toggleIcon');
+    if (sidebarOpen) {
+      sidebar.classList.add('sidebar-open');
+      overlay.classList.add('active');
+      icon.className = 'bi bi-x-lg';
+    } else {
+      closeSidebar();
+    }
+  }
+
+  function closeSidebar() {
+    sidebarOpen = false;
+    document.getElementById('sidebar').classList.remove('sidebar-open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    document.getElementById('toggleIcon').className = 'bi bi-list';
+  }
+
+  /* Close on resize to desktop */
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 992) closeSidebar();
+  });
+
+  /* ── PAGE TABS ──────────────────────────── */
+  function showTab(tab, btn) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('visible'));
+    document.querySelectorAll('.page-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('visible');
+    btn.classList.add('active');
+  }
+
+  /* ── FAQ ACCORDION ──────────────────────── */
+  function toggleFaq(bodyId, itemId) {
+    const body = document.getElementById(bodyId);
+    const item = document.getElementById(itemId);
+    const btn  = item.querySelector('.accordion-btn');
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    btn.setAttribute('aria-expanded', !isOpen);
+  }
+
+  /* ── STAR RATING ────────────────────────── */
+  let currentRating = 0;
+  const ratingLabels = ['','Poor','Fair','Good','Great','Excellent!'];
+
+  function setRating(val) {
+    currentRating = val;
+    const stars = document.querySelectorAll('.star-btn');
+    stars.forEach((s, i) => {
+      s.classList.toggle('active', i < val);
+    });
+    document.getElementById('starLabel').textContent = ratingLabels[val] + ' (' + val + '/5)';
+  }
+
+  /* Hover effects */
+  document.querySelectorAll('.star-btn').forEach((btn, idx) => {
+    btn.addEventListener('mouseenter', () => {
+      document.querySelectorAll('.star-btn').forEach((s, i) => {
+        s.classList.toggle('hover', i <= idx);
+      });
+    });
+    btn.addEventListener('mouseleave', () => {
+      document.querySelectorAll('.star-btn').forEach((s, i) => {
+        s.classList.remove('hover');
+        s.classList.toggle('active', i < currentRating);
+      });
+    });
+  });
+
+  /* ── FEEDBACK SUBMIT ────────────────────── */
+  function submitFeedback() {
+    const consent = document.getElementById('consentCheck').checked;
+    if (!currentRating) { toast('Please select a star rating first.','warn'); return; }
+    if (!consent) { toast('Please consent to feedback usage.','warn'); return; }
+    toast('Thank you! Your feedback has been submitted ✓','ok');
+    clearFeedback();
+  }
+
+  function clearFeedback() {
+    currentRating = 0;
+    document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('active','hover'));
+    document.getElementById('starLabel').textContent = 'Click a star to rate';
+    document.getElementById('consentCheck').checked = false;
+    document.querySelectorAll('.sp-textarea').forEach(t => t.value = '');
+    document.querySelector('.sp-select').selectedIndex = 0;
+  }
+
+  /* ── TOAST ──────────────────────────────── */
+  function toast(msg, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const el = document.createElement('div');
+    const icons = { ok:'check-circle-fill', info:'info-circle-fill', warn:'exclamation-triangle-fill', error:'x-circle-fill' };
+    el.className = 'toast-msg toast-' + type;
+    el.innerHTML = `<i class="bi bi-${icons[type] || 'info-circle-fill'}"></i><span>${msg}</span>`;
+    container.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(40px)'; el.style.transition = 'all 0.35s'; setTimeout(() => el.remove(), 350); }, 3200);
+  }
 </script>
+
 </body>
 </html>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <style>
-        :root{--pri:#FF6B00;--pri-l:#FF8C38;--pri-sub:rgba(255,107,0,0.06);--pri-bdr:rgba(255,107,0,0.20);--bg:#F5F6FA;--card:#fff;--inp:#F0F2F8;--tx:#1A1D2E;--tx2:rgba(26,29,46,0.72);--txm:rgba(26,29,46,0.50);--mono:'JetBrains Mono',monospace;--sh-s:0 1px 3px rgba(0,0,0,0.06);--sh-m:0 4px 12px rgba(0,0,0,0.08);--sh-o:0 4px 16px rgba(255,107,0,0.18);--grd:linear-gradient(135deg,#FF6B00,#FF8C38,#FFAA00);--sbw:260px;--grn:#00C853;--red:#E53935;--ylw:#F9A825;--blu:#0288D1;--pur:#AB00D9;}
+        :root{--pri:#1a73e8;--pri-l:#1558b0;--pri-sub:rgba(255,107,0,0.06);--pri-bdr:rgba(255,107,0,0.20);--bg:#F5F6FA;--card:#fff;--inp:#F0F2F8;--tx:#1A1D2E;--tx2:rgba(26,29,46,0.72);--txm:rgba(26,29,46,0.50);--mono:'JetBrains Mono',monospace;--sh-s:0 1px 3px rgba(0,0,0,0.06);--sh-m:0 4px 12px rgba(0,0,0,0.08);--sh-o:0 4px 16px rgba(255,107,0,0.18);--grd:linear-gradient(135deg,#1a73e8,#1558b0,#00f7ff);--sbw:260px;--grn:#00C853;--red:#E53935;--ylw:#F9A825;--blu:#0288D1;--pur:#AB00D9;}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);}
         .sp-sidebar{width:var(--sbw);min-height:100vh;background:#fff;border-right:1px solid rgba(26,29,46,0.08);position:fixed;top:0;left:0;z-index:1040;transition:transform .3s;overflow-y:auto;box-shadow:2px 0 8px rgba(0,0,0,0.03);}
         .sp-sidebar .brand-logo{width:36px;height:36px;background:var(--grd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:var(--sh-o);}
@@ -63,36 +63,37 @@
 
 <!-- SIDEBAR -->
 <aside class="sp-sidebar" id="sidebar">
-    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important;min-height:64px;">
+    <a href="./index-main.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important;min-height:64px;">
         <div class="brand-logo">S</div>
         <div><div style="font-size:16px;font-weight:700;">Sacco<span style="color:var(--pri);">Pay</span></div><div style="font-size:10px;color:var(--txm);letter-spacing:.04em;">Member Portal</div></div>
     </a>
     <div class="member-badge d-flex align-items-center gap-3">
-        <!-- <div style="width:38px;height:38px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">JK</div> -->
-        <div class="flex-grow-1 min-w-0"><div style="font-size:12px;font-weight:600;" class="text-truncate">Peter Muia  D.</div><div style="font-size:13px;color:var(--txm);font-family:var(--mono);">MEM-2024-0045</div><div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:var(--grn);"><span style="width:5px;height:5px;background:var(--grn);border-radius:50%;box-shadow:0 0 6px var(--grn);"></span> Active</div></div>
+        <div class="flex-grow-1 min-w-0"><div style="font-size:12px;font-weight:600;" class="text-truncate">James Kamau</div><div style="font-size:13px;color:var(--txm);font-family:var(--mono);">SCO-2024-00142</div><div class="d-flex align-items-center gap-1 mt-1" style="font-size:10px;font-weight:600;color:var(--grn);"><span style="width:5px;height:5px;background:var(--grn);border-radius:50%;box-shadow:0 0 6px var(--grn);"></span> Active</div></div>
     </div>
     <nav class="py-2">
         <div class="section-label">Main</div>
-        <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <a href="./index-main.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <a href="./wallet.html" class="nav-link"><span class="nav-icon"><i class="fas fa-wallet"></i></span> Wallet</a>
+        <a href="./member-profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-id-card"></i></span> Sacco Profile</a>
         <div class="section-label">Financial</div>
-        <a href="savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
-        <a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
-        <a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
-        <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <a href="./finance-savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> Savings</a>
+        <a href="./finance-deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+        <a href="./finance-withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
+        <a href="./reports-transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
         <div class="section-label">Loans</div>
-        <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> Loans Center</a>
-        <a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <a href="./loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans <span class="nav-badge ms-auto">2</span></a>
+        <a href="./loan-repayments.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Loan Repayment</a>
         <div class="section-label">Membership</div>
-        <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> Shares</a>
-        <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
-        <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
-        <div class="section-label">Other</div>
-        <a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">2</span></a>
-        <a href="profile.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
-        <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+        <a href="./membership-shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> Shares</a>
+        <a href="./membership-dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
+        <a href="./membership-guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantors</a>
+        <a href="./reports-statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <div class="section-label">Account</div>
+        <a href="./account-notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">5</span></a>
+        <a href="./account-settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+        <a href="./support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
     </nav>
     <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
-        <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
         <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
     </div>
 </aside>

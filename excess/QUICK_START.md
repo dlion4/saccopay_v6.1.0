@@ -193,9 +193,9 @@ Copy the sidebar and topbar from `dashboard.html` to maintain consistency:
 ## 🎨 Color Reference
 
 ```css
---primary-green: #00d084       /* Main brand color */
---primary-green-dark: #00a866  /* Hover states */
---primary-green-light: #66e5b8 /* Highlights */
+--primary-green: #1a73e8       /* Main brand color */
+--primary-green-dark: #1558b0  /* Hover states */
+--primary-green-light: #e8f0fe /* Highlights */
 
 --status-success: #4caf50      /* Green - success */
 --status-warning: #ffc107      /* Yellow - warning */

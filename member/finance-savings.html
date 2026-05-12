@@ -47,7 +47,7 @@
 <!-- SIDEBAR (reusing deposits page sidebar style/classes) -->
 <!-- ═══════════════════════════════════════════════ -->
 <aside class="sp-sidebar" id="sidebar">
-  <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom"
+  <a href="./index-main.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom"
      style="border-color:rgba(26,29,46,0.06)!important; min-height:64px;">
     <div class="brand-logo">S</div>
     <div>
@@ -69,36 +69,38 @@
 
   <nav class="py-2">
     <div class="section-label">Main</div>
-    <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+    <a href="./index-main.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+    <a href="./wallet.html" class="nav-link"><span class="nav-icon"><i class="fas fa-wallet"></i></span> Wallet</a>
+    <a href="./member-profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Sacco Profile</a>
 
-    <div class="section-label">Financial</div>
-    <a href="savings.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
-    <a href="deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
-    <a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
-    <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+    <div class="section-label">Finance</div>
+    <a href="./finance-savings.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> Savings</a>
+    <a href="./finance-deposits.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+    <a href="./finance-withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
 
     <div class="section-label">Loans</div>
-    <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
-    <a href="loan-apply.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span> Apply for Loan</a>
-    <a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+    <a href="./loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
+    <a href="./loan-repayments.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Loan Repayment</a>
 
     <div class="section-label">Membership</div>
-    <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> My Shares</a>
-    <a href="dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
-    <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
-    <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+    <a href="./membership-shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> Shares</a>
+    <a href="./membership-dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
+    <a href="./membership-guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantors</a>
 
-    <div class="section-label">Other</div>
-    <a href="notifications.html" class="nav-link d-flex align-items-center">
+    <div class="section-label">Reports</div>
+    <a href="./reports-statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+    <a href="./reports-transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+
+    <div class="section-label">Account</div>
+    <a href="./account-notifications.html" class="nav-link d-flex align-items-center">
       <span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">3</span>
     </a>
-    <a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
-    <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+    <a href="./account-settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+    <a href="./support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
   </nav>
 
   <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
-    <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
-    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
+    <a href="./logout.html" class="nav-link"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
   </div>
 </aside>
 
@@ -2154,7 +2156,7 @@
 function showToast(msg,type='info'){
   const c=document.getElementById('toastContainer');
   const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};
-  const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#FF6B00'};
+  const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#1a73e8'};
   const t=document.createElement('div');
   t.className=`sp-toast ${type}`;
   t.innerHTML=`
@@ -2525,7 +2527,7 @@ if(gctx){
         {
           label:'Total Savings',
           data:[45000,52000,60000,68000,76000,84000,95000,108000,120000,135000,148000,158750],
-          borderColor:'#FF6B00',
+          borderColor:'#1a73e8',
           backgroundColor:'rgba(255,107,0,0.08)',
           borderWidth:2.5,
           fill:true,
@@ -2553,7 +2555,7 @@ if(gctx){
         legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.5)',font:{size:11},usePointStyle:true,boxWidth:12,boxHeight:2,padding:16}},
         tooltip:{
           backgroundColor:'rgba(255,255,255,0.97)',
-          titleColor:'#FF6B00',
+          titleColor:'#1a73e8',
           bodyColor:'#1A1D2E',
           borderColor:'rgba(255,107,0,0.2)',
           borderWidth:1,

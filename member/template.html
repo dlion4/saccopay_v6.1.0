@@ -11,7 +11,7 @@
    
     <style>
         :root {
-            --primary:#00d084;--primary-dark:#00a866;--primary-ultra:#e6faf4;
+            --primary:#1a73e8;--primary-dark:#1558b0;--primary-ultra:#e6faf4;
             --teal:#00bcd4;--blue:#2196f3;--purple:#9c27b0;--orange:#ff9800;--red:#f44336;
             --bg:#f8fafb;--bg2:#ffffff;--bg3:#f0f4f7;--glass:rgba(255,255,255,0.85);--border:#e2e8f0;
             --text1:#1a2332;--text2:#64748b;--text3:#94a3b8;
@@ -193,30 +193,33 @@
 <body>
 <div class="member-layout">
 
-    <!-- SIDEBAR -->
+   <!-- SIDEBAR -->
     <aside class="member-sidebar" id="sidebar">
         <div class="sidebar-brand"><div class="brand-logo">S</div><div class="brand-text"><h2>SACCOPay</h2><p style="font-size:.7rem;color:var(--text3);">Member Portal</p></div></div>
-        <div class="member-info-bar"><div class="m-name">John Kamau</div><div class="m-id">SP-10015 · Rongo SACCO</div></div>
+        <div class="member-info-bar"><div class="m-name">James Kamau</div><div class="m-id">SCO-2024-00142 · Rongo SACCO</div></div>
         <nav style="padding:var(--sp-sm) 0;">
-            <div class="nav-section-title">Overview</div>
-            <div class="nav-item"><a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
-            <div class="nav-item"><a href="profile.html" class="nav-link"><i class="bi bi-person"></i>My Profile</a></div>
-            <div class="nav-section-title">Savings & Shares</div>
-            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings Accounts</a></div>
-            <div class="nav-item"><a href="shares.html" class="nav-link"><i class="bi bi-shield-lock"></i>Share Capital</a></div>
-            <div class="nav-item"><a href="dividends.html" class="nav-link"><i class="bi bi-graph-up"></i>Dividends</a></div>
+            <div class="nav-section-title">Main</div>
+            <div class="nav-item"><a href="./index-main.html" class="nav-link"><i class="bi bi-grid-1x2"></i>Dashboard</a></div>
+            <div class="nav-item"><a href="./wallet.html" class="nav-link"><i class="bi bi-wallet2"></i>Wallet</a></div>
+            <div class="nav-item"><a href="./member-profile.html" class="nav-link"><i class="bi bi-person-vcard"></i>Sacco Profile</a></div>
+            <div class="nav-section-title">Finance</div>
+            <div class="nav-item"><a href="./finance-savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i>Savings</a></div>
+            <div class="nav-item"><a href="./finance-deposits.html" class="nav-link"><i class="bi bi-arrow-down-circle"></i>Deposits</a></div>
+            <div class="nav-item"><a href="./finance-withdrawals.html" class="nav-link"><i class="bi bi-arrow-up-circle"></i>Withdrawals</a></div>
+            <div class="nav-item"><a href="./reports-transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
+            <div class="nav-item"><a href="./reports-statements.html" class="nav-link"><i class="bi bi-file-text"></i>Statements</a></div>
             <div class="nav-section-title">Loans</div>
-            <div class="nav-item"><a href="loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans</a></div>
-            <div class="nav-item"><a href="loan-apply.html" class="nav-link"><i class="bi bi-plus-circle"></i>Apply for Loan</a></div>
-            <div class="nav-item"><a href="guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantorship<span class="nav-badge">2</span></a></div>
-            <div class="nav-section-title">Transactions</div>
-            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i>Transactions</a></div>
-            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2"></i>Wallet</a></div>
-            <div class="nav-item"><a href="statements.html" class="nav-link active"><i class="bi bi-file-text"></i>Statements</a></div>
+            <div class="nav-item"><a href="./loans.html" class="nav-link"><i class="bi bi-cash-stack"></i>My Loans<span class="nav-badge">2</span></a></div>
+            <div class="nav-item"><a href="./loan-repayments.html" class="nav-link"><i class="bi bi-calendar-check"></i>Loan Repayment</a></div>
+            <div class="nav-section-title">Membership</div>
+            <div class="nav-item"><a href="./membership-shares.html" class="nav-link"><i class="bi bi-bar-chart"></i>Shares</a></div>
+            <div class="nav-item"><a href="./membership-dividends.html" class="nav-link"><i class="bi bi-gift"></i>Dividends</a></div>
+            <div class="nav-item"><a href="./membership-guarantors.html" class="nav-link"><i class="bi bi-people"></i>Guarantors</a></div>
             <div class="nav-section-title">Account</div>
-            <div class="nav-item"><a href="notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">3</span></a></div>
-            <div class="nav-item"><a href="settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
-            <div class="nav-item"><a href="support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+            <div class="nav-item"><a href="./account-notifications.html" class="nav-link"><i class="bi bi-bell"></i>Notifications<span class="nav-badge">5</span></a></div>
+            <div class="nav-item"><a href="./account-settings.html" class="nav-link"><i class="bi bi-gear"></i>Settings</a></div>
+            <div class="nav-item"><a href="./support.html" class="nav-link"><i class="bi bi-headset"></i>Support</a></div>
+            <div class="nav-item"><a href="./logout.html" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i>Logout</a></div>
         </nav>
     </aside>
 
@@ -766,7 +769,7 @@
             </div>
             <div class="card-body py-4">
               <div class="d-flex align-items-center justify-content-center gap-3 mb-3 flex-wrap">
-                <img src="https://ui-avatars.com/api/?name=John+Doe&background=FF6B00&color=fff&size=90&bold=true&font-size=0.4" alt="Profile Avatar" class="rounded-circle border border-3 border-accent-subtle" width="90" height="90" />
+                <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=90&bold=true&font-size=0.4" alt="Profile Avatar" class="rounded-circle border border-3 border-accent-subtle" width="90" height="90" />
                 <div class="text-start">
                   <h5 class="mb-1">John Doe</h5>
                   <p class="text-muted mb-1 small">john.doe@enterprise-email.com</p>

@@ -69,12 +69,13 @@
 
     <div class="sidebar-user-card">
       <div class="user-avatar-wrap">
-        <img src="https://ui-avatars.com/api/?name=John+Doe&background=FF6B00&color=fff&size=80&bold=true&font-size=0.4" alt="John Doe" class="user-avatar" />
+        <img src="https://ui-avatars.com/api/?name=James+Kamau&background=1a73e8&color=fff&size=80&bold=true&font-size=0.4" alt="James Kamau" class="user-avatar" />
         <span class="avatar-status-dot"></span>
       </div>
       <div class="user-info">
-        <h6 class="user-name">John Doe</h6>
+        <h6 class="user-name">James Kamau</h6>
         <span class="user-role badge bg-accent-subtle">Active Member</span>
+        <span class="user-id" style="font-size:11px;color:var(--text-muted);">SCO-2024-00142</span>
       </div>
     </div>
 
@@ -82,64 +83,98 @@
       <ul class="nav flex-column">
         <li class="nav-section-title">MAIN</li>
         <li class="nav-item">
-          <a class="nav-link active" href="#" data-section="dashboard">
+          <a class="nav-link" href="./index-main.html">
             <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="contributions">
-            <i class="bi bi-wallet-fill"></i><span>Contributions</span>
+          <a class="nav-link" href="./wallet.html">
+            <i class="bi bi-wallet-fill"></i><span>Wallet</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="loans">
-            <i class="bi bi-bank"></i><span>Loans</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-section="withdrawals">
-            <i class="bi bi-cash-stack"></i><span>Withdrawals</span>
+          <a class="nav-link" href="./member-profile.html">
+            <i class="bi bi-person-vcard"></i><span>Sacco Profile</span>
           </a>
         </li>
 
         <li class="nav-section-title">FINANCE</li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="transactions">
+          <a class="nav-link" href="./finance-savings.html">
+            <i class="bi bi-piggy-bank-fill"></i><span>Savings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./finance-deposits.html">
+            <i class="bi bi-arrow-down-circle-fill"></i><span>Deposits</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./finance-withdrawals.html">
+            <i class="bi bi-arrow-up-circle-fill"></i><span>Withdrawals</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./reports-transactions.html">
             <i class="bi bi-arrow-left-right"></i><span>Transactions</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="statements">
+          <a class="nav-link" href="./reports-statements.html">
             <i class="bi bi-file-earmark-text"></i><span>Statements</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="dividends">
-            <i class="bi bi-graph-up-arrow"></i><span>Dividends</span>
+          <a class="nav-link" href="./membership-dividends.html">
+            <i class="bi bi-gift-fill"></i><span>Dividends</span>
+          </a>
+        </li>
+
+        <li class="nav-section-title">LOANS</li>
+        <li class="nav-item">
+          <a class="nav-link" href="./loans.html">
+            <i class="bi bi-cash-stack"></i><span>My Loans <span class="badge bg-warning text-dark ms-1">2</span></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./loan-repayments.html">
+            <i class="bi bi-calendar-check-fill"></i><span>Loan Repayment</span>
+          </a>
+        </li>
+
+        <li class="nav-section-title">MEMBERSHIP</li>
+        <li class="nav-item">
+          <a class="nav-link" href="./membership-shares.html">
+            <i class="bi bi-bar-chart-fill"></i><span>Shares</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./membership-guarantors.html">
+            <i class="bi bi-people-fill"></i><span>Guarantors</span>
           </a>
         </li>
 
         <li class="nav-section-title">ACCOUNT</li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="profile">
-            <i class="bi bi-person-gear"></i><span>My Profile</span>
+          <a class="nav-link" href="./account-notifications.html">
+            <i class="bi bi-bell-fill"></i><span>Notifications <span class="badge bg-accent ms-1">5</span></span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-section="support">
-            <i class="bi bi-headset"></i><span>Support</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-section="settings">
+          <a class="nav-link" href="./account-settings.html">
             <i class="bi bi-gear-fill"></i><span>Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./support.html">
+            <i class="bi bi-headset"></i><span>Support</span>
           </a>
         </li>
       </ul>
     </nav>
 
     <div class="sidebar-footer">
-      <a href="#" class="btn btn-outline-danger w-100" id="logoutBtn">
+      <a href="./logout.html" class="btn btn-outline-danger w-100" id="logoutBtn">
         <i class="bi bi-box-arrow-left me-2"></i>Logout
       </a>
     </div>
@@ -216,7 +251,7 @@
         <!-- User Menu -->
         <div class="dropdown">
           <button class="btn btn-icon d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://ui-avatars.com/api/?name=John+Doe&background=FF6B00&color=fff&size=36&bold=true&font-size=0.4" alt="User" class="rounded-circle" width="36" height="36" />
+            <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=36&bold=true&font-size=0.4" alt="User" class="rounded-circle" width="36" height="36" />
             <span class="d-none d-md-inline fw-semibold small">John Doe</span>
             <i class="bi bi-chevron-down small"></i>
           </button>
@@ -1452,7 +1487,7 @@
             <div class="card dashboard-card text-center">
               <div class="card-body py-4">
                 <div class="position-relative d-inline-block mb-3">
-                  <img src="https://ui-avatars.com/api/?name=John+Doe&background=FF6B00&color=fff&size=120&bold=true&font-size=0.4" alt="Profile" class="rounded-circle border border-4 border-accent-subtle" width="120" height="120" />
+                  <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=120&bold=true&font-size=0.4" alt="Profile" class="rounded-circle border border-4 border-accent-subtle" width="120" height="120" />
                   <button class="btn btn-sm btn-accent rounded-circle position-absolute bottom-0 end-0" title="Change Photo" style="width:32px;height:32px;padding:0;">
                     <i class="bi bi-camera-fill small"></i>
                   </button>

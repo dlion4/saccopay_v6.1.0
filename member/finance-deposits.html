@@ -10,9 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #FF6B00;
-            --primary-light: #FF8C38;
-            --primary-dark: #CC5500;
+            --primary: #1a73e8;
+      --primary-dark: #1558b0;
+      --primary-light: #e8f0fe;
             --primary-subtle: rgba(255,107,0,0.06);
             --primary-border: rgba(255,107,0,0.20);
             --bg-base: #F5F6FA;
@@ -25,7 +25,7 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
             --shadow-orange: 0 4px 16px rgba(255,107,0,0.18);
-            --gradient-primary: linear-gradient(135deg, #FF6B00 0%, #FF8C38 50%, #FFAA00 100%);
+            --gradient-primary: linear-gradient(135deg, #1a73e8 0%, #1558b0 50%, #00f7ff 100%);
             --sidebar-width: 260px;
         }
         body { font-family: 'Inter', sans-serif; background: var(--bg-base); color: var(--text-primary); }
@@ -143,7 +143,7 @@
 <!-- SIDEBAR -->
 <!-- ═══════════════════════════════════════════════ -->
 <aside class="sp-sidebar" id="sidebar">
-    <a href="index.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important; min-height:64px;">
+    <a href="./index-main.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom" style="border-color:rgba(26,29,46,0.06)!important; min-height:64px;">
         <div class="brand-logo">S</div>
         <div>
             <div style="font-size:16px;font-weight:700;color:var(--text-primary);">Sacco<span style="color:var(--primary);">Pay</span></div>
@@ -160,32 +160,37 @@
     </div>
     <nav class="py-2">
         <div class="section-label">Main</div>
-        <a href="index.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
-        <div class="section-label">Financial</div>
-        <a href="savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> My Savings</a>
-        <a href="deposits.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
-        <a href="withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
-        <a href="transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        <a href="./index-main.html" class="nav-link"><span class="nav-icon"><i class="fas fa-th-large"></i></span> Dashboard</a>
+        <a href="./wallet.html" class="nav-link"><span class="nav-icon"><i class="fas fa-wallet"></i></span> Wallet</a>
+        <a href="./member-profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Sacco Profile</a>
+        
+        <div class="section-label">Finance</div>
+        <a href="./finance-savings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-piggy-bank"></i></span> Savings</a>
+        <a href="./finance-deposits.html" class="nav-link active"><span class="nav-icon"><i class="fas fa-arrow-circle-down"></i></span> Deposits</a>
+        <a href="./finance-withdrawals.html" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-circle-up"></i></span> Withdrawals</a>
+        
         <div class="section-label">Loans</div>
-        <a href="loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
-        <a href="loan-apply.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span> Apply for Loan</a>
-        <a href="loan-repayment.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Repayments</a>
+        <a href="./loans.html" class="nav-link"><span class="nav-icon"><i class="fas fa-hand-holding-usd"></i></span> My Loans</a>
+        <a href="./loan-repayments.html" class="nav-link"><span class="nav-icon"><i class="fas fa-money-check-alt"></i></span> Loan Repayment</a>
+        
         <div class="section-label">Membership</div>
-        <a href="shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> My Shares</a>
-        <a href="dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
-        <a href="guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantorship</a>
-        <a href="statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
-        <div class="section-label">Other</div>
-        <a href="notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">3</span></a>
-        <a href="profile.html" class="nav-link"><span class="nav-icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
-        <a href="support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
+        <a href="./membership-shares.html" class="nav-link"><span class="nav-icon"><i class="fas fa-chart-pie"></i></span> Shares</a>
+        <a href="./membership-dividends.html" class="nav-link"><span class="nav-icon"><i class="fas fa-coins"></i></span> Dividends</a>
+        <a href="./membership-guarantors.html" class="nav-link"><span class="nav-icon"><i class="fas fa-handshake"></i></span> Guarantors</a>
+        
+        <div class="section-label">Reports</div>
+        <a href="./reports-statements.html" class="nav-link"><span class="nav-icon"><i class="fas fa-file-alt"></i></span> Statements</a>
+        <a href="./reports-transactions.html" class="nav-link"><span class="nav-icon"><i class="fas fa-exchange-alt"></i></span> Transactions</a>
+        
+        <div class="section-label">Account</div>
+        <a href="./account-notifications.html" class="nav-link d-flex align-items-center"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications <span class="nav-badge ms-auto">3</span></a>
+        <a href="./account-settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
+        <a href="./support.html" class="nav-link"><span class="nav-icon"><i class="fas fa-life-ring"></i></span> Support</a>
     </nav>
     <div class="border-top mt-auto p-2" style="border-color:rgba(26,29,46,0.06)!important;">
-        <a href="settings.html" class="nav-link"><span class="nav-icon"><i class="fas fa-cog"></i></span> Settings</a>
-        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
+        <a href="./logout.html" class="nav-link"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span> Logout</a>
     </div>
 </aside>
-
 <!-- ═══════════════════════════════════════════════ -->
 <!-- MAIN CONTENT -->
 <!-- ═══════════════════════════════════════════════ -->
@@ -1013,7 +1018,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // === Toast ===
-function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#FF6B00'};const t=document.createElement('div');t.className=`sp-toast ${type}`;t.innerHTML=`<i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${msg}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},5000);}
+function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const icons={success:'fas fa-check-circle',danger:'fas fa-exclamation-circle',warning:'fas fa-exclamation-triangle',info:'fas fa-info-circle',primary:'fas fa-bell'};const colors={success:'#00C853',danger:'#E53935',warning:'#F9A825',info:'#0288D1',primary:'#1a73e8'};const t=document.createElement('div');t.className=`sp-toast ${type}`;t.innerHTML=`<i class="${icons[type]||icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase()+type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${msg}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},5000);}
 
 // === Sidebar (mobile) ===
 function openSidebar(){document.getElementById('sidebar').classList.add('show');document.getElementById('sidebarBackdrop').classList.add('show');}
@@ -1153,7 +1158,7 @@ function copyPaybill() { navigator.clipboard.writeText('522533').then(() => show
 
 // === Chart.js ===
 const ctx = document.getElementById('depositChart');
-if(ctx){new Chart(ctx.getContext('2d'),{type:'bar',data:{labels:['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'],datasets:[{label:'Deposits',data:[5000,5000,7000,8000,8000,8000,10000,11000,12000,15000,12500,12500],backgroundColor(c){return c.raw>=10000?'rgba(255,107,0,0.75)':c.raw>=7000?'rgba(255,107,0,0.50)':'rgba(255,107,0,0.30)';},borderRadius:6,borderSkipped:false,hoverBackgroundColor:'rgba(255,107,0,0.9)'},{label:'Min. Required',data:Array(12).fill(5000),type:'line',borderColor:'rgba(229,57,53,0.4)',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.4)',font:{size:11},boxWidth:12,boxHeight:2,padding:16,usePointStyle:true}},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'#FF6B00',bodyColor:'#1A1D2E',borderColor:'rgba(255,107,0,0.2)',borderWidth:1,padding:12,cornerRadius:8,callbacks:{label(c){return c.dataset.label+': KES '+c.raw.toLocaleString();}}}},scales:{x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11}}},y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback(v){return 'KES '+(v/1000)+'K';}},beginAtZero:true}}}});}
+if(ctx){new Chart(ctx.getContext('2d'),{type:'bar',data:{labels:['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'],datasets:[{label:'Deposits',data:[5000,5000,7000,8000,8000,8000,10000,11000,12000,15000,12500,12500],backgroundColor(c){return c.raw>=10000?'rgba(255,107,0,0.75)':c.raw>=7000?'rgba(255,107,0,0.50)':'rgba(255,107,0,0.30)';},borderRadius:6,borderSkipped:false,hoverBackgroundColor:'rgba(255,107,0,0.9)'},{label:'Min. Required',data:Array(12).fill(5000),type:'line',borderColor:'rgba(229,57,53,0.4)',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'rgba(26,29,46,0.4)',font:{size:11},boxWidth:12,boxHeight:2,padding:16,usePointStyle:true}},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'#1a73e8',bodyColor:'#1A1D2E',borderColor:'rgba(255,107,0,0.2)',borderWidth:1,padding:12,cornerRadius:8,callbacks:{label(c){return c.dataset.label+': KES '+c.raw.toLocaleString();}}}},scales:{x:{grid:{display:false},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11}}},y:{grid:{color:'rgba(26,29,46,0.04)'},ticks:{color:'rgba(26,29,46,0.4)',font:{size:11},callback(v){return 'KES '+(v/1000)+'K';}},beginAtZero:true}}}});}
 
 // === Init ===
 document.addEventListener('DOMContentLoaded', () => {
