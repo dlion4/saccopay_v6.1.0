@@ -439,6 +439,14 @@
         .mobile-toggle { display: none; width: 36px; height: 36px; border-radius: var(--r-md); background: var(--bg2); border: 1px solid var(--border); align-items: center; justify-content: center; cursor: pointer; color: var(--text1); font-size: 1.1rem; }
 
         /* ========== RESPONSIVE ========== */
+        /* Mobile Overlay */
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* Mobile Toggle */
+        .mobile-toggle { display: none; width: 40px; height: 40px; border-radius: var(--r-md); background: var(--bg2); border: 1px solid var(--border); align-items: center; justify-content: center; cursor: pointer; color: var(--text1); font-size: 1.2rem; flex-shrink: 0; }
+
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 991px) {
             .member-sidebar { transform: translateX(-100%); }
             .member-sidebar.open { transform: translateX(0); }
@@ -507,7 +515,6 @@
             .hero-card { padding: var(--sp-md); border-radius: var(--r-md); }
             .hero-value { font-size: 1.4rem; }
             .hero-status { font-size: 0.65rem; padding: 4px 10px; }
-            .action-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-sm); }
             .topbar-btn { width: 32px; height: 32px; font-size: 0.9rem; }
             .topbar-notif { width: 16px; height: 16px; font-size: 0.55rem; }
             .user-chip { padding: 4px 8px; }
@@ -526,8 +533,8 @@
         }
 
         .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }</style>
+<base target="_blank">
 </head>
 <body>
 <div class="member-layout">
@@ -573,6 +580,7 @@
             <div class="nav-item"><a href="./logout.html" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a></div>
         </nav>
     </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active')"></div>
     <!-- ===================== MAIN ===================== -->
     <main class="member-main">
 
@@ -580,7 +588,7 @@
         <div class="member-topbar">
             <div class="topbar-inner">
                 <div>
-                    <button class="btn-ghost-s d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
                     <div class="page-breadcrumb">Home / Loans / <span>Guarantorship</span></div>
                 </div>
                 <div class="topbar-right">
