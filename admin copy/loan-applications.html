@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Applications | Rongo SACCO Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           LOAN APPLICATIONS - EXTENSION STYLES
+           ======================================== */
+        /* Loan Status Timeline */
+        .loan-status-timeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+        }
+        .loan-status-timeline::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 0;
+        }
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        .timeline-step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+        }
+        .timeline-step.completed .timeline-step-circle {
+            background: var(--status-success);
+            border-color: var(--status-success);
+            color: white;
+        }
+        .timeline-step.active .timeline-step-circle {
+            background: var(--primary-green);
+            border-color: var(--primary-green);
+            color: white;
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+        }
+        .timeline-step-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-align: center;
+        }
+        .timeline-step.completed .timeline-step-label,
+        .timeline-step.active .timeline-step-label {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        /* Loan Card */
+        .loan-card {
+            display: flex;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .loan-card:hover {
+            border-color: var(--primary-green-light);
+            background: var(--primary-green-ultra-light);
+            transform: translateX(4px);
+        }
+        .loan-card.urgent {
+            border-left: 4px solid var(--status-danger);
+        }
+        .loan-card.pending {
+            border-left: 4px solid var(--status-warning);
+        }
+        .loan-card.approved {
+            border-left: 4px solid var(--status-success);
+        }
+        /* Loan Avatar */
+        .loan-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        /* Loan Type Badge */
+        .loan-type-badge {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .loan-type-badge.emergency {
+            background: rgba(244, 67, 54, 0.12);
+            color: var(--status-danger);
+        }
+        .loan-type-badge.development {
+            background: rgba(33, 150, 243, 0.12);
+            color: var(--accent-blue);
+        }
+        .loan-type-badge.school {
+            background: rgba(156, 39, 176, 0.12);
+            color: var(--accent-purple);
+        }
+        .loan-type-badge.business {
+            background: rgba(255, 152, 0, 0.12);
+            color: var(--accent-orange);
+        }
+        /* Credit Score Meter */
+        .credit-score-meter {
+            width: 100%;
+            max-width: 300px;
+            margin: var(--spacing-lg) auto;
+        }
+        .score-gauge {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--status-success) 0deg,
+                var(--status-success) calc(var(--score) * 3.6deg),
+                var(--bg-tertiary) calc(var(--score) * 3.6deg)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            position: relative;
+        }
+        .score-gauge::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+        }
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .score-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        /* Guarantor Card */
+        .guarantor-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        .guarantor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .guarantor-status {
+            margin-left: auto;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .guarantor-status.accepted {
+            background: rgba(76, 175, 80, 0.12);
+            color: var(--status-success);
+        }
+        .guarantor-status.pending {
+            background: rgba(255, 193, 7, 0.12);
+            color: var(--status-warning);
+        }
+        /* Repayment Schedule */
+        .repayment-schedule {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .schedule-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .schedule-row:last-child {
+            border-bottom: none;
+        }
+        .schedule-row.overdue {
+            background: rgba(244, 67, 54, 0.05);
+        }
+        .schedule-row.paid {
+            opacity: 0.6;
+        }
+        /* Tabs */
+        .app-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+            overflow-x: auto;
+        }
+        .app-tab {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            font-family: var(--font-sans);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .app-tab:hover {
+            color: var(--primary-green);
+        }
+        .app-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+        .app-tab .tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--status-danger);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        /* Modal Extensions */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-box.lg {
+            max-width: 800px;
+        }
+        .modal-box.xl {
+            max-width: 1200px;
+        }
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-head h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            background: var(--status-danger);
+            color: white;
+        }
+        .modal-body {
+            padding: var(--spacing-xl);
+        }
+        .modal-foot {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+        }
+        /* Form Extensions */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        .form-group label .req {
+            color: var(--status-danger);
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            font-family: var(--font-sans);
+            color: var(--text-primary);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+        }
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+        .form-hint {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+        /* Info Box */
+        .info-box {
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        .info-box-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-green-ultra-light);
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        /* Summary Box */
+        .summary-box {
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, rgba(0, 208, 132, 0.06), rgba(0, 188, 212, 0.06));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            font-size: 0.85rem;
+        }
+        .summary-row:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .summary-row .label {
+            color: var(--text-secondary);
+        }
+        .summary-row .value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .summary-row.total {
+            font-size: 1rem;
+            padding-top: var(--spacing-md);
+        }
+        .summary-row.total .value {
+            color: var(--primary-green-dark);
+            font-size: 1.25rem;
+        }
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            min-width: 300px;
+        }
+        .toast.success {
+            background: var(--status-success);
+        }
+        .toast.error {
+            background: var(--status-danger);
+        }
+        .toast.info {
+            background: var(--status-info);
+        }
+        .toast.warning {
+            background: var(--status-warning);
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        /* Mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+        }
+        .mobile-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            align-items: center;
+            justify-content: center;
+        }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+            .admin-main {
+                margin-left: 0;
+            }
+            .mobile-toggle {
+                display: flex;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .loan-card {
+                flex-direction: column;
+            }
+            .topbar-search {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">RS</div>
+                <div class="sidebar-brand-text">
+                    <h1>SACCOPay</h1>
+                    <p>Rongo SACCO Admin</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt nav-icon"></i> Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-line nav-icon"></i> Analytics
+                    </a>
+                </div>
+                <div class="nav-section-title">Member Management</div>
+                <div class="nav-item">
+                    <a href="members-all.html" class="nav-link">
+                        <i class="fas fa-users nav-icon"></i> All Members
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="members-kyc.html" class="nav-link">
+                        <i class="fas fa-user-check nav-icon"></i> KYC Verification
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-section-title">Financial Operations</div>
+                <div class="nav-item">
+                    <a href="deposits.html" class="nav-link">
+                        <i class="fas fa-arrow-circle-down nav-icon"></i> Deposits
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="withdrawals.html" class="nav-link">
+                        <i class="fas fa-arrow-circle-up nav-icon"></i> Withdrawals
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="transactions.html" class="nav-link">
+                        <i class="fas fa-exchange-alt nav-icon"></i> Transactions
+                    </a>
+                </div>
+                <div class="nav-section-title">Loan Services</div>
+                <div class="nav-item">
+                    <a href="loan-portfolio.html" class="nav-link">
+                        <i class="fas fa-hand-holding-usd nav-icon"></i> Loan Portfolio
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-file-invoice-dollar nav-icon"></i> Applications
+                        <span class="nav-badge">28</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-money-check-alt nav-icon"></i> Disbursements
+                    </a>
+                </div>
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i> Settings
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <div style="display:flex; align-items:center; gap:var(--spacing-md);">
+                        <button class="mobile-toggle" onclick="toggleSidebar()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="topbar-search">
+                            <i class="fas fa-search topbar-search-icon"></i>
+                            <input type="text" placeholder="Search applications by member, ID, amount...">
+                        </div>
+                    </div>
+                    <div class="topbar-actions">
+                        <button class="topbar-action-btn" title="Notifications" onclick="openModal('notificationsModal')">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <button class="topbar-action-btn" title="Messages">
+                            <i class="fas fa-envelope"></i>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        <div class="user-profile">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info">
+                                <h4>John Maina</h4>
+                                <p>Loan Officer</p>
+                            </div>
+                            <i class="fas fa-chevron-down" style="font-size:0.6rem; color:var(--text-tertiary); margin-left:4px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Page Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="dashboard.html" style="color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:4px;">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <i class="fas fa-chevron-right" style="font-size:0.5rem; color:var(--text-tertiary);"></i>
+                    <span style="color:var(--text-secondary);">Loan Services</span>
+                    <i class="fas fa-chevron-right" style="font-size:0.5rem; color:var(--text-tertiary);"></i>
+                    <span style="color:var(--primary-green); font-weight:600;">Loan Applications</span>
+                </div>
+                <!-- Page Header -->
+                <div class="flex-between mb-4" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                    <div>
+                        <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:4px;">Loan Applications</h2>
+                        <p style="color:var(--text-secondary); font-size:0.9rem;">Review, approve, and manage all loan applications from Rongo SACCO members</p>
+                    </div>
+                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+                        <button class="btn btn-ghost btn-sm" onclick="refreshApplications()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openModal('exportModal')">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openModal('bulkActionsModal')">
+                            <i class="fas fa-tasks"></i> Bulk Actions
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('newApplicationModal')">
+                            <i class="fas fa-plus-circle"></i> New Application
+                        </button>
+                    </div>
+                </div>
+                <!-- Alert -->
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle" style="margin-top:2px;"></i>
+                    <div>
+                        <strong>Automated Credit Scoring Active:</strong> All applications are automatically assessed using CRB data and internal scoring algorithms.
+                        <a href="#" style="color:var(--status-info); font-weight:500;">View Scoring Criteria</a>
+                    </div>
+                </div>
+                <!-- KPI Stats Grid -->
+                <div class="stats-grid mb-4">
+                    <div class="stat-card" onclick="switchTab('pending')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon warning"><i class="fas fa-clock"></i></div>
+                        </div>
+                        <div class="stat-card-title">Pending Review</div>
+                        <div class="stat-card-value">28</div>
+                        <span class="stat-card-change negative"><i class="fas fa-exclamation-circle"></i> Requires action</span>
+                    </div>
+                    <div class="stat-card" onclick="switchTab('under-review')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon info"><i class="fas fa-search"></i></div>
+                        </div>
+                        <div class="stat-card-title">Under Review</div>
+                        <div class="stat-card-value">15</div>
+                        <span class="stat-card-change positive"><i class="fas fa-user-check"></i> Being assessed</span>
+                    </div>
+                    <div class="stat-card" onclick="filterApproved()" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon success"><i class="fas fa-check-circle"></i></div>
+                        </div>
+                        <div class="stat-card-title">Approved Today</div>
+                        <div class="stat-card-value">12</div>
+                        <span class="stat-card-change positive"><i class="fas fa-arrow-up"></i> KES 8.5M total</span>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon primary"><i class="fas fa-percentage"></i></div>
+                        </div>
+                        <div class="stat-card-title">Approval Rate</div>
+                        <div class="stat-card-value">87.3%</div>
+                        <span class="stat-card-change positive"><i class="fas fa-thumbs-up"></i> Above target</span>
+                    </div>
+                </div>
+                <!-- Secondary Stats -->
+                <div class="grid-4 mb-4" style="gap:var(--spacing-md);">
+                    <div style="padding:var(--spacing-md); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); text-align:center; cursor:pointer;" onclick="filterByType('emergency')">
+                        <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Emergency Loans</div>
+                        <div style="font-size:1.2rem; font-weight:700; color:var(--status-danger);">8</div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary);">High Priority</div>
+                    </div>
+                    <div style="padding:var(--spacing-md); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); text-align:center; cursor:pointer;" onclick="filterByType('development')">
+                        <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Development Loans</div>
+                        <div style="font-size:1.2rem; font-weight:700; color:var(--accent-blue);">12</div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary);">Standard</div>
+                    </div>
+                    <div style="padding:var(--spacing-md); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); text-align:center; cursor:pointer;" onclick="filterByType('school')">
+                        <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">School Fees</div>
+                        <div style="font-size:1.2rem; font-weight:700; color:var(--accent-purple);">5</div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary);">Seasonal</div>
+                    </div>
+                    <div style="padding:var(--spacing-md); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); text-align:center; cursor:pointer;" onclick="filterByType('business')">
+                        <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Business Loans</div>
+                        <div style="font-size:1.2rem; font-weight:700; color:var(--accent-orange);">3</div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary);">Long-term</div>
+                    </div>
+                </div>
+                <!-- Tabs -->
+                <div class="app-tabs">
+                    <button class="app-tab active" onclick="switchTab('pending')">
+                        <i class="fas fa-clock"></i> Pending Review <span class="tab-count">28</span>
+                    </button>
+                    <button class="app-tab" onclick="switchTab('under-review')">
+                        <i class="fas fa-search"></i> Under Review <span class="tab-count" style="background:var(--accent-blue);">15</span>
+                    </button>
+                    <button class="app-tab" onclick="switchTab('approved')">
+                        <i class="fas fa-check-circle"></i> Approved
+                    </button>
+                    <button class="app-tab" onclick="switchTab('rejected')">
+                        <i class="fas fa-times-circle"></i> Rejected
+                    </button>
+                    <button class="app-tab" onclick="switchTab('all')">
+                        <i class="fas fa-list"></i> All Applications
+                    </button>
+                </div>
+                <!-- TAB: PENDING REVIEW -->
+                <div class="tab-pane active" id="tab-pending">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <div class="flex-between" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-clock" style="color:var(--status-warning); margin-right:8px;"></i>Applications Awaiting Review (28)
+                                </h3>
+                                <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+                                    <select class="form-input" style="width:auto; padding:6px 32px 6px 10px; font-size:0.8rem;" onchange="applySortOrder(this.value)">
+                                        <option value="date-desc">Newest First</option>
+                                        <option value="date-asc">Oldest First</option>
+                                        <option value="amount-desc">Highest Amount</option>
+                                        <option value="amount-asc">Lowest Amount</option>
+                                        <option value="priority">Priority</option>
+                                    </select>
+                                    <button class="btn btn-outline btn-sm" onclick="bulkApprove()">
+                                        <i class="fas fa-check-double"></i> Bulk Approve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card-body">
+                            <!-- Loan Application Card 1 - Urgent -->
+                            <div class="loan-card urgent" onclick="viewApplication('LOAN-2026-00234')">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); align-self:flex-start; margin-top:4px;">
+                                <div class="loan-avatar">DK</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:var(--spacing-sm);">
+                                        <div>
+                                            <h4 style="font-size:1rem; font-weight:700; margin-bottom:2px;">David Kipkorir Rotich</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">LOAN-2026-00234 &bull; Member ID: R-00045 &bull; Submitted 2 hours ago</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.4rem; font-weight:700; color:var(--text-primary);">KES 500,000</div>
+                                            <div style="font-size:0.75rem; color:var(--text-secondary);">12 months @ 12% p.a.</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:var(--spacing-sm);">
+                                        <span class="loan-type-badge emergency"><i class="fas fa-exclamation-triangle"></i> Emergency Loan</span>
+                                        <span class="badge badge-danger"><i class="fas fa-bolt"></i> Urgent - Medical</span>
+                                        <span class="badge badge-success"><i class="fas fa-shield-alt"></i> 2 Guarantors Confirmed</span>
+                                        <span class="badge badge-info"><i class="fas fa-chart-line"></i> Credit Score: 785</span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:var(--spacing-sm); font-size:0.75rem; color:var(--text-secondary);">
+                                        <div><strong>Loan-to-Value:</strong> 65%</div>
+                                        <div><strong>Monthly Payment:</strong> KES 44,424</div>
+                                        <div><strong>Existing Loans:</strong> 1 (KES 200K)</div>
+                                        <div><strong>Share Balance:</strong> KES 150K</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:var(--spacing-sm); flex-shrink:0; align-self:center;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="approveApplication('LOAN-2026-00234')">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectApplication('LOAN-2026-00234')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                    <button class="btn btn-icon btn-ghost" onclick="viewApplication('LOAN-2026-00234')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Loan Application Card 2 -->
+                            <div class="loan-card pending" onclick="viewApplication('LOAN-2026-00233')">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); align-self:flex-start; margin-top:4px;">
+                                <div class="loan-avatar" style="background:linear-gradient(135deg, var(--accent-blue), var(--accent-purple));">SA</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:var(--spacing-sm);">
+                                        <div>
+                                            <h4 style="font-size:1rem; font-weight:700; margin-bottom:2px;">Sarah Akinyi Odhiambo</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">LOAN-2026-00233 &bull; Member ID: R-00123 &bull; Submitted 5 hours ago</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.4rem; font-weight:700; color:var(--text-primary);">KES 1,200,000</div>
+                                            <div style="font-size:0.75rem; color:var(--text-secondary);">24 months @ 10% p.a.</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:var(--spacing-sm);">
+                                        <span class="loan-type-badge development"><i class="fas fa-home"></i> Development Loan</span>
+                                        <span class="badge badge-warning"><i class="fas fa-user-clock"></i> 1 Guarantor Pending</span>
+                                        <span class="badge badge-success"><i class="fas fa-chart-line"></i> Credit Score: 820</span>
+                                        <span class="badge badge-info"><i class="fas fa-file-alt"></i> Documents Complete</span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:var(--spacing-sm); font-size:0.75rem; color:var(--text-secondary);">
+                                        <div><strong>Loan-to-Value:</strong> 70%</div>
+                                        <div><strong>Monthly Payment:</strong> KES 55,385</div>
+                                        <div><strong>Existing Loans:</strong> 0</div>
+                                        <div><strong>Share Balance:</strong> KES 500K</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:var(--spacing-sm); flex-shrink:0; align-self:center;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="approveApplication('LOAN-2026-00233')">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectApplication('LOAN-2026-00233')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                    <button class="btn btn-icon btn-ghost" onclick="viewApplication('LOAN-2026-00233')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Loan Application Card 3 -->
+                            <div class="loan-card pending" onclick="viewApplication('LOAN-2026-00232')">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); align-self:flex-start; margin-top:4px;">
+                                <div class="loan-avatar" style="background:linear-gradient(135deg, var(--accent-orange), var(--accent-red));">MW</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:var(--spacing-sm);">
+                                        <div>
+                                            <h4 style="font-size:1rem; font-weight:700; margin-bottom:2px;">Mary Wanjiku Kimani</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">LOAN-2026-00232 &bull; Member ID: R-00234 &bull; Submitted 1 day ago</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.4rem; font-weight:700; color:var(--text-primary);">KES 350,000</div>
+                                            <div style="font-size:0.75rem; color:var(--text-secondary);">18 months @ 11% p.a.</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:var(--spacing-sm);">
+                                        <span class="loan-type-badge school"><i class="fas fa-graduation-cap"></i> School Fees Loan</span>
+                                        <span class="badge badge-success"><i class="fas fa-shield-alt"></i> 3 Guarantors Confirmed</span>
+                                        <span class="badge badge-warning"><i class="fas fa-chart-line"></i> Credit Score: 690</span>
+                                        <span class="badge badge-info"><i class="fas fa-briefcase"></i> Employed - 8 years</span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:var(--spacing-sm); font-size:0.75rem; color:var(--text-secondary);">
+                                        <div><strong>Loan-to-Value:</strong> 50%</div>
+                                        <div><strong>Monthly Payment:</strong> KES 21,063</div>
+                                        <div><strong>Existing Loans:</strong> 2 (KES 180K)</div>
+                                        <div><strong>Share Balance:</strong> KES 250K</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:var(--spacing-sm); flex-shrink:0; align-self:center;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="approveApplication('LOAN-2026-00232')">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectApplication('LOAN-2026-00232')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                    <button class="btn btn-icon btn-ghost" onclick="viewApplication('LOAN-2026-00232')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="text-align:center; padding:var(--spacing-xl); color:var(--text-tertiary);">
+                                <p style="font-size:0.85rem; margin-bottom:var(--spacing-sm);">Showing 3 of 28 pending applications</p>
+                                <button class="btn btn-outline btn-sm">Load More <i class="fas fa-arrow-down" style="margin-left:4px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- TAB: UNDER REVIEW -->
+                <div class="tab-pane" id="tab-under-review">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-search" style="color:var(--accent-blue); margin-right:8px;"></i>Applications Under Review (15)
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <div style="text-align:center; padding:var(--spacing-2xl); color:var(--text-secondary);">
+                                <i class="fas fa-search" style="font-size:3rem; color:var(--text-tertiary); margin-bottom:var(--spacing-md);"></i>
+                                <p style="font-size:0.9rem;">These applications are currently being assessed by the credit committee.</p>
+                                <p style="font-size:0.85rem; color:var(--text-tertiary);">Average review time: 24-48 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- TAB: APPROVED -->
+                <div class="tab-pane" id="tab-approved">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-check-circle" style="color:var(--status-success); margin-right:8px;"></i>Approved Applications
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <div style="text-align:center; padding:var(--spacing-2xl); color:var(--text-secondary);">
+                                <i class="fas fa-check-circle" style="font-size:3rem; color:var(--status-success); margin-bottom:var(--spacing-md);"></i>
+                                <p style="font-size:0.9rem;"><strong>12 applications</strong> approved today (KES 8.5M)</p>
+                                <p style="font-size:0.85rem; color:var(--text-tertiary);">Awaiting disbursement processing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- TAB: REJECTED -->
+                <div class="tab-pane" id="tab-rejected">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-times-circle" style="color:var(--status-danger); margin-right:8px;"></i>Rejected Applications
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <div style="text-align:center; padding:var(--spacing-2xl); color:var(--text-secondary);">
+                                <i class="fas fa-times-circle" style="font-size:3rem; color:var(--status-danger); margin-bottom:var(--spacing-md);"></i>
+                                <p style="font-size:0.9rem;">View rejected applications and rejection reasons</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- TAB: ALL -->
+                <div class="tab-pane" id="tab-all">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-list" style="color:var(--primary-green); margin-right:8px;"></i>All Loan Applications
+                            </h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" style="accent-color:var(--primary-green);"></th>
+                                        <th>Application ID</th>
+                                        <th>Date</th>
+                                        <th>Member</th>
+                                        <th>Loan Type</th>
+                                        <th>Amount</th>
+                                        <th>Term</th>
+                                        <th>Credit Score</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="cursor:pointer;" onclick="viewApplication('LOAN-2026-00234')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">LOAN-2026-00234</code></td>
+                                        <td>Today, 11:30 AM</td>
+                                        <td><strong>David Kipkorir</strong></td>
+                                        <td><span class="loan-type-badge emergency">Emergency</span></td>
+                                        <td><strong>KES 500,000</strong></td>
+                                        <td>12 months</td>
+                                        <td><span class="badge badge-success">785</span></td>
+                                        <td><span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" onclick="viewApplication('LOAN-2026-00234')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost"><i class="fas fa-edit" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End dashboard-content -->
+        </main>
+    </div>
+    <!-- ==================== MODALS ==================== -->
+    <!-- Application Details Modal -->
+    <div class="modal-overlay" id="applicationModal">
+        <div class="modal-box xl">
+            <div class="modal-head">
+                <h3><i class="fas fa-file-invoice-dollar" style="color:var(--primary-green); margin-right:8px;"></i>Loan Application Details — <span id="appId"></span></h3>
+                <button class="modal-close" onclick="closeModal('applicationModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="applicationContent"></div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('applicationModal')">Close</button>
+                <button class="btn btn-outline"><i class="fas fa-print"></i> Print Application</button>
+                <button class="btn btn-primary" onclick="approveFromModal()"><i class="fas fa-check"></i> Approve Loan</button>
+            </div>
+        </div>
+    </div>
+    <!-- Approve Modal -->
+    <div class="modal-overlay" id="approveModal">
+        <div class="modal-box lg">
+            <div class="modal-head">
+                <h3><i class="fas fa-check-circle" style="color:var(--status-success); margin-right:8px;"></i>Approve Loan Application</h3>
+                <button class="modal-close" onclick="closeModal('approveModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success mb-3">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Review all details before approving. This action will trigger immediate disbursement processing.</span>
+                </div>
+                <div id="approveContent"></div>
+                <div class="form-group">
+                    <label>Approval Notes</label>
+                    <textarea class="form-input" rows="3" placeholder="Add any notes or conditions for this approval..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Disbursement Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div style="display:flex; gap:var(--spacing-md); padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm);">
+                    <input type="checkbox" id="confirmTerms" style="accent-color:var(--primary-green);">
+                    <label for="confirmTerms" style="font-size:0.85rem; margin:0;">I confirm that all credit checks, guarantor verifications, and documentation reviews have been completed satisfactorily.</label>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('approveModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmApproval()"><i class="fas fa-check-circle"></i> Approve & Process</button>
+            </div>
+        </div>
+    </div>
+    <!-- Reject Modal -->
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-times-circle" style="color:var(--status-danger); margin-right:8px;"></i>Reject Loan Application</h3>
+                <button class="modal-close" onclick="closeModal('rejectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger mb-3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>This action will reject the loan application. The member will be notified via SMS and email.</span>
+                </div>
+                <div class="form-group">
+                    <label>Rejection Reason <span class="req">*</span></label>
+                    <select class="form-input" required>
+                        <option value="">-- Select Reason --</option>
+                        <option>Insufficient Credit Score</option>
+                        <option>Inadequate Share Capital</option>
+                        <option>Existing Loan Default</option>
+                        <option>CRB Adverse Listing</option>
+                        <option>Guarantor Rejection</option>
+                        <option>Incomplete Documentation</option>
+                        <option>Exceeds Lending Limit</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Detailed Explanation <span class="req">*</span></label>
+                    <textarea class="form-input" rows="4" placeholder="Provide detailed reasons for rejection..." required></textarea>
+                </div>
+                <div style="display:flex; gap:var(--spacing-md); padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm);">
+                    <input type="checkbox" id="allowReapply" checked style="accent-color:var(--primary-green);">
+                    <label for="allowReapply" style="font-size:0.85rem; margin:0;">Allow member to re-apply after 30 days</label>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('rejectModal')">Cancel</button>
+                <button class="btn" style="background:var(--status-danger); color:white;" onclick="confirmRejection()"><i class="fas fa-times-circle"></i> Reject Application</button>
+            </div>
+        </div>
+    </div>
+    <!-- New Application Modal -->
+    <div class="modal-overlay" id="newApplicationModal">
+        <div class="modal-box lg">
+            <div class="modal-head">
+                <h3><i class="fas fa-plus-circle" style="color:var(--primary-green); margin-right:8px;"></i>New Loan Application</h3>
+                <button class="modal-close" onclick="closeModal('newApplicationModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Select Member <span class="req">*</span></label>
+                        <select class="form-input" required>
+                            <option value="">-- Search Member --</option>
+                            <option>David Kipkorir (R-00045)</option>
+                            <option>Sarah Akinyi (R-00123)</option>
+                            <option>Mary Wanjiku (R-00234)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Loan Product <span class="req">*</span></label>
+                        <select class="form-input" required>
+                            <option value="">-- Select Product --</option>
+                            <option>Emergency Loan (12% p.a.)</option>
+                            <option>Development Loan (10% p.a.)</option>
+                            <option>School Fees Loan (11% p.a.)</option>
+                            <option>Business Loan (9% p.a.)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Loan Amount (KES) <span class="req">*</span></label>
+                        <input type="number" class="form-input" placeholder="e.g. 500000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Repayment Period <span class="req">*</span></label>
+                        <select class="form-input" required>
+                            <option value="">-- Select Period --</option>
+                            <option>6 months</option>
+                            <option>12 months</option>
+                            <option>18 months</option>
+                            <option>24 months</option>
+                            <option>36 months</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Purpose / Description <span class="req">*</span></label>
+                    <textarea class="form-input" rows="3" placeholder="Describe the purpose of the loan..." required></textarea>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('newApplicationModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitNewApplication()"><i class="fas fa-save"></i> Submit Application</button>
+            </div>
+        </div>
+    </div>
+    <!-- Export Modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-file-export" style="color:var(--accent-blue); margin-right:8px;"></i>Export Applications</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Export Format</label>
+                    <select class="form-input">
+                        <option>Excel (.xlsx)</option>
+                        <option>CSV (.csv)</option>
+                        <option>PDF (.pdf)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status Filter</label>
+                    <select class="form-input">
+                        <option>All Status</option>
+                        <option>Pending Only</option>
+                        <option>Approved Only</option>
+                        <option>Rejected Only</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('exportModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="doExport()"><i class="fas fa-download"></i> Export</button>
+            </div>
+        </div>
+    </div>
+    <!-- Notifications Modal -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-bell" style="color:var(--accent-blue); margin-right:8px;"></i>Notifications</h3>
+                <button class="modal-close" onclick="closeModal('notificationsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning mb-2" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong>New Urgent Application</strong>
+                        <p style="font-size:0.75rem; margin:4px 0 0;">David Kipkorir - Emergency Loan KES 500K</p>
+                    </div>
+                    <span style="font-size:0.65rem; white-space:nowrap;">2 hrs</span>
+                </div>
+                <div class="alert alert-success mb-2" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong>Guarantor Confirmed</strong>
+                        <p style="font-size:0.75rem; margin:4px 0 0;">Sarah Akinyi's application - All guarantors accepted</p>
+                    </div>
+                    <span style="font-size:0.65rem; white-space:nowrap;">5 hrs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        // ============ SIDEBAR ============
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+        // ============ TABS ============
+        function switchTab(name) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.app-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            const tabs = document.querySelectorAll('.app-tab');
+            const map = { 'pending': 0, 'under-review': 1, 'approved': 2, 'rejected': 3, 'all': 4 };
+            if (map[name] !== undefined && tabs[map[name]]) tabs[map[name]].classList.add('active');
+        }
+        // ============ MODALS ============
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        });
+        // ============ APPLICATION DETAILS ============
+        const applications = {
+            'LOAN-2026-00234': {
+                id: 'LOAN-2026-00234',
+                member: 'David Kipkorir Rotich',
+                memberId: 'R-00045',
+                phone: '0712345678',
+                email: 'david.kipkorir@email.com',
+                type: 'Emergency Loan',
+                amount: '500,000',
+                term: '12 months',
+                rate: '12%',
+                monthlyPayment: '44,424',
+                creditScore: 785,
+                purpose: 'Medical emergency - hospital bills',
+                status: 'Pending',
+                submitted: '2 hours ago',
+                guarantors: [
+                    { name: 'Sarah Akinyi', status: 'Accepted', amount: '200,000' },
+                    { name: 'Mary Wanjiku', status: 'Accepted', amount: '300,000' }
+                ],
+                existingLoans: 1,
+                existingAmount: '200,000',
+                shareBalance: '150,000',
+                employment: 'Employed - 8 years',
+                loanToValue: '65%'
+            }
+        };
+        function viewApplication(id) {
+            const app = applications[id];
+            if (!app) return;
+            
+            document.getElementById('appId').textContent = id;
+            document.getElementById('applicationContent').innerHTML = `
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:var(--spacing-xl);">
+                    <div>
+                        <div style="background:var(--primary-green-ultra-light); padding:var(--spacing-xl); border-radius:var(--radius-md); text-align:center; margin-bottom:var(--spacing-lg);">
+                            <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:4px;">Requested Amount</div>
+                            <div style="font-size:2.5rem; font-weight:700; color:var(--primary-green);">KES ${app.amount}</div>
+                            <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;">${app.term} @ ${app.rate} p.a.</div>
+                            <div style="font-size:0.9rem; font-weight:600; color:var(--text-primary); margin-top:8px;">Monthly: KES ${app.monthlyPayment}</div>
+                        </div>
+                        <h6 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);"><i class="fas fa-user-circle" style="margin-right:6px;"></i>Member Information</h6>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-md); margin-bottom:var(--spacing-lg);">
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Name</div><div style="font-weight:600;">${app.member}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Member ID</div><div style="font-family:var(--font-mono);">${app.memberId}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Phone</div><div>${app.phone}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Email</div><div style="font-size:0.8rem;">${app.email}</div></div>
+                        </div>
+                        <h6 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);"><i class="fas fa-shield-alt" style="margin-right:6px;"></i>Guarantors</h6>
+                        ${app.guarantors.map(g => `
+                            <div class="guarantor-card">
+                                <div class="guarantor-avatar">${g.name.split(' ').map(n => n[0]).join('')}</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:600; font-size:0.85rem;">${g.name}</div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary);">Guaranteed: KES ${g.amount}</div>
+                                </div>
+                                <span class="guarantor-status ${g.status.toLowerCase()}">${g.status}</span>
+                            </div>
+                        `).join('')}
+                        <h6 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md); margin-top:var(--spacing-lg);"><i class="fas fa-file-alt" style="margin-right:6px;"></i>Loan Details</h6>
+                        <div class="summary-box">
+                            <div class="summary-row"><span class="label">Loan Type</span><span class="value">${app.type}</span></div>
+                            <div class="summary-row"><span class="label">Purpose</span><span class="value">${app.purpose}</span></div>
+                            <div class="summary-row"><span class="label">Existing Loans</span><span class="value">${app.existingLoans} (KES ${app.existingAmount})</span></div>
+                            <div class="summary-row"><span class="label">Share Balance</span><span class="value">KES ${app.shareBalance}</span></div>
+                            <div class="summary-row"><span class="label">Loan-to-Value</span><span class="value">${app.loanToValue}</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);">Credit Score</h6>
+                        <div class="credit-score-meter">
+                            <div class="score-gauge" style="--score: ${app.creditScore/10};">
+                                <div class="score-value">${app.creditScore}</div>
+                            </div>
+                            <div class="score-label">Excellent Credit Rating</div>
+                        </div>
+                        <h6 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md); margin-top:var(--spacing-lg);">Application Timeline</h6>
+                        <div class="loan-status-timeline" style="flex-direction:column; align-items:flex-start;">
+                            <div class="timeline-step completed" style="flex-direction:row; width:100%; margin-bottom:var(--spacing-sm);">
+                                <div class="timeline-step-circle" style="margin:0 var(--spacing-sm) 0 0;">1</div>
+                                <div><div style="font-weight:600; font-size:0.8rem;">Application Submitted</div><div style="font-size:0.7rem; color:var(--text-tertiary);">${app.submitted}</div></div>
+                            </div>
+                            <div class="timeline-step active" style="flex-direction:row; width:100%; margin-bottom:var(--spacing-sm);">
+                                <div class="timeline-step-circle" style="margin:0 var(--spacing-sm) 0 0;">2</div>
+                                <div><div style="font-weight:600; font-size:0.8rem;">Pending Review</div><div style="font-size:0.7rem; color:var(--text-tertiary);">Current stage</div></div>
+                            </div>
+                            <div class="timeline-step" style="flex-direction:row; width:100%;">
+                                <div class="timeline-step-circle" style="margin:0 var(--spacing-sm) 0 0;">3</div>
+                                <div><div style="font-weight:600; font-size:0.8rem;">Approval Decision</div><div style="font-size:0.7rem; color:var(--text-tertiary);">Pending</div></div>
+                            </div>
+                        </div>
+                        <h6 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md); margin-top:var(--spacing-lg);">Quick Actions</h6>
+                        <div style="display:grid; gap:var(--spacing-sm);">
+                            <button class="btn btn-primary btn-sm" onclick="approveApplication('${app.id}')"><i class="fas fa-check"></i> Approve Loan</button>
+                            <button class="btn btn-outline btn-sm" onclick="requestMoreInfo('${app.id}')"><i class="fas fa-question-circle"></i> Request Info</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-envelope"></i> Contact Member</button>
+                            <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectApplication('${app.id}')"><i class="fas fa-times"></i> Reject</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            openModal('applicationModal');
+        }
+        function approveApplication(id) {
+            const app = applications[id];
+            if (!app) return;
+            
+            document.getElementById('approveContent').innerHTML = `
+                <div class="summary-box" style="margin-bottom:var(--spacing-lg);">
+                    <div class="summary-row"><span class="label">Member</span><span class="value">${app.member}</span></div>
+                    <div class="summary-row"><span class="label">Loan Type</span><span class="value">${app.type}</span></div>
+                    <div class="summary-row"><span class="label">Amount</span><span class="value">KES ${app.amount}</span></div>
+                    <div class="summary-row"><span class="label">Term</span><span class="value">${app.term} @ ${app.rate}</span></div>
+                    <div class="summary-row total"><span class="label"><strong>Monthly Payment</strong></span><span class="value">KES ${app.monthlyPayment}</span></div>
+                </div>
+            `;
+            closeModal('applicationModal');
+            openModal('approveModal');
+        }
+        function approveFromModal() {
+            const app = applications[Object.keys(applications)[0]];
+            approveApplication(app.id);
+        }
+        function rejectApplication(id) {
+            closeModal('applicationModal');
+            openModal('rejectModal');
+        }
+        function confirmApproval() {
+            if (!document.getElementById('confirmTerms').checked) {
+                toast('Please confirm all credit checks have been completed', 'warning');
+                return;
+            }
+            closeModal('approveModal');
+            toast('Loan application approved successfully!', 'success');
+        }
+        function confirmRejection() {
+            closeModal('rejectModal');
+            toast('Loan application rejected. Member will be notified.', 'info');
+        }
+        function submitNewApplication() {
+            closeModal('newApplicationModal');
+            toast('New loan application submitted successfully!', 'success');
+        }
+        function doExport() {
+            closeModal('exportModal');
+            toast('Export started - file will download shortly.', 'info');
+        }
+        function bulkApprove() {
+            toast('Bulk approval process initiated...', 'info');
+        }
+        function refreshApplications() {
+            toast('Refreshing applications...', 'info');
+        }
+        function filterApproved() {
+            switchTab('approved');
+        }
+        function filterByType(type) {
+            toast('Filtering by ' + type + ' loans', 'info');
+        }
+        function applySortOrder(order) {
+            toast('Sorting by: ' + order, 'info');
+        }
+        function requestMoreInfo(id) {
+            toast('Information request sent to member', 'info');
+        }
+        // ============ TOAST ============
+        function toast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast ' + type;
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            t.innerHTML = '<i class="fas ' + icon + '"></i> ' + msg;
+            c.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateX(100%)';
+                t.style.transition = 'all 0.3s ease';
+                setTimeout(() => t.remove(), 300);
+            }, 3500);
+        }
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(i => { if (!i.value) i.value = today; });
+        });
+    </script>
+</body>
+</html>

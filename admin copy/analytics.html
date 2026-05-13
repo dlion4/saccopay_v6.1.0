@@ -1,0 +1,3697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="description" content="Rongo SACCO Analytics Dashboard - Comprehensive performance metrics and insights">
+    <title>Analytics Dashboard | Rongo SACCO Admin</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="./admin-dashboard-master.css">
+    <!-- Page Custom CSS -->
+    <link rel="stylesheet" href="./analytics-custom.css">
+
+    <style>
+        
+/* ============================================
+   MOBILE OVERFLOW GUARD - ADD TO TOP OF FILE
+   Prevents horizontal scrollbar on all devices
+   ============================================ */
+
+/* Force viewport to device width, prevent zoom issues */
+@viewport {
+    width: device-width;
+    initial-scale: 1;
+}
+
+/* Root overflow prevention */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    position: relative;
+}
+
+/* Ensure admin layout never overflows */
+.admin-layout {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+}
+
+/* Main content area must stay within bounds */
+.admin-main {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* Dashboard content wrapper */
+.dashboard-content {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+/* Fix Bootstrap row negative margins causing overflow */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* But restore Bootstrap's gutter behavior for proper spacing */
+.row > [class*="col-"] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* On very small screens, reduce padding further */
+@media (max-width: 575.98px) {
+    .row > [class*="col-"] {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .dashboard-content {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}
+
+/* Ensure all images and media never overflow */
+img, video, canvas, svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Ensure tables don't cause overflow - wrap them properly */
+.table-responsive {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent any element from exceeding viewport */
+* {
+    max-width: 100vw;
+}
+
+/* But allow necessary exceptions */
+.table-responsive, 
+.modal-dialog,
+.dropdown-menu,
+.nav-tabs {
+    max-width: none;
+}
+
+/* Fix glass-card potential overflow */
+.glass-card {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Ensure stat cards don't overflow on mobile */
+.stat-card {
+    max-width: 100% !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Fix stat card value text wrapping */
+.stat-card-value {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ensure comparison chart fits */
+.comparison-chart {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.comparison-item {
+    max-width: 100% !important;
+}
+
+/* Fix bar chart container */
+.css-bar-chart {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Ensure income breakdown fits */
+.income-breakdown {
+    max-width: 100% !important;
+}
+
+.income-item {
+    max-width: 100% !important;
+}
+
+/* Fix risk indicators */
+.risk-indicators {
+    max-width: 100% !important;
+}
+
+.risk-indicator {
+    max-width: 100% !important;
+    word-wrap: break-word;
+}
+
+/* Ensure metric cards don't overflow */
+.metric-card {
+    max-width: 100% !important;
+    word-wrap: break-word;
+}
+
+/* Fix quick stat cards */
+.quick-stat-card {
+    max-width: 100% !important;
+}
+
+/* Prevent long text from breaking layout */
+.balance-value, .metric-value, .stat-card-value, .quick-stat-value {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ensure product list fits */
+.product-list {
+    max-width: 100% !important;
+}
+
+.product-item {
+    max-width: 100% !important;
+}
+
+/* Fix segmentation list */
+.segmentation-list {
+    max-width: 100% !important;
+}
+
+.segment-item {
+    max-width: 100% !important;
+}
+
+/* Ensure health metrics fit */
+.health-metrics {
+    max-width: 100% !important;
+}
+
+.health-item {
+    max-width: 100% !important;
+}
+
+/* Fix balance sheet */
+.balance-sheet {
+    max-width: 100% !important;
+}
+
+.balance-item {
+    max-width: 100% !important;
+}
+
+/* Ensure notification items don't overflow */
+.notification-item {
+    max-width: 100% !important;
+}
+
+/* Fix insight items */
+.insight-item {
+    max-width: 100% !important;
+    word-wrap: break-word;
+}
+
+/* Ensure modal content doesn't overflow on mobile */
+@media (max-width: 575.98px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    .modal-content {
+        max-width: 100%;
+    }
+}
+
+/* Fix topbar on mobile */
+@media (max-width: 991.98px) {
+    .topbar-content {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .topbar-search {
+        order: 3;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .topbar-actions {
+        order: 2;
+        margin-left: auto;
+    }
+}
+
+/* Ensure sidebar doesn't cause overflow when hidden */
+.admin-sidebar {
+    max-width: 260px;
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        max-width: 280px;
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+/* Hide horizontal scrollbar visually but keep functionality if needed */
+.hide-h-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-h-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ensure the page wrapper never scrolls horizontally */
+body {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* ========== EXISTING STYLES BELOW ========== */
+
+/* ============================================
+   RONGO SACCO - ANALYTICS PAGE CUSTOM CSS
+   Designed for: analytics.html
+   Depends on: admin-dashboard-master.css
+   ============================================ */
+
+/* ---------- CSS BAR CHART ---------- */
+.css-bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.bar-item {
+    display: grid;
+    grid-template-columns: 70px 1fr 50px;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.bar-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.bar-container {
+    background: var(--bg-tertiary);
+    height: 28px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--primary-green);
+    border-radius: var(--radius-md);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.bar-value {
+    text-align: right;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+}
+
+/* ---------- QUICK STAT CARDS ---------- */
+.quick-stat-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quick-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-green);
+}
+
+.quick-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    font-size: 1.25rem;
+}
+
+.quick-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.quick-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* ---------- SEGMENTATION LIST ---------- */
+.segmentation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.segment-item {
+    padding: 0.875rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.segment-item:hover {
+    background: var(--primary-green-ultra-light);
+    border-color: var(--primary-green-light);
+    transform: translateX(4px);
+}
+
+.segment-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.segment-label {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.segment-value {
+    font-weight: 600;
+    color: var(--primary-green);
+    font-size: 0.875rem;
+}
+
+/* ---------- RANK BADGES ---------- */
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.rank-gold {
+    background: linear-gradient(135deg, #FFD700, #FFC107);
+    color: #000;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+.rank-silver {
+    background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    color: #000;
+    box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
+}
+
+.rank-bronze {
+    background: linear-gradient(135deg, #CD7F32, #B87333);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(205, 127, 50, 0.3);
+}
+
+/* ---------- HEALTH METRICS ---------- */
+.health-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.health-item {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.health-item:hover {
+    border-color: var(--primary-green-light);
+}
+
+/* ---------- PRODUCT LIST ---------- */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.product-item {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.product-item:hover {
+    background: var(--primary-green-ultra-light);
+    border-color: var(--primary-green);
+    transform: translateX(4px);
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.product-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.product-stats {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* ---------- COMPARISON CHART ---------- */
+.comparison-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.comparison-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.comparison-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.comparison-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.comparison-bar {
+    height: 22px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.comparison-bar .bar-fill {
+    height: 100%;
+    border-radius: var(--radius-md);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.comparison-bar.disbursement .bar-fill {
+    background: var(--accent-blue);
+}
+
+.comparison-bar.repayment .bar-fill {
+    background: var(--primary-green);
+}
+
+.comparison-bar .bar-label {
+    position: absolute;
+    right: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* ---------- BALANCE SHEET ---------- */
+.balance-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.balance-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.balance-item:hover {
+    transform: translateX(4px);
+}
+
+.balance-item.positive {
+    border-left: 4px solid var(--status-success);
+}
+
+.balance-item.negative {
+    border-left: 4px solid var(--status-danger);
+}
+
+.balance-item.neutral {
+    border-left: 4px solid var(--primary-green);
+}
+
+.balance-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.balance-item.positive .balance-icon {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--status-success);
+}
+
+.balance-item.negative .balance-icon {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--status-danger);
+}
+
+.balance-item.neutral .balance-icon {
+    background: rgba(0, 208, 132, 0.1);
+    color: var(--primary-green);
+}
+
+.balance-details {
+    flex: 1;
+}
+
+.balance-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.balance-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ---------- INCOME BREAKDOWN ---------- */
+.income-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.income-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.875rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.income-item:hover {
+    background: var(--primary-green-ultra-light);
+    border-color: var(--primary-green-light);
+    transform: translateX(4px);
+}
+
+.income-left {
+    min-width: 0;
+}
+
+.income-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 0.375rem;
+}
+
+.income-progress {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.income-percentage {
+    padding: 3px 10px;
+    background: var(--primary-green-ultra-light);
+    color: var(--primary-green);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.income-amount {
+    font-weight: 700;
+    color: var(--primary-green);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+/* ---------- METRIC CARDS ---------- */
+.metric-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-green);
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.metric-trend {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ---------- RISK GAUGE (SVG) ---------- */
+.risk-gauge {
+    text-align: center;
+}
+
+.gauge-container {
+    margin-bottom: 0.5rem;
+}
+
+.gauge-ring {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1rem;
+}
+
+.gauge-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.gauge-bg {
+    fill: none;
+    stroke: var(--bg-tertiary);
+    stroke-width: 10;
+}
+
+.gauge-fill {
+    fill: none;
+    stroke: var(--primary-green);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.gauge-score {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    line-height: 1;
+}
+
+.gauge-max {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.gauge-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    margin-top: 0.5rem;
+}
+
+.gauge-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* ---------- RISK INDICATORS ---------- */
+.risk-indicators {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.risk-indicator {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-left: 4px solid;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.risk-indicator:hover {
+    transform: translateX(4px);
+    background: var(--bg-tertiary);
+}
+
+.risk-indicator.low {
+    border-color: var(--status-success);
+}
+
+.risk-indicator.medium {
+    border-color: var(--status-warning);
+}
+
+.risk-indicator.high {
+    border-color: var(--status-danger);
+}
+
+.risk-indicator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.risk-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.risk-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.risk-metrics {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding-left: calc(36px + 0.5rem);
+}
+
+/* ---------- TABLE ROW RISK HIGHLIGHT ---------- */
+.table-row-risk {
+    transition: background 0.2s ease;
+}
+
+.table-row-risk:hover {
+    background: rgba(244, 67, 54, 0.03);
+}
+
+/* ---------- STAT BOX (Modal) ---------- */
+.stat-box {
+    background: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.stat-box .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-box .stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ---------- NOTIFICATION ITEMS ---------- */
+.notification-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.notification-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.notification-item.unread {
+    background: var(--primary-green-ultra-light);
+    border-left: 3px solid var(--primary-green);
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.notification-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+}
+
+/* ---------- INSIGHT ITEMS ---------- */
+.insight-item {
+    padding: 1.25rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.insight-item:hover {
+    transform: translateX(4px);
+}
+
+.insight-item.insight-success {
+    border-left: 4px solid var(--status-success);
+}
+
+.insight-item.insight-warning {
+    border-left: 4px solid var(--status-warning);
+}
+
+.insight-item.insight-info {
+    border-left: 4px solid var(--primary-green);
+}
+
+.insight-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.insight-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.insight-item p {
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+/* ---------- BADGE VARIANTS ---------- */
+.badge-success-light {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--status-success);
+}
+
+.badge-danger-light {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--status-danger);
+}
+
+/* ---------- RESPONSIVE ADJUSTMENTS ---------- */
+@media (max-width: 575.98px) {
+    .bar-item {
+        grid-template-columns: 60px 1fr 40px;
+        gap: 0.5rem;
+    }
+
+    .bar-label {
+        font-size: 0.7rem;
+    }
+
+    .bar-value {
+        font-size: 0.7rem;
+    }
+
+    .comparison-item {
+        grid-template-columns: 70px 1fr;
+        gap: 0.5rem;
+    }
+
+    .income-item {
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+    }
+
+    .income-percentage {
+        display: none;
+    }
+
+    .quick-stat-value {
+        font-size: 1.5rem;
+    }
+
+    .metric-value {
+        font-size: 1.5rem;
+    }
+
+    .gauge-ring {
+        width: 130px;
+        height: 130px;
+    }
+
+    .gauge-score {
+        font-size: 2rem;
+    }
+
+    .risk-metrics {
+        padding-left: 0;
+        margin-top: 0.5rem;
+    }
+
+    .risk-indicator-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .product-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .income-item {
+        grid-template-columns: 1fr auto auto;
+    }
+}
+
+/* ---------- SMOOTH SCROLL FOR TABS ---------- */
+.nav-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.nav-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-tabs .nav-item {
+    flex-shrink: 0;
+}
+
+.nav-tabs .nav-link {
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+}
+    </style>
+
+    
+    <style>
+        
+/* ============================================
+   MOBILE OVERFLOW GUARD - ADD TO TOP OF FILE
+   Prevents horizontal scrollbar on all devices
+   ============================================ */
+
+/* Force viewport to device width, prevent zoom issues */
+@viewport {
+    width: device-width;
+    initial-scale: 1;
+}
+
+/* Root overflow prevention */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    position: relative;
+}
+
+/* Ensure admin layout never overflows */
+.admin-layout {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+}
+
+/* Main content area must stay within bounds */
+.admin-main {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* Dashboard content wrapper */
+.dashboard-content {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+/* Fix Bootstrap row negative margins causing overflow */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* But restore Bootstrap's gutter behavior for proper spacing */
+.row > [class*="col-"] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* On very small screens, reduce padding further */
+@media (max-width: 575.98px) {
+    .row > [class*="col-"] {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .dashboard-content {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}
+
+/* Ensure all images and media never overflow */
+img, video, canvas, svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Ensure tables don't cause overflow - wrap them properly */
+.table-responsive {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent any element from exceeding viewport */
+* {
+    max-width: 100vw;
+}
+
+/* But allow necessary exceptions */
+.table-responsive, 
+.modal-dialog,
+.dropdown-menu,
+.nav-tabs {
+    max-width: none;
+}
+
+/* Fix glass-card potential overflow */
+.glass-card {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Ensure stat cards don't overflow on mobile */
+.stat-card {
+    max-width: 100% !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Fix stat card value text wrapping */
+.stat-card-value {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ensure comparison chart fits */
+.comparison-chart {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.comparison-item {
+    max-width: 100% !important;
+}
+
+/* Fix bar chart container */
+.css-bar-chart {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Ensure income breakdown fits */
+.income-breakdown {
+    max-width: 100% !important;
+}
+
+.income-item {
+    max-width: 100% !important;
+}
+
+/* Fix risk indicators */
+.risk-indicators {
+    max-width: 100% !important;
+}
+
+.risk-indicator {
+    max-width: 100% !important;
+    word-wrap: break-word;
+}
+
+/* Ensure metric cards don't overflow */
+.metric-card {
+    max-width: 100% !important;
+    word-wrap: break-word;
+}
+
+/* Fix quick stat cards */
+.quick-stat-card {
+    max-width: 100% !important;
+}
+
+/* Prevent long text from breaking layout */
+.balance-value, .metric-value, .stat-card-value, .quick-stat-value {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ensure product list fits */
+.product-list {
+    max-width: 100% !important;
+}
+
+.product-item {
+    max-width: 100% !important;
+}
+
+/* Fix segmentation list */
+.segmentation-list {
+    max-width: 100% !important;
+}
+
+.segment-item {
+    max-width: 100% !important;
+}
+
+/* Ensure health metrics fit */
+.health-metrics {
+    max-width: 100% !important;
+}
+
+.health-item {
+    max-width: 100% !important;
+}
+
+/* Fix balance sheet */
+.balance-sheet {
+    max-width: 100% !important;
+}
+
+.balance-item {
+    max-width: 100% !important;
+}
+
+/* Ensure notification items don't overflow */
+.notification-item {
+    max-width: 100% !important;
+}
+
+/* Fix insight items */
+.insight-item {
+    max-width: 100% !important;
+    word-wrap: break-word;
+}
+
+/* Ensure modal content doesn't overflow on mobile */
+@media (max-width: 575.98px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    .modal-content {
+        max-width: 100%;
+    }
+}
+
+/* Fix topbar on mobile */
+@media (max-width: 991.98px) {
+    .topbar-content {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .topbar-search {
+        order: 3;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .topbar-actions {
+        order: 2;
+        margin-left: auto;
+    }
+}
+
+/* Ensure sidebar doesn't cause overflow when hidden */
+.admin-sidebar {
+    max-width: 260px;
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        max-width: 280px;
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+/* Hide horizontal scrollbar visually but keep functionality if needed */
+.hide-h-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-h-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ensure the page wrapper never scrolls horizontally */
+body {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+    </style>
+
+
+    <style>
+        /* Mobile sidebar hidden by default */
+.admin-sidebar {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 280px;
+        z-index: 1040;
+    }
+    
+    .admin-sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1035;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .admin-main {
+        margin-left: 0 !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .admin-sidebar {
+        width: 260px;
+        min-width: 260px;
+    }
+    
+    .admin-sidebar.collapsed {
+        width: 70px;
+        min-width: 70px;
+    }
+    
+    .admin-sidebar.collapsed .sidebar-brand-text,
+    .admin-sidebar.collapsed .nav-item span,
+    .admin-sidebar.collapsed .nav-section-title {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+    
+    .admin-main {
+        margin-left: 260px;
+        transition: margin-left 0.3s ease;
+    }
+    
+    .admin-sidebar.collapsed ~ .admin-main,
+    .admin-main.sidebar-collapsed {
+        margin-left: 70px;
+    }
+}
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>Rongo SACCO</h1>
+                    <p>Admin Portal</p>
+                </div>
+                <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="./dashboard.html" class="nav-link">
+                        <i class="bi bi-speedometer2 nav-icon"></i>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./analytics.html" class="nav-link active">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Tresury</div>
+
+                <div class="nav-item">
+                    <a href="./tresury-wallet.html" class="nav-link active">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Wallet</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./tresury-savings.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Savings</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Members</div>
+                <div class="nav-item">
+                    <a href="./members-all.html" class="nav-link">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span>All Members</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./members-kyc.html" class="nav-link">
+                        <i class="bi bi-person-check nav-icon"></i>
+                        <span>KYC Pending</span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="member-registration.html" class="nav-link">
+                        <i class="bi bi-person-plus nav-icon"></i>
+                        <span>Register Member</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Financial</div>
+                <div class="nav-item">
+                    <a href="./financial-transactions.html" class="nav-link">
+                        <i class="bi bi-arrow-left-right nav-icon"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./financial-deposits.html" class="nav-link">
+                        <i class="bi bi-piggy-bank nav-icon"></i>
+                        <span>Deposits</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./financial-withdrawals.html" class="nav-link">
+                        <i class="bi bi-cash-coin nav-icon"></i>
+                        <span>Withdrawals</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./financial-shares.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Share Capital</span>
+                    </a>
+                </div>
+                
+
+                <div class="nav-section-title">Loans</div>
+                <div class="nav-item">
+                    <a href="./loans-portifolio.html" class="nav-link">
+                        <i class="bi bi-clipboard-data nav-icon"></i>
+                        <span>Loan Portfolio</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./loan-applications.html" class="nav-link">
+                        <i class="bi bi-file-earmark-text nav-icon"></i>
+                        <span>Applications</span>
+                        <span class="nav-badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./loan-disbursements.html" class="nav-link">
+                        <i class="bi bi-send nav-icon"></i>
+                        <span>Disbursements</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./loan-repayments.html" class="nav-link">
+                        <i class="bi bi-arrow-down-circle nav-icon"></i>
+                        <span>Repayments</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Reports</div>
+                <div class="nav-item">
+                    <a href="./reports-all.html" class="nav-link">
+                        <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                        <span>All Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./reports-compliance.html" class="nav-link">
+                        <i class="bi bi-clipboard-check nav-icon"></i>
+                        <span>Compliance</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Settings</div>
+                <div class="nav-item">
+                    <a href="./settings-all.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./settings-notifications.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Notifications</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./settings-staff-management.html" class="nav-link">
+                        <i class="bi bi-person-gear nav-icon"></i>
+                        <span>Staff Management</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Navigation Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <button class="sidebar-toggle d-lg-none me-3" id="topbarSidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <!-- Search Bar -->
+                    <div class="topbar-search">
+                        <i class="bi bi-search topbar-search-icon"></i>
+                        <input type="text" placeholder="Search members, transactions, loans...">
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="topbar-actions">
+                        <button class="topbar-action-btn" title="Quick Actions" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        <button class="topbar-action-btn" title="Notifications" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                            <i class="bi bi-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <button class="topbar-action-btn" title="Messages" data-bs-toggle="modal" data-bs-target="#messagesModal">
+                            <i class="bi bi-chat-dots"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <button class="topbar-action-btn" title="Help Center" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <i class="bi bi-question-circle"></i>
+                        </button>
+
+                        <!-- User Profile -->
+                        <div class="user-profile" data-bs-toggle="modal" data-bs-target="#profileModal" style="cursor: pointer;">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info d-none d-md-block">
+                                <h4>John Maina</h4>
+                                <p>General Manager</p>
+                            </div>
+                            <i class="bi bi-chevron-down d-none d-md-block"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="bi bi-house-door"></i>
+                        <span>Home</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item active">
+                        <span>Analytics Dashboard</span>
+                    </div>
+                </nav>
+
+                <!-- Page Header -->
+                <div class="dashboard-header mb-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                        <div>
+                            <h2>Analytics & Insights</h2>
+                            <p class="mb-0">Comprehensive performance metrics for Rongo SACCO Ltd</p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-calendar"></i> <span class="d-none d-sm-inline">Last 30 Days</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="updateDateRange('today')">Today</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDateRange('week')">Last 7 Days</a></li>
+                                    <li><a class="dropdown-item active" href="#" onclick="updateDateRange('month')">Last 30 Days</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDateRange('quarter')">Last Quarter</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateDateRange('year')">This Year</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customDateModal">Custom Range</a></li>
+                                </ul>
+                            </div>
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#exportModal">
+                                <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Export</span>
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insightsModal">
+                                <i class="bi bi-lightbulb"></i> <span class="d-none d-sm-inline">AI Insights</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Performance Indicators -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card" onclick="document.getElementById('membersTab').click();" style="cursor: pointer;">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-card-title">Total Members</div>
+                                    <div class="stat-card-value">2,847</div>
+                                    <span class="stat-card-change positive">
+                                        <i class="bi bi-arrow-up"></i> +156 this month
+                                    </span>
+                                </div>
+                                <div class="stat-card-icon primary">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-footer">
+                                <div class="stat-card-meta">
+                                    <span>Active: 2,645 | Dormant: 202</span>
+                                    <span class="text-primary">Details &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card" data-bs-toggle="modal" data-bs-target="#depositsModal" style="cursor: pointer;">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-card-title">Total Deposits</div>
+                                    <div class="stat-card-value">KES 456M</div>
+                                    <span class="stat-card-change positive">
+                                        <i class="bi bi-arrow-up"></i> +8.3%
+                                    </span>
+                                </div>
+                                <div class="stat-card-icon success">
+                                    <i class="bi bi-piggy-bank"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-footer">
+                                <div class="stat-card-meta">
+                                    <span>Monthly inflow: KES 12.5M</span>
+                                    <span class="text-primary">View &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card" onclick="document.getElementById('loansTab').click();" style="cursor: pointer;">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-card-title">Loan Portfolio</div>
+                                    <div class="stat-card-value">KES 789M</div>
+                                    <span class="stat-card-change positive">
+                                        <i class="bi bi-graph-up"></i> +5.7%
+                                    </span>
+                                </div>
+                                <div class="stat-card-icon info">
+                                    <i class="bi bi-cash-stack"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-footer">
+                                <div class="stat-card-meta">
+                                    <span>1,234 active loans</span>
+                                    <span class="text-primary">Details &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card" data-bs-toggle="modal" data-bs-target="#sharesModal" style="cursor: pointer;">
+                            <div class="stat-card-header">
+                                <div>
+                                    <div class="stat-card-title">Share Capital</div>
+                                    <div class="stat-card-value">KES 234M</div>
+                                    <span class="stat-card-change positive">
+                                        <i class="bi bi-arrow-up"></i> +12.1%
+                                    </span>
+                                </div>
+                                <div class="stat-card-icon warning">
+                                    <i class="bi bi-pie-chart"></i>
+                                </div>
+                            </div>
+                            <div class="stat-card-footer">
+                                <div class="stat-card-meta">
+                                    <span>Avg per member: KES 82,150</span>
+                                    <span class="text-primary">View &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Analytics Tabs -->
+                <div class="glass-card mb-4">
+                    <div class="glass-card-header">
+                        <ul class="nav nav-tabs" id="analyticsTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button">
+                                    <i class="bi bi-speedometer2 d-none d-sm-inline"></i> Overview
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="membersTab" data-bs-toggle="tab" data-bs-target="#members" type="button">
+                                    <i class="bi bi-people d-none d-sm-inline"></i> Members
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="loansTab" data-bs-toggle="tab" data-bs-target="#loans" type="button">
+                                    <i class="bi bi-cash-stack d-none d-sm-inline"></i> Loans
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="financial-tab" data-bs-toggle="tab" data-bs-target="#financial" type="button">
+                                    <i class="bi bi-graph-up d-none d-sm-inline"></i> Financial
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="risk-tab" data-bs-toggle="tab" data-bs-target="#risk" type="button">
+                                    <i class="bi bi-shield-exclamation d-none d-sm-inline"></i> Risk
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content glass-card-body" id="analyticsTabContent">
+                        <!-- ========== OVERVIEW TAB ========== -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-12 col-lg-6">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="mb-0">Financial Summary (Last 30 Days)</h5>
+                                        <span class="badge badge-success">Healthy</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-secondary">Total Income</span>
+                                            <strong class="text-success">KES 45,678,900</strong>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 85%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-secondary">Total Expenses</span>
+                                            <strong class="text-danger">KES 12,345,670</strong>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" style="width: 45%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-secondary">Net Profit</span>
+                                            <strong class="text-primary">KES 33,333,230</strong>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar" style="width: 73%; background: var(--primary-green);"></div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#financialBreakdownModal">
+                                        <i class="bi bi-bar-chart"></i> View Detailed Breakdown
+                                    </button>
+                                </div>
+
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-3">Transaction Volume Trend</h5>
+                                    <div class="css-bar-chart">
+                                        <div class="bar-item">
+                                            <div class="bar-label">Week 1</div>
+                                            <div class="bar-container">
+                                                <div class="bar-fill" style="width: 75%;" data-bs-toggle="tooltip" title="KES 45M"></div>
+                                            </div>
+                                            <div class="bar-value">45M</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Week 2</div>
+                                            <div class="bar-container">
+                                                <div class="bar-fill" style="width: 85%;" data-bs-toggle="tooltip" title="KES 52M"></div>
+                                            </div>
+                                            <div class="bar-value">52M</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Week 3</div>
+                                            <div class="bar-container">
+                                                <div class="bar-fill" style="width: 68%;" data-bs-toggle="tooltip" title="KES 38M"></div>
+                                            </div>
+                                            <div class="bar-value">38M</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Week 4</div>
+                                            <div class="bar-container">
+                                                <div class="bar-fill" style="width: 92%;" data-bs-toggle="tooltip" title="KES 58M"></div>
+                                            </div>
+                                            <div class="bar-value">58M</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline w-100 mt-3" data-bs-toggle="modal" data-bs-target="#transactionDetailsModal">
+                                        <i class="bi bi-list-ul"></i> View All Transactions
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-6 col-md-3">
+                                    <div class="quick-stat-card" data-bs-toggle="modal" data-bs-target="#newMembersModal">
+                                        <div class="quick-stat-icon bg-success bg-opacity-10 text-success">
+                                            <i class="bi bi-person-plus"></i>
+                                        </div>
+                                        <div class="quick-stat-value">156</div>
+                                        <div class="quick-stat-label">New Members</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="quick-stat-card" data-bs-toggle="modal" data-bs-target="#loanDisbursementsModal">
+                                        <div class="quick-stat-icon bg-info bg-opacity-10 text-info">
+                                            <i class="bi bi-send"></i>
+                                        </div>
+                                        <div class="quick-stat-value">89</div>
+                                        <div class="quick-stat-label">Loans Disbursed</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="quick-stat-card" data-bs-toggle="modal" data-bs-target="#repaymentsModal">
+                                        <div class="quick-stat-icon bg-primary bg-opacity-10 text-primary">
+                                            <i class="bi bi-arrow-down-circle"></i>
+                                        </div>
+                                        <div class="quick-stat-value">1,234</div>
+                                        <div class="quick-stat-label">Repayments</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="quick-stat-card" data-bs-toggle="modal" data-bs-target="#defaultsModal">
+                                        <div class="quick-stat-icon bg-warning bg-opacity-10 text-warning">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                        </div>
+                                        <div class="quick-stat-value">23</div>
+                                        <div class="quick-stat-label">Overdue Loans</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== MEMBER ANALYTICS TAB ========== -->
+                        <div class="tab-pane fade" id="members" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-12 col-lg-8">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="mb-0">Member Growth Analysis</h5>
+                                        <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#memberGrowthModal">
+                                            <i class="bi bi-graph-up"></i> Full Report
+                                        </button>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Period</th>
+                                                    <th>New Members</th>
+                                                    <th>Exited</th>
+                                                    <th>Net Growth</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>This Month</strong></td>
+                                                    <td><span class="badge badge-success">+156</span></td>
+                                                    <td><span class="badge badge-danger">-12</span></td>
+                                                    <td><strong class="text-success">+144</strong></td>
+                                                    <td><strong>2,847</strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Last Month</td>
+                                                    <td><span class="badge badge-success-light">+134</span></td>
+                                                    <td><span class="badge badge-danger-light">-8</span></td>
+                                                    <td><strong class="text-success">+126</strong></td>
+                                                    <td>2,703</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2 Months Ago</td>
+                                                    <td><span class="badge badge-success-light">+98</span></td>
+                                                    <td><span class="badge badge-danger-light">-15</span></td>
+                                                    <td><strong class="text-success">+83</strong></td>
+                                                    <td>2,577</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-4">
+                                    <h5 class="mb-3">Member Segmentation</h5>
+                                    <div class="segmentation-list">
+                                        <div class="segment-item" data-bs-toggle="modal" data-bs-target="#segmentDetailsModal">
+                                            <div class="segment-info">
+                                                <span class="segment-label">Active Members</span>
+                                                <span class="segment-value">2,645</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 93%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="segment-item" data-bs-toggle="modal" data-bs-target="#segmentDetailsModal">
+                                            <div class="segment-info">
+                                                <span class="segment-label">Dormant</span>
+                                                <span class="segment-value">202</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-warning" style="width: 7%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="segment-item" data-bs-toggle="modal" data-bs-target="#segmentDetailsModal">
+                                            <div class="segment-info">
+                                                <span class="segment-label">Gold Tier</span>
+                                                <span class="segment-value">456</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar" style="width: 16%; background: linear-gradient(90deg, #FFD700, #FFC107);"></div>
+                                            </div>
+                                        </div>
+                                        <div class="segment-item" data-bs-toggle="modal" data-bs-target="#segmentDetailsModal">
+                                            <div class="segment-info">
+                                                <span class="segment-label">Silver Tier</span>
+                                                <span class="segment-value">892</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar" style="width: 31%; background: linear-gradient(90deg, #C0C0C0, #A0A0A0);"></div>
+                                            </div>
+                                        </div>
+                                        <div class="segment-item" data-bs-toggle="modal" data-bs-target="#segmentDetailsModal">
+                                            <div class="segment-info">
+                                                <span class="segment-label">Bronze Tier</span>
+                                                <span class="segment-value">1,499</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar" style="width: 53%; background: linear-gradient(90deg, #CD7F32, #B87333);"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Top Contributing Members</h5>
+                                    <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#allTopMembersModal">
+                                        View All
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Rank</th>
+                                                <th>Member</th>
+                                                <th class="d-none d-md-table-cell">Member No.</th>
+                                                <th>Deposits</th>
+                                                <th class="d-none d-lg-table-cell">Shares</th>
+                                                <th class="d-none d-xl-table-cell">Loans</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><span class="rank-badge rank-gold">1</span></td>
+                                                <td><strong>Sarah Akinyi</strong></td>
+                                                <td class="d-none d-md-table-cell text-secondary">R-00123</td>
+                                                <td><strong>KES 2.5M</strong></td>
+                                                <td class="d-none d-lg-table-cell text-secondary">KES 500K</td>
+                                                <td class="d-none d-xl-table-cell text-secondary">3 (KES 5M)</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="rank-badge rank-silver">2</span></td>
+                                                <td><strong>David Kipkorir</strong></td>
+                                                <td class="d-none d-md-table-cell text-secondary">R-00045</td>
+                                                <td><strong>KES 1.8M</strong></td>
+                                                <td class="d-none d-lg-table-cell text-secondary">KES 400K</td>
+                                                <td class="d-none d-xl-table-cell text-secondary">2 (KES 3M)</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="rank-badge rank-bronze">3</span></td>
+                                                <td><strong>Mary Wanjiku</strong></td>
+                                                <td class="d-none d-md-table-cell text-secondary">R-00234</td>
+                                                <td><strong>KES 1.5M</strong></td>
+                                                <td class="d-none d-lg-table-cell text-secondary">KES 350K</td>
+                                                <td class="d-none d-xl-table-cell text-secondary">4 (KES 4.2M)</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== LOAN PERFORMANCE TAB ========== -->
+                        <div class="tab-pane fade" id="loans" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-3">Loan Portfolio Health</h5>
+                                    <div class="health-metrics">
+                                        <div class="health-item">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Performing Loans</span>
+                                                <strong class="text-success">89.5%</strong>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 89.5%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="health-item">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">At Risk (30-90 days)</span>
+                                                <strong class="text-warning">7.8%</strong>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-warning" style="width: 7.8%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="health-item">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Non-Performing (90+ days)</span>
+                                                <strong class="text-danger">2.7%</strong>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-danger" style="width: 2.7%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#portfolioHealthModal">
+                                        <i class="bi bi-clipboard-pulse"></i> Full Portfolio Analysis
+                                    </button>
+                                </div>
+
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-3">Loan Products Performance</h5>
+                                    <div class="product-list">
+                                        <div class="product-item" data-bs-toggle="modal" data-bs-target="#productDetailsModal">
+                                            <div class="product-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="product-name">Emergency Loan</span>
+                                                    <span class="badge badge-success">Popular</span>
+                                                </div>
+                                                <span class="text-success fw-bold">KES 234M</span>
+                                            </div>
+                                            <div class="product-stats">
+                                                <span class="text-secondary">567 active loans</span>
+                                                <span class="text-secondary">|</span>
+                                                <span class="text-secondary">Avg: KES 412K</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-item" data-bs-toggle="modal" data-bs-target="#productDetailsModal">
+                                            <div class="product-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="product-name">Development Loan</span>
+                                                    <span class="badge badge-info">High Value</span>
+                                                </div>
+                                                <span class="text-info fw-bold">KES 345M</span>
+                                            </div>
+                                            <div class="product-stats">
+                                                <span class="text-secondary">234 active loans</span>
+                                                <span class="text-secondary">|</span>
+                                                <span class="text-secondary">Avg: KES 1.47M</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-item" data-bs-toggle="modal" data-bs-target="#productDetailsModal">
+                                            <div class="product-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="product-name">School Fees Loan</span>
+                                                    <span class="badge badge-warning">Seasonal</span>
+                                                </div>
+                                                <span class="text-warning fw-bold">KES 156M</span>
+                                            </div>
+                                            <div class="product-stats">
+                                                <span class="text-secondary">345 active loans</span>
+                                                <span class="text-secondary">|</span>
+                                                <span class="text-secondary">Avg: KES 452K</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-item" data-bs-toggle="modal" data-bs-target="#productDetailsModal">
+                                            <div class="product-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="product-name">Business Loan</span>
+                                                    <span class="badge badge-primary">Growing</span>
+                                                </div>
+                                                <span class="text-primary fw-bold">KES 54M</span>
+                                            </div>
+                                            <div class="product-stats">
+                                                <span class="text-secondary">88 active loans</span>
+                                                <span class="text-secondary">|</span>
+                                                <span class="text-secondary">Avg: KES 614K</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h5 class="mb-3">Disbursements vs Repayments (Monthly)</h5>
+                                <div class="comparison-chart">
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">January</div>
+                                        <div class="comparison-bars">
+                                            <div class="comparison-bar disbursement">
+                                                <div class="bar-fill" style="width: 85%;" data-bs-toggle="tooltip" title="KES 45M Disbursed"></div>
+                                                <span class="bar-label">45M</span>
+                                            </div>
+                                            <div class="comparison-bar repayment">
+                                                <div class="bar-fill" style="width: 72%;" data-bs-toggle="tooltip" title="KES 38M Repaid"></div>
+                                                <span class="bar-label">38M</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">February</div>
+                                        <div class="comparison-bars">
+                                            <div class="comparison-bar disbursement">
+                                                <div class="bar-fill" style="width: 92%;" data-bs-toggle="tooltip" title="KES 52M Disbursed"></div>
+                                                <span class="bar-label">52M</span>
+                                            </div>
+                                            <div class="comparison-bar repayment">
+                                                <div class="bar-fill" style="width: 78%;" data-bs-toggle="tooltip" title="KES 42M Repaid"></div>
+                                                <span class="bar-label">42M</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">March</div>
+                                        <div class="comparison-bars">
+                                            <div class="comparison-bar disbursement">
+                                                <div class="bar-fill" style="width: 78%;" data-bs-toggle="tooltip" title="KES 41M Disbursed"></div>
+                                                <span class="bar-label">41M</span>
+                                            </div>
+                                            <div class="comparison-bar repayment">
+                                                <div class="bar-fill" style="width: 85%;" data-bs-toggle="tooltip" title="KES 45M Repaid"></div>
+                                                <span class="bar-label">45M</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3 justify-content-center mt-3">
+                                    <span class="d-flex align-items-center gap-1"><span class="legend-dot" style="background: var(--accent-blue);"></span> Disbursements</span>
+                                    <span class="d-flex align-items-center gap-1"><span class="legend-dot" style="background: var(--primary-green);"></span> Repayments</span>
+                                </div>
+                                <button class="btn btn-sm btn-outline w-100 mt-3" data-bs-toggle="modal" data-bs-target="#cashFlowModal">
+                                    <i class="bi bi-graph-up-arrow"></i> View Cash Flow Analysis
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ========== FINANCIAL HEALTH TAB ========== -->
+                        <div class="tab-pane fade" id="financial" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-3">Assets vs Liabilities</h5>
+                                    <div class="balance-sheet">
+                                        <div class="balance-item positive">
+                                            <div class="balance-icon">
+                                                <i class="bi bi-graph-up"></i>
+                                            </div>
+                                            <div class="balance-details">
+                                                <div class="balance-label">Total Assets</div>
+                                                <div class="balance-value">KES 1.2B</div>
+                                            </div>
+                                        </div>
+                                        <div class="balance-item negative">
+                                            <div class="balance-icon">
+                                                <i class="bi bi-graph-down"></i>
+                                            </div>
+                                            <div class="balance-details">
+                                                <div class="balance-label">Total Liabilities</div>
+                                                <div class="balance-value">KES 650M</div>
+                                            </div>
+                                        </div>
+                                        <div class="balance-item neutral">
+                                            <div class="balance-icon">
+                                                <i class="bi bi-calculator"></i>
+                                            </div>
+                                            <div class="balance-details">
+                                                <div class="balance-label">Net Worth</div>
+                                                <div class="balance-value text-success">KES 550M</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#balanceSheetModal">
+                                        <i class="bi bi-file-earmark-spreadsheet"></i> Full Balance Sheet
+                                    </button>
+                                </div>
+
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-3">Income Sources (This Month)</h5>
+                                    <div class="income-breakdown">
+                                        <div class="income-item" data-bs-toggle="modal" data-bs-target="#incomeDetailsModal">
+                                            <div class="income-left">
+                                                <span class="income-label">Loan Interest</span>
+                                                <div class="progress income-progress" style="height: 4px;">
+                                                    <div class="progress-bar" style="width: 65%; background: var(--primary-green);"></div>
+                                                </div>
+                                            </div>
+                                            <span class="income-percentage">65%</span>
+                                            <span class="income-amount">KES 29.7M</span>
+                                        </div>
+                                        <div class="income-item" data-bs-toggle="modal" data-bs-target="#incomeDetailsModal">
+                                            <div class="income-left">
+                                                <span class="income-label">Processing Fees</span>
+                                                <div class="progress income-progress" style="height: 4px;">
+                                                    <div class="progress-bar" style="width: 18%; background: var(--accent-blue);"></div>
+                                                </div>
+                                            </div>
+                                            <span class="income-percentage">18%</span>
+                                            <span class="income-amount">KES 8.2M</span>
+                                        </div>
+                                        <div class="income-item" data-bs-toggle="modal" data-bs-target="#incomeDetailsModal">
+                                            <div class="income-left">
+                                                <span class="income-label">Penalties</span>
+                                                <div class="progress income-progress" style="height: 4px;">
+                                                    <div class="progress-bar" style="width: 8%; background: var(--status-warning);"></div>
+                                                </div>
+                                            </div>
+                                            <span class="income-percentage">8%</span>
+                                            <span class="income-amount">KES 3.7M</span>
+                                        </div>
+                                        <div class="income-item" data-bs-toggle="modal" data-bs-target="#incomeDetailsModal">
+                                            <div class="income-left">
+                                                <span class="income-label">Membership Fees</span>
+                                                <div class="progress income-progress" style="height: 4px;">
+                                                    <div class="progress-bar" style="width: 5%; background: var(--status-info);"></div>
+                                                </div>
+                                            </div>
+                                            <span class="income-percentage">5%</span>
+                                            <span class="income-amount">KES 2.3M</span>
+                                        </div>
+                                        <div class="income-item" data-bs-toggle="modal" data-bs-target="#incomeDetailsModal">
+                                            <div class="income-left">
+                                                <span class="income-label">Other Income</span>
+                                                <div class="progress income-progress" style="height: 4px;">
+                                                    <div class="progress-bar" style="width: 4%; background: var(--text-tertiary);"></div>
+                                                </div>
+                                            </div>
+                                            <span class="income-percentage">4%</span>
+                                            <span class="income-amount">KES 1.8M</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-6 col-md-3">
+                                    <div class="metric-card" data-bs-toggle="modal" data-bs-target="#roaModal">
+                                        <div class="metric-label">Return on Assets</div>
+                                        <div class="metric-value text-success">12.5%</div>
+                                        <div class="metric-trend">
+                                            <i class="bi bi-arrow-up text-success"></i> +1.2% MoM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="metric-card" data-bs-toggle="modal" data-bs-target="#roeModal">
+                                        <div class="metric-label">Return on Equity</div>
+                                        <div class="metric-value text-success">18.7%</div>
+                                        <div class="metric-trend">
+                                            <i class="bi bi-arrow-up text-success"></i> +0.8% MoM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="metric-card" data-bs-toggle="modal" data-bs-target="#costIncomeModal">
+                                        <div class="metric-label">Cost/Income Ratio</div>
+                                        <div class="metric-value text-primary">27%</div>
+                                        <div class="metric-trend">
+                                            <i class="bi bi-arrow-down text-success"></i> -2% MoM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="metric-card" data-bs-toggle="modal" data-bs-target="#liquidityModal">
+                                        <div class="metric-label">Liquidity Ratio</div>
+                                        <div class="metric-value text-success">45%</div>
+                                        <div class="metric-trend">
+                                            <i class="bi bi-dash text-secondary"></i> Stable
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== RISK ANALYSIS TAB ========== -->
+                        <div class="tab-pane fade" id="risk" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-12 col-md-4">
+                                    <h5 class="mb-3">Overall Risk Score</h5>
+                                    <div class="risk-gauge">
+                                        <div class="gauge-container">
+                                            <div class="gauge-ring">
+                                                <svg viewBox="0 0 120 120" class="gauge-svg">
+                                                    <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+                                                    <circle class="gauge-fill" cx="60" cy="60" r="50" stroke-dasharray="251.2" stroke-dashoffset="70.3"/>
+                                                </svg>
+                                                <div class="gauge-value">
+                                                    <span class="gauge-score">7.2</span>
+                                                    <span class="gauge-max">/10</span>
+                                                </div>
+                                            </div>
+                                            <div class="gauge-label">Low Risk</div>
+                                            <div class="gauge-subtitle">Portfolio is healthy</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#riskReportModal">
+                                        <i class="bi bi-file-earmark-text"></i> Generate Risk Report
+                                    </button>
+                                </div>
+
+                                <div class="col-12 col-md-8">
+                                    <h5 class="mb-3">Risk Indicators</h5>
+                                    <div class="risk-indicators">
+                                        <div class="risk-indicator low" data-bs-toggle="modal" data-bs-target="#creditRiskModal">
+                                            <div class="risk-indicator-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="risk-icon bg-success bg-opacity-10 text-success">
+                                                        <i class="bi bi-shield-check"></i>
+                                                    </div>
+                                                    <span class="risk-name">Credit Risk</span>
+                                                </div>
+                                                <span class="badge badge-success">Low</span>
+                                            </div>
+                                            <div class="risk-metrics">
+                                                NPL Ratio: 2.7% | Coverage: 95% | Trend: <i class="bi bi-arrow-down text-success"></i> Improving
+                                            </div>
+                                        </div>
+                                        <div class="risk-indicator low" data-bs-toggle="modal" data-bs-target="#liquidityRiskModal">
+                                            <div class="risk-indicator-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="risk-icon bg-success bg-opacity-10 text-success">
+                                                        <i class="bi bi-droplet"></i>
+                                                    </div>
+                                                    <span class="risk-name">Liquidity Risk</span>
+                                                </div>
+                                                <span class="badge badge-success">Low</span>
+                                            </div>
+                                            <div class="risk-metrics">
+                                                Cash Ratio: 45% | Quick Ratio: 1.8 | Trend: <i class="bi bi-arrow-up text-success"></i> Strong
+                                            </div>
+                                        </div>
+                                        <div class="risk-indicator medium" data-bs-toggle="modal" data-bs-target="#operationalRiskModal">
+                                            <div class="risk-indicator-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="risk-icon bg-warning bg-opacity-10 text-warning">
+                                                        <i class="bi bi-gear"></i>
+                                                    </div>
+                                                    <span class="risk-name">Operational Risk</span>
+                                                </div>
+                                                <span class="badge badge-warning">Medium</span>
+                                            </div>
+                                            <div class="risk-metrics">
+                                                Process Gaps: 3 | Pending Actions: 12 | Trend: <i class="bi bi-exclamation-triangle text-warning"></i> Monitor
+                                            </div>
+                                        </div>
+                                        <div class="risk-indicator low" data-bs-toggle="modal" data-bs-target="#complianceRiskModal">
+                                            <div class="risk-indicator-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="risk-icon bg-success bg-opacity-10 text-success">
+                                                        <i class="bi bi-clipboard-check"></i>
+                                                    </div>
+                                                    <span class="risk-name">Compliance Risk</span>
+                                                </div>
+                                                <span class="badge badge-success">Low</span>
+                                            </div>
+                                            <div class="risk-metrics">
+                                                SASRA Score: 94% | Last Audit: Q4 2025 | Trend: <i class="bi bi-check-circle text-success"></i> Compliant
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">High-Risk Loans (Default Prediction)</h5>
+                                    <span class="badge badge-danger">23 Total</span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Member</th>
+                                                <th class="d-none d-md-table-cell">Loan ID</th>
+                                                <th>Amount</th>
+                                                <th>Overdue</th>
+                                                <th class="d-none d-lg-table-cell">Risk Score</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="table-row-risk">
+                                                <td><strong>John Otieno</strong></td>
+                                                <td class="d-none d-md-table-cell text-secondary">LN-2024-0567</td>
+                                                <td>KES 350,000</td>
+                                                <td><span class="badge badge-danger">45 days</span></td>
+                                                <td class="d-none d-lg-table-cell"><span class="badge badge-danger">High (8.5)</span></td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#loanActionModal" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#contactMemberModal" title="Contact Member">
+                                                            <i class="bi bi-telephone"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="table-row-risk">
+                                                <td><strong>Grace Muthoni</strong></td>
+                                                <td class="d-none d-md-table-cell text-secondary">LN-2024-0423</td>
+                                                <td>KES 200,000</td>
+                                                <td><span class="badge badge-warning">32 days</span></td>
+                                                <td class="d-none d-lg-table-cell"><span class="badge badge-warning">Medium (6.2)</span></td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#loanActionModal" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#contactMemberModal" title="Contact Member">
+                                                            <i class="bi bi-telephone"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="table-row-risk">
+                                                <td><strong>Peter Njoroge</strong></td>
+                                                <td class="d-none d-md-table-cell text-secondary">LN-2024-0389</td>
+                                                <td>KES 500,000</td>
+                                                <td><span class="badge badge-warning">28 days</span></td>
+                                                <td class="d-none d-lg-table-cell"><span class="badge badge-warning">Medium (5.8)</span></td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#loanActionModal" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#contactMemberModal" title="Contact Member">
+                                                            <i class="bi bi-telephone"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-sm btn-outline w-100 mt-3" data-bs-toggle="modal" data-bs-target="#allHighRiskModal">
+                                    View All High-Risk Loans (23)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- ========== MODALS ========== -->
+
+    <!-- Quick Actions Modal -->
+    <div class="modal fade" id="quickActionsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-lightning me-2"></i>Quick Actions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="member-registration.html" class="list-group-item list-group-item-action py-3">
+                            <i class="bi bi-person-plus me-3 text-primary"></i> Register New Member
+                        </a>
+                        <a href="loan-applications.html" class="list-group-item list-group-item-action py-3">
+                            <i class="bi bi-file-earmark-plus me-3 text-info"></i> New Loan Application
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-3" data-bs-toggle="modal" data-bs-target="#depositModal">
+                            <i class="bi bi-cash-coin me-3 text-success"></i> Record Deposit
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-3" data-bs-toggle="modal" data-bs-target="#withdrawalModal">
+                            <i class="bi bi-arrow-up-circle me-3 text-warning"></i> Process Withdrawal
+                        </a>
+                        <a href="reports.html" class="list-group-item list-group-item-action py-3">
+                            <i class="bi bi-file-earmark-bar-graph me-3 text-secondary"></i> Generate Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div class="modal fade" id="notificationsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications <span class="badge badge-primary ms-2">5 new</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="notification-item unread">
+                        <div class="notification-icon bg-success">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Loan Approved</div>
+                            <div class="notification-text">Sarah Akinyi's loan of KES 500,000 has been approved</div>
+                            <div class="notification-time">5 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notification-icon bg-info">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">New Member Registration</div>
+                            <div class="notification-text">12 new members registered today</div>
+                            <div class="notification-time">1 hour ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notification-icon bg-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Overdue Loan Alert</div>
+                            <div class="notification-text">5 loans are now 30+ days overdue</div>
+                            <div class="notification-time">3 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon bg-primary">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Deposit Received</div>
+                            <div class="notification-text">KES 2.3M deposited by 45 members today</div>
+                            <div class="notification-time">5 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon bg-secondary">
+                            <i class="bi bi-gear"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">System Maintenance</div>
+                            <div class="notification-text">Scheduled maintenance tonight at 2:00 AM</div>
+                            <div class="notification-time">Yesterday</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-outline w-100">Mark All as Read</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages Modal -->
+    <div class="modal fade" id="messagesModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-chat-dots me-2"></i>Messages <span class="badge badge-primary ms-2">3</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <i class="bi bi-chat-square-text fs-1 text-secondary mb-3"></i>
+                    <p class="text-secondary">No new messages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-question-circle me-2"></i>Help Center</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-book me-2"></i> User Guide
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-headset me-2"></i> Contact Support
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-youtube me-2"></i> Video Tutorials
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-keyboard me-2"></i> Keyboard Shortcuts
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Analytics Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Report Type</label>
+                        <select class="form-select">
+                            <option>Complete Analytics Report</option>
+                            <option>Member Analytics Only</option>
+                            <option>Loan Performance Only</option>
+                            <option>Financial Health Only</option>
+                            <option>Risk Analysis Only</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Format</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="format" id="pdf" checked>
+                            <label class="btn btn-outline-primary" for="pdf">PDF</label>
+                            <input type="radio" class="btn-check" name="format" id="excel">
+                            <label class="btn btn-outline-primary" for="excel">Excel</label>
+                            <input type="radio" class="btn-check" name="format" id="csv">
+                            <label class="btn btn-outline-primary" for="csv">CSV</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Date Range</label>
+                        <select class="form-select">
+                            <option>Last 30 Days</option>
+                            <option>Last Quarter</option>
+                            <option>This Year</option>
+                            <option>Custom Range</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-download"></i> Download Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Insights Modal -->
+    <div class="modal fade" id="insightsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-lightbulb me-2"></i>AI-Powered Insights</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle fs-5"></i>
+                        <span>These insights are generated using AI analysis of your SACCO's data</span>
+                    </div>
+
+                    <div class="insight-item insight-success">
+                        <div class="insight-header">
+                            <div class="insight-icon bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <strong>Growth Opportunity</strong>
+                        </div>
+                        <p>Your member growth rate is 5.4% this month, which is above the industry average of 3.2%. Consider launching a referral program to capitalize on this momentum.</p>
+                    </div>
+
+                    <div class="insight-item insight-warning">
+                        <div class="insight-header">
+                            <div class="insight-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <strong>Risk Alert</strong>
+                        </div>
+                        <p>23 loans are approaching the 30-day overdue mark. Early intervention could prevent 15-20 of these from becoming NPLs. Recommend immediate contact.</p>
+                    </div>
+
+                    <div class="insight-item insight-info">
+                        <div class="insight-header">
+                            <div class="insight-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-lightbulb"></i>
+                            </div>
+                            <strong>Product Recommendation</strong>
+                        </div>
+                        <p>Analysis shows 345 members consistently maintain high balances (>KES 200K). Consider introducing a premium savings product with higher interest rates to retain these high-value members.</p>
+                    </div>
+
+                    <div class="insight-item insight-info">
+                        <div class="insight-header">
+                            <div class="insight-icon bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <strong>Cash Flow Optimization</strong>
+                        </div>
+                        <p>Your liquidity ratio of 45% is healthy, but you could increase loan disbursements by 15% without compromising safety, potentially generating an additional KES 2.3M in monthly interest income.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-download"></i> Download Full Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposits Details Modal -->
+    <div class="modal fade" id="depositsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-piggy-bank me-2"></i>Deposits Analysis</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-sm-4">
+                            <div class="stat-box">
+                                <div class="stat-label">Total Deposits</div>
+                                <div class="stat-value">KES 456M</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="stat-box">
+                                <div class="stat-label">Monthly Inflow</div>
+                                <div class="stat-value text-success">KES 12.5M</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="stat-box">
+                                <div class="stat-label">Avg Deposit/Member</div>
+                                <div class="stat-value">KES 160,234</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-semibold mb-3">Deposit Distribution</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Members</th>
+                                    <th>Amount</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>< KES 50K</td>
+                                    <td>1,234</td>
+                                    <td>KES 34M</td>
+                                    <td>7.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>KES 50K - 200K</td>
+                                    <td>892</td>
+                                    <td>KES 145M</td>
+                                    <td>31.8%</td>
+                                </tr>
+                                <tr>
+                                    <td>KES 200K - 500K</td>
+                                    <td>456</td>
+                                    <td>KES 178M</td>
+                                    <td>39%</td>
+                                </tr>
+                                <tr>
+                                    <td>> KES 500K</td>
+                                    <td>265</td>
+                                    <td>KES 99M</td>
+                                    <td>21.7%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Export Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shares Modal (placeholder) -->
+    <div class="modal fade" id="sharesModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pie-chart me-2"></i>Share Capital</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <i class="bi bi-pie-chart fs-1 text-primary mb-3"></i>
+                    <h4>KES 234M</h4>
+                    <p class="text-secondary">Total share capital across 2,847 members</p>
+                    <p class="text-secondary">Average per member: KES 82,150</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-circle me-2"></i>Account Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar mx-auto" style="width: 80px; height: 80px; font-size: 2rem;">JM</div>
+                        <h5 class="mt-3">John Maina</h5>
+                        <p class="text-secondary">General Manager</p>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                    <div class="list-group">
+                        <a href="profile.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person me-2"></i> Edit Profile
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="bi bi-key me-2"></i> Change Password
+                        </a>
+                        <a href="config.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-gear me-2"></i> Settings
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action text-danger">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Master JS -->
+    <script src="./admin-dashboard.js"></script>
+    <!-- Page Custom JS -->
+    <script src="./analytics-custom.js"></script>
+    <script>
+        /* ============================================
+   SIDEBAR TOGGLE SCRIPT
+   Handles: Mobile slide-in + Desktop collapse
+   Save state to localStorage
+   ============================================ */
+
+(function() {
+    'use strict';
+
+    // ---------- CONFIG ----------
+    const MOBILE_BREAKPOINT = 992; // px - matches Bootstrap LG breakpoint
+    const SIDEBAR_WIDTH = '260px';
+    const SIDEBAR_COLLAPSED_WIDTH = '70px';
+    const STORAGE_KEY = 'sidebar_collapsed';
+
+    // ---------- DOM ELEMENTS ----------
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const mobileToggle = document.getElementById('topbarSidebarToggle'); // hamburger
+    const desktopToggle = document.getElementById('sidebarToggle'); // X button inside sidebar
+    const mainContent = document.querySelector('.admin-main');
+    const layout = document.querySelector('.admin-layout');
+
+    // ---------- STATE ----------
+    let isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+    let isCollapsed = false;
+    let isMobileOpen = false;
+
+    // ---------- INIT ----------
+    function init() {
+        if (!sidebar) {
+            console.error('Sidebar element not found. Expected id="adminSidebar"');
+            return;
+        }
+
+        // Load saved desktop state
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved !== null) {
+            isCollapsed = saved === 'true';
+        }
+
+        // Apply initial state
+        updateLayout();
+
+        // Bind events
+        bindEvents();
+
+        // Handle resize
+        window.addEventListener('resize', debounce(handleResize, 150));
+
+        console.log('Sidebar toggle initialized. Mobile:', isMobile, 'Collapsed:', isCollapsed);
+    }
+
+    // ---------- EVENT BINDING ----------
+    function bindEvents() {
+        // Mobile hamburger button (in topbar)
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMobile();
+            });
+        }
+
+        // Desktop toggle button (inside sidebar, usually an X or arrow)
+        if (desktopToggle) {
+            desktopToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleDesktop();
+            });
+        }
+
+        // Overlay click closes mobile sidebar
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                if (isMobile && isMobileOpen) {
+                    closeMobile();
+                }
+            });
+        }
+
+        // Escape key closes mobile sidebar
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isMobile && isMobileOpen) {
+                closeMobile();
+            }
+        });
+
+        // Click outside sidebar on mobile closes it
+        document.addEventListener('click', function(e) {
+            if (isMobile && isMobileOpen) {
+                const isClickInsideSidebar = sidebar.contains(e.target);
+                const isClickOnToggle = mobileToggle && mobileToggle.contains(e.target);
+                if (!isClickInsideSidebar && !isClickOnToggle) {
+                    closeMobile();
+                }
+            }
+        });
+    }
+
+    // ---------- MOBILE TOGGLE ----------
+    function toggleMobile() {
+        if (isMobileOpen) {
+            closeMobile();
+        } else {
+            openMobile();
+        }
+    }
+
+    function openMobile() {
+        isMobileOpen = true;
+        sidebar.classList.add('show');
+        if (overlay) overlay.classList.add('show');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        document.body.style.touchAction = 'none';
+
+        // Animate sidebar in
+        sidebar.style.transform = 'translateX(0)';
+        sidebar.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+        // Animate overlay
+        if (overlay) {
+            overlay.style.opacity = '1';
+            overlay.style.visibility = 'visible';
+        }
+    }
+
+    function closeMobile() {
+        isMobileOpen = false;
+        sidebar.classList.remove('show');
+        if (overlay) overlay.classList.remove('show');
+        document.body.style.overflow = '';
+        document.body.style.touchAction = '';
+
+        // Animate sidebar out
+        sidebar.style.transform = 'translateX(-100%)';
+
+        // Animate overlay out
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.visibility = 'hidden';
+            }, 300);
+        }
+    }
+
+    // ---------- DESKTOP TOGGLE ----------
+    function toggleDesktop() {
+        isCollapsed = !isCollapsed;
+        localStorage.setItem(STORAGE_KEY, isCollapsed);
+        updateDesktopLayout();
+    }
+
+    function updateDesktopLayout() {
+        if (!sidebar || !mainContent) return;
+
+        if (isCollapsed) {
+            // Collapse sidebar
+            sidebar.style.width = SIDEBAR_COLLAPSED_WIDTH;
+            sidebar.style.minWidth = SIDEBAR_COLLAPSED_WIDTH;
+            sidebar.classList.add('collapsed');
+
+            // Hide text, show icons only
+            const texts = sidebar.querySelectorAll('.sidebar-brand-text, .nav-item span, .nav-section-title');
+            texts.forEach(el => {
+                el.style.opacity = '0';
+                el.style.width = '0';
+                el.style.overflow = 'hidden';
+                el.style.transition = 'opacity 0.2s ease, width 0.2s ease';
+            });
+
+            // Adjust main content margin
+            mainContent.style.marginLeft = SIDEBAR_COLLAPSED_WIDTH;
+            mainContent.style.transition = 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+            // Center icons in collapsed mode
+            const navLinks = sidebar.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.style.justifyContent = 'center';
+                link.style.paddingLeft = '0';
+                link.style.paddingRight = '0';
+            });
+
+            // Hide badges in collapsed mode (or reposition)
+            const badges = sidebar.querySelectorAll('.nav-badge');
+            badges.forEach(badge => {
+                badge.style.position = 'absolute';
+                badge.style.top = '4px';
+                badge.style.right = '4px';
+            });
+
+        } else {
+            // Expand sidebar
+            sidebar.style.width = SIDEBAR_WIDTH;
+            sidebar.style.minWidth = SIDEBAR_WIDTH;
+            sidebar.classList.remove('collapsed');
+
+            // Show text
+            const texts = sidebar.querySelectorAll('.sidebar-brand-text, .nav-item span, .nav-section-title');
+            texts.forEach(el => {
+                el.style.opacity = '1';
+                el.style.width = '';
+                el.style.overflow = '';
+            });
+
+            // Restore main content margin
+            mainContent.style.marginLeft = SIDEBAR_WIDTH;
+
+            // Restore nav link padding
+            const navLinks = sidebar.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.style.justifyContent = '';
+                link.style.paddingLeft = '';
+                link.style.paddingRight = '';
+            });
+
+            // Restore badges
+            const badges = sidebar.querySelectorAll('.nav-badge');
+            badges.forEach(badge => {
+                badge.style.position = '';
+                badge.style.top = '';
+                badge.style.right = '';
+            });
+        }
+    }
+
+    // ---------- LAYOUT UPDATE (resize handler) ----------
+    function updateLayout() {
+        isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+
+        if (isMobile) {
+            // ===== MOBILE MODE =====
+            // Reset any desktop collapse state
+            sidebar.classList.remove('collapsed');
+
+            // Set mobile sidebar styles
+            sidebar.style.width = '280px';
+            sidebar.style.minWidth = '280px';
+            sidebar.style.position = 'fixed';
+            sidebar.style.top = '0';
+            sidebar.style.left = '0';
+            sidebar.style.height = '100vh';
+            sidebar.style.zIndex = '1040';
+            sidebar.style.transform = isMobileOpen ? 'translateX(0)' : 'translateX(-100%)';
+            sidebar.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+            // Ensure overlay exists and is styled
+            if (overlay) {
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.background = 'rgba(0,0,0,0.5)';
+                overlay.style.zIndex = '1035';
+                overlay.style.opacity = isMobileOpen ? '1' : '0';
+                overlay.style.visibility = isMobileOpen ? 'visible' : 'hidden';
+                overlay.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+            }
+
+            // Main content takes full width
+            if (mainContent) {
+                mainContent.style.marginLeft = '0';
+                mainContent.style.transition = 'margin-left 0.3s ease';
+            }
+
+            // Show hamburger
+            if (mobileToggle) {
+                mobileToggle.style.display = 'flex';
+            }
+
+            // Hide desktop toggle
+            if (desktopToggle) {
+                desktopToggle.style.display = 'none';
+            }
+
+            // Restore text visibility for mobile
+            const texts = sidebar.querySelectorAll('.sidebar-brand-text, .nav-item span, .nav-section-title');
+            texts.forEach(el => {
+                el.style.opacity = '1';
+                el.style.width = '';
+                el.style.overflow = '';
+            });
+
+        } else {
+            // ===== DESKTOP MODE =====
+            // Close mobile state if open
+            if (isMobileOpen) {
+                closeMobile();
+            }
+
+            // Reset mobile-specific styles
+            sidebar.style.position = '';
+            sidebar.style.top = '';
+            sidebar.style.left = '';
+            sidebar.style.height = '';
+            sidebar.style.zIndex = '';
+            sidebar.style.transform = '';
+
+            // Hide overlay
+            if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.style.visibility = 'hidden';
+            }
+
+            // Apply desktop collapse/expand
+            updateDesktopLayout();
+
+            // Hide hamburger on desktop
+            if (mobileToggle) {
+                mobileToggle.style.display = 'none';
+            }
+
+            // Show desktop toggle (the X/arrow inside sidebar)
+            if (desktopToggle) {
+                desktopToggle.style.display = 'flex';
+            }
+        }
+    }
+
+    // ---------- RESIZE HANDLER ----------
+    function handleResize() {
+        const wasMobile = isMobile;
+        updateLayout();
+
+        // If switching between mobile/desktop, log it
+        if (wasMobile !== isMobile) {
+            console.log('Layout switched to:', isMobile ? 'mobile' : 'desktop');
+        }
+    }
+
+    // ---------- DEBOUNCE UTILITY ----------
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // ---------- PUBLIC API ----------
+    window.SidebarToggle = {
+        openMobile: openMobile,
+        closeMobile: closeMobile,
+        toggleMobile: toggleMobile,
+        toggleDesktop: toggleDesktop,
+        isCollapsed: function() { return isCollapsed; },
+        isMobileOpen: function() { return isMobileOpen; },
+        refresh: updateLayout
+    };
+
+    // ---------- START ----------
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
+</script>
+<script>
+        /* ============================================
+   RONGO SACCO - ANALYTICS PAGE CUSTOM JS
+   Designed for: analytics.html
+   Depends on: admin-master.js
+   ============================================ */
+
+// ---------- Initialize Tooltips ----------
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Animate bar charts on tab show
+    animateBars();
+
+    // Animate gauge on risk tab show
+    const riskTab = document.getElementById('risk-tab');
+    if (riskTab) {
+        riskTab.addEventListener('shown.bs.tab', function() {
+            animateGauge();
+        });
+    }
+
+    // Animate comparison bars on loans tab show
+    const loansTab = document.getElementById('loansTab');
+    if (loansTab) {
+        loansTab.addEventListener('shown.bs.tab', function() {
+            animateComparisonBars();
+        });
+    }
+});
+
+// ---------- Date Range Update ----------
+function updateDateRange(range) {
+    console.log('Updating date range to:', range);
+
+    // Update dropdown button text
+    const dropdownBtn = document.querySelector('.dropdown-toggle');
+    const rangeLabels = {
+        'today': 'Today',
+        'week': 'Last 7 Days',
+        'month': 'Last 30 Days',
+        'quarter': 'Last Quarter',
+        'year': 'This Year'
+    };
+
+    if (dropdownBtn && rangeLabels[range]) {
+        dropdownBtn.innerHTML = '<i class="bi bi-calendar"></i> <span class="d-none d-sm-inline">' + rangeLabels[range] + '</span>';
+    }
+
+    // Show toast
+    showToast('Date range updated to: ' + (rangeLabels[range] || range));
+
+    // Here you would typically make an API call to fetch new data
+    // For demo, we'll just show the toast
+}
+
+// ---------- Toast Notification ----------
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    const icon = type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+    const bgClass = type === 'success' ? 'alert-success' : type === 'warning' ? 'alert-warning' : 'alert-info';
+
+    toast.className = 'alert ' + bgClass + ' position-fixed top-0 end-0 m-3 shadow-lg';
+    toast.style.zIndex = '9999';
+    toast.style.borderRadius = 'var(--radius-lg)';
+    toast.innerHTML = '<i class="bi bi-' + icon + '"></i> ' + message;
+    document.body.appendChild(toast);
+
+    // Animate in
+    toast.style.transform = 'translateX(100%)';
+    toast.style.opacity = '0';
+    toast.style.transition = 'all 0.3s ease';
+
+    requestAnimationFrame(() => {
+        toast.style.transform = 'translateX(0)';
+        toast.style.opacity = '1';
+    });
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// ---------- Animate CSS Bar Charts ----------
+function animateBars() {
+    const bars = document.querySelectorAll('.css-bar-chart .bar-fill');
+    bars.forEach((bar, index) => {
+        const targetWidth = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.width = targetWidth;
+        }, index * 150 + 300);
+    });
+}
+
+// ---------- Animate Comparison Bars ----------
+function animateComparisonBars() {
+    const bars = document.querySelectorAll('.comparison-chart .bar-fill');
+    bars.forEach((bar, index) => {
+        const targetWidth = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.width = targetWidth;
+        }, index * 100 + 200);
+    });
+}
+
+// ---------- Animate Risk Gauge ----------
+function animateGauge() {
+    const gaugeFill = document.querySelector('.gauge-fill');
+    if (gaugeFill) {
+        // Reset to full circle
+        gaugeFill.style.strokeDashoffset = '251.2';
+
+        // Animate to target (72% = 7.2/10)
+        setTimeout(() => {
+            gaugeFill.style.strokeDashoffset = '70.3';
+        }, 300);
+    }
+}
+
+// ---------- Tab Tracking ----------
+document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+    tab.addEventListener('shown.bs.tab', function(event) {
+        console.log('Tab switched to:', event.target.id);
+
+        // Re-animate bars when overview tab is shown
+        if (event.target.id === 'overview-tab') {
+            setTimeout(animateBars, 100);
+        }
+
+        // Animate comparison bars when loans tab is shown
+        if (event.target.id === 'loansTab') {
+            setTimeout(animateComparisonBars, 100);
+        }
+
+        // Animate gauge when risk tab is shown
+        if (event.target.id === 'risk-tab') {
+            setTimeout(animateGauge, 100);
+        }
+    });
+});
+
+// ---------- Stat Card Hover Effects ----------
+document.querySelectorAll('.stat-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px)';
+    });
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+    });
+});
+
+// ---------- Income Item Click Handler ----------
+document.querySelectorAll('.income-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const label = this.querySelector('.income-label').textContent;
+        console.log('Income item clicked:', label);
+    });
+});
+
+// ---------- Product Item Click Handler ----------
+document.querySelectorAll('.product-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const name = this.querySelector('.product-name').textContent;
+        console.log('Product clicked:', name);
+    });
+});
+
+// ---------- Segment Item Click Handler ----------
+document.querySelectorAll('.segment-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const label = this.querySelector('.segment-label').textContent;
+        console.log('Segment clicked:', label);
+    });
+});
+
+// ---------- Risk Indicator Click Handler ----------
+document.querySelectorAll('.risk-indicator').forEach(item => {
+    item.addEventListener('click', function() {
+        const name = this.querySelector('.risk-name').textContent;
+        console.log('Risk indicator clicked:', name);
+    });
+});
+
+// ---------- Quick Stat Card Click Handler ----------
+document.querySelectorAll('.quick-stat-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const label = this.querySelector('.quick-stat-label').textContent;
+        console.log('Quick stat clicked:', label);
+    });
+});
+
+// ---------- Metric Card Click Handler ----------
+document.querySelectorAll('.metric-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const label = this.querySelector('.metric-label').textContent;
+        console.log('Metric card clicked:', label);
+    });
+});
+
+// ---------- Notification Item Click Handler ----------
+document.querySelectorAll('.notification-item').forEach(item => {
+    item.addEventListener('click', function() {
+        this.classList.remove('unread');
+        const title = this.querySelector('.notification-title').textContent;
+        console.log('Notification clicked:', title);
+    });
+});
+
+// ---------- Mark All Read Handler ----------
+document.querySelector('.modal-footer .btn-outline')?.addEventListener('click', function() {
+    document.querySelectorAll('.notification-item.unread').forEach(item => {
+        item.classList.remove('unread');
+    });
+    showToast('All notifications marked as read');
+});
+
+// ---------- Export Modal Handler ----------
+document.querySelector('#exportModal .btn-primary')?.addEventListener('click', function() {
+    showToast('Report export started. Download will begin shortly.');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+    modal.hide();
+});
+
+// ---------- AI Insights Download Handler ----------
+document.querySelector('#insightsModal .btn-primary')?.addEventListener('click', function() {
+    showToast('AI Insights report downloaded successfully');
+});
+
+// ---------- Deposits Modal Export Handler ----------
+document.querySelector('#depositsModal .btn-primary')?.addEventListener('click', function() {
+    showToast('Deposits data exported successfully');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('depositsModal'));
+    modal.hide();
+});
+
+// ---------- Intersection Observer for Animations ----------
+const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+};
+
+const animationObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Trigger animations when elements come into view
+            if (entry.target.classList.contains('css-bar-chart')) {
+                animateBars();
+            }
+            if (entry.target.classList.contains('comparison-chart')) {
+                animateComparisonBars();
+            }
+            if (entry.target.classList.contains('gauge-ring')) {
+                animateGauge();
+            }
+            animationObserver.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe chart containers
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.css-bar-chart, .comparison-chart, .gauge-ring').forEach(el => {
+        animationObserver.observe(el);
+    });
+});
+
+// ---------- Keyboard Shortcuts ----------
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + E = Export
+    if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+        e.preventDefault();
+        const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+        exportModal.show();
+    }
+
+    // Ctrl/Cmd + I = AI Insights
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+        e.preventDefault();
+        const insightsModal = new bootstrap.Modal(document.getElementById('insightsModal'));
+        insightsModal.show();
+    }
+
+    // Escape = close sidebar on mobile
+    if (e.key === 'Escape') {
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    }
+});
+
+// ---------- Print Styles ----------
+window.addEventListener('beforeprint', function() {
+    // Ensure all tabs are visible for printing
+    document.querySelectorAll('.tab-pane').forEach(tab => {
+        tab.classList.add('show', 'active');
+    });
+});
+
+window.addEventListener('afterprint', function() {
+    // Restore tab state after printing
+    const activeTab = document.querySelector('.nav-tabs .nav-link.active');
+    if (activeTab) {
+        const target = activeTab.getAttribute('data-bs-target');
+        document.querySelectorAll('.tab-pane').forEach(tab => {
+            tab.classList.remove('show', 'active');
+        });
+        document.querySelector(target)?.classList.add('show', 'active');
+    }
+});
+
+console.log('Analytics page custom JS loaded successfully');
+    </script>
+</body>
+</html>

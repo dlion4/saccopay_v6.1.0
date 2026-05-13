@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Management | Rongo SACCO Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           WITHDRAWAL PAGE - EXTENSION STYLES
+           ======================================== */
+        /* Live Indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            color: var(--status-success);
+            font-weight: 600;
+        }
+        .live-indicator::before {
+            content: '';
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--status-success);
+            animation: pulse 2s infinite;
+        }
+        /* Withdrawal Method Cards */
+        .method-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        .method-card {
+            padding: var(--spacing-lg);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .method-card:hover {
+            border-color: var(--primary-green);
+            background: var(--primary-green-ultra-light);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        .method-card .method-icon {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto var(--spacing-sm);
+            font-size: 1.25rem;
+        }
+        .method-card.mpesa .method-icon { background: rgba(76,175,80,0.12); color: var(--status-success); }
+        .method-card.bank .method-icon { background: rgba(33,150,243,0.12); color: var(--accent-blue); }
+        .method-card.cash .method-icon { background: rgba(255,193,7,0.12); color: var(--status-warning); }
+        .method-card.cheque .method-icon { background: rgba(100,116,139,0.12); color: var(--text-secondary); }
+        .method-card h4 { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
+        .method-card .amount { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+        .method-card .count { font-size: 0.7rem; color: var(--text-tertiary); }
+        /* Tabs */
+        .withdrawal-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+            overflow-x: auto;
+        }
+        .withdrawal-tab {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            font-family: var(--font-sans);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .withdrawal-tab:hover { color: var(--primary-green); }
+        .withdrawal-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        /* Withdrawal Card Rows */
+        .withdrawal-card-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .withdrawal-card-row:hover {
+            border-color: var(--primary-green-light);
+            background: var(--primary-green-ultra-light);
+            transform: translateX(4px);
+        }
+        .withdrawal-card-row.pending { border-left: 4px solid var(--status-warning); }
+        .withdrawal-card-row.failed { border-left: 4px solid var(--status-danger); }
+        /* Member Avatar */
+        .member-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 600;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+        }
+        .member-avatar.warning { background: linear-gradient(135deg, var(--status-warning), var(--accent-orange)); }
+        /* CSS Bar Chart */
+        .css-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 220px;
+            gap: 8px;
+            padding: 10px 0;
+        }
+        .chart-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+        }
+        .chart-col .bar-wrap {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .chart-col .bar {
+            width: 65%;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .chart-col .bar:hover { opacity: 0.85; transform: scaleY(1.03); }
+        .chart-col .bar-val {
+            position: absolute;
+            top: -22px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        .chart-col .bar-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        /* Progress Bar */
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-orange));
+            transition: width 0.6s ease;
+        }
+        /* Form Styles */
+        .form-group { margin-bottom: var(--spacing-lg); }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        .form-group label .req { color: var(--status-danger); }
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            font-family: var(--font-sans);
+            color: var(--text-primary);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+        }
+        .form-input::placeholder { color: var(--text-tertiary); }
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+        .form-hint { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 4px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); }
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        .form-check input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: var(--primary-green);
+            cursor: pointer;
+        }
+        .form-check label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-section:last-child { border-bottom: none; }
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        /* Amount Chips */
+        .amount-chips {
+            display: flex; gap: var(--spacing-sm);
+            flex-wrap: wrap; margin-top: var(--spacing-sm);
+        }
+        .chip {
+            padding: 6px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-sans);
+        }
+        .chip:hover {
+            border-color: var(--primary-green);
+            background: var(--primary-green-ultra-light);
+            color: var(--primary-green-dark);
+        }
+        /* Timeline */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px; top: 0; bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+        .timeline-item { position: relative; padding-bottom: var(--spacing-md); }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px; top: 4px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary-green);
+        }
+        .timeline-item.pending::before { border-color: var(--status-warning); }
+        .timeline-item.failed::before { border-color: var(--status-danger); }
+        /* Modal System */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-box.lg { max-width: 800px; }
+        .modal-box.xl { max-width: 1000px; }
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-head h3 { font-size: 1.1rem; font-weight: 700; }
+        .modal-close {
+            width: 32px; height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .modal-close:hover { background: var(--status-danger); color: white; }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-foot {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+        }
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            min-width: 300px;
+        }
+        .toast.success { background: var(--status-success); }
+        .toast.error { background: var(--status-danger); }
+        .toast.info { background: var(--status-info); }
+        .toast.warning { background: var(--status-warning); }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        /* Sidebar Mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+        }
+        .mobile-toggle {
+            display: none;
+            width: 40px; height: 40px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            align-items: center; justify-content: center;
+        }
+        /* Summary Box */
+        .summary-box {
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, rgba(244,67,54,0.06), rgba(255,152,0,0.06));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            font-size: 0.85rem;
+        }
+        .summary-row:not(:last-child) { border-bottom: 1px solid var(--border-color); }
+        .summary-row .label { color: var(--text-secondary); }
+        .summary-row .value { font-weight: 600; color: var(--text-primary); }
+        .summary-row.total { font-size: 1rem; padding-top: var(--spacing-md); }
+        .summary-row.total .value { color: var(--accent-red); font-size: 1.25rem; }
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        .pagination-info { font-size: 0.8rem; color: var(--text-secondary); }
+        .pagination-btns { display: flex; gap: 4px; }
+        .pagination-btns button {
+            width: 36px; height: 36px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-sans);
+        }
+        .pagination-btns button:hover { border-color: var(--primary-green); color: var(--primary-green); }
+        .pagination-btns button.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white; border-color: transparent;
+        }
+        /* Balance Warning */
+        .balance-warning {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: rgba(255,152,0,0.08);
+            border: 1px solid var(--status-warning);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        .balance-warning i { color: var(--status-warning); font-size: 1.2rem; }
+        .balance-warning .content { flex: 1; }
+        .balance-warning strong { color: var(--status-warning); }
+        /* Responsive Overrides */
+        @media (max-width: 1024px) {
+            .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .admin-sidebar.open { transform: translateX(0); }
+            .admin-main { margin-left: 0; }
+            .mobile-toggle { display: flex; }
+            .sidebar-overlay.active { display: block; }
+            .method-breakdown { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .method-breakdown { grid-template-columns: 1fr 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .withdrawal-card-row { flex-direction: column; align-items: flex-start; }
+            .topbar-search { display: none; }
+        }
+        @media (max-width: 480px) {
+            .method-breakdown { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">RS</div>
+                <div class="sidebar-brand-text">
+                    <h1>SACCOPay</h1>
+                    <p>Rongo SACCO Admin</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt nav-icon"></i> Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-line nav-icon"></i> Analytics
+                    </a>
+                </div>
+                <div class="nav-section-title">Member Management</div>
+                <div class="nav-item">
+                    <a href="members-all.html" class="nav-link">
+                        <i class="fas fa-users nav-icon"></i> All Members
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="members-kyc.html" class="nav-link">
+                        <i class="fas fa-user-check nav-icon"></i> KYC Verification
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-section-title">Financial Operations</div>
+                <div class="nav-item">
+                    <a href="deposits.html" class="nav-link">
+                        <i class="fas fa-arrow-circle-down nav-icon"></i> Deposits
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-arrow-circle-up nav-icon"></i> Withdrawals
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="transactions.html" class="nav-link">
+                        <i class="fas fa-exchange-alt nav-icon"></i> Transactions
+                        <span class="nav-badge">34</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-money-check-alt nav-icon"></i> Settlements
+                    </a>
+                </div>
+                <div class="nav-section-title">Loan Services</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-hand-holding-usd nav-icon"></i> Loan Overview
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar nav-icon"></i> Applications
+                        <span class="nav-badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i> Settings
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <div style="display:flex; align-items:center; gap:var(--spacing-md);">
+                        <button class="mobile-toggle" onclick="toggleSidebar()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="topbar-search">
+                            <i class="fas fa-search topbar-search-icon"></i>
+                            <input type="text" placeholder="Search withdrawals, members, references...">
+                        </div>
+                    </div>
+                    <div class="topbar-actions">
+                        <div class="live-indicator"><span>LIVE</span></div>
+                        <button class="topbar-action-btn" title="Notifications" onclick="openModal('notificationsModal')">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">6</span>
+                        </button>
+                        <button class="topbar-action-btn" title="Messages">
+                            <i class="fas fa-envelope"></i>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        <div class="user-profile">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info">
+                                <h4>John Maina</h4>
+                                <p>General Manager</p>
+                            </div>
+                            <i class="fas fa-chevron-down" style="font-size:0.6rem; color:var(--text-tertiary); margin-left:4px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Page Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="dashboard.html" style="color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:4px;">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <i class="fas fa-chevron-right" style="font-size:0.5rem; color:var(--text-tertiary);"></i>
+                    <span style="color:var(--text-secondary);">Financial Operations</span>
+                    <i class="fas fa-chevron-right" style="font-size:0.5rem; color:var(--text-tertiary);"></i>
+                    <span style="color:var(--primary-green); font-weight:600;">Withdrawals</span>
+                </div>
+                <!-- Page Header -->
+                <div class="flex-between mb-4" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                    <div>
+                        <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:4px;">Withdrawal Management</h2>
+                        <p style="color:var(--text-secondary); font-size:0.9rem;">Process, approve, and monitor all member withdrawal requests</p>
+                    </div>
+                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+                        <button class="btn btn-ghost btn-sm" onclick="refreshWithdrawals()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="openModal('exportModal')">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="checkLimits()">
+                            <i class="fas fa-shield-alt"></i> Check Limits
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal('processWithdrawalModal')">
+                            <i class="fas fa-plus-circle"></i> Process Withdrawal
+                        </button>
+                    </div>
+                </div>
+                <!-- Alert -->
+                <div class="balance-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="content">
+                        <strong>Float Alert:</strong> Current SACCO float balance is KES 45M. Daily withdrawal limit: KES 50M.
+                        <a href="#" style="color:var(--status-warning); font-weight:500; text-decoration:underline;">View Float Management</a>
+                    </div>
+                </div>
+                <!-- KPI Stats Grid -->
+                <div class="stats-grid mb-4">
+                    <div class="stat-card" onclick="filterWithdrawals('today')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon warning"><i class="fas fa-calendar-day"></i></div>
+                        </div>
+                        <div class="stat-card-title">Today's Withdrawals</div>
+                        <div class="stat-card-value">KES 3.8M</div>
+                        <span class="stat-card-change negative"><i class="fas fa-arrow-down"></i> 567 withdrawals</span>
+                    </div>
+                    <div class="stat-card" onclick="filterWithdrawals('month')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon info"><i class="fas fa-calendar-alt"></i></div>
+                        </div>
+                        <div class="stat-card-title">This Month</div>
+                        <div class="stat-card-value">KES 92M</div>
+                        <span class="stat-card-change positive"><i class="fas fa-arrow-up"></i> +12.3% vs last month</span>
+                    </div>
+                    <div class="stat-card" onclick="switchTab('pending')" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon warning"><i class="fas fa-hourglass-half"></i></div>
+                        </div>
+                        <div class="stat-card-title">Pending Approval</div>
+                        <div class="stat-card-value">28</div>
+                        <span class="stat-card-change negative"><i class="fas fa-exclamation-circle"></i> KES 8.2M awaiting</span>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon success"><i class="fas fa-check-circle"></i></div>
+                        </div>
+                        <div class="stat-card-title">Success Rate</div>
+                        <div class="stat-card-value">98.6%</div>
+                        <span class="stat-card-change positive"><i class="fas fa-thumbs-up"></i> Excellent</span>
+                    </div>
+                </div>
+                <!-- Payment Method Breakdown -->
+                <div class="method-breakdown">
+                    <div class="method-card mpesa" onclick="filterByMethod('mpesa')">
+                        <div class="method-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <h4>M-Pesa</h4>
+                        <div class="amount">KES 2.1M</div>
+                        <div class="count">378 withdrawals</div>
+                    </div>
+                    <div class="method-card bank" onclick="filterByMethod('bank')">
+                        <div class="method-icon"><i class="fas fa-university"></i></div>
+                        <h4>Bank Transfer</h4>
+                        <div class="amount">KES 1.2M</div>
+                        <div class="count">95 withdrawals</div>
+                    </div>
+                    <div class="method-card cash" onclick="filterByMethod('cash')">
+                        <div class="method-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <h4>Cash</h4>
+                        <div class="amount">KES 450K</div>
+                        <div class="count">72 withdrawals</div>
+                    </div>
+                    <div class="method-card cheque" onclick="filterByMethod('cheque')">
+                        <div class="method-icon"><i class="fas fa-file-invoice"></i></div>
+                        <h4>Cheque</h4>
+                        <div class="amount">KES 50K</div>
+                        <div class="count">22 withdrawals</div>
+                    </div>
+                </div>
+                <!-- Tabs -->
+                <div class="withdrawal-tabs">
+                    <button class="withdrawal-tab active" onclick="switchTab('all')">
+                        <i class="fas fa-list"></i> All Withdrawals
+                    </button>
+                    <button class="withdrawal-tab" onclick="switchTab('pending')">
+                        <i class="fas fa-clock"></i> Pending (28)
+                    </button>
+                    <button class="withdrawal-tab" onclick="switchTab('limits')">
+                        <i class="fas fa-shield-alt"></i> Limits & Rules
+                    </button>
+                    <button class="withdrawal-tab" onclick="switchTab('quick-withdrawal')">
+                        <i class="fas fa-bolt"></i> Quick Process
+                    </button>
+                    <button class="withdrawal-tab" onclick="switchTab('analytics')">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </button>
+                </div>
+                <!-- ==================== TAB: ALL WITHDRAWALS ==================== -->
+                <div class="tab-pane active" id="tab-all">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <div class="flex-between" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-history" style="color:var(--accent-red); margin-right:8px;"></i>Recent Withdrawals
+                                </h3>
+                                <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap;">
+                                    <select class="form-input" style="width:auto; padding:6px 32px 6px 10px; font-size:0.8rem;" onchange="applyFilter('status', this.value)">
+                                        <option value="all">All Status</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="processing">Processing</option>
+                                        <option value="failed">Failed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                    <select class="form-input" style="width:auto; padding:6px 32px 6px 10px; font-size:0.8rem;" onchange="applyFilter('method', this.value)">
+                                        <option value="all">All Methods</option>
+                                        <option value="mpesa">M-Pesa</option>
+                                        <option value="bank">Bank Transfer</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="cheque">Cheque</option>
+                                    </select>
+                                    <select class="form-input" style="width:auto; padding:6px 32px 6px 10px; font-size:0.8rem;" onchange="applyFilter('type', this.value)">
+                                        <option value="all">All Types</option>
+                                        <option value="savings">From Savings</option>
+                                        <option value="shares">Share Redemption</option>
+                                        <option value="fixed">Fixed Deposit</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" onclick="toggleSelectAll(this)" style="accent-color:var(--primary-green);"></th>
+                                        <th>Withdrawal ID</th>
+                                        <th>Date & Time</th>
+                                        <th>Member</th>
+                                        <th>Account Type</th>
+                                        <th>Method</th>
+                                        <th>Amount</th>
+                                        <th>Reference</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="cursor:pointer;" onclick="viewWithdrawal('WDR-2026-00892')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">WDR-2026-00892</code></td>
+                                        <td>Today, 3:15 PM</td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="member-avatar">DK</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">David Kipkorir</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00045</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-success">Savings</span></td>
+                                        <td><span style="display:inline-flex; align-items:center; gap:4px; font-size:0.85rem;"><i class="fas fa-mobile-alt" style="color:var(--status-success);"></i> M-Pesa</span></td>
+                                        <td><strong style="color:var(--status-danger); font-family:var(--font-mono);">KES 80,000</strong></td>
+                                        <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">XYZ8N4M2PQ</td>
+                                        <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Completed</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" title="View" onclick="viewWithdrawal('WDR-2026-00892')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost" title="Receipt"><i class="fas fa-receipt" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr style="cursor:pointer; border-left:4px solid var(--status-warning);" onclick="viewWithdrawal('WDR-2026-00891')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">WDR-2026-00891</code></td>
+                                        <td>Today, 2:50 PM</td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="member-avatar warning">SA</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">Sarah Akinyi</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00123</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-warning">Share Redemption</span></td>
+                                        <td><span style="display:inline-flex; align-items:center; gap:4px; font-size:0.85rem;"><i class="fas fa-money-bill-wave" style="color:var(--status-warning);"></i> Cash</span></td>
+                                        <td><strong style="color:var(--status-danger); font-family:var(--font-mono);">KES 120,000</strong></td>
+                                        <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">CASH-2891</td>
+                                        <td><span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-primary btn-sm" style="padding:4px 8px; font-size:0.7rem;" onclick="approveWithdrawal('WDR-2026-00891')"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-ghost btn-sm" style="padding:4px 8px; font-size:0.7rem; color:var(--status-danger);" onclick="rejectWithdrawal('WDR-2026-00891')"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-icon btn-ghost" onclick="viewWithdrawal('WDR-2026-00891')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr style="cursor:pointer;" onclick="viewWithdrawal('WDR-2026-00890')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">WDR-2026-00890</code></td>
+                                        <td>Today, 2:20 PM</td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="member-avatar">MW</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">Mary Wanjiku</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00234</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-success">Savings</span></td>
+                                        <td><span style="display:inline-flex; align-items:center; gap:4px; font-size:0.85rem;"><i class="fas fa-university" style="color:var(--accent-blue);"></i> Bank</span></td>
+                                        <td><strong style="color:var(--status-danger); font-family:var(--font-mono);">KES 350,000</strong></td>
+                                        <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">FT261900234</td>
+                                        <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Completed</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" onclick="viewWithdrawal('WDR-2026-00890')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost"><i class="fas fa-receipt" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr style="cursor:pointer; border-left:4px solid var(--status-danger);" onclick="viewWithdrawal('WDR-2026-00889')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">WDR-2026-00889</code></td>
+                                        <td>Today, 1:45 PM</td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="member-avatar">JO</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">John Otieno</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00456</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-info">Fixed Deposit</span></td>
+                                        <td><span style="display:inline-flex; align-items:center; gap:4px; font-size:0.85rem;"><i class="fas fa-mobile-alt" style="color:var(--status-success);"></i> M-Pesa</span></td>
+                                        <td><strong style="color:var(--status-danger); font-family:var(--font-mono);">KES 25,000</strong></td>
+                                        <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">—</td>
+                                        <td><span class="badge badge-danger"><i class="fas fa-times-circle"></i> Failed</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-primary btn-sm" style="padding:4px 8px; font-size:0.7rem;" onclick="retryWithdrawal('WDR-2026-00889')"><i class="fas fa-redo"></i> Retry</button>
+                                                <button class="btn btn-icon btn-ghost" onclick="viewWithdrawal('WDR-2026-00889')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr style="cursor:pointer;" onclick="viewWithdrawal('WDR-2026-00888')">
+                                        <td onclick="event.stopPropagation();"><input type="checkbox" style="accent-color:var(--primary-green);"></td>
+                                        <td><code style="background:var(--bg-tertiary); padding:3px 8px; border-radius:4px; font-size:0.78rem;">WDR-2026-00888</code></td>
+                                        <td>Today, 1:10 PM</td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:8px;">
+                                                <div class="member-avatar">GM</div>
+                                                <div>
+                                                    <div style="font-weight:600; font-size:0.85rem;">Grace Muthoni</div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">R-00678</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-success">Savings</span></td>
+                                        <td><span style="display:inline-flex; align-items:center; gap:4px; font-size:0.85rem;"><i class="fas fa-file-invoice" style="color:var(--text-secondary);"></i> Cheque</span></td>
+                                        <td><strong style="color:var(--status-danger); font-family:var(--font-mono);">KES 45,000</strong></td>
+                                        <td style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-secondary);">CHQ-78234</td>
+                                        <td><span class="badge badge-info"><i class="fas fa-spinner fa-spin"></i> Processing</span></td>
+                                        <td onclick="event.stopPropagation();">
+                                            <div style="display:flex; gap:4px;">
+                                                <button class="btn btn-icon btn-ghost" onclick="viewWithdrawal('WDR-2026-00888')"><i class="fas fa-eye" style="font-size:0.8rem;"></i></button>
+                                                <button class="btn btn-icon btn-ghost"><i class="fas fa-edit" style="font-size:0.8rem;"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination">
+                            <div class="pagination-info">Showing <strong>1-5</strong> of <strong>567</strong> withdrawals</div>
+                            <div class="pagination-btns">
+                                <button><i class="fas fa-chevron-left"></i></button>
+                                <button class="active">1</button>
+                                <button>2</button>
+                                <button>3</button>
+                                <button>...</button>
+                                <button>114</button>
+                                <button><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: PENDING ==================== -->
+                <div class="tab-pane" id="tab-pending">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <div class="flex-between" style="flex-wrap:wrap; gap:var(--spacing-md);">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-clock" style="color:var(--status-warning); margin-right:8px;"></i>Withdrawals Awaiting Approval (28)
+                                </h3>
+                                <div style="display:flex; gap:var(--spacing-sm);">
+                                    <button class="btn btn-outline btn-sm" onclick="bulkReject()"><i class="fas fa-times-circle"></i> Reject Selected</button>
+                                    <button class="btn btn-primary btn-sm" onclick="bulkApprove()"><i class="fas fa-check-double"></i> Approve Selected</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="withdrawal-card-row pending" onclick="viewWithdrawal('WDR-2026-00891')">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); flex-shrink:0;">
+                                <div class="member-avatar warning" style="flex-shrink:0;">SA</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:8px;">
+                                        <div>
+                                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:2px;">Sarah Akinyi</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">WDR-2026-00891 &bull; R-00123</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--status-danger);">KES 120,000</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">Today, 2:50 PM</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:6px;">
+                                        <span class="badge badge-warning">Share Redemption</span>
+                                        <span class="badge badge-warning"><i class="fas fa-money-bill-wave" style="font-size:0.6rem;"></i> Cash</span>
+                                        <span class="badge badge-pending">Pending Approval</span>
+                                    </div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary);">
+                                        <strong>Ref:</strong> CASH-2891 &bull; <strong>Available Balance:</strong> KES 1.2M &bull; <strong>By:</strong> Branch Teller
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:4px; flex-shrink:0;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="approveWithdrawal('WDR-2026-00891')"><i class="fas fa-check"></i> Approve</button>
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectWithdrawal('WDR-2026-00891')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="withdrawal-card-row pending" onclick="viewWithdrawal('WDR-2026-00885')">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); flex-shrink:0;">
+                                <div class="member-avatar warning" style="flex-shrink:0;">PN</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:8px;">
+                                        <div>
+                                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:2px;">Peter Njoroge</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">WDR-2026-00885 &bull; R-00892</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--status-danger);">KES 200,000</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">Today, 12:15 PM</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:6px;">
+                                        <span class="badge badge-success">Savings</span>
+                                        <span class="badge badge-info"><i class="fas fa-university" style="font-size:0.6rem;"></i> Bank Transfer</span>
+                                        <span class="badge badge-pending">Pending Verification</span>
+                                    </div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary);">
+                                        <strong>Bank:</strong> KCB Bank &bull; <strong>Account:</strong> 123***890 &bull; <strong>Available:</strong> KES 850K
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:4px; flex-shrink:0;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="approveWithdrawal('WDR-2026-00885')"><i class="fas fa-check"></i> Approve</button>
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectWithdrawal('WDR-2026-00885')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="withdrawal-card-row pending" onclick="viewWithdrawal('WDR-2026-00882')">
+                                <input type="checkbox" onclick="event.stopPropagation();" style="accent-color:var(--primary-green); flex-shrink:0;">
+                                <div class="member-avatar warning" style="flex-shrink:0;">AK</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div class="flex-between mb-1" style="flex-wrap:wrap; gap:8px;">
+                                        <div>
+                                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:2px;">Alice Kamau</h4>
+                                            <p style="font-size:0.75rem; color:var(--text-tertiary); margin:0;">WDR-2026-00882 &bull; R-01234</p>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--status-danger);">KES 75,000</div>
+                                            <div style="font-size:0.7rem; color:var(--text-tertiary);">Today, 11:30 AM</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-sm); flex-wrap:wrap; margin-bottom:6px;">
+                                        <span class="badge badge-success">Savings</span>
+                                        <span class="badge badge-success"><i class="fas fa-mobile-alt" style="font-size:0.6rem;"></i> M-Pesa</span>
+                                        <span class="badge badge-warning">Limit Check</span>
+                                    </div>
+                                    <div style="font-size:0.75rem; color:var(--text-secondary);">
+                                        <strong>Phone:</strong> 0722***345 &bull; <strong>Daily Limit:</strong> 3/5 withdrawals &bull; <strong>Available:</strong> KES 450K
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:4px; flex-shrink:0;" onclick="event.stopPropagation();">
+                                    <button class="btn btn-primary btn-sm" onclick="approveWithdrawal('WDR-2026-00882')"><i class="fas fa-check"></i> Approve</button>
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="rejectWithdrawal('WDR-2026-00882')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div style="text-align:center; padding:var(--spacing-lg); color:var(--text-tertiary);">
+                                <p style="font-size:0.85rem; margin-bottom:var(--spacing-sm);">Showing 3 of 28 pending withdrawals</p>
+                                <button class="btn btn-outline btn-sm">Load More <i class="fas fa-arrow-down" style="margin-left:4px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: LIMITS & RULES ==================== -->
+                <div class="tab-pane" id="tab-limits">
+                    <div class="grid-2 mb-4">
+                        <div class="glass-card">
+                            <div class="glass-card-header">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-shield-alt" style="color:var(--accent-blue); margin-right:8px;"></i>Withdrawal Limits
+                                </h3>
+                            </div>
+                            <div class="glass-card-body">
+                                <div class="summary-box mb-3">
+                                    <div class="summary-row">
+                                        <span class="label">Single Transaction Limit</span>
+                                        <span class="value">KES 500,000</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="label">Daily Member Limit</span>
+                                        <span class="value">KES 1,000,000</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="label">Monthly Member Limit</span>
+                                        <span class="value">KES 5,000,000</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="label">Daily SACCO Limit</span>
+                                        <span class="value">KES 50,000,000</span>
+                                    </div>
+                                    <div class="summary-row total">
+                                        <span class="label"><strong>Available Today</strong></span>
+                                        <span class="value">KES 46.2M</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline btn-sm" style="width:100%;" onclick="editLimits()">
+                                    <i class="fas fa-edit"></i> Edit Limits
+                                </button>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <div class="glass-card-header">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-exclamation-triangle" style="color:var(--status-warning); margin-right:8px;"></i>Auto-Approval Rules
+                                </h3>
+                            </div>
+                            <div class="glass-card-body">
+                                <div style="padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm); margin-bottom:var(--spacing-sm);">
+                                    <div class="flex-between mb-1">
+                                        <strong style="font-size:0.85rem;">M-Pesa (< KES 50K)</strong>
+                                        <span class="badge badge-success">Auto-Approve</span>
+                                    </div>
+                                    <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Instant processing for small M-Pesa withdrawals</p>
+                                </div>
+                                <div style="padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm); margin-bottom:var(--spacing-sm);">
+                                    <div class="flex-between mb-1">
+                                        <strong style="font-size:0.85rem;">Cash (> KES 100K)</strong>
+                                        <span class="badge badge-warning">Manual Review</span>
+                                    </div>
+                                    <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Requires branch manager approval</p>
+                                </div>
+                                <div style="padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm); margin-bottom:var(--spacing-sm);">
+                                    <div class="flex-between mb-1">
+                                        <strong style="font-size:0.85rem;">Share Redemption</strong>
+                                        <span class="badge badge-danger">Always Manual</span>
+                                    </div>
+                                    <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Requires board approval & notice period</p>
+                                </div>
+                                <div style="padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm);">
+                                    <div class="flex-between mb-1">
+                                        <strong style="font-size:0.85rem;">Fixed Deposit (Matured)</strong>
+                                        <span class="badge badge-success">Auto-Approve</span>
+                                    </div>
+                                    <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;">Automatic after maturity date</p>
+                                </div>
+                                <button class="btn btn-outline btn-sm" style="width:100%; margin-top:var(--spacing-md);" onclick="editRules()">
+                                    <i class="fas fa-cog"></i> Configure Rules
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-ban" style="color:var(--status-danger); margin-right:8px;"></i>Flagged Withdrawals (Requires Review)
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Member</th><th>Amount</th><th>Reason</th><th>Risk Level</th><th>Action</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>James Omondi</strong></td>
+                                            <td><strong style="color:var(--status-danger);">KES 950,000</strong></td>
+                                            <td>Amount exceeds 90% of available balance</td>
+                                            <td><span class="badge badge-warning">Medium Risk</span></td>
+                                            <td><button class="btn btn-sm btn-outline" onclick="reviewFlagged('WDR-2026-00878')">Review</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jane Nyambura</strong></td>
+                                            <td><strong style="color:var(--status-danger);">KES 150,000</strong></td>
+                                            <td>5th withdrawal today - exceeds daily frequency</td>
+                                            <td><span class="badge badge-danger">High Risk</span></td>
+                                            <td><button class="btn btn-sm btn-outline" onclick="reviewFlagged('WDR-2026-00874')">Review</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: QUICK WITHDRAWAL ==================== -->
+                <div class="tab-pane" id="tab-quick-withdrawal">
+                    <div class="grid-2 mb-4" style="grid-template-columns: 2fr 1fr;">
+                        <div class="glass-card">
+                            <div class="glass-card-header">
+                                <h3 style="font-size:1.1rem; font-weight:700;">
+                                    <i class="fas fa-bolt" style="color:var(--accent-orange); margin-right:8px;"></i>Quick Withdrawal Processing
+                                </h3>
+                                <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px; margin-bottom:0;">
+                                    Process withdrawal requests on behalf of members (cash, cheque, or manual M-Pesa)
+                                </p>
+                            </div>
+                            <div class="glass-card-body">
+                                <form id="quickWithdrawalForm" onsubmit="submitQuickWithdrawal(event)">
+                                    <div class="form-section">
+                                        <div class="form-section-title"><i class="fas fa-user-circle"></i> Member Information</div>
+                                        <div class="form-group">
+                                            <label>Select Member <span class="req">*</span></label>
+                                            <select class="form-input" id="memberSelect" required onchange="loadMemberBalance(this.value)">
+                                                <option value="">-- Search or Select Member --</option>
+                                                <option value="R-00123">Sarah Akinyi (R-00123)</option>
+                                                <option value="R-00045">David Kipkorir (R-00045)</option>
+                                                <option value="R-00234">Mary Wanjiku (R-00234)</option>
+                                                <option value="R-00456">John Otieno (R-00456)</option>
+                                                <option value="R-00678">Grace Muthoni (R-00678)</option>
+                                            </select>
+                                            <p class="form-hint"><i class="fas fa-info-circle"></i> Type member name or ID to search</p>
+                                        </div>
+                                        <div id="balanceInfo" style="display:none; padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm); margin-bottom:var(--spacing-md);">
+                                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-md);">
+                                                <div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">Savings Balance</div>
+                                                    <div style="font-weight:700; color:var(--status-success);" id="savingsBalance">KES 0</div>
+                                                </div>
+                                                <div>
+                                                    <div style="font-size:0.7rem; color:var(--text-tertiary);">Share Balance</div>
+                                                    <div style="font-weight:700; color:var(--status-info);" id="shareBalance">KES 0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-section">
+                                        <div class="form-section-title"><i class="fas fa-arrow-circle-up"></i> Withdrawal Details</div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Source Account <span class="req">*</span></label>
+                                                <select class="form-input" required>
+                                                    <option value="">-- Select Account --</option>
+                                                    <option value="savings">Savings Account</option>
+                                                    <option value="shares">Share Capital</option>
+                                                    <option value="fixed">Fixed Deposit</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Payment Method <span class="req">*</span></label>
+                                                <select class="form-input" id="withdrawalMethod" required onchange="toggleMethodFields(this.value)">
+                                                    <option value="">-- Select Method --</option>
+                                                    <option value="mpesa">M-Pesa</option>
+                                                    <option value="bank">Bank Transfer</option>
+                                                    <option value="cash">Cash</option>
+                                                    <option value="cheque">Cheque</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Amount (KES) <span class="req">*</span></label>
+                                            <input type="number" class="form-input" id="withdrawalAmount" placeholder="e.g. 50000" min="1" required oninput="calcWithdrawal()">
+                                            <div class="amount-chips">
+                                                <button type="button" class="chip" onclick="setAmt(10000)">KES 10K</button>
+                                                <button type="button" class="chip" onclick="setAmt(25000)">KES 25K</button>
+                                                <button type="button" class="chip" onclick="setAmt(50000)">KES 50K</button>
+                                                <button type="button" class="chip" onclick="setAmt(100000)">KES 100K</button>
+                                                <button type="button" class="chip" onclick="setAmt(250000)">KES 250K</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-section" id="methodFields" style="display:none;">
+                                        <div class="form-section-title"><i class="fas fa-file-alt"></i> Payment Details</div>
+                                        <div id="mpesaFields" style="display:none;">
+                                            <div class="form-group">
+                                                <label>M-Pesa Phone Number</label>
+                                                <input type="tel" class="form-input" placeholder="254712345678">
+                                            </div>
+                                        </div>
+                                        <div id="bankFields" style="display:none;">
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Bank Name</label>
+                                                    <select class="form-input"><option>KCB Bank</option><option>Equity Bank</option><option>Co-operative Bank</option></select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Account Number</label>
+                                                    <input type="text" class="form-input" placeholder="1234567890">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="cashFields" style="display:none;">
+                                            <div class="form-group">
+                                                <label>Disbursed By</label>
+                                                <input type="text" class="form-input" value="John Maina (Branch Teller)" readonly>
+                                            </div>
+                                        </div>
+                                        <div id="chequeFields" style="display:none;">
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Cheque Number</label>
+                                                    <input type="text" class="form-input" placeholder="CHQ-12345">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Payable To</label>
+                                                    <input type="text" class="form-input" placeholder="Member name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-section">
+                                        <div class="form-section-title"><i class="fas fa-clipboard"></i> Additional Info</div>
+                                        <div class="form-group">
+                                            <label>Reason for Withdrawal</label>
+                                            <select class="form-input">
+                                                <option>-- Select Reason --</option>
+                                                <option>Personal Emergency</option>
+                                                <option>Medical Expenses</option>
+                                                <option>School Fees</option>
+                                                <option>Business Capital</option>
+                                                <option>Home Improvement</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Notes</label>
+                                            <textarea class="form-input" rows="2" placeholder="Optional notes..."></textarea>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="autoApprove">
+                                            <label for="autoApprove">Auto-approve this withdrawal (if within limits)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="sendSMS" checked>
+                                            <label for="sendSMS">Send SMS notification to member</label>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:var(--spacing-md); justify-content:flex-end; padding-top:var(--spacing-lg); border-top:1px solid var(--border-color);">
+                                        <button type="button" class="btn btn-ghost" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Process Withdrawal</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="glass-card mb-3">
+                                <div class="glass-card-header">
+                                    <h4 style="font-size:0.95rem; font-weight:600; margin:0;">
+                                        <i class="fas fa-calculator" style="color:var(--primary-green); margin-right:6px;"></i>Calculation
+                                    </h4>
+                                </div>
+                                <div class="glass-card-body">
+                                    <div class="summary-box">
+                                        <div class="summary-row">
+                                            <span class="label">Withdrawal Amount</span>
+                                            <span class="value" id="pvAmount">KES 0</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span class="label">Processing Fee</span>
+                                            <span class="value" id="pvFee">KES 0</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span class="label">Tax (Excise Duty)</span>
+                                            <span class="value" id="pvTax">KES 0</span>
+                                        </div>
+                                        <div class="summary-row total">
+                                            <span class="label"><strong>Deducted from Account</strong></span>
+                                            <span class="value" id="pvTotal">KES 0</span>
+                                        </div>
+                                    </div>
+                                    <p style="font-size:0.7rem; color:var(--text-tertiary); margin-top:var(--spacing-sm);">
+                                        <i class="fas fa-info-circle"></i> Fees vary by withdrawal method
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="glass-card">
+                                <div class="glass-card-header">
+                                    <h4 style="font-size:0.95rem; font-weight:600; margin:0;">
+                                        <i class="fas fa-history" style="color:var(--accent-blue); margin-right:6px;"></i>Recent Activity
+                                    </h4>
+                                </div>
+                                <div class="glass-card-body" style="padding-top:0;">
+                                    <div class="timeline">
+                                        <div class="timeline-item">
+                                            <div style="font-size:0.8rem; font-weight:600;">David Kipkorir</div>
+                                            <div style="font-size:0.7rem; color:var(--text-secondary);">KES 80,000 &bull; M-Pesa</div>
+                                            <div style="font-size:0.65rem; color:var(--text-tertiary);">5 min ago</div>
+                                        </div>
+                                        <div class="timeline-item pending">
+                                            <div style="font-size:0.8rem; font-weight:600;">Sarah Akinyi</div>
+                                            <div style="font-size:0.7rem; color:var(--text-secondary);">KES 120,000 &bull; Cash</div>
+                                            <div style="font-size:0.65rem; color:var(--text-tertiary);">15 min ago</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div style="font-size:0.8rem; font-weight:600;">Mary Wanjiku</div>
+                                            <div style="font-size:0.7rem; color:var(--text-secondary);">KES 350,000 &bull; Bank</div>
+                                            <div style="font-size:0.65rem; color:var(--text-tertiary);">45 min ago</div>
+                                        </div>
+                                        <div class="timeline-item failed">
+                                            <div style="font-size:0.8rem; font-weight:600;">John Otieno</div>
+                                            <div style="font-size:0.7rem; color:var(--text-secondary);">KES 25,000 &bull; M-Pesa</div>
+                                            <div style="font-size:0.65rem; color:var(--text-tertiary);">1 hour ago</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ==================== TAB: ANALYTICS ==================== -->
+                <div class="tab-pane" id="tab-analytics">
+                    <div class="glass-card mb-4">
+                        <div class="glass-card-header">
+                            <h3 style="font-size:1.1rem; font-weight:700;">
+                                <i class="fas fa-chart-line" style="color:var(--accent-blue); margin-right:8px;"></i>Withdrawal Trends & Analytics
+                            </h3>
+                        </div>
+                        <div class="glass-card-body">
+                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);">7-Day Withdrawal Trend</h4>
+                            <div class="css-chart mb-4">
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:55%;"><div class="bar-val">KES 2.8M</div></div></div><div class="bar-label">Mon</div></div>
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:65%;"><div class="bar-val">KES 3.2M</div></div></div><div class="bar-label">Tue</div></div>
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:75%;"><div class="bar-val">KES 3.8M</div></div></div><div class="bar-label">Wed</div></div>
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:100%;"><div class="bar-val">KES 5.2M</div></div></div><div class="bar-label">Thu</div></div>
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:85%;"><div class="bar-val">KES 4.5M</div></div></div><div class="bar-label">Fri</div></div>
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:35%;"><div class="bar-val">KES 1.8M</div></div></div><div class="bar-label">Sat</div></div>
+                                <div class="chart-col"><div class="bar-wrap"><div class="bar" style="height:15%;"><div class="bar-val">KES 750K</div></div></div><div class="bar-label">Sun</div></div>
+                            </div>
+                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);">Withdrawals by Source (This Month)</h4>
+                            <div class="grid-4 mb-4" style="gap:var(--spacing-md);">
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">Savings</span>
+                                        <i class="fas fa-piggy-bank" style="color:var(--primary-green);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">KES 65M</div>
+                                    <div class="progress-track"><div class="progress-fill" style="width:71%;"></div></div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">71% of total</div>
+                                </div>
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">Share Redemption</span>
+                                        <i class="fas fa-coins" style="color:var(--accent-orange);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">KES 18M</div>
+                                    <div class="progress-track"><div class="progress-fill" style="width:20%; background:linear-gradient(90deg, var(--accent-orange), #ff5722);"></div></div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">20% of total</div>
+                                </div>
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">Fixed Deposit</span>
+                                        <i class="fas fa-lock" style="color:var(--accent-purple);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">KES 7M</div>
+                                    <div class="progress-track"><div class="progress-fill" style="width:8%; background:linear-gradient(90deg, var(--accent-purple), #e91e63);"></div></div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">8% of total</div>
+                                </div>
+                                <div style="padding:var(--spacing-lg); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+                                    <div class="flex-between mb-1">
+                                        <span style="font-size:0.8rem; color:var(--text-secondary);">Emergency Fund</span>
+                                        <i class="fas fa-exclamation-circle" style="color:var(--status-warning);"></i>
+                                    </div>
+                                    <div style="font-size:1.2rem; font-weight:700; margin-bottom:6px;">KES 2M</div>
+                                    <div class="progress-track"><div class="progress-fill" style="width:2%; background:linear-gradient(90deg, var(--status-warning), var(--accent-orange));"></div></div>
+                                    <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:4px;">1% of total</div>
+                                </div>
+                            </div>
+                            <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:var(--spacing-md);">Top 5 Withdrawers (This Month)</h4>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr><th>Rank</th><th>Member</th><th>Total Withdrawals</th><th>Frequency</th><th>Avg. Withdrawal</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:gold;color:#000;font-weight:700;font-size:0.75rem;">1</span></td>
+                                            <td><strong>David Kipkorir</strong></td>
+                                            <td><strong style="color:var(--status-danger);">KES 1.8M</strong></td>
+                                            <td>12 withdrawals</td><td>KES 150,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:silver;color:#000;font-weight:700;font-size:0.75rem;">2</span></td>
+                                            <td><strong>Sarah Akinyi</strong></td>
+                                            <td><strong style="color:var(--status-danger);">KES 1.5M</strong></td>
+                                            <td>8 withdrawals</td><td>KES 187,500</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#cd7f32;color:#fff;font-weight:700;font-size:0.75rem;">3</span></td>
+                                            <td><strong>Mary Wanjiku</strong></td>
+                                            <td><strong style="color:var(--status-danger);">KES 1.2M</strong></td>
+                                            <td>15 withdrawals</td><td>KES 80,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--bg-tertiary);color:var(--text-secondary);font-weight:600;font-size:0.75rem;">4</span></td>
+                                            <td>John Otieno</td>
+                                            <td><strong style="color:var(--status-danger);">KES 950K</strong></td>
+                                            <td>10 withdrawals</td><td>KES 95,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--bg-tertiary);color:var(--text-secondary);font-weight:600;font-size:0.75rem;">5</span></td>
+                                            <td>Grace Muthoni</td>
+                                            <td><strong style="color:var(--status-danger);">KES 720K</strong></td>
+                                            <td>18 withdrawals</td><td>KES 40,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End dashboard-content -->
+        </main>
+    </div>
+    <!-- ==================== MODALS ==================== -->
+    <!-- Process Withdrawal Modal -->
+    <div class="modal-overlay" id="processWithdrawalModal">
+        <div class="modal-box lg">
+            <div class="modal-head">
+                <h3><i class="fas fa-plus-circle" style="color:var(--primary-green); margin-right:8px;"></i>Process New Withdrawal</h3>
+                <button class="modal-close" onclick="closeModal('processWithdrawalModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning mb-3" style="font-size:0.8rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Ensure member identity verification before processing cash withdrawals</span>
+                </div>
+                <form id="modalWithdrawalForm" onsubmit="submitModalWithdrawal(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Member <span class="req">*</span></label>
+                            <select class="form-input" required>
+                                <option value="">-- Select Member --</option>
+                                <option>Sarah Akinyi (R-00123)</option>
+                                <option>David Kipkorir (R-00045)</option>
+                                <option>Mary Wanjiku (R-00234)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (KES) <span class="req">*</span></label>
+                            <input type="number" class="form-input" placeholder="50000" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Source Account <span class="req">*</span></label>
+                            <select class="form-input" required>
+                                <option value="">-- Select --</option>
+                                <option>Savings</option><option>Share Capital</option><option>Fixed Deposit</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method <span class="req">*</span></label>
+                            <select class="form-input" required>
+                                <option value="">-- Select --</option>
+                                <option>M-Pesa</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason for Withdrawal</label>
+                        <select class="form-input">
+                            <option>-- Select --</option>
+                            <option>Personal Emergency</option>
+                            <option>Medical Expenses</option>
+                            <option>School Fees</option>
+                            <option>Business Capital</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea class="form-input" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="mAutoApprove">
+                        <label for="mAutoApprove">Auto-approve this withdrawal (if within limits)</label>
+                        </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="mSendSMS" checked>
+                        <label for="mSendSMS">Send SMS notification to member</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('processWithdrawalModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitModalWithdrawal(event)"><i class="fas fa-check-circle"></i> Process Withdrawal</button>
+            </div>
+        </div>
+    </div>
+    <!-- Withdrawal Details Modal -->
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-box xl">
+            <div class="modal-head">
+                <h3><i class="fas fa-file-invoice-dollar" style="color:var(--accent-red); margin-right:8px;"></i>Withdrawal Details — <span id="detailId"></span></h3>
+                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="detailsContent"></div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('detailsModal')">Close</button>
+                <button class="btn btn-outline"><i class="fas fa-print"></i> Print Receipt</button>
+            </div>
+        </div>
+    </div>
+    <!-- Export Modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-file-export" style="color:var(--accent-blue); margin-right:8px;"></i>Export Withdrawals</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Export Format</label>
+                    <select class="form-input"><option>Excel (.xlsx)</option><option>CSV (.csv)</option><option>PDF (.pdf)</option></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>From Date</label><input type="date" class="form-input"></div>
+                    <div class="form-group"><label>To Date</label><input type="date" class="form-input"></div>
+                </div>
+                <div class="form-group">
+                    <label>Status Filter</label>
+                    <select class="form-input"><option>All Status</option><option>Completed Only</option><option>Pending Only</option></select>
+                </div>
+                <div class="form-check"><input type="checkbox" id="expMembers" checked><label for="expMembers">Include Member Information</label></div>
+                <div class="form-check"><input type="checkbox" id="expRefs" checked><label for="expRefs">Include Payment References</label></div>
+                <div class="form-check"><input type="checkbox" id="expSummary"><label for="expSummary">Include Summary Statistics</label></div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('exportModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="doExport()"><i class="fas fa-download"></i> Export</button>
+            </div>
+        </div>
+    </div>
+    <!-- Approve Withdrawal Modal -->
+    <div class="modal-overlay" id="approveModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-check-circle" style="color:var(--status-success); margin-right:8px;"></i>Approve Withdrawal</h3>
+                <button class="modal-close" onclick="closeModal('approveModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="summary-box mb-3">
+                    <div class="summary-row">
+                        <span class="label">Member</span>
+                        <span class="value" id="approveM member">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Amount</span>
+                        <span class="value" id="approveAmount">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Method</span>
+                        <span class="value" id="approveMethod">—</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Approval Notes</label>
+                    <textarea class="form-input" rows="2" placeholder="Optional approval notes..."></textarea>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="approveSMS" checked>
+                    <label for="approveSMS">Send SMS notification to member</label>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('approveModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmApproval()"><i class="fas fa-check"></i> Approve Withdrawal</button>
+            </div>
+        </div>
+    </div>
+    <!-- Reject Withdrawal Modal -->
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-times-circle" style="color:var(--status-danger); margin-right:8px;"></i>Reject Withdrawal</h3>
+                <button class="modal-close" onclick="closeModal('rejectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Rejection Reason <span class="req">*</span></label>
+                    <select class="form-input" required>
+                        <option value="">-- Select Reason --</option>
+                        <option>Insufficient Balance</option>
+                        <option>Exceeds Daily Limit</option>
+                        <option>Account Frozen/Suspended</option>
+                        <option>Pending Loan Obligations</option>
+                        <option>Invalid Member Verification</option>
+                        <option>Suspicious Activity</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Additional Details</label>
+                    <textarea class="form-input" rows="3" placeholder="Provide more details about the rejection..."></textarea>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="rejectSMS" checked>
+                    <label for="rejectSMS">Send SMS notification to member</label>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="closeModal('rejectModal')">Cancel</button>
+                <button class="btn" style="background:var(--status-danger); color:white;" onclick="confirmRejection()"><i class="fas fa-times"></i> Reject Withdrawal</button>
+            </div>
+        </div>
+    </div>
+    <!-- Notifications Modal -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-bell" style="color:var(--accent-blue); margin-right:8px;"></i>Notifications</h3>
+                <button class="modal-close" onclick="closeModal('notificationsModal')">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height:400px; overflow-y:auto;">
+                <div class="alert alert-warning mb-1" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.85rem;">Withdrawal Pending Approval</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:4px 0 0;">Sarah Akinyi requested KES 120,000 cash withdrawal</p>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-tertiary); white-space:nowrap;">15 min</span>
+                </div>
+                <div class="alert alert-danger mb-1" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.85rem;">Withdrawal Failed</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:4px 0 0;">M-Pesa withdrawal of KES 25,000 for John Otieno failed</p>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-tertiary); white-space:nowrap;">1 hr</span>
+                </div>
+                <div class="alert alert-success mb-1" style="cursor:pointer;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.85rem;">Withdrawal Completed</strong>
+                        <p style="font-size:0.75rem; color:var(--text-secondary); margin:4px 0 0;">David Kipkorir received KES 80,000 via M-Pesa</p>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-tertiary); white-space:nowrap;">2 hrs</span>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline btn-sm" onclick="closeModal('notificationsModal')">Mark All as Read</button>
+            </div>
+        </div>
+    </div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        // ============ SIDEBAR ============
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+        // ============ TABS ============
+        function switchTab(name) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.withdrawal-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            const tabs = document.querySelectorAll('.withdrawal-tab');
+            const map = { 'all': 0, 'pending': 1, 'limits': 2, 'quick-withdrawal': 3, 'analytics': 4 };
+            if (map[name] !== undefined && tabs[map[name]]) tabs[map[name]].classList.add('active');
+        }
+        // ============ MODALS ============
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        });
+        // ============ WITHDRAWAL DETAILS ============
+        const withdrawals = {
+            'WDR-2026-00892': { id:'WDR-2026-00892', member:'David Kipkorir', mid:'R-00045', phone:'0722345678', email:'david@email.com', account:'Savings Account', method:'M-Pesa', amount:'80,000', fee:'50', tax:'10', total:'80,060', ref:'XYZ8N4M2PQ', status:'Completed', date:'Today, 3:15 PM', by:'System (Auto)', notes:'Regular M-Pesa withdrawal' },
+            'WDR-2026-00891': { id:'WDR-2026-00891', member:'Sarah Akinyi', mid:'R-00123', phone:'0712345678', email:'sarah@email.com', account:'Share Redemption', method:'Cash', amount:'120,000', fee:'100', tax:'20', total:'120,120', ref:'CASH-2891', status:'Pending', date:'Today, 2:50 PM', by:'Branch Teller', notes:'Share redemption - requires approval' },
+            'WDR-2026-00890': { id:'WDR-2026-00890', member:'Mary Wanjiku', mid:'R-00234', phone:'0733456789', email:'mary@email.com', account:'Savings Account', method:'Bank Transfer', amount:'350,000', fee:'200', tax:'40', total:'350,240', ref:'FT261900234', status:'Completed', date:'Today, 2:20 PM', by:'System', notes:'Bank transfer to Equity Bank' },
+            'WDR-2026-00889': { id:'WDR-2026-00889', member:'John Otieno', mid:'R-00456', phone:'0744567890', email:'john@email.com', account:'Fixed Deposit', method:'M-Pesa', amount:'25,000', fee:'50', tax:'10', total:'25,060', ref:'—', status:'Failed', date:'Today, 1:45 PM', by:'System', notes:'Failed - M-Pesa timeout' },
+            'WDR-2026-00888': { id:'WDR-2026-00888', member:'Grace Muthoni', mid:'R-00678', phone:'0755678901', email:'grace@email.com', account:'Savings Account', method:'Cheque', amount:'45,000', fee:'150', tax:'30', total:'45,180', ref:'CHQ-78234', status:'Processing', date:'Today, 1:10 PM', by:'Branch Manager', notes:'Cheque being prepared' },
+        };
+        function viewWithdrawal(id) {
+            const w = withdrawals[id];
+            if (!w) return;
+            document.getElementById('detailId').textContent = w.id;
+            const sc = w.status === 'Completed' ? 'badge-success' : w.status === 'Pending' ? 'badge-warning' : w.status === 'Processing' ? 'badge-info' : 'badge-danger';
+            document.getElementById('detailsContent').innerHTML = `
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:var(--spacing-xl);">
+                    <div>
+                        <div style="background:linear-gradient(135deg, rgba(244,67,54,0.08), rgba(255,152,0,0.08)); padding:var(--spacing-xl); border-radius:var(--radius-md); text-align:center; margin-bottom:var(--spacing-lg);">
+                            <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:4px;">Withdrawal Amount</div>
+                            <div style="font-size:2rem; font-weight:700; color:var(--status-danger);">KES ${w.amount}</div>
+                            <span class="badge ${sc}" style="margin-top:var(--spacing-sm);">${w.status}</span>
+                        </div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);"><i class="fas fa-user-circle" style="margin-right:6px;"></i>Member Information</h6>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-md); margin-bottom:var(--spacing-lg);">
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Name</div><div style="font-weight:600;">${w.member}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Member ID</div><div style="font-family:var(--font-mono);">${w.mid}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Phone</div><div>${w.phone}</div></div>
+                            <div><div style="font-size:0.7rem; color:var(--text-tertiary);">Email</div><div style="font-size:0.85rem;">${w.email}</div></div>
+                        </div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);"><i class="fas fa-file-invoice-dollar" style="margin-right:6px;"></i>Transaction Details</h6>
+                        <div class="summary-box">
+                            <div class="summary-row"><span class="label">Source Account</span><span class="value">${w.account}</span></div>
+                            <div class="summary-row"><span class="label">Payment Method</span><span class="value">${w.method}</span></div>
+                            <div class="summary-row"><span class="label">Reference</span><span class="value" style="font-family:var(--font-mono);">${w.ref}</span></div>
+                            <div class="summary-row"><span class="label">Amount</span><span class="value text-danger">KES ${w.amount}</span></div>
+                            <div class="summary-row"><span class="label">Fee</span><span class="value">KES ${w.fee}</span></div>
+                            <div class="summary-row"><span class="label">Tax</span><span class="value">KES ${w.tax}</span></div>
+                            <div class="summary-row total"><span class="label"><strong>Total Deducted</strong></span><span class="value">KES ${w.total}</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);">Quick Actions</h6>
+                        <div style="display:grid; gap:var(--spacing-sm); margin-bottom:var(--spacing-lg);">
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-receipt"></i> Generate Receipt</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-edit"></i> Edit Details</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-envelope"></i> Email Member</button>
+                            <button class="btn btn-outline btn-sm"><i class="fas fa-sms"></i> Send SMS</button>
+                            ${w.status === 'Completed' ? '<button class="btn btn-sm" style="background:var(--status-danger); color:white;" onclick="reverseWithdrawal(\''+w.id+'\')"><i class="fas fa-undo"></i> Reverse</button>' : ''}
+                        </div>
+                        <h6 style="font-size:0.9rem; font-weight:600; margin-bottom:var(--spacing-md);">Audit Trail</h6>
+                        <div class="timeline">
+                            <div class="timeline-item"><div style="font-size:0.75rem; font-weight:600;">Withdrawal ${w.status}</div><div style="font-size:0.7rem; color:var(--text-secondary);">${w.date}</div></div>
+                            <div class="timeline-item"><div style="font-size:0.75rem; font-weight:600;">Request Recorded</div><div style="font-size:0.7rem; color:var(--text-secondary);">${w.date}</div></div>
+                        </div>
+                        <div style="margin-top:var(--spacing-lg); padding:var(--spacing-md); background:var(--bg-tertiary); border-radius:var(--radius-sm);">
+                            <div style="font-size:0.7rem; color:var(--text-tertiary); margin-bottom:4px;">Processed By</div>
+                            <div style="font-size:0.85rem; font-weight:500;">${w.by}</div>
+                            <div style="font-size:0.7rem; color:var(--text-tertiary); margin-top:8px; margin-bottom:4px;">Notes</div>
+                            <div style="font-size:0.8rem; color:var(--text-secondary);">${w.notes}</div>
+                        </div>
+                    </div>
+                </div>`;
+            openModal('detailsModal');
+        }
+        // ============ FORM LOGIC ============
+        function toggleMethodFields(method) {
+            const sec = document.getElementById('methodFields');
+            sec.style.display = method ? 'block' : 'none';
+            document.getElementById('mpesaFields').style.display = method === 'mpesa' ? 'block' : 'none';
+            document.getElementById('bankFields').style.display = method === 'bank' ? 'block' : 'none';
+            document.getElementById('cashFields').style.display = method === 'cash' ? 'block' : 'none';
+            document.getElementById('chequeFields').style.display = method === 'cheque' ? 'block' : 'none';
+            calcWithdrawal();
+        }
+        function setAmt(v) { document.getElementById('withdrawalAmount').value = v; calcWithdrawal(); }
+        function calcWithdrawal() {
+            const amt = parseFloat(document.getElementById('withdrawalAmount').value) || 0;
+            const m = document.getElementById('withdrawalMethod').value;
+            let fee = 0;
+            if (m === 'mpesa') fee = 50;
+            else if (m === 'bank') fee = 200;
+            else if (m === 'cash') fee = 100;
+            else if (m === 'cheque') fee = 150;
+            const tax = fee * 0.2;
+            document.getElementById('pvAmount').textContent = 'KES ' + amt.toLocaleString();
+            document.getElementById('pvFee').textContent = 'KES ' + fee.toLocaleString();
+            document.getElementById('pvTax').textContent = 'KES ' + tax.toLocaleString();
+            document.getElementById('pvTotal').textContent = 'KES ' + (amt + fee + tax).toLocaleString();
+        }
+        function loadMemberBalance(id) {
+            if (!id) { document.getElementById('balanceInfo').style.display = 'none'; return; }
+            document.getElementById('balanceInfo').style.display = 'block';
+            const balances = {
+                'R-00123': { savings: '1,200,000', shares: '500,000' },
+                'R-00045': { savings: '850,000', shares: '350,000' },
+                'R-00234': { savings: '650,000', shares: '200,000' },
+                'R-00456': { savings: '450,000', shares: '150,000' },
+                'R-00678': { savings: '320,000', shares: '80,000' }
+            };
+            const b = balances[id] || { savings: '0', shares: '0' };
+            document.getElementById('savingsBalance').textContent = 'KES ' + b.savings;
+            document.getElementById('shareBalance').textContent = 'KES ' + b.shares;
+        }
+        function submitQuickWithdrawal(e) { e.preventDefault(); toast('Withdrawal processed successfully!', 'success'); e.target.reset(); document.getElementById('methodFields').style.display = 'none'; document.getElementById('balanceInfo').style.display = 'none'; calcWithdrawal(); }
+        function submitModalWithdrawal(e) { if (e) e.preventDefault(); closeModal('processWithdrawalModal'); toast('Withdrawal processed successfully!', 'success'); }
+        function resetForm() { document.getElementById('quickWithdrawalForm').reset(); document.getElementById('methodFields').style.display = 'none'; document.getElementById('balanceInfo').style.display = 'none'; calcWithdrawal(); }
+        // ============ ACTIONS ============
+        function approveWithdrawal(id) { openModal('approveModal'); }
+        function rejectWithdrawal(id) { openModal('rejectModal'); }
+        function confirmApproval() { closeModal('approveModal'); toast('Withdrawal approved successfully!', 'success'); }
+        function confirmRejection() { closeModal('rejectModal'); toast('Withdrawal rejected.', 'warning'); }
+        function retryWithdrawal(id) { toast('Retrying withdrawal ' + id + '...', 'info'); }
+        function reverseWithdrawal(id) { if (confirm('Reverse withdrawal ' + id + '? Cannot be undone.')) toast('Withdrawal reversed.', 'warning'); }
+        function bulkApprove() { toast('Bulk approval initiated for selected withdrawals.', 'success'); }
+        function bulkReject() { toast('Bulk rejection initiated.', 'warning'); }
+        function doExport() { closeModal('exportModal'); toast('Export started — file downloading...', 'info'); }
+        function refreshWithdrawals() { toast('Refreshing withdrawals...', 'info'); setTimeout(() => location.reload(), 1000); }
+        function filterWithdrawals(f) { toast('Filtering: ' + f, 'info'); }
+        function filterByMethod(m) { toast('Showing ' + m + ' withdrawals', 'info'); }
+        function applyFilter(type, val) { toast('Filter ' + type + ': ' + val, 'info'); }
+        function checkLimits() { switchTab('limits'); }
+        function editLimits() { toast('Edit Limits feature - Coming soon!', 'info'); }
+        function editRules() { toast('Configure Rules feature - Coming soon!', 'info'); }
+        function reviewFlagged(id) { toast('Reviewing flagged withdrawal ' + id, 'info'); viewWithdrawal(id); }
+        function toggleSelectAll(cb) { document.querySelectorAll('tbody input[type="checkbox"]').forEach(c => c.checked = cb.checked); }
+        // ============ TOAST ============
+        function toast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast ' + type;
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            t.innerHTML = '<i class="fas ' + icon + '"></i> ' + msg;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; t.style.transition = 'all 0.3s ease'; setTimeout(() => t.remove(), 300); }, 3500);
+        }
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toTimeString().slice(0,5);
+            document.querySelectorAll('input[type="date"]').forEach(i => { if (!i.value) i.value = today; });
+            document.querySelectorAll('input[type="time"]').forEach(i => { if (!i.value) i.value = now; });
+        });
+    </script>
+</body>
+</html>

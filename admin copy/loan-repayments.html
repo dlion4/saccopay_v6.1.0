@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Repayments - SACCOPay Admin</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Master SACCOPay CSS -->
+    <link rel="stylesheet" href="./admin-dashboard.css">
+
+    <style>
+        /* ========================================
+           LOAN REPAYMENTS — PAGE SPECIFIC STYLES
+        ======================================== */
+
+        /* Collection Gauge */
+        .collection-gauge-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            padding: var(--spacing-xl) 0;
+        }
+
+        .gauge-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-ring::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            z-index: 1;
+        }
+
+        .gauge-center {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .gauge-center .gauge-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .gauge-center .gauge-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .gauge-stats {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .gauge-stat-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
+            min-width: 200px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .gauge-stat-item:hover {
+            transform: translateX(4px);
+            background: var(--primary-green-ultra-light);
+        }
+
+        .gauge-stat-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .gauge-stat-info {
+            flex: 1;
+        }
+
+        .gauge-stat-info .stat-name {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .gauge-stat-info .stat-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Repayment Summary Cards */
+        .repayment-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .metric-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .metric-card.collected::after { background: linear-gradient(90deg, var(--primary-green), var(--accent-teal)); }
+        .metric-card.expected::after { background: linear-gradient(90deg, #2196f3, #64b5f6); }
+        .metric-card.overdue::after { background: linear-gradient(90deg, #f44336, #ef5350); }
+        .metric-card.advance::after { background: linear-gradient(90deg, #9c27b0, #ce93d8); }
+        .metric-card.waived::after { background: linear-gradient(90deg, #ff9800, #ffb74d); }
+        .metric-card.penalties::after { background: linear-gradient(90deg, #795548, #a1887f); }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .metric-icon.green { background: rgba(0,208,132,0.12); color: var(--primary-green); }
+        .metric-icon.blue { background: rgba(33,150,243,0.12); color: var(--accent-blue); }
+        .metric-icon.red { background: rgba(244,67,54,0.12); color: var(--status-danger); }
+        .metric-icon.purple { background: rgba(156,39,176,0.12); color: var(--accent-purple); }
+        .metric-icon.orange { background: rgba(255,152,0,0.12); color: var(--accent-orange); }
+        .metric-icon.brown { background: rgba(121,85,72,0.12); color: #795548; }
+
+        .metric-value {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .metric-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: var(--spacing-sm);
+        }
+
+        .metric-trend.up { background: rgba(76,175,80,0.1); color: var(--status-success); }
+        .metric-trend.down { background: rgba(244,67,54,0.1); color: var(--status-danger); }
+        .metric-trend.neutral { background: rgba(33,150,243,0.1); color: var(--accent-blue); }
+
+        /* Calendar Heatmap */
+        .heatmap-container {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            padding: var(--spacing-md) 0;
+        }
+
+        .heatmap-cell {
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.3);
+            z-index: 2;
+            box-shadow: var(--shadow-md);
+        }
+
+        .heatmap-cell.level-0 { background: var(--bg-tertiary); }
+        .heatmap-cell.level-1 { background: rgba(0,208,132,0.2); }
+        .heatmap-cell.level-2 { background: rgba(0,208,132,0.4); }
+        .heatmap-cell.level-3 { background: rgba(0,208,132,0.6); }
+        .heatmap-cell.level-4 { background: var(--primary-green); }
+        .heatmap-cell.level-overdue { background: rgba(244,67,54,0.5); }
+
+        /* Channel Badge */
+        .channel-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .channel-badge.mpesa { background: rgba(76,175,80,0.1); color: #388e3c; }
+        .channel-badge.bank { background: rgba(33,150,243,0.1); color: var(--accent-blue); }
+        .channel-badge.cash { background: rgba(255,152,0,0.1); color: var(--accent-orange); }
+        .channel-badge.wallet { background: rgba(0,208,132,0.1); color: var(--primary-green); }
+        .channel-badge.cheque { background: rgba(156,39,176,0.1); color: var(--accent-purple); }
+        .channel-badge.auto { background: rgba(0,188,212,0.1); color: var(--accent-teal); }
+
+        /* Member Avatar */
+        .member-cell {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .avatar-xs {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.72rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .avatar-xs.g1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .avatar-xs.g2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+        .avatar-xs.g3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+        .avatar-xs.g4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .avatar-xs.g5 { background: linear-gradient(135deg, #f44336, #ef5350); }
+        .avatar-xs.g6 { background: linear-gradient(135deg, #00bcd4, #26c6da); }
+        .avatar-xs.g7 { background: linear-gradient(135deg, #795548, #a1887f); }
+
+        .member-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+        .member-sub { font-size: 0.7rem; color: var(--text-tertiary); }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .ftab {
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ftab:hover {
+            background: var(--primary-green-ultra-light);
+            border-color: var(--primary-green-light);
+            color: var(--primary-green-dark);
+        }
+
+        .ftab.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(0,208,132,0.25);
+        }
+
+        .ftab .cnt {
+            background: rgba(255,255,255,0.25);
+            padding: 1px 7px;
+            border-radius: var(--radius-full);
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .ftab:not(.active) .cnt {
+            background: var(--bg-tertiary);
+            color: var(--text-tertiary);
+        }
+
+        /* Progress */
+        .progress-track {
+            width: 100%;
+            max-width: 140px;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.6s ease;
+        }
+
+        .progress-fill.good { background: linear-gradient(90deg, var(--primary-green), var(--accent-teal)); }
+        .progress-fill.warn { background: linear-gradient(90deg, #ff9800, #ffc107); }
+        .progress-fill.bad { background: linear-gradient(90deg, #f44336, #ff5722); }
+
+        .progress-meta {
+            font-size: 0.68rem;
+            color: var(--text-tertiary);
+            margin-top: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Streak & Scores */
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .streak-badge.excellent { background: rgba(0,208,132,0.12); color: var(--primary-green); }
+        .streak-badge.good { background: rgba(76,175,80,0.12); color: var(--status-success); }
+        .streak-badge.fair { background: rgba(255,152,0,0.12); color: var(--accent-orange); }
+        .streak-badge.poor { background: rgba(244,67,54,0.12); color: var(--status-danger); }
+
+        /* Loan Type Mini Badge */
+        .ltype {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .ltype.personal { background: rgba(156,39,176,0.1); color: #9c27b0; }
+        .ltype.business { background: rgba(33,150,243,0.1); color: #2196f3; }
+        .ltype.emergency { background: rgba(244,67,54,0.1); color: #f44336; }
+        .ltype.education { background: rgba(0,188,212,0.1); color: #00bcd4; }
+        .ltype.agriculture { background: rgba(76,175,80,0.1); color: #4caf50; }
+        .ltype.asset { background: rgba(255,152,0,0.1); color: #ff9800; }
+
+        /* Aging Buckets */
+        .aging-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .aging-bucket {
+            text-align: center;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .aging-bucket:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .aging-bucket .bucket-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+
+        .aging-bucket .bucket-label {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-top: 4px;
+        }
+
+        .aging-bucket .bucket-amount {
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Modal Header Custom */
+        .modal-hdr {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: var(--spacing-lg) var(--spacing-xl);
+        }
+
+        .modal-hdr .btn-close { filter: brightness(0) invert(1); }
+
+        .modal-content {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Form Styles */
+        .flbl {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .finput {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .finput:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+            outline: none;
+        }
+
+        .fselect {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .fselect:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+            outline: none;
+        }
+
+        /* Detail Row */
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dlabel { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dval { font-weight: 600; color: var(--text-primary); }
+
+        /* Mini stat row */
+        .mstat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mstat-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .mstat-value { font-size: 1rem; font-weight: 700; }
+
+        /* Quick Actions Row */
+        .qa-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .qa-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .qa-card:hover {
+            border-color: var(--primary-green);
+            background: var(--primary-green-ultra-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .qa-icon {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto var(--spacing-sm);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .qa-card h6 { font-size: 0.82rem; font-weight: 600; margin-bottom: 2px; }
+        .qa-card p { font-size: 0.7rem; color: var(--text-tertiary); margin: 0; }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background:var(--border-color); }
+        .tl-item { position:relative; padding-bottom:var(--spacing-lg); padding-left:var(--spacing-lg); }
+        .tl-item::before { content:''; position:absolute; left:-20px; top:5px; width:12px; height:12px; border-radius:50%; border:2px solid var(--primary-green); background:white; }
+        .tl-item.done::before { background:var(--primary-green); }
+        .tl-item.warn::before { border-color:var(--accent-orange); background:var(--accent-orange); }
+        .tl-item.fail::before { border-color:var(--status-danger); background:var(--status-danger); }
+        .tl-content { background:var(--bg-tertiary); padding:var(--spacing-md); border-radius:var(--radius-md); font-size:0.83rem; }
+        .tl-time { font-size:0.72rem; color:var(--text-tertiary); margin-bottom:3px; }
+
+        /* Responsive */
+        @media (max-width:768px) {
+            .repayment-metrics { grid-template-columns: repeat(2, 1fr); }
+            .collection-gauge-wrap { flex-direction: column; }
+            .aging-grid { grid-template-columns: repeat(2, 1fr); }
+            .qa-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width:480px) {
+            .repayment-metrics { grid-template-columns: 1fr; }
+            .qa-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <!-- ========================================
+         SIDEBAR
+    ======================================== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-logo">S</div>
+            <div class="sidebar-brand-text">
+                <h1>SACCOPay</h1>
+                <p>Admin Dashboard</p>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span><span class="nav-badge">12</span></a></div>
+
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loan Disbursements</span></a></div>
+            <div class="nav-item"><a href="loan-repayments.html" class="nav-link active"><i class="bi bi-arrow-counterclockwise nav-icon"></i><span>Loan Repayments</span><span class="nav-badge">3</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>Wallets</span></a></div>
+
+            <div class="nav-section-title">Vendors</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-shop nav-icon"></i><span>Vendor Management</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-receipt nav-icon"></i><span>Settlements</span></a></div>
+
+            <div class="nav-section-title">System</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-file-earmark-text nav-icon"></i><span>Reports</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell nav-icon"></i><span>Notifications</span><span class="nav-badge">5</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- ========================================
+         MAIN
+    ======================================== -->
+    <main class="admin-main">
+
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search">
+                        <i class="bi bi-search topbar-search-icon"></i>
+                        <input type="text" placeholder="Search repayments, members, references..." id="globalSearch">
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i><span class="notification-badge">5</span></button>
+                    <button class="topbar-action-btn" onclick="openModal('quickActionsModal')"><i class="bi bi-lightning"></i></button>
+                    <div class="user-profile" onclick="openModal('profileModal')">
+                        <div class="user-avatar">JK</div>
+                        <div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Super Admin</p></div>
+                        <i class="bi bi-chevron-down d-none d-md-block" style="color:var(--text-tertiary);"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item">Financial Operations</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">Loan Repayments</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-arrow-counterclockwise" style="color:var(--primary-green);"></i> Loan Repayments</h2>
+                        <p>Track collections, manage repayment schedules, penalties and waivers</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#autoDeductSetupModal"><i class="bi bi-gear"></i> Auto-Deduct Setup</button>
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#repaymentReportsModal"><i class="bi bi-file-earmark-bar-graph"></i> Reports</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recordPaymentModal"><i class="bi bi-plus-lg"></i> Record Payment</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="repayment-metrics fade-in">
+                <div class="metric-card collected" data-bs-toggle="modal" data-bs-target="#collectionBreakdownModal">
+                    <div class="metric-icon green"><i class="bi bi-check-circle"></i></div>
+                    <div class="metric-value">KES 4.82M</div>
+                    <div class="metric-label">Collected This Month</div>
+                    <div class="metric-trend up"><i class="bi bi-arrow-up-short"></i>+14.3% vs last month</div>
+                </div>
+                <div class="metric-card expected" data-bs-toggle="modal" data-bs-target="#expectedCollectionsModal">
+                    <div class="metric-icon blue"><i class="bi bi-calendar-check"></i></div>
+                    <div class="metric-value">KES 5.67M</div>
+                    <div class="metric-label">Expected This Month</div>
+                    <div class="metric-trend neutral"><i class="bi bi-dash"></i>85% collection rate</div>
+                </div>
+                <div class="metric-card overdue" data-bs-toggle="modal" data-bs-target="#overdueDetailsModal">
+                    <div class="metric-icon red"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="metric-value">KES 1.32M</div>
+                    <div class="metric-label">Total Overdue</div>
+                    <div class="metric-trend down"><i class="bi bi-arrow-up-short"></i>+3 loans this week</div>
+                </div>
+                <div class="metric-card advance" data-bs-toggle="modal" data-bs-target="#advancePaymentsModal">
+                    <div class="metric-icon purple"><i class="bi bi-forward"></i></div>
+                    <div class="metric-value">KES 620K</div>
+                    <div class="metric-label">Advance Payments</div>
+                    <div class="metric-trend up"><i class="bi bi-arrow-up-short"></i>12 members paid early</div>
+                </div>
+                <div class="metric-card penalties" data-bs-toggle="modal" data-bs-target="#penaltiesModal">
+                    <div class="metric-icon brown"><i class="bi bi-percent"></i></div>
+                    <div class="metric-value">KES 87K</div>
+                    <div class="metric-label">Penalties Charged</div>
+                    <div class="metric-trend down"><i class="bi bi-arrow-down-short"></i>-8% vs last month</div>
+                </div>
+                <div class="metric-card waived" data-bs-toggle="modal" data-bs-target="#waiversModal">
+                    <div class="metric-icon orange"><i class="bi bi-slash-circle"></i></div>
+                    <div class="metric-value">KES 34K</div>
+                    <div class="metric-label">Penalties Waived</div>
+                    <div class="metric-trend neutral"><i class="bi bi-dash"></i>5 waivers approved</div>
+                </div>
+            </div>
+
+            <!-- Row: Collection Gauge + Aging Report -->
+            <div class="row g-4 mb-4">
+                <!-- Collection Efficiency -->
+                <div class="col-lg-5 fade-in">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;">Collection Efficiency</h3>
+                            <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#collectionTrendsModal"><i class="bi bi-graph-up-arrow"></i> Trends</button>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="collection-gauge-wrap">
+                                <div class="gauge-ring" style="background:conic-gradient(var(--primary-green) 0deg 216deg, #ff9800 216deg 252deg, #f44336 252deg 288deg, var(--bg-tertiary) 288deg 360deg);">
+                                    <div class="gauge-center">
+                                        <div class="gauge-value" style="color:var(--primary-green);">85%</div>
+                                        <div class="gauge-label">Collection Rate</div>
+                                    </div>
+                                </div>
+                                <div class="gauge-stats">
+                                    <div class="gauge-stat-item" data-bs-toggle="modal" data-bs-target="#collectionBreakdownModal">
+                                        <div class="gauge-stat-dot" style="background:var(--primary-green);"></div>
+                                        <div class="gauge-stat-info">
+                                            <div class="stat-name">On-Time</div>
+                                            <div class="stat-value">KES 3.41M (60%)</div>
+                                        </div>
+                                    </div>
+                                    <div class="gauge-stat-item" data-bs-toggle="modal" data-bs-target="#latePaymentsModal">
+                                        <div class="gauge-stat-dot" style="background:#ff9800;"></div>
+                                        <div class="gauge-stat-info">
+                                            <div class="stat-name">Late (1-7 days)</div>
+                                            <div class="stat-value">KES 1.41M (25%)</div>
+                                        </div>
+                                    </div>
+                                    <div class="gauge-stat-item" data-bs-toggle="modal" data-bs-target="#overdueDetailsModal">
+                                        <div class="gauge-stat-dot" style="background:#f44336;"></div>
+                                        <div class="gauge-stat-info">
+                                            <div class="stat-name">Overdue (8+)</div>
+                                            <div class="stat-value">KES 850K (15%)</div>
+                                        </div>
+                                    </div>
+                                    <div class="gauge-stat-item" data-bs-toggle="modal" data-bs-target="#expectedCollectionsModal">
+                                        <div class="gauge-stat-dot" style="background:var(--bg-tertiary);border:2px solid var(--border-color);"></div>
+                                        <div class="gauge-stat-info">
+                                            <div class="stat-name">Remaining</div>
+                                            <div class="stat-value">KES 850K</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mini Bar Chart -->
+                            <div style="padding-top:var(--spacing-lg);border-top:1px solid var(--border-color);">
+                                <h6 style="font-size:0.82rem;font-weight:600;margin-bottom:var(--spacing-md);">Monthly Collection vs Target</h6>
+                                <div style="display:flex;align-items:flex-end;gap:8px;height:70px;">
+                                    <div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%;">
+                                        <div style="flex:1;background:rgba(0,208,132,0.3);border-radius:3px 3px 0 0;height:60%;" title="Jul Collected"></div>
+                                        <div style="flex:1;background:rgba(33,150,243,0.15);border-radius:3px 3px 0 0;height:72%;" title="Jul Target"></div>
+                                    </div>
+                                    <div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%;">
+                                        <div style="flex:1;background:rgba(0,208,132,0.4);border-radius:3px 3px 0 0;height:70%;"></div>
+                                        <div style="flex:1;background:rgba(33,150,243,0.15);border-radius:3px 3px 0 0;height:75%;"></div>
+                                    </div>
+                                    <div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%;">
+                                        <div style="flex:1;background:rgba(0,208,132,0.5);border-radius:3px 3px 0 0;height:78%;"></div>
+                                        <div style="flex:1;background:rgba(33,150,243,0.15);border-radius:3px 3px 0 0;height:80%;"></div>
+                                    </div>
+                                    <div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%;">
+                                        <div style="flex:1;background:rgba(0,208,132,0.55);border-radius:3px 3px 0 0;height:65%;"></div>
+                                        <div style="flex:1;background:rgba(33,150,243,0.15);border-radius:3px 3px 0 0;height:78%;"></div>
+                                    </div>
+                                    <div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%;">
+                                        <div style="flex:1;background:rgba(0,208,132,0.7);border-radius:3px 3px 0 0;height:82%;"></div>
+                                        <div style="flex:1;background:rgba(33,150,243,0.15);border-radius:3px 3px 0 0;height:82%;"></div>
+                                    </div>
+                                    <div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%;">
+                                        <div style="flex:1;background:linear-gradient(180deg,var(--primary-green),var(--accent-teal));border-radius:3px 3px 0 0;height:85%;"></div>
+                                        <div style="flex:1;background:rgba(33,150,243,0.25);border-radius:3px 3px 0 0;height:100%;"></div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text-tertiary);margin-top:4px;"><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
+                                <div style="display:flex;gap:var(--spacing-lg);margin-top:var(--spacing-sm);font-size:0.7rem;">
+                                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--primary-green);margin-right:4px;"></span>Collected</span>
+                                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(33,150,243,0.3);margin-right:4px;"></span>Target</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aging Report + Quick Actions -->
+                <div class="col-lg-7 fade-in">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header">
+                            <ul class="nav nav-tabs border-0" role="tablist" style="gap:var(--spacing-sm);">
+                                <li class="nav-item"><button class="ftab active" data-bs-toggle="tab" data-bs-target="#agingTab" type="button">Aging Report</button></li>
+                                <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#channelTab" type="button">By Channel</button></li>
+                                <li class="nav-item"><button class="ftab" data-bs-toggle="tab" data-bs-target="#heatmapTab" type="button">Heatmap</button></li>
+                            </ul>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="tab-content">
+                                <!-- Aging Tab -->
+                                <div class="tab-pane fade show active" id="agingTab">
+                                    <div class="alert alert-danger" style="font-size:0.82rem;">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                        <strong>KES 1.32M</strong> total overdue across <strong>18 loans</strong>. PAR &gt;30 at <strong>2.1%</strong>.
+                                    </div>
+                                    <div class="aging-grid">
+                                        <div class="aging-bucket" style="border-color:rgba(76,175,80,0.3);" data-bs-toggle="modal" data-bs-target="#latePaymentsModal">
+                                            <div class="bucket-value" style="color:var(--status-success);">124</div>
+                                            <div class="bucket-label">Current</div>
+                                            <div class="bucket-amount" style="color:var(--status-success);">KES 42.8M</div>
+                                        </div>
+                                        <div class="aging-bucket" style="border-color:rgba(255,193,7,0.3);" data-bs-toggle="modal" data-bs-target="#latePaymentsModal">
+                                            <div class="bucket-value" style="color:#ffc107;">8</div>
+                                            <div class="bucket-label">1-7 Days</div>
+                                            <div class="bucket-amount" style="color:#ffc107;">KES 320K</div>
+                                        </div>
+                                        <div class="aging-bucket" style="border-color:rgba(255,152,0,0.3);" data-bs-toggle="modal" data-bs-target="#overdueDetailsModal">
+                                            <div class="bucket-value" style="color:var(--accent-orange);">4</div>
+                                            <div class="bucket-label">8-15 Days</div>
+                                            <div class="bucket-amount" style="color:var(--accent-orange);">KES 285K</div>
+                                        </div>
+                                        <div class="aging-bucket" style="border-color:rgba(244,67,54,0.3);" data-bs-toggle="modal" data-bs-target="#overdueDetailsModal">
+                                            <div class="bucket-value" style="color:var(--status-danger);">3</div>
+                                            <div class="bucket-label">16-30 Days</div>
+                                            <div class="bucket-amount" style="color:var(--status-danger);">KES 415K</div>
+                                        </div>
+                                        <div class="aging-bucket" style="border-color:rgba(183,28,28,0.3);background:rgba(244,67,54,0.03);" data-bs-toggle="modal" data-bs-target="#overdueDetailsModal">
+                                            <div class="bucket-value" style="color:#b71c1c;">3</div>
+                                            <div class="bucket-label">30+ Days</div>
+                                            <div class="bucket-amount" style="color:#b71c1c;">KES 300K</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#overdueDetailsModal"><i class="bi bi-table"></i> View Full Aging Table</button>
+                                    </div>
+                                </div>
+
+                                <!-- Channel Tab -->
+                                <div class="tab-pane fade" id="channelTab">
+                                    <div class="table-responsive">
+                                        <table class="data-table" style="font-size:0.85rem;">
+                                            <thead><tr><th>Channel</th><th>Transactions</th><th>Amount</th><th>% of Total</th><th>Trend</th></tr></thead>
+                                            <tbody>
+                                                <tr><td><span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span></td><td>312</td><td style="font-weight:600;">KES 2.89M</td><td>60%</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i>+12%</span></td></tr>
+                                                <tr><td><span class="channel-badge bank"><i class="bi bi-bank"></i> Bank Transfer</span></td><td>85</td><td style="font-weight:600;">KES 1.15M</td><td>24%</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i>+5%</span></td></tr>
+                                                <tr><td><span class="channel-badge wallet"><i class="bi bi-wallet2"></i> SACCOPay Wallet</span></td><td>42</td><td style="font-weight:600;">KES 480K</td><td>10%</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i>+28%</span></td></tr>
+                                                <tr><td><span class="channel-badge auto"><i class="bi bi-arrow-repeat"></i> Auto-Deduct</span></td><td>18</td><td style="font-weight:600;">KES 195K</td><td>4%</td><td><span class="metric-trend neutral"><i class="bi bi-dash"></i>0%</span></td></tr>
+                                                <tr><td><span class="channel-badge cash"><i class="bi bi-cash"></i> Cash</span></td><td>8</td><td style="font-weight:600;">KES 105K</td><td>2%</td><td><span class="metric-trend down"><i class="bi bi-arrow-down-short"></i>-15%</span></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Heatmap Tab -->
+                                <div class="tab-pane fade" id="heatmapTab">
+                                    <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:var(--spacing-md);">Repayment activity over the last 30 days — darker = more collections</p>
+                                    <div class="heatmap-container" id="heatmapGrid"></div>
+                                    <div style="display:flex;align-items:center;gap:var(--spacing-sm);margin-top:var(--spacing-md);font-size:0.7rem;color:var(--text-tertiary);">
+                                        <span>Less</span>
+                                        <div class="heatmap-cell level-0" style="width:14px;height:14px;"></div>
+                                        <div class="heatmap-cell level-1" style="width:14px;height:14px;"></div>
+                                        <div class="heatmap-cell level-2" style="width:14px;height:14px;"></div>
+                                        <div class="heatmap-cell level-3" style="width:14px;height:14px;"></div>
+                                        <div class="heatmap-cell level-4" style="width:14px;height:14px;"></div>
+                                        <span>More</span>
+                                        <span style="margin-left:var(--spacing-md);">|</span>
+                                        <div class="heatmap-cell level-overdue" style="width:14px;height:14px;"></div>
+                                        <span>Overdue day</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="glass-card fade-in mb-4">
+                <div class="glass-card-header"><h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-lightning" style="color:var(--primary-green);"></i> Quick Actions</h3></div>
+                <div class="glass-card-body">
+                    <div class="qa-grid">
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#recordPaymentModal">
+                            <div class="qa-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-plus-circle"></i></div>
+                            <h6>Record Payment</h6>
+                            <p>Log a manual repayment</p>
+                        </div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#bulkReconcileModal">
+                            <div class="qa-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-arrow-left-right"></i></div>
+                            <h6>Reconcile Payments</h6>
+                            <p>Match M-Pesa statements</p>
+                        </div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#sendBulkRemindersModal">
+                            <div class="qa-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-megaphone"></i></div>
+                            <h6>Bulk Reminders</h6>
+                            <p>Send to all overdue members</p>
+                        </div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#penaltyConfigModal">
+                            <div class="qa-icon" style="background:rgba(121,85,72,0.1);color:#795548;"><i class="bi bi-sliders"></i></div>
+                            <h6>Penalty Config</h6>
+                            <p>Configure penalty rules</p>
+                        </div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#waiveRequestsModal">
+                            <div class="qa-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-slash-circle"></i></div>
+                            <h6>Waiver Requests</h6>
+                            <p>Review pending waivers <span class="badge badge-danger" style="font-size:0.6rem;">3</span></p>
+                        </div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#repaymentReportsModal">
+                            <div class="qa-icon" style="background:rgba(0,188,212,0.1);color:var(--accent-teal);"><i class="bi bi-bar-chart-line"></i></div>
+                            <h6>Generate Report</h6>
+                            <p>Export collection data</p>
+                        </div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#autoDeductSetupModal">
+                            <div class="qa-icon" style="background:rgba(76,175,80,0.1);color:var(--status-success);"><i class="bi bi-gear"></i></div>
+                            <h6>Auto-Deduct</h6>
+                            <p>Setup standing orders</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Collections + Recent Activity -->
+            <div class="row g-4 mb-4">
+                <!-- Today's Due -->
+                <div class="col-lg-5 fade-in">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-calendar-day" style="color:var(--primary-green);"></i> Today's Due</h3>
+                            <span class="badge badge-info">Dec 18, 2024</span>
+                        </div>
+                        <div class="glass-card-body" style="max-height:420px;overflow-y:auto;">
+                            <div class="mstat"><span class="mstat-label">Expected Today</span><span class="mstat-value" style="color:var(--accent-blue);">KES 385,000</span></div>
+                            <div class="mstat"><span class="mstat-label">Collected So Far</span><span class="mstat-value" style="color:var(--primary-green);">KES 248,500</span></div>
+                            <div class="mstat"><span class="mstat-label">Remaining</span><span class="mstat-value" style="color:var(--status-danger);">KES 136,500</span></div>
+
+                            <h6 style="font-size:0.82rem;font-weight:600;margin:var(--spacing-lg) 0 var(--spacing-md);">Payments Due Today (8)</h6>
+
+                            <div style="display:flex;flex-direction:column;gap:var(--spacing-sm);">
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-sm) var(--spacing-md);background:rgba(76,175,80,0.05);border-radius:var(--radius-sm);border-left:3px solid var(--status-success);">
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.83rem;">John Kamau</div>
+                                        <div style="font-size:0.7rem;color:var(--text-tertiary);">LN-2024-00845 • 7/12</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:700;font-size:0.85rem;color:var(--status-success);">KES 15,000</div>
+                                        <span class="badge badge-success" style="font-size:0.6rem;">Paid</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-sm) var(--spacing-md);background:rgba(76,175,80,0.05);border-radius:var(--radius-sm);border-left:3px solid var(--status-success);">
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.83rem;">Sarah Auma</div>
+                                        <div style="font-size:0.7rem;color:var(--text-tertiary);">LN-2024-00867 • 4/24</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:700;font-size:0.85rem;color:var(--status-success);">KES 42,000</div>
+                                        <span class="badge badge-success" style="font-size:0.6rem;">Paid</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-sm) var(--spacing-md);background:rgba(76,175,80,0.05);border-radius:var(--radius-sm);border-left:3px solid var(--status-success);">
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.83rem;">Michael Odera</div>
+                                        <div style="font-size:0.7rem;color:var(--text-tertiary);">LN-2024-00812 • 10/18</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:700;font-size:0.85rem;color:var(--status-success);">KES 28,500</div>
+                                        <span class="badge badge-success" style="font-size:0.6rem;">Paid</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-sm) var(--spacing-md);border-radius:var(--radius-sm);border-left:3px solid var(--accent-orange);background:rgba(255,152,0,0.04);">
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.83rem;">Grace Nyokabi</div>
+                                        <div style="font-size:0.7rem;color:var(--text-tertiary);">LN-2024-00878 • 2/12</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:700;font-size:0.85rem;">KES 35,000</div>
+                                        <button class="btn btn-outline btn-sm" style="font-size:0.65rem;padding:2px 8px;" data-bs-toggle="modal" data-bs-target="#sendReminderModal">Remind</button>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-sm) var(--spacing-md);border-radius:var(--radius-sm);border-left:3px solid var(--accent-orange);background:rgba(255,152,0,0.04);">
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.83rem;">Philip Ochieng</div>
+                                        <div style="font-size:0.7rem;color:var(--text-tertiary);">LN-2024-00890 • 1/24</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:700;font-size:0.85rem;">KES 28,750</div>
+                                        <button class="btn btn-outline btn-sm" style="font-size:0.65rem;padding:2px 8px;" data-bs-toggle="modal" data-bs-target="#sendReminderModal">Remind</button>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-sm) var(--spacing-md);border-radius:var(--radius-sm);border-left:3px solid var(--accent-orange);background:rgba(255,152,0,0.04);">
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.83rem;">Faith Wairimu</div>
+                                        <div style="font-size:0.7rem;color:var(--text-tertiary);">LN-2024-00855 • 5/12</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:700;font-size:0.85rem;">KES 55,000</div>
+                                        <button class="btn btn-outline btn-sm" style="font-size:0.65rem;padding:2px 8px;" data-bs-toggle="modal" data-bs-target="#sendReminderModal">Remind</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#sendBulkRemindersModal"><i class="bi bi-megaphone"></i> Send All Reminders</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="col-lg-7 fade-in">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-clock-history" style="color:var(--primary-green);"></i> Recent Repayment Activity</h3>
+                            <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#activityLogModal"><i class="bi bi-list-ul"></i> Full Log</button>
+                        </div>
+                        <div class="glass-card-body" style="max-height:420px;overflow-y:auto;">
+                            <div class="timeline">
+                                <div class="tl-item done">
+                                    <div class="tl-time">Today, 3:15 PM</div>
+                                    <div class="tl-content">
+                                        <span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span>
+                                        <strong style="color:var(--primary-green);"> KES 42,000</strong> received from <strong>Sarah Auma</strong>
+                                        <br><small class="text-secondary">LN-2024-00867 • Installment 4/24 • Ref: QJK8X2M1PL</small>
+                                        <div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openPaymentDetail('RPY-2024-04521')">View Receipt</button></div>
+                                    </div>
+                                </div>
+                                <div class="tl-item done">
+                                    <div class="tl-time">Today, 2:30 PM</div>
+                                    <div class="tl-content">
+                                        <span class="channel-badge bank"><i class="bi bi-bank"></i> Bank</span>
+                                        <strong style="color:var(--primary-green);"> KES 28,500</strong> received from <strong>Michael Odera</strong>
+                                        <br><small class="text-secondary">LN-2024-00812 • Installment 10/18 • Ref: BNK-9382741</small>
+                                        <div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openPaymentDetail('RPY-2024-04520')">View Receipt</button></div>
+                                    </div>
+                                </div>
+                                <div class="tl-item done">
+                                    <div class="tl-time">Today, 11:40 AM</div>
+                                    <div class="tl-content">
+                                        <span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span>
+                                        <strong style="color:var(--primary-green);"> KES 15,000</strong> received from <strong>John Kamau</strong>
+                                        <br><small class="text-secondary">LN-2024-00845 • Installment 7/12 • Ref: RHN3Y7K9WQ</small>
+                                        <div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openPaymentDetail('RPY-2024-04519')">View Receipt</button></div>
+                                    </div>
+                                </div>
+                                <div class="tl-item warn">
+                                    <div class="tl-time">Today, 10:00 AM</div>
+                                    <div class="tl-content">
+                                        <i class="bi bi-exclamation-triangle" style="color:var(--accent-orange);"></i> <strong>Late penalty</strong> of <strong style="color:var(--accent-orange);">KES 2,500</strong> applied to <strong>Alice Muthoni</strong>
+                                        <br><small class="text-secondary">LN-2024-00820 • 16 days overdue • Auto-calculated</small>
+                                        <div style="margin-top:5px;">
+                                            <button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#waivePenaltyModal">Request Waiver</button>
+                                            <button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal">Send Reminder</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tl-item done">
+                                    <div class="tl-time">Yesterday, 4:50 PM</div>
+                                    <div class="tl-content">
+                                        <span class="channel-badge wallet"><i class="bi bi-wallet2"></i> Wallet</span>
+                                        <strong style="color:var(--primary-green);"> KES 75,000</strong> received from <strong>Daniel Kipchoge</strong> — <em>advance payment</em>
+                                        <br><small class="text-secondary">LN-2024-00835 • Paid 2 months ahead</small>
+                                        <div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openPaymentDetail('RPY-2024-04518')">View Receipt</button></div>
+                                    </div>
+                                </div>
+                                <div class="tl-item fail">
+                                    <div class="tl-time">Yesterday, 2:00 PM</div>
+                                    <div class="tl-content">
+                                        <i class="bi bi-x-circle" style="color:var(--status-danger);"></i> <strong>Auto-deduct failed</strong> for <strong>Bernard Kiprop</strong> — Insufficient funds
+                                        <br><small class="text-secondary">LN-2024-00798 • KES 45,000 attempted via M-Pesa</small>
+                                        <div style="margin-top:5px;">
+                                            <button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#retryDeductModal">Retry</button>
+                                            <button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal">Notify Member</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tl-item done">
+                                    <div class="tl-time">Yesterday, 11:20 AM</div>
+                                    <div class="tl-content">
+                                        Penalty waiver of <strong>KES 3,000</strong> approved for <strong>Catherine Njeri</strong>
+                                        <br><small class="text-secondary">Approved by David Otieno (Credit Officer) — Reason: Medical emergency</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Repayments Table -->
+            <div class="table-container fade-in">
+                <div class="table-header" style="flex-wrap:wrap;gap:var(--spacing-md);">
+                    <div>
+                        <h3>All Repayment Transactions</h3>
+                        <p style="font-size:0.78rem;color:var(--text-secondary);margin-top:3px;">Showing 465 total repayment records</p>
+                    </div>
+                    <div class="table-actions" style="flex-wrap:wrap;gap:var(--spacing-sm);">
+                        <div class="input-group" style="width:auto;">
+                            <input type="text" class="form-control form-control-sm finput" placeholder="Search..." style="min-width:180px;">
+                            <button class="btn btn-outline btn-sm"><i class="bi bi-search"></i></button>
+                        </div>
+                        <select class="form-select form-select-sm fselect" style="width:auto;">
+                            <option value="">All Channels</option>
+                            <option>M-Pesa</option>
+                            <option>Bank Transfer</option>
+                            <option>SACCOPay Wallet</option>
+                            <option>Cash</option>
+                            <option>Auto-Deduct</option>
+                        </select>
+                        <select class="form-select form-select-sm fselect" style="width:auto;">
+                            <option value="">All Status</option>
+                            <option>Confirmed</option>
+                            <option>Pending</option>
+                            <option>Failed</option>
+                            <option>Reversed</option>
+                        </select>
+                        <input type="date" class="form-control form-control-sm finput" style="width:auto;">
+                        <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#exportRepaymentsModal"><i class="bi bi-download"></i> Export</button>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div style="padding:0 var(--spacing-xl);padding-top:var(--spacing-md);">
+                    <div class="filter-tabs">
+                        <button class="ftab active" onclick="setFilter(this,'all')">All <span class="cnt">465</span></button>
+                        <button class="ftab" onclick="setFilter(this,'confirmed')">Confirmed <span class="cnt">428</span></button>
+                        <button class="ftab" onclick="setFilter(this,'pending')">Pending <span class="cnt">15</span></button>
+                        <button class="ftab" onclick="setFilter(this,'overdue')">Overdue <span class="cnt">18</span></button>
+                        <button class="ftab" onclick="setFilter(this,'failed')">Failed <span class="cnt">3</span></button>
+                        <button class="ftab" onclick="setFilter(this,'reversed')">Reversed <span class="cnt">1</span></button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="repaymentTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll" onchange="toggleAll(this)"></th>
+                                <th>Receipt #</th>
+                                <th>Member</th>
+                                <th>Loan Ref</th>
+                                <th>Loan Type</th>
+                                <th>Amount</th>
+                                <th>Channel</th>
+                                <th>Installment</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox" class="row-chk"></td>
+                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openPaymentDetail('RPY-2024-04521')">RPY-04521</code></td>
+                                <td><div class="member-cell"><div class="avatar-xs g6">SA</div><div><div class="member-name">Sarah Auma</div><div class="member-sub">SP-10089</div></div></div></td>
+                                <td><code>LN-00867</code></td>
+                                <td><span class="ltype business"><i class="bi bi-briefcase"></i> Business</span></td>
+                                <td style="font-weight:700;color:var(--status-success);">KES 42,000</td>
+                                <td><span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td><div class="progress-track"><div class="progress-fill good" style="width:17%;"></div></div><div class="progress-meta"><span>4/24</span><span>17%</span></div></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.35rem;"></i> Confirmed</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 3:15 PM</td>
+                                <td>
+                                    <div style="display:flex;gap:3px;">
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="Receipt" onclick="openPaymentDetail('RPY-2024-04521')"><i class="bi bi-receipt"></i></button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="More" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" onclick="openPaymentDetail('RPY-2024-04521')"><i class="bi bi-receipt me-2"></i>View Receipt</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewLoanFromRepayment('LN-00867')"><i class="bi bi-file-text me-2"></i>View Loan</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendReceiptModal"><i class="bi bi-envelope me-2"></i>Send Receipt</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#reversePaymentModal"><i class="bi bi-arrow-counterclockwise me-2"></i>Reverse Payment</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-chk"></td>
+                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openPaymentDetail('RPY-2024-04520')">RPY-04520</code></td>
+                                <td><div class="member-cell"><div class="avatar-xs g2">MO</div><div><div class="member-name">Michael Odera</div><div class="member-sub">SP-10124</div></div></div></td>
+                                <td><code>LN-00812</code></td>
+                                <td><span class="ltype personal"><i class="bi bi-person"></i> Personal</span></td>
+                                <td style="font-weight:700;color:var(--status-success);">KES 28,500</td>
+                                <td><span class="channel-badge bank"><i class="bi bi-bank"></i> Bank</span></td>
+                                <td><div class="progress-track"><div class="progress-fill good" style="width:56%;"></div></div><div class="progress-meta"><span>10/18</span><span>56%</span></div></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.35rem;"></i> Confirmed</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 2:30 PM</td>
+                                <td>
+                                    <div style="display:flex;gap:3px;">
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="Receipt" onclick="openPaymentDetail('RPY-2024-04520')"><i class="bi bi-receipt"></i></button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="More" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" onclick="openPaymentDetail('RPY-2024-04520')"><i class="bi bi-receipt me-2"></i>View Receipt</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewLoanFromRepayment('LN-00812')"><i class="bi bi-file-text me-2"></i>View Loan</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendReceiptModal"><i class="bi bi-envelope me-2"></i>Send Receipt</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#reversePaymentModal"><i class="bi bi-arrow-counterclockwise me-2"></i>Reverse</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-chk"></td>
+                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openPaymentDetail('RPY-2024-04519')">RPY-04519</code></td>
+                                <td><div class="member-cell"><div class="avatar-xs g1">JK</div><div><div class="member-name">John Kamau</div><div class="member-sub">SP-10015</div></div></div></td>
+                                <td><code>LN-00845</code></td>
+                                <td><span class="ltype education"><i class="bi bi-mortarboard"></i> Education</span></td>
+                                <td style="font-weight:700;color:var(--status-success);">KES 15,000</td>
+                                <td><span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td><div class="progress-track"><div class="progress-fill good" style="width:58%;"></div></div><div class="progress-meta"><span>7/12</span><span>58%</span></div></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.35rem;"></i> Confirmed</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 11:40 AM</td>
+                                <td>
+                                    <div style="display:flex;gap:3px;">
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="Receipt" onclick="openPaymentDetail('RPY-2024-04519')"><i class="bi bi-receipt"></i></button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="More" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" onclick="openPaymentDetail('RPY-2024-04519')"><i class="bi bi-receipt me-2"></i>View Receipt</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewLoanFromRepayment('LN-00845')"><i class="bi bi-file-text me-2"></i>View Loan</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendReceiptModal"><i class="bi bi-envelope me-2"></i>Send Receipt</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="background:rgba(255,152,0,0.03);">
+                                <td><input type="checkbox" class="row-chk"></td>
+                                <td><code style="color:var(--text-tertiary);">RPY-04516</code></td>
+                                <td><div class="member-cell"><div class="avatar-xs g5">AM</div><div><div class="member-name">Alice Muthoni</div><div class="member-sub">SP-10042</div></div></div></td>
+                                <td><code>LN-00820</code></td>
+                                <td><span class="ltype personal"><i class="bi bi-person"></i> Personal</span></td>
+                                <td style="font-weight:700;color:var(--status-danger);">KES 25,000</td>
+                                <td>—</td>
+                                <td><div class="progress-track"><div class="progress-fill bad" style="width:58%;"></div></div><div class="progress-meta"><span>7/12 ⚠</span><span>Overdue</span></div></td>
+                                <td><span class="badge badge-danger"><i class="bi bi-circle-fill" style="font-size:0.35rem;"></i> Overdue</span></td>
+                                <td style="font-size:0.78rem;">Due: Dec 3</td>
+                                <td>
+                                    <div style="display:flex;gap:3px;">
+                                        <button class="btn btn-primary btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#recordPaymentModal"><i class="bi bi-cash-coin"></i></button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="Remind" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="More" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" onclick="viewLoanFromRepayment('LN-00820')"><i class="bi bi-file-text me-2"></i>View Loan</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#waivePenaltyModal"><i class="bi bi-slash-circle me-2"></i>Waive Penalty</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#rescheduleModal"><i class="bi bi-calendar-plus me-2"></i>Reschedule</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-chk"></td>
+                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openPaymentDetail('RPY-2024-04518')">RPY-04518</code></td>
+                                <td><div class="member-cell"><div class="avatar-xs g3">DK</div><div><div class="member-name">Daniel Kipchoge</div><div class="member-sub">SP-10098</div></div></div></td>
+                                <td><code>LN-00835</code></td>
+                                <td><span class="ltype agriculture"><i class="bi bi-tree"></i> Agriculture</span></td>
+                                <td style="font-weight:700;color:var(--accent-purple);">KES 75,000</td>
+                                <td><span class="channel-badge wallet"><i class="bi bi-wallet2"></i> Wallet</span></td>
+                                <td><div class="progress-track"><div class="progress-fill good" style="width:67%;"></div></div><div class="progress-meta"><span>8/12 ★</span><span>Advance</span></div></td>
+                                <td><span class="badge" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-forward-fill" style="font-size:0.35rem;"></i> Advance</span></td>
+                                <td style="font-size:0.78rem;">Dec 17, 4:50 PM</td>
+                                <td>
+                                    <div style="display:flex;gap:3px;">
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="Receipt" onclick="openPaymentDetail('RPY-2024-04518')"><i class="bi bi-receipt"></i></button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="More" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" onclick="openPaymentDetail('RPY-2024-04518')"><i class="bi bi-receipt me-2"></i>View Receipt</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="viewLoanFromRepayment('LN-00835')"><i class="bi bi-file-text me-2"></i>View Loan</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendReceiptModal"><i class="bi bi-envelope me-2"></i>Send Receipt</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="background:rgba(244,67,54,0.03);">
+                                <td><input type="checkbox" class="row-chk"></td>
+                                <td><code style="color:var(--status-danger);">RPY-04515</code></td>
+                                <td><div class="member-cell"><div class="avatar-xs g4">BK</div><div><div class="member-name">Bernard Kiprop</div><div class="member-sub">SP-10078</div></div></div></td>
+                                <td><code>LN-00798</code></td>
+                                <td><span class="ltype business"><i class="bi bi-briefcase"></i> Business</span></td>
+                                <td style="font-weight:700;color:var(--status-danger);">KES 45,000</td>
+                                <td><span class="channel-badge auto"><i class="bi bi-arrow-repeat"></i> Auto</span></td>
+                                <td><div class="progress-track"><div class="progress-fill bad" style="width:33%;"></div></div><div class="progress-meta"><span>4/12</span><span>Failed</span></div></td>
+                                <td><span class="badge badge-danger"><i class="bi bi-x-circle-fill" style="font-size:0.35rem;"></i> Failed</span></td>
+                                <td style="font-size:0.78rem;">Dec 17, 2:00 PM</td>
+                                <td>
+                                    <div style="display:flex;gap:3px;">
+                                        <button class="btn btn-outline btn-sm" style="font-size:0.68rem;color:var(--accent-blue);border-color:var(--accent-blue);" data-bs-toggle="modal" data-bs-target="#retryDeductModal"><i class="bi bi-arrow-clockwise"></i> Retry</button>
+                                        <button class="btn btn-ghost btn-icon btn-sm" title="More" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" onclick="viewLoanFromRepayment('LN-00798')"><i class="bi bi-file-text me-2"></i>View Loan</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#recordPaymentModal"><i class="bi bi-cash-coin me-2"></i>Manual Payment</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell me-2"></i>Notify Member</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div style="padding:var(--spacing-lg) var(--spacing-xl);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--spacing-md);">
+                    <div style="font-size:0.82rem;color:var(--text-secondary);">
+                        Showing <strong>1-6</strong> of <strong>465</strong> repayments
+                        &nbsp;|&nbsp; <span id="selCount">0</span> selected
+                        <button class="btn btn-ghost btn-sm" id="bulkBtn" style="display:none;" data-bs-toggle="modal" data-bs-target="#bulkActionsModal"><i class="bi bi-gear"></i> Bulk Actions</button>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0" style="gap:3px;">
+                            <li class="page-item disabled"><a class="page-link" href="#" style="border-radius:var(--radius-sm);border:1px solid var(--border-color);">&laquo;</a></li>
+                            <li class="page-item active"><a class="page-link" href="#" style="border-radius:var(--radius-sm);background:var(--primary-green);border-color:var(--primary-green);">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-secondary);">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-secondary);">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-secondary);">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-secondary);">78</a></li>
+                            <li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-secondary);">&raquo;</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS (25 Total - Every Button Has a Modal)
+==================================================================== -->
+
+<!-- 1. RECORD PAYMENT -->
+<div class="modal fade" id="recordPaymentModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Record Repayment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Loan Reference</label><input type="text" class="form-control finput" placeholder="e.g. LN-2024-00845" id="rpLoanRef"></div>
+            <div class="col-md-6"><label class="flbl">Member</label><input type="text" class="form-control finput" placeholder="Auto-populated" readonly style="background:var(--bg-tertiary);"></div>
+            <div class="col-md-4"><label class="flbl">Payment Amount (KES)</label><input type="number" class="form-control finput" placeholder="Amount" id="rpAmount"></div>
+            <div class="col-md-4"><label class="flbl">Payment Date</label><input type="date" class="form-control finput" id="rpDate"></div>
+            <div class="col-md-4"><label class="flbl">Payment Method</label><select class="form-select fselect"><option>M-Pesa</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option><option>SACCOPay Wallet</option></select></div>
+            <div class="col-md-6"><label class="flbl">Transaction Reference</label><input type="text" class="form-control finput" placeholder="M-Pesa code / Bank ref"></div>
+            <div class="col-md-6"><label class="flbl">Payment Type</label><select class="form-select fselect"><option>Regular Installment</option><option>Advance Payment</option><option>Partial Payment</option><option>Penalty Payment</option><option>Full Settlement</option></select></div>
+            <div class="col-12"><label class="flbl">Notes</label><textarea class="form-control finput" rows="2" placeholder="Optional notes..."></textarea></div>
+        </div>
+        <div style="margin-top:var(--spacing-lg);padding:var(--spacing-lg);background:var(--primary-green-ultra-light);border-radius:var(--radius-md);">
+            <h6 style="font-size:0.82rem;font-weight:600;color:var(--primary-green);margin-bottom:var(--spacing-sm);"><i class="bi bi-info-circle me-1"></i>Loan Summary</h6>
+            <div class="row g-2">
+                <div class="col-3 text-center"><div style="font-size:0.68rem;color:var(--text-tertiary);">Outstanding</div><div style="font-weight:700;">KES 93,750</div></div>
+                <div class="col-3 text-center"><div style="font-size:0.68rem;color:var(--text-tertiary);">Next Due</div><div style="font-weight:700;">KES 15,000</div></div>
+                <div class="col-3 text-center"><div style="font-size:0.68rem;color:var(--text-tertiary);">Penalties</div><div style="font-weight:700;color:var(--status-danger);">KES 0</div></div>
+                <div class="col-3 text-center"><div style="font-size:0.68rem;color:var(--text-tertiary);">Installment</div><div style="font-weight:700;">7/12</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="confirmRecordPayment()"><i class="bi bi-check-circle"></i> Record Payment</button></div>
+</div></div></div>
+
+<!-- 2. PAYMENT DETAIL / RECEIPT -->
+<div class="modal fade" id="paymentDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Payment Receipt — <span id="receiptRef">RPY-04521</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="text-align:center;padding:var(--spacing-lg);border-bottom:1px dashed var(--border-color);margin-bottom:var(--spacing-lg);">
+            <div style="width:56px;height:56px;border-radius:50%;background:rgba(76,175,80,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-sm);"><i class="bi bi-check-circle-fill" style="font-size:1.8rem;color:var(--status-success);"></i></div>
+            <div style="font-size:1.5rem;font-weight:800;color:var(--status-success);">KES 42,000</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);">Payment Confirmed</div>
+        </div>
+        <div class="drow"><span class="dlabel">Receipt No.</span><span class="dval"><code>RPY-2024-04521</code></span></div>
+        <div class="drow"><span class="dlabel">Member</span><span class="dval">Sarah Auma (SP-10089)</span></div>
+        <div class="drow"><span class="dlabel">Loan Ref</span><span class="dval"><code>LN-2024-00867</code></span></div>
+        <div class="drow"><span class="dlabel">Installment</span><span class="dval">4 of 24</span></div>
+        <div class="drow"><span class="dlabel">Payment Method</span><span class="dval"><span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span></span></div>
+        <div class="drow"><span class="dlabel">Transaction Ref</span><span class="dval"><code>QJK8X2M1PL</code></span></div>
+        <div class="drow"><span class="dlabel">Date & Time</span><span class="dval">Dec 18, 2024 • 3:15 PM</span></div>
+        <div class="drow"><span class="dlabel">Principal</span><span class="dval">KES 35,000</span></div>
+        <div class="drow"><span class="dlabel">Interest</span><span class="dval">KES 7,000</span></div>
+        <div class="drow"><span class="dlabel">Penalty</span><span class="dval" style="color:var(--status-success);">KES 0</span></div>
+        <div class="drow"><span class="dlabel">Remaining Balance</span><span class="dval" style="font-weight:700;">KES 840,000</span></div>
+        <div class="drow"><span class="dlabel">Processed By</span><span class="dval">System (Auto-matched)</span></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#sendReceiptModal"><i class="bi bi-envelope"></i> Send Receipt</button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Receipt downloaded!')"><i class="bi bi-file-pdf"></i> Download PDF</button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Receipt printed!')"><i class="bi bi-printer"></i> Print</button>
+    </div>
+</div></div></div>
+
+<!-- 3. SEND RECEIPT -->
+<div class="modal fade" id="sendReceiptModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-envelope me-2"></i>Send Receipt</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Send Via</label><div style="display:flex;gap:var(--spacing-lg);"><div class="form-check"><input class="form-check-input" type="checkbox" checked id="rcptSMS"><label class="form-check-label" for="rcptSMS">SMS</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="rcptEmail"><label class="form-check-label" for="rcptEmail">Email</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="rcptWhatsApp"><label class="form-check-label" for="rcptWhatsApp">WhatsApp</label></div></div></div>
+            <div class="col-12"><label class="flbl">Phone Number</label><input type="text" class="form-control finput" value="+254 722 XXX XXX"></div>
+            <div class="col-12"><label class="flbl">Email</label><input type="email" class="form-control finput" placeholder="member@email.com"></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="confirmSendReceipt()"><i class="bi bi-send"></i> Send</button></div>
+</div></div></div>
+
+<!-- 4. SEND REMINDER -->
+<div class="modal fade" id="sendReminderModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header" style="background:linear-gradient(135deg,#ff9800,#ffb74d);color:white;border:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--spacing-lg) var(--spacing-xl);"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Send Payment Reminder</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:brightness(0) invert(1);"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Reminder Type</label><select class="form-select fselect"><option>Friendly Reminder</option><option>First Notice</option><option>Second Notice (Urgent)</option><option>Final Notice (Penalty Warning)</option></select></div>
+            <div class="col-12"><label class="flbl">Send Via</label><div style="display:flex;gap:var(--spacing-lg);"><div class="form-check"><input class="form-check-input" type="checkbox" checked>SMS</div><div class="form-check"><input class="form-check-input" type="checkbox">Email</div><div class="form-check"><input class="form-check-input" type="checkbox">Push</div></div></div>
+            <div class="col-12"><label class="flbl">Message</label><textarea class="form-control finput" rows="4">Dear Member, your loan repayment of KES 25,000 is overdue. Please make payment at your earliest convenience to avoid additional penalties. For assistance, contact us. — SACCOPay</textarea></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Schedule recurring reminders (every 3 days)</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#ff9800,#ffb74d);" onclick="confirmSendReminder()"><i class="bi bi-send"></i> Send Reminder</button></div>
+</div></div></div>
+
+<!-- 5. BULK REMINDERS -->
+<div class="modal fade" id="sendBulkRemindersModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header" style="background:linear-gradient(135deg,#ff9800,#ffb74d);color:white;border:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--spacing-lg) var(--spacing-xl);"><h5 class="modal-title"><i class="bi bi-megaphone me-2"></i>Bulk Payment Reminders</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:brightness(0) invert(1);"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i><strong>18 members</strong> have overdue or upcoming payments. Select recipients below.</div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6"><label class="flbl">Target Group</label><select class="form-select fselect"><option>All Overdue (18)</option><option>Due Today (5)</option><option>Due This Week (12)</option><option>1-7 Days Overdue (8)</option><option>8-30 Days Overdue (7)</option><option>30+ Days Overdue (3)</option></select></div>
+            <div class="col-md-6"><label class="flbl">Template</label><select class="form-select fselect"><option>Friendly Reminder</option><option>First Notice</option><option>Second Notice (Urgent)</option><option>Final Notice</option></select></div>
+        </div>
+        <div class="table-responsive" style="max-height:250px;overflow-y:auto;">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th><input type="checkbox" checked onchange="toggleAllBulk(this)"></th><th>Member</th><th>Amount Due</th><th>Days Overdue</th><th>Phone</th></tr></thead>
+                <tbody>
+                    <tr><td><input type="checkbox" checked class="bulk-chk"></td><td>Alice Muthoni</td><td>KES 25,000</td><td><span class="badge badge-danger">16</span></td><td>0722-XXX-456</td></tr>
+                    <tr><td><input type="checkbox" checked class="bulk-chk"></td><td>Bernard Kiprop</td><td>KES 45,000</td><td><span class="badge badge-danger">23</span></td><td>0710-XXX-789</td></tr>
+                    <tr><td><input type="checkbox" checked class="bulk-chk"></td><td>Catherine Njeri</td><td>KES 18,000</td><td><span class="badge badge-danger">31</span></td><td>0733-XXX-012</td></tr>
+                    <tr><td><input type="checkbox" checked class="bulk-chk"></td><td>Grace Nyokabi</td><td>KES 35,000</td><td><span class="badge badge-pending">Due today</span></td><td>0720-XXX-345</td></tr>
+                    <tr><td><input type="checkbox" checked class="bulk-chk"></td><td>Philip Ochieng</td><td>KES 28,750</td><td><span class="badge badge-pending">Due today</span></td><td>0712-XXX-678</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#ff9800,#ffb74d);" onclick="confirmBulkReminders()"><i class="bi bi-megaphone"></i> Send to 5 Members</button></div>
+</div></div></div>
+
+<!-- 6. REVERSE PAYMENT -->
+<div class="modal fade" id="reversePaymentModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header" style="background:linear-gradient(135deg,#f44336,#ef5350);color:white;border:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--spacing-lg) var(--spacing-xl);"><h5 class="modal-title"><i class="bi bi-arrow-counterclockwise me-2"></i>Reverse Payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:brightness(0) invert(1);"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Warning:</strong> Reversing a payment will re-add the amount to the member's outstanding balance and may trigger penalties.</div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Reversal Reason</label><select class="form-select fselect"><option>Select reason</option><option>Duplicate payment</option><option>Wrong loan allocated</option><option>Bounced cheque</option><option>M-Pesa reversal</option><option>System error</option><option>Other</option></select></div>
+            <div class="col-12"><label class="flbl">Comments</label><textarea class="form-control finput" rows="3" placeholder="Provide detailed justification..."></textarea></div>
+            <div class="col-12"><label class="flbl">Authorization PIN</label><input type="password" class="form-control finput" placeholder="Enter admin PIN" maxlength="6"></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn" style="background:#f44336;color:white;" onclick="confirmReversal()"><i class="bi bi-arrow-counterclockwise"></i> Confirm Reversal</button></div>
+</div></div></div>
+
+<!-- 7. WAIVE PENALTY -->
+<div class="modal fade" id="waivePenaltyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#9c27b0,#ba68c8);"><h5 class="modal-title"><i class="bi bi-slash-circle me-2"></i>Request Penalty Waiver</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="row g-2">
+                <div class="col-6"><span class="flbl" style="margin:0;">Loan Ref</span><div style="font-weight:600;"><code>LN-2024-00820</code></div></div>
+                <div class="col-6"><span class="flbl" style="margin:0;">Member</span><div style="font-weight:600;">Alice Muthoni</div></div>
+                <div class="col-6"><span class="flbl" style="margin:0;">Total Penalties</span><div style="font-weight:700;color:var(--status-danger);">KES 5,500</div></div>
+                <div class="col-6"><span class="flbl" style="margin:0;">Days Overdue</span><div style="font-weight:700;color:var(--status-danger);">16 days</div></div>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Waiver Amount (KES)</label><input type="number" class="form-control finput" value="5500" placeholder="Full or partial"></div>
+            <div class="col-md-6"><label class="flbl">Waiver Type</label><select class="form-select fselect"><option>Full Waiver</option><option>Partial Waiver</option></select></div>
+            <div class="col-12"><label class="flbl">Reason</label><select class="form-select fselect"><option>Select reason</option><option>Medical emergency</option><option>First-time offence</option><option>Natural disaster</option><option>System/Bank error</option><option>Goodwill / Retention</option><option>Board resolution</option></select></div>
+            <div class="col-12"><label class="flbl">Supporting Notes</label><textarea class="form-control finput" rows="2" placeholder="Explain the circumstances..."></textarea></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#9c27b0,#ba68c8);" onclick="confirmWaiver()"><i class="bi bi-check-circle"></i> Submit Waiver Request</button></div>
+</div></div></div>
+
+<!-- 8. WAIVER REQUESTS (Pending) -->
+<div class="modal fade" id="waiveRequestsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#9c27b0,#ba68c8);"><h5 class="modal-title"><i class="bi bi-slash-circle me-2"></i>Pending Waiver Requests</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Member</th><th>Loan</th><th>Penalty</th><th>Waiver Amt</th><th>Reason</th><th>Requested</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td>Alice Muthoni</td><td><code>LN-00820</code></td><td>KES 5,500</td><td>KES 5,500</td><td>Medical emergency</td><td>Dec 18</td><td><button class="btn btn-sm" style="background:#4caf50;color:white;font-size:0.68rem;" onclick="approveWaiver()"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:#f44336;color:white;font-size:0.68rem;" onclick="rejectWaiver()"><i class="bi bi-x"></i></button></td></tr>
+                    <tr><td>Evans Wafula</td><td><code>LN-00810</code></td><td>KES 1,200</td><td>KES 1,200</td><td>First-time offence</td><td>Dec 17</td><td><button class="btn btn-sm" style="background:#4caf50;color:white;font-size:0.68rem;" onclick="approveWaiver()"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:#f44336;color:white;font-size:0.68rem;" onclick="rejectWaiver()"><i class="bi bi-x"></i></button></td></tr>
+                    <tr><td>Rose Nyambura</td><td><code>LN-00805</code></td><td>KES 3,800</td><td>KES 2,000</td><td>Goodwill</td><td>Dec 16</td><td><button class="btn btn-sm" style="background:#4caf50;color:white;font-size:0.68rem;" onclick="approveWaiver()"><i class="bi bi-check"></i></button> <button class="btn btn-sm" style="background:#f44336;color:white;font-size:0.68rem;" onclick="rejectWaiver()"><i class="bi bi-x"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 9. RESCHEDULE PAYMENT -->
+<div class="modal fade" id="rescheduleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#2196f3,#42a5f5);"><h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>Reschedule Payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Current Due Date</label><input type="text" class="form-control finput" value="Dec 3, 2024" readonly style="background:var(--bg-tertiary);"></div>
+            <div class="col-md-6"><label class="flbl">New Due Date</label><input type="date" class="form-control finput"></div>
+            <div class="col-md-6"><label class="flbl">Original Amount</label><input type="text" class="form-control finput" value="KES 25,000" readonly style="background:var(--bg-tertiary);"></div>
+            <div class="col-md-6"><label class="flbl">Adjusted Amount</label><input type="number" class="form-control finput" value="25000"></div>
+            <div class="col-12"><label class="flbl">Reason</label><textarea class="form-control finput" rows="2" placeholder="Reason for rescheduling..."></textarea></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Waive late penalty for this rescheduling</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#2196f3,#42a5f5);" onclick="confirmReschedule()"><i class="bi bi-calendar-check"></i> Reschedule</button></div>
+</div></div></div>
+
+<!-- 10. RETRY AUTO-DEDUCT -->
+<div class="modal fade" id="retryDeductModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-arrow-clockwise me-2"></i>Retry Auto-Deduction</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i>Previous attempt failed due to <strong>insufficient funds</strong>. The system will retry the deduction.</div>
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dlabel">Member</span><span class="dval">Bernard Kiprop</span></div>
+            <div class="drow"><span class="dlabel">Amount</span><span class="dval" style="color:var(--primary-green);font-weight:700;">KES 45,000</span></div>
+            <div class="drow"><span class="dlabel">Channel</span><span class="dval"><span class="channel-badge mpesa"><i class="bi bi-phone"></i> M-Pesa</span></span></div>
+            <div class="drow"><span class="dlabel">Last Attempt</span><span class="dval">Dec 17, 2:00 PM</span></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Retry Timing</label><select class="form-select fselect"><option>Immediately</option><option>After 2 hours</option><option>Tomorrow morning (8 AM)</option><option>Custom time</option></select></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Notify member before retry</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="confirmRetry()"><i class="bi bi-arrow-clockwise"></i> Retry Deduction</button></div>
+</div></div></div>
+
+<!-- 11. AUTO-DEDUCT SETUP -->
+<div class="modal fade" id="autoDeductSetupModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#4caf50,#66bb6a);"><h5 class="modal-title"><i class="bi bi-gear me-2"></i>Auto-Deduction Configuration</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Default Deduction Channel</label><select class="form-select fselect"><option>M-Pesa (STK Push)</option><option>Bank Standing Order</option><option>SACCOPay Wallet</option></select></div>
+            <div class="col-md-6"><label class="flbl">Deduction Timing</label><select class="form-select fselect"><option>On Due Date (12:00 PM)</option><option>Day Before Due Date</option><option>Salary Date (25th)</option><option>Custom</option></select></div>
+            <div class="col-md-6"><label class="flbl">Retry on Failure</label><select class="form-select fselect"><option>Retry after 4 hours</option><option>Retry next day</option><option>Retry 3 times over 3 days</option><option>No retry</option></select></div>
+            <div class="col-md-6"><label class="flbl">Notification Before Deduction</label><select class="form-select fselect"><option>24 hours before</option><option>2 hours before</option><option>No notification</option></select></div>
+            <div class="col-12"><label class="flbl">Active Auto-Deductions</label>
+                <div class="table-responsive" style="max-height:200px;overflow-y:auto;">
+                    <table class="data-table" style="font-size:0.82rem;">
+                        <thead><tr><th>Member</th><th>Loan</th><th>Amount</th><th>Channel</th><th>Status</th><th>Toggle</th></tr></thead>
+                        <tbody>
+                            <tr><td>John Kamau</td><td>LN-00845</td><td>KES 15,000</td><td>M-Pesa</td><td><span class="badge badge-success">Active</span></td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></td></tr>
+                            <tr><td>Sarah Auma</td><td>LN-00867</td><td>KES 42,000</td><td>Bank</td><td><span class="badge badge-success">Active</span></td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></td></tr>
+                            <tr><td>Bernard Kiprop</td><td>LN-00798</td><td>KES 45,000</td><td>M-Pesa</td><td><span class="badge badge-danger">Failed</span></td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#4caf50,#66bb6a);" onclick="saveAutoDeduct()"><i class="bi bi-check-circle"></i> Save Configuration</button></div>
+</div></div></div>
+
+<!-- 12. PENALTY CONFIG -->
+<div class="modal fade" id="penaltyConfigModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#795548,#a1887f);"><h5 class="modal-title"><i class="bi bi-sliders me-2"></i>Penalty Configuration</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Penalty Type</label><select class="form-select fselect"><option>Percentage of Overdue</option><option>Fixed Amount</option><option>Tiered (Escalating)</option></select></div>
+            <div class="col-md-6"><label class="flbl">Rate / Amount</label><input type="text" class="form-control finput" value="5% per month"></div>
+            <div class="col-md-6"><label class="flbl">Grace Period (Days)</label><input type="number" class="form-control finput" value="3"></div>
+            <div class="col-md-6"><label class="flbl">Max Penalty Cap</label><input type="text" class="form-control finput" value="25% of loan amount"></div>
+            <div class="col-md-6"><label class="flbl">Auto-Apply</label><select class="form-select fselect"><option>Yes — Auto-calculate daily</option><option>No — Manual only</option></select></div>
+            <div class="col-md-6"><label class="flbl">Notification</label><select class="form-select fselect"><option>Notify member on penalty</option><option>No notification</option></select></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" checked><label class="form-check-label" style="font-size:0.82rem;">Compound penalties (penalty on penalties)</label></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#795548,#a1887f);" onclick="savePenaltyConfig()"><i class="bi bi-check-circle"></i> Save Configuration</button></div>
+</div></div></div>
+
+<!-- 13. BULK RECONCILE -->
+<div class="modal fade" id="bulkReconcileModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#2196f3,#42a5f5);"><h5 class="modal-title"><i class="bi bi-arrow-left-right me-2"></i>Payment Reconciliation</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i>Upload M-Pesa or bank statements to auto-match payments to loan accounts.</div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6"><label class="flbl">Source</label><select class="form-select fselect"><option>M-Pesa Statement</option><option>KCB Bank Statement</option><option>Equity Bank Statement</option><option>Custom CSV</option></select></div>
+            <div class="col-md-6"><label class="flbl">Date Range</label><select class="form-select fselect"><option>Today</option><option>Last 7 Days</option><option>Last 30 Days</option><option>Custom</option></select></div>
+            <div class="col-12"><label class="flbl">Upload Statement File</label>
+                <div style="border:2px dashed var(--border-color);border-radius:var(--radius-md);padding:var(--spacing-xl);text-align:center;cursor:pointer;" onmouseover="this.style.borderColor='var(--primary-green)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <i class="bi bi-cloud-upload" style="font-size:2rem;color:var(--text-tertiary);"></i>
+                    <p style="margin:var(--spacing-sm) 0 0;font-size:0.82rem;">Drop CSV/Excel file here or <span style="color:var(--primary-green);font-weight:600;">browse</span></p>
+                </div>
+            </div>
+        </div>
+        <div style="padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+            <h6 style="font-size:0.82rem;font-weight:600;margin-bottom:var(--spacing-md);">Reconciliation Preview</h6>
+            <div class="row g-2 text-center">
+                <div class="col-3"><div style="font-size:0.68rem;color:var(--text-tertiary);">Total Entries</div><div style="font-weight:700;">—</div></div>
+                <div class="col-3"><div style="font-size:0.68rem;color:var(--text-tertiary);">Matched</div><div style="font-weight:700;color:var(--status-success);">—</div></div>
+                <div class="col-3"><div style="font-size:0.68rem;color:var(--text-tertiary);">Unmatched</div><div style="font-weight:700;color:var(--status-danger);">—</div></div>
+                <div class="col-3"><div style="font-size:0.68rem;color:var(--text-tertiary);">Duplicates</div><div style="font-weight:700;color:var(--accent-orange);">—</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#2196f3,#42a5f5);" onclick="startReconciliation()"><i class="bi bi-arrow-left-right"></i> Start Reconciliation</button></div>
+</div></div></div>
+
+<!-- 14. EXPORT REPAYMENTS -->
+<div class="modal fade" id="exportRepaymentsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Repayments</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect"><option>CSV</option><option>Excel (.xlsx)</option><option>PDF</option></select></div>
+            <div class="col-md-6"><label class="flbl">Date Range</label><select class="form-select fselect"><option>This Month</option><option>Last 3 Months</option><option>This Year</option><option>All Time</option><option>Custom</option></select></div>
+            <div class="col-md-6"><label class="flbl">Status</label><select class="form-select fselect"><option>All</option><option>Confirmed</option><option>Pending</option><option>Failed</option></select></div>
+            <div class="col-md-6"><label class="flbl">Channel</label><select class="form-select fselect"><option>All Channels</option><option>M-Pesa</option><option>Bank</option><option>Cash</option></select></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="confirmExport()"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- 15. REPAYMENT REPORTS -->
+<div class="modal fade" id="repaymentReportsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#00bcd4,#26c6da);"><h5 class="modal-title"><i class="bi bi-bar-chart-line me-2"></i>Repayment Reports</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><div class="qa-card" onclick="genReport('collection')"><div class="qa-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-cash-coin"></i></div><h6>Collection Report</h6><p>All repayments received</p></div></div>
+            <div class="col-md-6"><div class="qa-card" onclick="genReport('aging')"><div class="qa-icon" style="background:rgba(244,67,54,0.1);color:#f44336;"><i class="bi bi-clock-history"></i></div><h6>Aging Analysis</h6><p>Overdue breakdown by bucket</p></div></div>
+            <div class="col-md-6"><div class="qa-card" onclick="genReport('channel')"><div class="qa-icon" style="background:rgba(33,150,243,0.1);color:#2196f3;"><i class="bi bi-diagram-3"></i></div><h6>Channel Analysis</h6><p>Payments by method</p></div></div>
+            <div class="col-md-6"><div class="qa-card" onclick="genReport('penalty')"><div class="qa-icon" style="background:rgba(121,85,72,0.1);color:#795548;"><i class="bi bi-percent"></i></div><h6>Penalty Report</h6><p>Penalties charged & waivers</p></div></div>
+            <div class="col-md-6"><div class="qa-card" onclick="genReport('efficiency')"><div class="qa-icon" style="background:rgba(156,39,176,0.1);color:#9c27b0;"><i class="bi bi-speedometer2"></i></div><h6>Efficiency Report</h6><p>Collection rate & trends</p></div></div>
+            <div class="col-md-6"><div class="qa-card" onclick="genReport('member')"><div class="qa-icon" style="background:rgba(255,152,0,0.1);color:#ff9800;"><i class="bi bi-people"></i></div><h6>Member Statements</h6><p>Individual repayment history</p></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 16. COLLECTION BREAKDOWN -->
+<div class="modal fade" id="collectionBreakdownModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-pie-chart me-2"></i>Collection Breakdown — December 2024</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="mstat"><span class="mstat-label">Total Collected</span><span class="mstat-value" style="color:var(--primary-green);">KES 4.82M</span></div></div>
+            <div class="col-md-3"><div class="mstat"><span class="mstat-label">Principal</span><span class="mstat-value">KES 3.95M</span></div></div>
+            <div class="col-md-3"><div class="mstat"><span class="mstat-label">Interest</span><span class="mstat-value" style="color:var(--accent-orange);">KES 780K</span></div></div>
+            <div class="col-md-3"><div class="mstat"><span class="mstat-label">Penalties</span><span class="mstat-value" style="color:var(--status-danger);">KES 87K</span></div></div>
+        </div>
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Week</th><th>Transactions</th><th>Collected</th><th>Target</th><th>Rate</th></tr></thead>
+                <tbody>
+                    <tr><td>Week 1 (Dec 1-7)</td><td>98</td><td>KES 1.15M</td><td>KES 1.42M</td><td><span style="color:var(--status-warning);">81%</span></td></tr>
+                    <tr><td>Week 2 (Dec 8-14)</td><td>112</td><td>KES 1.48M</td><td>KES 1.42M</td><td><span style="color:var(--status-success);">104%</span></td></tr>
+                    <tr style="background:var(--primary-green-ultra-light);"><td>Week 3 (Dec 15-21)</td><td>87</td><td>KES 1.24M</td><td>KES 1.42M</td><td><span style="color:var(--status-warning);">87%</span></td></tr>
+                    <tr><td>Week 4 (Dec 22-31)</td><td>—</td><td>KES 950K <small>(projected)</small></td><td>KES 1.41M</td><td>—</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Report exported!')"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- 17. EXPECTED COLLECTIONS -->
+<div class="modal fade" id="expectedCollectionsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#2196f3,#42a5f5);"><h5 class="modal-title"><i class="bi bi-calendar-check me-2"></i>Expected Collections</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Due Date</th><th>Members Due</th><th>Amount Expected</th><th>Collected</th><th>Gap</th></tr></thead>
+                <tbody>
+                    <tr><td>Dec 18 (Today)</td><td>8</td><td>KES 385,000</td><td style="color:var(--status-success);">KES 248,500</td><td style="color:var(--status-danger);">KES 136,500</td></tr>
+                    <tr><td>Dec 19</td><td>3</td><td>KES 125,000</td><td>—</td><td>KES 125,000</td></tr>
+                    <tr><td>Dec 20</td><td>5</td><td>KES 215,000</td><td>—</td><td>KES 215,000</td></tr>
+                    <tr><td>Dec 21</td><td>2</td><td>KES 68,000</td><td>—</td><td>KES 68,000</td></tr>
+                    <tr><td>Dec 22-31</td><td>14</td><td>KES 580,000</td><td>—</td><td>KES 580,000</td></tr>
+                </tbody>
+                <tfoot><tr style="font-weight:700;background:var(--bg-tertiary);"><td>Remaining Dec</td><td>32</td><td>KES 1.37M</td><td>—</td><td>KES 1.12M</td></tr></tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#sendBulkRemindersModal"><i class="bi bi-megaphone"></i> Send Reminders</button></div>
+</div></div></div>
+
+<!-- 18. OVERDUE DETAILS -->
+<div class="modal fade" id="overdueDetailsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header" style="background:linear-gradient(135deg,#f44336,#ef5350);color:white;border:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--spacing-lg) var(--spacing-xl);"><h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Overdue Loans Detail</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:brightness(0) invert(1);"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Member</th><th>Loan</th><th>Overdue Amount</th><th>Penalty</th><th>Days</th><th>Last Contact</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td>Alice Muthoni</td><td><code>LN-00820</code></td><td style="color:var(--status-danger);font-weight:600;">KES 25,000</td><td>KES 5,500</td><td><span class="badge badge-danger">16</span></td><td>Dec 15</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#recordPaymentModal"><i class="bi bi-cash-coin"></i></button></td></tr>
+                    <tr><td>Bernard Kiprop</td><td><code>LN-00798</code></td><td style="color:var(--status-danger);font-weight:600;">KES 45,000</td><td>KES 9,200</td><td><span class="badge badge-danger">23</span></td><td>Dec 12</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#recordPaymentModal"><i class="bi bi-cash-coin"></i></button></td></tr>
+                    <tr><td>Catherine Njeri</td><td><code>LN-00775</code></td><td style="color:var(--status-danger);font-weight:600;">KES 18,000</td><td>KES 3,800</td><td><span class="badge badge-danger">31</span></td><td>Dec 8</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal"><i class="bi bi-calendar-plus"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" style="color:#f44336;border-color:#f44336;" data-bs-toggle="modal" data-bs-target="#sendBulkRemindersModal"><i class="bi bi-megaphone"></i> Bulk Remind All</button></div>
+</div></div></div>
+
+<!-- 19. ADVANCE PAYMENTS -->
+<div class="modal fade" id="advancePaymentsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#9c27b0,#ba68c8);"><h5 class="modal-title"><i class="bi bi-forward me-2"></i>Advance Payments</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-success"><i class="bi bi-star-fill me-1"></i><strong>12 members</strong> made advance payments this month totaling <strong>KES 620,000</strong>.</div>
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Member</th><th>Loan</th><th>Advance Paid</th><th>Months Ahead</th><th>Date</th></tr></thead>
+                <tbody>
+                    <tr><td>Daniel Kipchoge</td><td><code>LN-00835</code></td><td style="font-weight:600;color:var(--accent-purple);">KES 75,000</td><td><span class="streak-badge excellent">2 months</span></td><td>Dec 17</td></tr>
+                    <tr><td>Janet Wambui</td><td><code>LN-00860</code></td><td style="font-weight:600;color:var(--accent-purple);">KES 120,000</td><td><span class="streak-badge excellent">3 months</span></td><td>Dec 15</td></tr>
+                    <tr><td>Samuel Kibet</td><td><code>LN-00842</code></td><td style="font-weight:600;color:var(--accent-purple);">KES 55,000</td><td><span class="streak-badge good">1 month</span></td><td>Dec 14</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 20. PENALTIES DETAIL -->
+<div class="modal fade" id="penaltiesModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#795548,#a1887f);"><h5 class="modal-title"><i class="bi bi-percent me-2"></i>Penalties Charged — December 2024</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><div class="mstat"><span class="mstat-label">Total Charged</span><span class="mstat-value" style="color:var(--status-danger);">KES 87,000</span></div></div>
+            <div class="col-md-4"><div class="mstat"><span class="mstat-label">Collected</span><span class="mstat-value" style="color:var(--status-success);">KES 52,500</span></div></div>
+            <div class="col-md-4"><div class="mstat"><span class="mstat-label">Outstanding</span><span class="mstat-value" style="color:var(--accent-orange);">KES 34,500</span></div></div>
+        </div>
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Member</th><th>Loan</th><th>Penalty</th><th>Days Late</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                    <tr><td>Alice Muthoni</td><td><code>LN-00820</code></td><td>KES 5,500</td><td>16</td><td><span class="badge badge-pending">Unpaid</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#waivePenaltyModal"><i class="bi bi-slash-circle"></i> Waive</button></td></tr>
+                    <tr><td>Bernard Kiprop</td><td><code>LN-00798</code></td><td>KES 9,200</td><td>23</td><td><span class="badge badge-pending">Unpaid</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#waivePenaltyModal"><i class="bi bi-slash-circle"></i> Waive</button></td></tr>
+                    <tr><td>Evans Wafula</td><td><code>LN-00810</code></td><td>KES 1,200</td><td>8</td><td><span class="badge badge-success">Paid</span></td><td>—</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#penaltyConfigModal"><i class="bi bi-sliders"></i> Configure Rules</button></div>
+</div></div></div>
+
+<!-- 21. WAIVERS -->
+<div class="modal fade" id="waiversModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#ff9800,#ffb74d);"><h5 class="modal-title"><i class="bi bi-slash-circle me-2"></i>Penalty Waivers — December 2024</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Member</th><th>Loan</th><th>Original Penalty</th><th>Waived</th><th>Reason</th><th>Approved By</th><th>Date</th></tr></thead>
+                <tbody>
+                    <tr><td>Catherine Njeri</td><td><code>LN-00775</code></td><td>KES 3,800</td><td style="color:var(--accent-orange);font-weight:600;">KES 3,000</td><td>Medical emergency</td><td>David Otieno</td><td>Dec 17</td></tr>
+                    <tr><td>Peter Omondi</td><td><code>LN-00830</code></td><td>KES 2,000</td><td style="color:var(--accent-orange);font-weight:600;">KES 2,000</td><td>First-time offence</td><td>James Kariuki</td><td>Dec 14</td></tr>
+                    <tr><td>Rose Nyambura</td><td><code>LN-00805</code></td><td>KES 1,500</td><td style="color:var(--accent-orange);font-weight:600;">KES 1,500</td><td>System error</td><td>System</td><td>Dec 10</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 22. LATE PAYMENTS -->
+<div class="modal fade" id="latePaymentsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr" style="background:linear-gradient(135deg,#ff9800,#ffb74d);"><h5 class="modal-title"><i class="bi bi-clock me-2"></i>Late Payments (1-7 Days)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Member</th><th>Loan</th><th>Amount Due</th><th>Days Late</th><th>Penalty</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td>Grace Nyokabi</td><td><code>LN-00878</code></td><td>KES 35,000</td><td><span class="badge badge-warning">3</span></td><td>Within grace</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button></td></tr>
+                    <tr><td>Philip Ochieng</td><td><code>LN-00890</code></td><td>KES 28,750</td><td><span class="badge badge-warning">1</span></td><td>Within grace</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button></td></tr>
+                    <tr><td>Faith Wairimu</td><td><code>LN-00855</code></td><td>KES 55,000</td><td><span class="badge badge-warning">5</span></td><td>KES 1,375</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#sendReminderModal"><i class="bi bi-bell"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 23. COLLECTION TRENDS -->
+<div class="modal fade" id="collectionTrendsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-graph-up-arrow me-2"></i>Collection Trends (6 Months)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;">
+                <thead><tr><th>Month</th><th>Expected</th><th>Collected</th><th>Rate</th><th>Overdue</th><th>Trend</th></tr></thead>
+                <tbody>
+                    <tr><td>July 2024</td><td>KES 4.8M</td><td>KES 3.9M</td><td>81%</td><td>KES 900K</td><td><span class="metric-trend down"><i class="bi bi-arrow-down-short"></i></span></td></tr>
+                    <tr><td>August 2024</td><td>KES 5.0M</td><td>KES 4.2M</td><td>84%</td><td>KES 800K</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i></span></td></tr>
+                    <tr><td>September 2024</td><td>KES 5.1M</td><td>KES 4.4M</td><td>86%</td><td>KES 700K</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i></span></td></tr>
+                    <tr><td>October 2024</td><td>KES 5.2M</td><td>KES 4.1M</td><td>79%</td><td>KES 1.1M</td><td><span class="metric-trend down"><i class="bi bi-arrow-down-short"></i></span></td></tr>
+                    <tr><td>November 2024</td><td>KES 5.4M</td><td>KES 4.5M</td><td>83%</td><td>KES 900K</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i></span></td></tr>
+                    <tr style="background:var(--primary-green-ultra-light);font-weight:600;"><td>December 2024</td><td>KES 5.67M</td><td>KES 4.82M</td><td style="color:var(--primary-green);">85%</td><td>KES 850K</td><td><span class="metric-trend up"><i class="bi bi-arrow-up-short"></i></span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Trend report exported!')"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- 24. ACTIVITY LOG -->
+<div class="modal fade" id="activityLogModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-list-ul me-2"></i>Full Repayment Activity Log</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Activities</option><option>Payments Received</option><option>Penalties Applied</option><option>Waivers</option><option>Failed Deductions</option><option>Reminders Sent</option></select></div>
+            <div class="col-md-4"><input type="date" class="form-control finput form-control-sm"></div>
+            <div class="col-md-4"><input type="text" class="form-control finput form-control-sm" placeholder="Search..."></div>
+        </div>
+        <div class="timeline">
+            <div class="tl-item done"><div class="tl-time">Dec 18, 3:15 PM</div><div class="tl-content">Payment <strong>KES 42,000</strong> received from Sarah Auma via M-Pesa</div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 18, 2:30 PM</div><div class="tl-content">Payment <strong>KES 28,500</strong> received from Michael Odera via Bank Transfer</div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 18, 11:40 AM</div><div class="tl-content">Payment <strong>KES 15,000</strong> received from John Kamau via M-Pesa</div></div>
+            <div class="tl-item warn"><div class="tl-time">Dec 18, 10:00 AM</div><div class="tl-content">Penalty <strong>KES 2,500</strong> auto-applied to Alice Muthoni (LN-00820)</div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 18, 9:00 AM</div><div class="tl-content">Payment reminders sent to <strong>5 members</strong> with due payments today</div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 17, 4:50 PM</div><div class="tl-content">Advance payment <strong>KES 75,000</strong> received from Daniel Kipchoge via Wallet</div></div>
+            <div class="tl-item fail"><div class="tl-time">Dec 17, 2:00 PM</div><div class="tl-content">Auto-deduct failed for Bernard Kiprop — Insufficient funds (KES 45,000)</div></div>
+            <div class="tl-item done"><div class="tl-time">Dec 17, 11:20 AM</div><div class="tl-content">Penalty waiver of <strong>KES 3,000</strong> approved for Catherine Njeri</div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Activity log exported!')"><i class="bi bi-download"></i> Export Log</button></div>
+</div></div></div>
+
+<!-- 25. BULK ACTIONS -->
+<div class="modal fade" id="bulkActionsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-gear me-2"></i>Bulk Actions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Apply action to <strong id="bulkCount">0</strong> selected repayments:</p>
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-sm);">
+            <button class="btn btn-ghost w-100 text-start" onclick="bulkAction('export')"><i class="bi bi-download me-2" style="color:var(--primary-green);"></i>Export Selected</button>
+            <button class="btn btn-ghost w-100 text-start" onclick="bulkAction('receipt')"><i class="bi bi-envelope me-2" style="color:var(--accent-blue);"></i>Send Receipts</button>
+            <button class="btn btn-ghost w-100 text-start" onclick="bulkAction('reconcile')"><i class="bi bi-arrow-left-right me-2" style="color:var(--accent-teal);"></i>Mark as Reconciled</button>
+            <button class="btn btn-ghost w-100 text-start" onclick="bulkAction('print')"><i class="bi bi-printer me-2" style="color:var(--accent-purple);"></i>Print Batch</button>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button></div>
+</div></div></div>
+
+<!-- NOTIFICATIONS -->
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body" style="max-height:380px;overflow-y:auto;">
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);cursor:pointer;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-success);"></span><strong style="font-size:0.82rem;">Payment Received</strong><small style="margin-left:auto;color:var(--text-tertiary);">2 min ago</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">KES 42,000 from Sarah Auma — LN-00867</p></div>
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);cursor:pointer;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-danger);"></span><strong style="font-size:0.82rem;">Auto-Deduct Failed</strong><small style="margin-left:auto;color:var(--text-tertiary);">1 hr ago</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Bernard Kiprop — Insufficient funds</p></div>
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);cursor:pointer;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-orange);"></span><strong style="font-size:0.82rem;">Penalty Applied</strong><small style="margin-left:auto;color:var(--text-tertiary);">3 hrs ago</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">KES 2,500 penalty on Alice Muthoni LN-00820</p></div>
+        <div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);cursor:pointer;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-purple);"></span><strong style="font-size:0.82rem;">Waiver Request</strong><small style="margin-left:auto;color:var(--text-tertiary);">5 hrs ago</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">3 pending penalty waiver requests</p></div>
+        <div style="padding:var(--spacing-md);cursor:pointer;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-info);"></span><strong style="font-size:0.82rem;">Daily Summary</strong><small style="margin-left:auto;color:var(--text-tertiary);">Yesterday</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">8 payments due today totaling KES 385,000</p></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost btn-sm">Mark All Read</button><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- QUICK ACTIONS -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+    <div class="modal-header modal-hdr"><h5 class="modal-title"><i class="bi bi-lightning me-2"></i>Quick Actions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);">
+        <button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#recordPaymentModal"><i class="bi bi-plus-circle me-2" style="color:var(--primary-green);"></i>Record Payment</button>
+        <button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#bulkReconcileModal"><i class="bi bi-arrow-left-right me-2" style="color:var(--accent-blue);"></i>Reconcile</button>
+        <button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#sendBulkRemindersModal"><i class="bi bi-megaphone me-2" style="color:var(--accent-orange);"></i>Bulk Reminders</button>
+        <button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#repaymentReportsModal"><i class="bi bi-bar-chart me-2" style="color:var(--accent-teal);"></i>Reports</button>
+        <button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#waiveRequestsModal"><i class="bi bi-slash-circle me-2" style="color:var(--accent-purple);"></i>Waiver Requests <span class="badge badge-danger" style="font-size:0.55rem;">3</span></button>
+    </div></div>
+</div></div></div>
+
+<!-- PROFILE -->
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
+    <div class="modal-body" style="padding:var(--spacing-xl);text-align:center;">
+        <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div>
+        <h5 style="font-weight:700;margin-bottom:2px;">James Kariuki</h5>
+        <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Super Admin • SACCOPay HQ</p>
+        <div style="display:flex;flex-direction:column;gap:var(--spacing-sm);">
+            <button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>My Profile</button>
+            <button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button>
+            <button class="btn btn-ghost btn-sm w-100"><i class="bi bi-shield-check me-2"></i>Security</button>
+            <hr style="margin:var(--spacing-sm) 0;border-color:var(--border-color);">
+            <button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+        </div>
+    </div>
+</div></div></div>
+
+<!-- Success Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ====================================================================
+     JAVASCRIPT
+==================================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ========================================
+// UTILITIES
+// ========================================
+function showToast(msg) {
+    document.getElementById('toastMsg').innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>' + msg;
+    new bootstrap.Toast(document.getElementById('successToast')).show();
+}
+
+function openModal(id) {
+    new bootstrap.Modal(document.getElementById(id)).show();
+}
+
+function closeAndOpen(closeId, openId) {
+    const m = document.querySelectorAll('.modal.show');
+    m.forEach(el => { const i = bootstrap.Modal.getInstance(el); if (i) i.hide(); });
+    setTimeout(() => openModal(openId), 350);
+}
+
+function toggleSidebar() {
+    const s = document.getElementById('adminSidebar');
+    s.style.transform = s.style.transform === 'translateX(0px)' ? 'translateX(-100%)' : 'translateX(0px)';
+}
+
+// ========================================
+// PAYMENT DETAIL
+// ========================================
+function openPaymentDetail(ref) {
+    document.getElementById('receiptRef').textContent = ref;
+    const m = document.querySelectorAll('.modal.show');
+    m.forEach(el => { const i = bootstrap.Modal.getInstance(el); if (i) i.hide(); });
+    setTimeout(() => openModal('paymentDetailModal'), 350);
+}
+
+function viewLoanFromRepayment(loanRef) {
+    showToast('Opening loan ' + loanRef + '... (redirect to Loan Disbursements page)');
+}
+
+// ========================================
+// RECORD PAYMENT
+// ========================================
+function confirmRecordPayment() {
+    bootstrap.Modal.getInstance(document.getElementById('recordPaymentModal')).hide();
+    showToast('Payment recorded successfully! Receipt: RPY-2024-04522');
+}
+
+// ========================================
+// SEND RECEIPT
+// ========================================
+function confirmSendReceipt() {
+    bootstrap.Modal.getInstance(document.getElementById('sendReceiptModal')).hide();
+    showToast('Receipt sent successfully via SMS!');
+}
+
+// ========================================
+// REMINDERS
+// ========================================
+function confirmSendReminder() {
+    bootstrap.Modal.getInstance(document.getElementById('sendReminderModal')).hide();
+    showToast('Payment reminder sent successfully!');
+}
+
+function confirmBulkReminders() {
+    bootstrap.Modal.getInstance(document.getElementById('sendBulkRemindersModal')).hide();
+    showToast('Bulk reminders sent to 5 members!');
+}
+
+// ========================================
+// REVERSAL
+// ========================================
+function confirmReversal() {
+    bootstrap.Modal.getInstance(document.getElementById('reversePaymentModal')).hide();
+    showToast('Payment reversed successfully. Outstanding balance updated.');
+}
+
+// ========================================
+// WAIVERS
+// ========================================
+function confirmWaiver() {
+    bootstrap.Modal.getInstance(document.getElementById('waivePenaltyModal')).hide();
+    showToast('Penalty waiver request submitted for approval!');
+}
+
+function approveWaiver() { showToast('Waiver approved! Penalty removed from member account.'); }
+function rejectWaiver() { showToast('Waiver request rejected. Member will be notified.'); }
+
+// ========================================
+// RESCHEDULE
+// ========================================
+function confirmReschedule() {
+    bootstrap.Modal.getInstance(document.getElementById('rescheduleModal')).hide();
+    showToast('Payment rescheduled successfully!');
+}
+
+// ========================================
+// RETRY AUTO-DEDUCT
+// ========================================
+function confirmRetry() {
+    bootstrap.Modal.getInstance(document.getElementById('retryDeductModal')).hide();
+    showToast('Auto-deduction retry initiated! Member notified.');
+}
+
+// ========================================
+// CONFIGS
+// ========================================
+function saveAutoDeduct() {
+    bootstrap.Modal.getInstance(document.getElementById('autoDeductSetupModal')).hide();
+    showToast('Auto-deduction configuration saved!');
+}
+
+function savePenaltyConfig() {
+    bootstrap.Modal.getInstance(document.getElementById('penaltyConfigModal')).hide();
+    showToast('Penalty configuration saved!');
+}
+
+// ========================================
+// RECONCILIATION
+// ========================================
+function startReconciliation() {
+    bootstrap.Modal.getInstance(document.getElementById('bulkReconcileModal')).hide();
+    showToast('Reconciliation started! Processing 312 entries...');
+}
+
+// ========================================
+// EXPORTS & REPORTS
+// ========================================
+function confirmExport() {
+    bootstrap.Modal.getInstance(document.getElementById('exportRepaymentsModal')).hide();
+    showToast('Repayment data exported! Check downloads.');
+}
+
+function genReport(type) {
+    bootstrap.Modal.getInstance(document.getElementById('repaymentReportsModal')).hide();
+    const names = { collection:'Collection Report', aging:'Aging Analysis', channel:'Channel Analysis', penalty:'Penalty Report', efficiency:'Efficiency Report', member:'Member Statements' };
+    showToast((names[type] || 'Report') + ' generated successfully!');
+}
+
+// ========================================
+// FILTER TABS
+// ========================================
+function setFilter(btn, status) {
+    document.querySelectorAll('.filter-tabs .ftab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    showToast('Filter: ' + status.charAt(0).toUpperCase() + status.slice(1));
+}
+
+// ========================================
+// TABLE CHECKBOXES
+// ========================================
+function toggleAll(el) {
+    document.querySelectorAll('.row-chk').forEach(c => c.checked = el.checked);
+    updateCount();
+}
+
+document.addEventListener('change', e => { if (e.target.classList.contains('row-chk')) updateCount(); });
+
+function updateCount() {
+    const n = document.querySelectorAll('.row-chk:checked').length;
+    document.getElementById('selCount').textContent = n;
+    document.getElementById('bulkBtn').style.display = n > 0 ? 'inline-flex' : 'none';
+    document.getElementById('bulkCount').textContent = n;
+}
+
+function toggleAllBulk(el) { document.querySelectorAll('.bulk-chk').forEach(c => c.checked = el.checked); }
+
+// ========================================
+// BULK ACTIONS
+// ========================================
+function bulkAction(type) {
+    bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();
+    const msgs = { export:'Selected repayments exported!', receipt:'Receipts sent to selected members!', reconcile:'Selected payments marked as reconciled!', print:'Batch print initiated!' };
+    showToast(msgs[type] || 'Action completed!');
+}
+
+// ========================================
+// HEATMAP GENERATION
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const grid = document.getElementById('heatmapGrid');
+    if (grid) {
+        const levels = [0,1,2,3,4,'overdue'];
+        for (let i = 0; i < 30; i++) {
+            const cell = document.createElement('div');
+            const lvl = levels[Math.floor(Math.random() * 5)];
+            const isOverdue = Math.random() < 0.08;
+            cell.className = 'heatmap-cell level-' + (isOverdue ? 'overdue' : lvl);
+            cell.title = 'Dec ' + (i + 1) + ': ' + (isOverdue ? 'Overdue day' : Math.floor(Math.random() * 20) + ' payments');
+            cell.onclick = function() { showToast('Dec ' + (i + 1) + ' — ' + this.title); };
+            grid.appendChild(cell);
+        }
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<<<<<<< HEAD
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Deposit Management | SACCOPay Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    /* =============================================
+       MASTER CSS — NEO-GREEN GLASSMORPHIC THEME
+       ============================================= */
+    :root {
+      --primary-green: #00d084;
+      --primary-green-dark: #00a866;
+      --primary-green-light: #66e5b8;
+      --primary-green-ultra-light: #e6faf4;
+      --accent-teal: #00bcd4;
+      --accent-blue: #2196f3;
+      --accent-purple: #9c27b0;
+      --accent-orange: #ff9800;
+      --accent-red: #f44336;
+      --status-success: #4caf50;
+      --status-warning: #ffc107;
+      --status-danger: #f44336;
+      --status-info: #2196f3;
+      --status-pending: #ff9800;
+      --bg-primary: #f8fafb;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f0f4f7;
+      --glass-bg: rgba(255,255,255,0.88);
+      --glass-border: rgba(0,208,132,0.2);
+      --glass-shadow: rgba(0,208,132,0.1);
+      --text-primary: #1a2332;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --shadow-glow: 0 0 20px rgba(0,208,132,0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --font-sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --sidebar-width: 280px;
+      --sidebar-collapsed-width: 72px;
+      --topbar-height: 70px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(135deg, #f8fafb 0%, #e6faf4 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* =============================================
+       LAYOUT
+       ============================================= */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* =============================================
+       SIDEBAR
+       ============================================= */
+    .admin-sidebar {
+      width: var(--sidebar-width);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1050;
+      box-shadow: var(--shadow-md);
+      transition: width 0.3s cubic-bezier(.4,0,.2,1), transform 0.3s cubic-bezier(.4,0,.2,1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Desktop collapsed */
+    .admin-sidebar.collapsed {
+      width: var(--sidebar-collapsed-width);
+    }
+    .admin-sidebar.collapsed .sidebar-brand-text,
+    .admin-sidebar.collapsed .nav-label,
+    .admin-sidebar.collapsed .nav-section-title,
+    .admin-sidebar.collapsed .nav-badge,
+    .admin-sidebar.collapsed .sidebar-footer-text {
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .admin-sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+      padding: 1.25rem 0;
+    }
+    .admin-sidebar.collapsed .nav-link {
+      justify-content: center;
+      padding: 0.875rem;
+    }
+    .admin-sidebar.collapsed .nav-item {
+      margin: 4px 8px;
+    }
+
+    .sidebar-brand {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+      transition: padding 0.3s, justify-content 0.3s;
+    }
+    .sidebar-brand-logo {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .sidebar-brand-text h1 {
+      font-size: 1.25rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      white-space: nowrap;
+      transition: opacity 0.3s, width 0.3s;
+    }
+    .sidebar-brand-text p {
+      font-size: 0.7rem; color: var(--text-secondary); margin-top: 1px; white-space: nowrap;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar-nav { padding: 1rem 0; flex: 1; }
+
+    .nav-section-title {
+      font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--text-tertiary);
+      padding: .375rem 1.5rem; margin-top: 1rem;
+      transition: opacity 0.3s, width 0.3s;
+      white-space: nowrap; overflow: hidden;
+    }
+    .nav-item { margin: 3px 0.75rem; list-style: none; }
+    .nav-link {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.7rem 1rem;
+      color: var(--text-secondary); text-decoration: none;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease; font-weight: 500; font-size: .875rem;
+      position: relative; white-space: nowrap; overflow: hidden;
+    }
+    .nav-link:hover {
+      background: var(--primary-green-ultra-light);
+      color: var(--primary-green-dark);
+      transform: translateX(4px);
+    }
+    .nav-link.active {
+      background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,208,132,0.3);
+    }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 4px; height: 22px; background: rgba(255,255,255,0.7);
+      border-radius: 0 4px 4px 0;
+    }
+    .nav-icon { width: 18px; height: 18px; flex-shrink: 0; font-size: 1rem; }
+    .nav-label { transition: opacity 0.3s, width 0.3s; overflow: hidden; white-space: nowrap; }
+    .nav-badge {
+      margin-left: auto; background: var(--status-danger);
+      color: #fff; padding: 1px 7px; border-radius: 20px;
+      font-size: .68rem; font-weight: 600; flex-shrink: 0;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      font-size: .75rem; color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .sidebar-footer-text { transition: opacity 0.3s; white-space: nowrap; overflow: hidden; }
+
+    /* =============================================
+       OVERLAY (mobile)
+       ============================================= */
+    #sidebarOverlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1040;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #sidebarOverlay.active { display: block; opacity: 1; }
+
+    /* =============================================
+       MAIN CONTENT
+       ============================================= */
+    .admin-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      transition: margin-left 0.3s cubic-bezier(.4,0,.2,1);
+      min-width: 0;
+      display: flex; flex-direction: column;
+    }
+    .admin-main.sidebar-collapsed { margin-left: var(--sidebar-collapsed-width); }
+
+    /* =============================================
+       TOPBAR
+       ============================================= */
+    .admin-topbar {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0 1.5rem;
+      height: var(--topbar-height);
+      position: sticky; top: 0; z-index: 900;
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: center;
+    }
+    .topbar-content {
+      display: flex; justify-content: space-between;
+      align-items: center; width: 100%; gap: 1rem;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+
+    .sidebar-toggle-btn {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s; flex-shrink: 0; color: var(--text-secondary);
+    }
+    .sidebar-toggle-btn:hover {
+      background: var(--primary-green-ultra-light);
+      border-color: var(--primary-green); color: var(--primary-green-dark);
+    }
+
+    /* Desktop collapse btn — hidden on mobile */
+    #sidebarToggle { display: flex; }
+    /* Mobile hamburger — hidden on desktop */
+    #topbarSidebarToggle { display: none; }
+
+    .topbar-breadcrumb { min-width: 0; }
+    .topbar-breadcrumb .page-title {
+      font-size: 1rem; font-weight: 700; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .topbar-breadcrumb .breadcrumb {
+      font-size: .72rem; margin: 0; background: none; padding: 0;
+    }
+    .topbar-breadcrumb .breadcrumb-item, .topbar-breadcrumb .breadcrumb-item.active {
+      color: var(--text-tertiary); font-weight: 500;
+    }
+    .topbar-breadcrumb .breadcrumb-item a { color: var(--text-secondary); text-decoration: none; }
+    .topbar-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: var(--text-tertiary); }
+
+    .topbar-right { display: flex; align-items: center; gap: 0.625rem; flex-shrink: 0; }
+
+    .topbar-search-wrap { position: relative; }
+    .topbar-search-wrap input {
+      padding: .45rem .9rem .45rem 2.2rem;
+      border: 1.5px solid var(--border-color); border-radius: 20px;
+      background: var(--bg-secondary); font-size: .8rem;
+      transition: all .3s; width: 180px; color: var(--text-primary);
+    }
+    .topbar-search-wrap input:focus {
+      outline: none; border-color: var(--primary-green);
+      box-shadow: 0 0 0 3px var(--primary-green-ultra-light); width: 220px;
+    }
+    .topbar-search-wrap .si { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); font-size: .85rem; }
+
+    .topbar-icon-btn {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s; position: relative; color: var(--text-secondary);
+    }
+    .topbar-icon-btn:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green); transform: scale(1.05); }
+    .topbar-icon-btn .badge-dot {
+      position: absolute; top: -3px; right: -3px;
+      width: 16px; height: 16px; background: var(--status-danger);
+      color: #fff; border-radius: 50%; font-size: .55rem;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; font-weight: 700;
+    }
+
+    .topbar-live-badge {
+      background: linear-gradient(135deg,var(--primary-green),var(--accent-teal));
+      color: #fff; font-size: .65rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px; letter-spacing: .05em;
+      animation: pulse-badge 2s infinite;
+    }
+    @keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+    .user-avatar-sm {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: .75rem; cursor: pointer;
+      border: 2px solid var(--primary-green-light);
+    }
+
+    /* =============================================
+       PAGE CONTENT
+       ============================================= */
+    .page-content { padding: 1.5rem; flex: 1; min-width: 0; }
+
+    /* Page header */
+    .page-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .page-header-left h2 {
+      font-size: 1.5rem; font-weight: 800; color: var(--text-primary);
+    }
+    .page-header-left p { font-size: .85rem; color: var(--text-secondary); margin-top: .25rem; }
+    .page-header-actions { display: flex; gap: .625rem; flex-wrap: wrap; }
+
+    /* Buttons */
+    .btn-primary-green {
+      background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+      color: #fff; border: none; padding: .55rem 1.1rem;
+      border-radius: var(--radius-md); font-weight: 600; font-size: .8rem;
+      display: inline-flex; align-items: center; gap: .4rem;
+      cursor: pointer; transition: all .2s;
+      box-shadow: 0 4px 12px rgba(0,208,132,0.3);
+      white-space: nowrap;
+    }
+    .btn-primary-green:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,208,132,0.4); }
+    .btn-outline-green {
+      background: transparent; color: var(--primary-green-dark);
+      border: 1.5px solid var(--primary-green); padding: .5rem 1rem;
+      border-radius: var(--radius-md); font-weight: 600; font-size: .8rem;
+      display: inline-flex; align-items: center; gap: .4rem;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .btn-outline-green:hover { background: var(--primary-green-ultra-light); }
+    .btn-ghost {
+      background: var(--bg-secondary); color: var(--text-secondary);
+      border: 1px solid var(--border-color); padding: .5rem 1rem;
+      border-radius: var(--radius-md); font-weight: 600; font-size: .8rem;
+      display: inline-flex; align-items: center; gap: .4rem;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .btn-ghost:hover { background: var(--bg-tertiary); border-color: var(--text-tertiary); }
+
+    /* =============================================
+       GLASS CARD
+       ============================================= */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .glass-card:hover {
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      transform: translateY(-2px);
+      border-color: var(--primary-green-light);
+    }
+    .glass-card-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .glass-card-header h5 {
+      font-size: .9rem; font-weight: 700; color: var(--text-primary);
+      display: flex; align-items: center; gap: .5rem; margin: 0;
+    }
+    .glass-card-body { padding: 1.25rem 1.5rem; }
+
+    /* =============================================
+       STAT CARDS GRID
+       ============================================= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem; margin-bottom: 1.25rem;
+    }
+    .stat-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-md);
+      transition: all .3s;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .stat-card.green::before { background: linear-gradient(90deg, var(--primary-green), var(--accent-teal)); }
+    .stat-card.blue::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal)); }
+    .stat-card.orange::before { background: linear-gradient(90deg, var(--accent-orange), var(--accent-red)); }
+    .stat-card.purple::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg), var(--shadow-glow); }
+    .stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .875rem; }
+    .stat-card-label { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-tertiary); }
+    .stat-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .stat-icon.green { background: var(--primary-green-ultra-light); color: var(--primary-green-dark); }
+    .stat-icon.blue { background: #e3f2fd; color: var(--accent-blue); }
+    .stat-icon.orange { background: #fff3e0; color: var(--accent-orange); }
+    .stat-icon.purple { background: #f3e5f5; color: var(--accent-purple); }
+
+    .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); line-height: 1; margin-bottom: .375rem; }
+    .stat-sub { font-size: .75rem; color: var(--text-secondary); margin-bottom: .625rem; }
+    .stat-footer { display: flex; align-items: center; justify-content: space-between; font-size: .72rem; }
+    .stat-trend { display: flex; align-items: center; gap: .3rem; }
+    .stat-trend.up { color: var(--status-success); }
+    .stat-trend.down { color: var(--status-danger); }
+    .stat-updated { color: var(--text-tertiary); }
+
+    /* =============================================
+       CHANNEL STRIP
+       ============================================= */
+    .channel-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.875rem; margin-bottom: 1.25rem;
+    }
+    .channel-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex; align-items: center; gap: .875rem;
+      transition: all .2s; cursor: pointer;
+    }
+    .channel-card:hover { border-color: var(--primary-green); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .channel-icon {
+      width: 42px; height: 42px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .channel-icon.mpesa { background: #e8f5e9; color: #2e7d32; }
+    .channel-icon.bank  { background: #e3f2fd; color: #1565c0; }
+    .channel-icon.cash  { background: #fff8e1; color: #f57f17; }
+    .channel-icon.cheque{ background: #f3e5f5; color: #6a1b9a; }
+    .channel-info { min-width: 0; }
+    .channel-name { font-size: .8rem; font-weight: 600; color: var(--text-secondary); }
+    .channel-amount { font-size: 1rem; font-weight: 800; color: var(--text-primary); }
+    .channel-count { font-size: .72rem; color: var(--text-tertiary); }
+
+    /* =============================================
+       TWO-COLUMN LAYOUT
+       ============================================= */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.25rem; margin-bottom: 1.25rem;
+    }
+    .content-grid.three-col {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .content-grid.wide { grid-template-columns: 2fr 1fr; }
+
+    /* =============================================
+       FILTER BAR
+       ============================================= */
+    .filter-bar {
+      display: flex; align-items: center; gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .filter-bar select, .filter-bar input[type="date"], .filter-bar input[type="search"] {
+      padding: .45rem .875rem; border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md); background: var(--bg-secondary);
+      font-size: .8rem; color: var(--text-primary);
+      transition: all .2s; min-width: 120px;
+    }
+    .filter-bar select:focus, .filter-bar input:focus {
+      outline: none; border-color: var(--primary-green);
+      box-shadow: 0 0 0 3px var(--primary-green-ultra-light);
+    }
+    .filter-search-wrap { position: relative; flex: 1; min-width: 160px; max-width: 260px; }
+    .filter-search-wrap input { width: 100%; padding-left: 2.1rem; }
+    .filter-search-wrap .fs-icon { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); font-size: .85rem; }
+
+    /* =============================================
+       TABLE
+       ============================================= */
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius-md); }
+    .deposits-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    .deposits-table th {
+      padding: .75rem 1rem; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em; color: var(--text-tertiary);
+      background: var(--bg-tertiary); border-bottom: 1.5px solid var(--border-color);
+      white-space: nowrap; text-align: left;
+    }
+    .deposits-table td {
+      padding: .875rem 1rem; font-size: .8rem; color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color); vertical-align: middle;
+    }
+    .deposits-table tbody tr { transition: background .15s; }
+    .deposits-table tbody tr:hover { background: var(--primary-green-ultra-light); }
+    .deposits-table tbody tr:last-child td { border-bottom: none; }
+
+    .dep-id { font-family: 'Consolas',monospace; font-size: .75rem; color: var(--text-secondary); font-weight: 600; }
+    .dep-time { font-size: .72rem; color: var(--text-tertiary); }
+
+    .member-cell { display: flex; align-items: center; gap: .625rem; }
+    .member-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .68rem; font-weight: 700; flex-shrink: 0;
+    }
+    .member-name { font-weight: 600; font-size: .82rem; }
+    .member-id { font-size: .7rem; color: var(--text-tertiary); }
+
+    .method-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .625rem; border-radius: 20px; font-size: .72rem; font-weight: 600;
+    }
+    .method-badge.mpesa { background: #e8f5e9; color: #2e7d32; }
+    .method-badge.bank  { background: #e3f2fd; color: #1565c0; }
+    .method-badge.cash  { background: #fff8e1; color: #f57f17; }
+    .method-badge.cheque{ background: #f3e5f5; color: #6a1b9a; }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .75rem; border-radius: 20px; font-size: .72rem; font-weight: 600;
+    }
+    .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .status-badge.completed { background: #e8f5e9; color: #2e7d32; }
+    .status-badge.completed::before { background: #4caf50; }
+    .status-badge.pending   { background: #fff3e0; color: #e65100; }
+    .status-badge.pending::before   { background: #ff9800; }
+    .status-badge.processing{ background: #e3f2fd; color: #1565c0; }
+    .status-badge.processing::before{ background: #2196f3; }
+    .status-badge.failed    { background: #fce4ec; color: #b71c1c; }
+    .status-badge.failed::before    { background: #f44336; }
+
+    .amount-cell { font-weight: 700; font-size: .9rem; }
+
+    .action-btns { display: flex; align-items: center; gap: .375rem; }
+    .action-btn {
+      width: 30px; height: 30px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color); background: var(--bg-secondary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s; font-size: .8rem; color: var(--text-secondary);
+    }
+    .action-btn:hover { border-color: var(--primary-green); color: var(--primary-green-dark); background: var(--primary-green-ultra-light); transform: scale(1.1); }
+    .action-btn.danger:hover { border-color: var(--status-danger); color: var(--status-danger); background: #fce4ec; }
+    .action-btn.success:hover { border-color: var(--status-success); color: var(--status-success); background: #e8f5e9; }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .875rem 1.25rem; border-top: 1px solid var(--border-color);
+      flex-wrap: wrap; gap: .75rem;
+    }
+    .pagination-info { font-size: .78rem; color: var(--text-secondary); }
+    .pagination-btns { display: flex; gap: .375rem; }
+    .pg-btn {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color); background: var(--bg-secondary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s; font-size: .78rem; font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .pg-btn:hover, .pg-btn.active { background: var(--primary-green); border-color: var(--primary-green); color: #fff; }
+
+    /* =============================================
+       PENDING QUEUE
+       ============================================= */
+    .pending-item {
+      display: flex; align-items: flex-start; gap: .875rem;
+      padding: .875rem 0; border-bottom: 1px solid var(--border-color);
+    }
+    .pending-item:last-child { border-bottom: none; }
+    .pending-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .72rem; font-weight: 700; flex-shrink: 0;
+    }
+    .pending-body { flex: 1; min-width: 0; }
+    .pending-top { display: flex; justify-content: space-between; align-items: flex-start; gap: .5rem; }
+    .pending-name { font-weight: 700; font-size: .84rem; }
+    .pending-meta { font-size: .72rem; color: var(--text-tertiary); }
+    .pending-amount { font-size: 1rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; }
+    .pending-detail { font-size: .72rem; color: var(--text-secondary); margin-top: .25rem; }
+    .pending-actions { display: flex; gap: .375rem; margin-top: .5rem; }
+    .pend-btn {
+      padding: .3rem .75rem; border-radius: var(--radius-sm); font-size: .72rem; font-weight: 600;
+      border: none; cursor: pointer; transition: all .2s;
+    }
+    .pend-btn.approve { background: #e8f5e9; color: #2e7d32; }
+    .pend-btn.approve:hover { background: #4caf50; color: #fff; }
+    .pend-btn.reject  { background: #fce4ec; color: #b71c1c; }
+    .pend-btn.reject:hover  { background: #f44336; color: #fff; }
+
+    /* =============================================
+       RECONCILIATION
+       ============================================= */
+    .recon-stats {
+      display: grid; grid-template-columns: repeat(2,1fr);
+      gap: .75rem; margin-bottom: 1rem;
+    }
+    .recon-stat {
+      background: var(--bg-tertiary); border-radius: var(--radius-md); padding: .875rem;
+      text-align: center;
+    }
+    .recon-stat .rs-label { font-size: .72rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; }
+    .recon-stat .rs-value { font-size: 1rem; font-weight: 800; color: var(--text-primary); margin-top: .25rem; }
+    .recon-stat .rs-sub { font-size: .7rem; color: var(--text-secondary); }
+
+    .recon-item {
+      border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      padding: .875rem; margin-bottom: .75rem; transition: all .2s;
+    }
+    .recon-item:hover { border-color: var(--primary-green); }
+    .recon-item.matched { border-left: 3px solid var(--status-success); }
+    .recon-item.mismatch { border-left: 3px solid var(--status-warning); }
+    .recon-item.missing  { border-left: 3px solid var(--status-danger); }
+    .recon-top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+    .recon-ids { font-size: .72rem; font-weight: 600; color: var(--text-secondary); font-family: monospace; }
+    .recon-time { font-size: .7rem; color: var(--text-tertiary); white-space: nowrap; }
+    .recon-issue { font-size: .75rem; color: var(--text-secondary); margin-top: .375rem; }
+
+    /* =============================================
+       QUICK ENTRY FORM
+       ============================================= */
+    .form-field { margin-bottom: 1rem; }
+    .form-field label { font-size: .78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: .375rem; }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; padding: .55rem .875rem;
+      border: 1.5px solid var(--border-color); border-radius: var(--radius-md);
+      background: var(--bg-secondary); font-size: .82rem; color: var(--text-primary);
+      transition: all .2s; font-family: var(--font-sans);
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none; border-color: var(--primary-green); box-shadow: 0 0 0 3px var(--primary-green-ultra-light);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; }
+
+    .preview-box {
+      background: var(--bg-tertiary); border-radius: var(--radius-md);
+      padding: 1rem; border: 1px solid var(--border-color); margin-bottom: 1rem;
+    }
+    .preview-row { display: flex; justify-content: space-between; padding: .375rem 0; font-size: .82rem; }
+    .preview-row:not(:last-child) { border-bottom: 1px dashed var(--border-color); }
+    .preview-row .pr-label { color: var(--text-secondary); }
+    .preview-row .pr-value { font-weight: 700; }
+    .preview-row.net .pr-value { color: var(--primary-green-dark); font-size: .95rem; }
+
+    /* =============================================
+       ANALYTICS
+       ============================================= */
+    .bar-chart { display: flex; align-items: flex-end; gap: .75rem; height: 120px; padding: 0 .25rem; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .375rem; }
+    .bar-wrap { width: 100%; flex: 1; display: flex; align-items: flex-end; }
+    .bar-fill {
+      width: 100%; background: linear-gradient(180deg, var(--primary-green), var(--accent-teal));
+      border-radius: 4px 4px 0 0; transition: height .6s cubic-bezier(.4,0,.2,1);
+      position: relative; cursor: pointer; min-height: 4px;
+    }
+    .bar-fill:hover { opacity: .85; }
+    .bar-fill .bar-tip {
+      display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+      background: var(--text-primary); color: #fff; font-size: .65rem;
+      padding: 2px 6px; border-radius: 4px; white-space: nowrap; margin-bottom: 4px;
+    }
+    .bar-fill:hover .bar-tip { display: block; }
+    .bar-day { font-size: .68rem; font-weight: 600; color: var(--text-tertiary); }
+
+    .type-rows { display: flex; flex-direction: column; gap: .75rem; }
+    .type-row-item { display: flex; flex-direction: column; gap: .25rem; }
+    .type-row-top { display: flex; justify-content: space-between; font-size: .78rem; }
+    .type-row-name { font-weight: 600; color: var(--text-secondary); }
+    .type-row-amount { font-weight: 700; color: var(--text-primary); }
+    .type-progress { height: 6px; background: var(--bg-tertiary); border-radius: 20px; overflow: hidden; }
+    .type-progress-fill { height: 100%; border-radius: 20px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+    .type-pct { font-size: .7rem; color: var(--text-tertiary); }
+
+    /* Recent activity feed */
+    .activity-feed { display: flex; flex-direction: column; }
+    .activity-item {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .625rem 0; border-bottom: 1px solid var(--border-color);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: var(--primary-green-ultra-light); color: var(--primary-green-dark);
+      display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700;
+    }
+    .activity-name { font-size: .82rem; font-weight: 600; }
+    .activity-meta { font-size: .72rem; color: var(--text-secondary); }
+    .activity-time { font-size: .7rem; color: var(--text-tertiary); margin-left: auto; white-space: nowrap; }
+
+    /* =============================================
+       MODALS
+       ============================================= */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 2000;
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 520px;
+      max-height: 90vh; overflow-y: auto;
+      animation: modalIn .25s cubic-bezier(.4,0,.2,1);
+    }
+    .modal-box.lg { max-width: 700px; }
+    @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .modal-header {
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h4 { font-size: 1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: .5rem; }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border-color);
+      background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; color: var(--text-secondary); transition: all .2s;
+    }
+    .modal-close:hover { background: #fce4ec; border-color: var(--status-danger); color: var(--status-danger); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer {
+      padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);
+      display: flex; justify-content: flex-end; gap: .75rem;
+    }
+
+    /* Deposit Details modal */
+    .detail-row { display: flex; padding: .625rem 0; border-bottom: 1px solid var(--border-color); font-size: .84rem; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { width: 160px; flex-shrink: 0; color: var(--text-secondary); font-weight: 600; }
+    .detail-value { flex: 1; color: var(--text-primary); font-weight: 500; }
+
+    /* =============================================
+       TOAST
+       ============================================= */
+    #toastContainer {
+      position: fixed; top: 1.25rem; right: 1.25rem; z-index: 9999;
+      display: flex; flex-direction: column; gap: .5rem; pointer-events: none;
+    }
+    .toast-item {
+      background: var(--glass-bg); backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg); padding: .875rem 1.25rem;
+      display: flex; align-items: center; gap: .625rem;
+      font-size: .82rem; animation: slideInRight .3s ease;
+      max-width: 320px; pointer-events: auto;
+    }
+    @keyframes slideInRight { from{opacity:0;transform:translateX(100%)} to{opacity:1;transform:translateX(0)} }
+    @keyframes fadeOut { to{opacity:0;transform:translateX(100%)} }
+    .toast-item.success { border-left: 3px solid var(--status-success); }
+    .toast-item.warning { border-left: 3px solid var(--status-warning); }
+    .toast-item.danger  { border-left: 3px solid var(--status-danger); }
+    .toast-item.info    { border-left: 3px solid var(--status-info); }
+
+    /* =============================================
+       SECTION DIVIDER
+       ============================================= */
+    .section-divider { margin: 1.25rem 0; border: none; border-top: 1px solid var(--border-color); }
+
+    /* Top depositors table */
+    .mini-table { width: 100%; border-collapse: collapse; }
+    .mini-table th { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-tertiary); padding: .5rem .75rem; border-bottom: 1px solid var(--border-color); text-align: left; }
+    .mini-table td { font-size: .78rem; padding: .625rem .75rem; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+    .mini-table tbody tr:last-child td { border-bottom: none; }
+    .mini-table tbody tr:hover { background: var(--primary-green-ultra-light); }
+    .rank-badge {
+      width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg,var(--primary-green),var(--accent-teal));
+      color: #fff; font-size: .65rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    /* =============================================
+       RESPONSIVE — ≤ 1200px
+       ============================================= */
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .channel-strip { grid-template-columns: repeat(2,1fr); }
+      .content-grid { grid-template-columns: 1fr; }
+      .content-grid.wide { grid-template-columns: 1fr; }
+    }
+
+    /* =============================================
+       RESPONSIVE — ≤ 900px
+       ============================================= */
+    @media (max-width: 900px) {
+      :root { --sidebar-width: 280px; }
+      /* On tablet/mobile, sidebar slides in from left (hidden by default) */
+      .admin-sidebar {
+        transform: translateX(-100%);
+        width: var(--sidebar-width) !important;
+      }
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      /* Main takes full width */
+      .admin-main { margin-left: 0 !important; }
+      /* Show hamburger, hide desktop collapse btn */
+      #sidebarToggle { display: none !important; }
+      #topbarSidebarToggle { display: flex !important; }
+    }
+
+    /* =============================================
+       RESPONSIVE — ≤ 600px
+       ============================================= */
+    @media (max-width: 600px) {
+      .page-content { padding: 1rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
+      .channel-strip { grid-template-columns: 1fr 1fr; gap: .625rem; }
+      .stat-value { font-size: 1.25rem; }
+      .page-header { flex-direction: column; }
+      .page-header-actions { width: 100%; }
+      .page-header-actions .btn-primary-green,
+      .page-header-actions .btn-ghost { flex: 1; justify-content: center; }
+      .filter-bar { gap: .5rem; }
+      .filter-bar select { min-width: 100px; }
+      .topbar-search-wrap { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .recon-stats { grid-template-columns: repeat(2,1fr); }
+      .admin-topbar { padding: 0 1rem; }
+      .topbar-live-badge { display: none; }
+    }
+
+    /* =============================================
+       RESPONSIVE — ≤ 400px
+       ============================================= */
+    @media (max-width: 400px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .channel-strip { grid-template-columns: 1fr; }
+      .stat-card { padding: 1rem; }
+    }
+
+    /* =============================================
+       PRINT
+       ============================================= */
+    @media print {
+      .admin-sidebar, .admin-topbar, .page-header-actions,
+      .action-btns, .pagination-bar, #toastContainer,
+      .modal-overlay, #sidebarOverlay { display: none !important; }
+      .admin-main { margin-left: 0 !important; }
+      .glass-card { box-shadow: none; border: 1px solid #ccc; }
+      body { background: #fff; }
+    }
+  </style>
+=======
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Management | SACCOPay Admin</title>
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+   
+>>>>>>> 4ce6ebce6161e7dd219cf5cf023bfbe39330e464
+</head>
+<body>
+
+<<<<<<< HEAD
+<!-- Toast container -->
+<div id="toastContainer"></div>
+
+<!-- Sidebar Overlay -->
+<div id="sidebarOverlay"></div>
+
+<div class="admin-layout">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-logo">SP</div>
+      <div class="sidebar-brand-text">
+        <h1>SACCOPay</h1>
+        <p>Admin Panel v6.1</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <ul style="list-style:none;padding:0;margin:0">
+        <li class="nav-item">
+          <a href="dashboard.html" class="nav-link">
+            <i class="bi bi-speedometer2 nav-icon"></i>
+            <span class="nav-label">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="analytics.html" class="nav-link">
+            <i class="bi bi-bar-chart-line nav-icon"></i>
+            <span class="nav-label">Analytics</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="members.html" class="nav-link">
+            <i class="bi bi-people nav-icon"></i>
+            <span class="nav-label">Members</span>
+            <span class="nav-badge">3</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-section-title">Financial</div>
+      <ul style="list-style:none;padding:0;margin:0">
+        <li class="nav-item">
+          <a href="finance-deposits.html" class="nav-link active">
+            <i class="bi bi-arrow-down-circle nav-icon"></i>
+            <span class="nav-label">Deposits</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="finance-withdrawals.html" class="nav-link">
+            <i class="bi bi-arrow-up-circle nav-icon"></i>
+            <span class="nav-label">Withdrawals</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="finance-loans.html" class="nav-link">
+            <i class="bi bi-cash-coin nav-icon"></i>
+            <span class="nav-label">Loans</span>
+            <span class="nav-badge">5</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="finance-shares.html" class="nav-link">
+            <i class="bi bi-pie-chart nav-icon"></i>
+            <span class="nav-label">Share Capital</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reconciliation.html" class="nav-link">
+            <i class="bi bi-arrow-left-right nav-icon"></i>
+            <span class="nav-label">Reconciliation</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-section-title">Management</div>
+      <ul style="list-style:none;padding:0;margin:0">
+        <li class="nav-item">
+          <a href="vendors.html" class="nav-link">
+            <i class="bi bi-shop nav-icon"></i>
+            <span class="nav-label">Vendors</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html" class="nav-link">
+            <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+            <span class="nav-label">Reports</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <i class="bi bi-gear nav-icon"></i>
+            <span class="nav-label">Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="audit-log.html" class="nav-link">
+            <i class="bi bi-journal-text nav-icon"></i>
+            <span class="nav-label">Audit Log</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-text">SACCOPay © 2026</div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="admin-main" id="adminMain">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+      <div class="topbar-content">
+        <div class="topbar-left">
+          <!-- Mobile hamburger -->
+          <button class="sidebar-toggle-btn" id="topbarSidebarToggle" title="Toggle menu">
+            <i class="bi bi-list" style="font-size:1.1rem"></i>
+          </button>
+          <!-- Desktop collapse -->
+          <button class="sidebar-toggle-btn" id="sidebarToggle" title="Collapse sidebar">
+            <i class="bi bi-layout-sidebar" id="toggleIcon" style="font-size:1rem"></i>
+          </button>
+          <div class="topbar-breadcrumb">
+            <div class="page-title">Deposit Management</div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard.html">Home</a></li>
+                <li class="breadcrumb-item">Financial Operations</li>
+                <li class="breadcrumb-item active">Deposits</li>
+              </ol>
+=======
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>Rongo SACCO</h1>
+                    <p>Admin Portal</p>
+                </div>
+                <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="./dashboard.html" class="nav-link">
+                        <i class="bi bi-speedometer2 nav-icon"></i>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./analytics.html" class="nav-link active">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Tresury</div>
+
+                <div class="nav-item">
+                    <a href="./tresury-wallet.html" class="nav-link active">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Wallet</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./tresury-savings.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Savings</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Members</div>
+                <div class="nav-item">
+                    <a href="./members-all.html" class="nav-link">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span>All Members</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./members-kyc.html" class="nav-link">
+                        <i class="bi bi-person-check nav-icon"></i>
+                        <span>KYC Pending</span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="member-registration.html" class="nav-link">
+                        <i class="bi bi-person-plus nav-icon"></i>
+                        <span>Register Member</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Financial</div>
+                <div class="nav-item">
+                    <a href="./financial-transactions.html" class="nav-link">
+                        <i class="bi bi-arrow-left-right nav-icon"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./financial-deposits.html" class="nav-link">
+                        <i class="bi bi-piggy-bank nav-icon"></i>
+                        <span>Deposits</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./financial-withdrawals.html" class="nav-link">
+                        <i class="bi bi-cash-coin nav-icon"></i>
+                        <span>Withdrawals</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./financial-shares.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Share Capital</span>
+                    </a>
+                </div>
+                
+
+                <div class="nav-section-title">Loans</div>
+                <div class="nav-item">
+                    <a href="./loans-portifolio.html" class="nav-link">
+                        <i class="bi bi-clipboard-data nav-icon"></i>
+                        <span>Loan Portfolio</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./loan-applications.html" class="nav-link">
+                        <i class="bi bi-file-earmark-text nav-icon"></i>
+                        <span>Applications</span>
+                        <span class="nav-badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./loan-disbursements.html" class="nav-link">
+                        <i class="bi bi-send nav-icon"></i>
+                        <span>Disbursements</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./loan-repayments.html" class="nav-link">
+                        <i class="bi bi-arrow-down-circle nav-icon"></i>
+                        <span>Repayments</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Reports</div>
+                <div class="nav-item">
+                    <a href="./reports-all.html" class="nav-link">
+                        <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                        <span>All Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./reports-compliance.html" class="nav-link">
+                        <i class="bi bi-clipboard-check nav-icon"></i>
+                        <span>Compliance</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Settings</div>
+                <div class="nav-item">
+                    <a href="./settings-all.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./settings-notifications.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Notifications</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="./settings-staff-management.html" class="nav-link">
+                        <i class="bi bi-person-gear nav-icon"></i>
+                        <span>Staff Management</span>
+                    </a>
+                </div>
+>>>>>>> 4ce6ebce6161e7dd219cf5cf023bfbe39330e464
+            </nav>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-live-badge"><i class="bi bi-circle-fill" style="font-size:.5rem"></i> LIVE</span>
+          <div class="topbar-search-wrap">
+            <i class="bi bi-search si"></i>
+            <input type="search" placeholder="Search deposits…" />
+          </div>
+          <button class="topbar-icon-btn" title="Notifications" onclick="showToast('You have 7 new notifications','info')">
+            <i class="bi bi-bell"></i>
+            <span class="badge-dot">7</span>
+          </button>
+          <button class="topbar-icon-btn" title="Export" onclick="openModal('exportModal')">
+            <i class="bi bi-download"></i>
+          </button>
+          <div class="user-avatar-sm" title="John Maina — General Manager">JM</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <h2><i class="bi bi-arrow-down-circle-fill" style="color:var(--primary-green);margin-right:.4rem"></i>Deposit Management</h2>
+          <p>Monitor, record, and reconcile all member deposits in real-time</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn-ghost" onclick="openModal('reconcileModal')">
+            <i class="bi bi-arrow-left-right"></i> Reconcile
+          </button>
+          <button class="btn-ghost" onclick="openModal('exportModal')">
+            <i class="bi bi-download"></i> Export
+          </button>
+          <button class="btn-primary-green" onclick="openModal('recordModal')">
+            <i class="bi bi-plus-circle"></i> Record Deposit
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STAT CARDS ── -->
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-card-top">
+            <span class="stat-card-label">Today's Deposits</span>
+            <div class="stat-icon green"><i class="bi bi-calendar-check"></i></div>
+          </div>
+          <div class="stat-value">KES 8.2M</div>
+          <div class="stat-sub">1,234 deposits today</div>
+          <div class="stat-footer">
+            <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>+18.5% vs yesterday</span>
+            <span class="stat-updated"><i class="bi bi-clock"></i> 2m ago</span>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-top">
+            <span class="stat-card-label">This Month</span>
+            <div class="stat-icon blue"><i class="bi bi-graph-up-arrow"></i></div>
+          </div>
+          <div class="stat-value">KES 156M</div>
+          <div class="stat-sub">+12.5% vs last month</div>
+          <div class="stat-footer">
+            <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>24,567 total deposits</span>
+            <span class="stat-updated" style="color:var(--status-success)"><i class="bi bi-check-circle"></i> On target</span>
+          </div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-card-top">
+            <span class="stat-card-label">Pending Approval</span>
+            <div class="stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+          </div>
+          <div class="stat-value">45</div>
+          <div class="stat-sub">KES 12.8M awaiting</div>
+          <div class="stat-footer">
+            <span class="stat-trend down"><i class="bi bi-exclamation-triangle"></i> Need verification</span>
+            <span class="stat-updated" style="color:var(--accent-orange)">3 over 24h</span>
+          </div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-card-top">
+            <span class="stat-card-label">Success Rate</span>
+            <div class="stat-icon purple"><i class="bi bi-shield-check"></i></div>
+          </div>
+          <div class="stat-value">99.2%</div>
+          <div class="stat-sub">Excellent performance</div>
+          <div class="stat-footer">
+            <span class="stat-trend down"><i class="bi bi-x-circle"></i>12 failed this month</span>
+            <span class="stat-updated" style="color:var(--status-success)">Target: 98%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CHANNEL STRIP ── -->
+      <div class="channel-strip">
+        <div class="channel-card">
+          <div class="channel-icon mpesa"><i class="bi bi-phone"></i></div>
+          <div class="channel-info">
+            <div class="channel-name">M-Pesa</div>
+            <div class="channel-amount">KES 4.5M</div>
+            <div class="channel-count">892 deposits</div>
+          </div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon bank"><i class="bi bi-bank"></i></div>
+          <div class="channel-info">
+            <div class="channel-name">Bank Transfer</div>
+            <div class="channel-amount">KES 2.8M</div>
+            <div class="channel-count">234 deposits</div>
+          </div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon cash"><i class="bi bi-cash-stack"></i></div>
+          <div class="channel-info">
+            <div class="channel-name">Cash</div>
+            <div class="channel-amount">KES 650K</div>
+            <div class="channel-count">78 deposits</div>
+          </div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon cheque"><i class="bi bi-file-text"></i></div>
+          <div class="channel-info">
+            <div class="channel-name">Cheque</div>
+            <div class="channel-amount">KES 250K</div>
+            <div class="channel-count">30 deposits</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MAIN TABLE + PENDING QUEUE ── -->
+      <div class="content-grid">
+
+        <!-- Deposits Table -->
+        <div class="glass-card" style="overflow:hidden">
+          <div class="glass-card-header">
+            <h5><i class="bi bi-table" style="color:var(--primary-green)"></i>All Deposits</h5>
+            <div class="filter-bar">
+              <div class="filter-search-wrap">
+                <i class="bi bi-search fs-icon"></i>
+                <input type="search" placeholder="Search…" id="tableSearch" oninput="filterTable(this.value)" />
+              </div>
+              <select id="statusFilter" onchange="filterTable()">
+                <option value="">All Status</option>
+                <option>Completed</option>
+                <option>Pending</option>
+                <option>Processing</option>
+                <option>Failed</option>
+              </select>
+              <select id="methodFilter" onchange="filterTable()">
+                <option value="">All Methods</option>
+                <option>M-Pesa</option>
+                <option>Bank Transfer</option>
+                <option>Cash</option>
+                <option>Cheque</option>
+              </select>
+              <input type="date" id="dateFilter" onchange="filterTable()" />
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="deposits-table" id="depositsTable">
+              <thead>
+                <tr>
+                  <th>Deposit ID</th>
+                  <th>Date & Time</th>
+                  <th>Member</th>
+                  <th>Type</th>
+                  <th>Method</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr>
+                  <td><span class="dep-id">DEP-2026-00789</span><br><span class="dep-time">Today, 2:45 PM</span></td>
+                  <td>Jan 16, 2026</td>
+                  <td><div class="member-cell"><div class="member-avatar">SA</div><div><div class="member-name">Sarah Akinyi</div><div class="member-id">R-00123</div></div></div></td>
+                  <td>Savings</td>
+                  <td><span class="method-badge mpesa"><i class="bi bi-phone"></i>M-Pesa</span></td>
+                  <td class="amount-cell">KES 50,000</td>
+                  <td><span class="status-badge completed">Completed</span></td>
+                  <td><div class="action-btns">
+                    <button class="action-btn" title="View details" onclick="openDetails('DEP-2026-00789','Sarah Akinyi','Savings','M-Pesa','KES 50,000','Completed','Jan 16, 2026 2:45 PM','R-00123','MPESA-789ABC')">
+                      <i class="bi bi-eye"></i></button>
+                    <button class="action-btn" title="Print receipt" onclick="showToast('Printing receipt…','info')"><i class="bi bi-printer"></i></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><span class="dep-id">DEP-2026-00788</span><br><span class="dep-time">Today, 2:20 PM</span></td>
+                  <td>Jan 16, 2026</td>
+                  <td><div class="member-cell"><div class="member-avatar" style="background:linear-gradient(135deg,var(--accent-orange),var(--accent-red))">DK</div><div><div class="member-name">David Kipkorir</div><div class="member-id">R-00045</div></div></div></td>
+                  <td>Loan Repayment</td>
+                  <td><span class="method-badge cash"><i class="bi bi-cash-stack"></i>Cash</span></td>
+                  <td class="amount-cell">KES 125,000</td>
+                  <td><span class="status-badge pending">Pending</span></td>
+                  <td><div class="action-btns">
+                    <button class="action-btn success" title="Approve" onclick="showToast('Deposit DEP-2026-00788 approved','success')"><i class="bi bi-check-lg"></i></button>
+                    <button class="action-btn" title="View details" onclick="openDetails('DEP-2026-00788','David Kipkorir','Loan Repayment','Cash','KES 125,000','Pending','Jan 16, 2026 2:20 PM','R-00045','CASH-1423')">
+                      <i class="bi bi-eye"></i></button>
+                    <button class="action-btn danger" title="Reject" onclick="showToast('Deposit rejected','danger')"><i class="bi bi-x-lg"></i></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><span class="dep-id">DEP-2026-00787</span><br><span class="dep-time">Today, 1:50 PM</span></td>
+                  <td>Jan 16, 2026</td>
+                  <td><div class="member-cell"><div class="member-avatar" style="background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue))">MW</div><div><div class="member-name">Mary Wanjiku</div><div class="member-id">R-00234</div></div></div></td>
+                  <td>Share Capital</td>
+                  <td><span class="method-badge bank"><i class="bi bi-bank"></i>Bank Transfer</span></td>
+                  <td class="amount-cell">KES 200,000</td>
+                  <td><span class="status-badge completed">Completed</span></td>
+                  <td><div class="action-btns">
+                    <button class="action-btn" title="View details" onclick="openDetails('DEP-2026-00787','Mary Wanjiku','Share Capital','Bank Transfer','KES 200,000','Completed','Jan 16, 2026 1:50 PM','R-00234','EQT-FT261800234')">
+                      <i class="bi bi-eye"></i></button>
+                    <button class="action-btn" title="Print receipt" onclick="showToast('Printing receipt…','info')"><i class="bi bi-printer"></i></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><span class="dep-id">DEP-2026-00786</span><br><span class="dep-time">Today, 1:15 PM</span></td>
+                  <td>Jan 16, 2026</td>
+                  <td><div class="member-cell"><div class="member-avatar" style="background:linear-gradient(135deg,var(--accent-teal),var(--accent-blue))">JO</div><div><div class="member-name">John Otieno</div><div class="member-id">R-00456</div></div></div></td>
+                  <td>Fixed Deposit</td>
+                  <td><span class="method-badge cheque"><i class="bi bi-file-text"></i>Cheque</span></td>
+                  <td class="amount-cell">KES 500,000</td>
+                  <td><span class="status-badge processing">Processing</span></td>
+                  <td><div class="action-btns">
+                    <button class="action-btn" title="View details" onclick="openDetails('DEP-2026-00786','John Otieno','Fixed Deposit','Cheque','KES 500,000','Processing','Jan 16, 2026 1:15 PM','R-00456','CHQ-KCB-4521')">
+                      <i class="bi bi-eye"></i></button>
+                    <button class="action-btn" title="Print receipt" onclick="showToast('Printing receipt…','info')"><i class="bi bi-printer"></i></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><span class="dep-id">DEP-2026-00785</span><br><span class="dep-time">Today, 12:30 PM</span></td>
+                  <td>Jan 16, 2026</td>
+                  <td><div class="member-cell"><div class="member-avatar" style="background:linear-gradient(135deg,#e91e63,var(--accent-purple))">GM</div><div><div class="member-name">Grace Muthoni</div><div class="member-id">R-00678</div></div></div></td>
+                  <td>Savings</td>
+                  <td><span class="method-badge mpesa"><i class="bi bi-phone"></i>M-Pesa</span></td>
+                  <td class="amount-cell">KES 35,000</td>
+                  <td><span class="status-badge completed">Completed</span></td>
+                  <td><div class="action-btns">
+                    <button class="action-btn" title="View details" onclick="openDetails('DEP-2026-00785','Grace Muthoni','Savings','M-Pesa','KES 35,000','Completed','Jan 16, 2026 12:30 PM','R-00678','MPESA-QHX7823')">
+                      <i class="bi bi-eye"></i></button>
+                    <button class="action-btn" title="Print receipt" onclick="showToast('Printing receipt…','info')"><i class="bi bi-printer"></i></button>
+                  </div></td>
+                </tr>
+                <tr>
+                  <td><span class="dep-id">DEP-2026-00784</span><br><span class="dep-time">Today, 11:45 AM</span></td>
+                  <td>Jan 16, 2026</td>
+                  <td><div class="member-cell"><div class="member-avatar" style="background:linear-gradient(135deg,#ff5722,var(--accent-orange))">PN</div><div><div class="member-name">Peter Njoroge</div><div class="member-id">R-00892</div></div></div></td>
+                  <td>Share Capital</td>
+                  <td><span class="method-badge cheque"><i class="bi bi-file-text"></i>Cheque</span></td>
+                  <td class="amount-cell">KES 75,000</td>
+                  <td><span class="status-badge pending">Pending</span></td>
+                  <td><div class="action-btns">
+                    <button class="action-btn success" title="Approve" onclick="showToast('Deposit DEP-2026-00784 approved','success')"><i class="bi bi-check-lg"></i></button>
+                    <button class="action-btn" title="View details" onclick="openDetails('DEP-2026-00784','Peter Njoroge','Share Capital','Cheque','KES 75,000','Pending','Jan 16, 2026 11:45 AM','R-00892','CHQ-KCB-3380')">
+                      <i class="bi bi-eye"></i></button>
+                    <button class="action-btn danger" title="Reject" onclick="showToast('Deposit rejected','danger')"><i class="bi bi-x-lg"></i></button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination-bar">
+            <span class="pagination-info">Showing 1–6 of 1,234 deposits</span>
+            <div class="pagination-btns">
+              <button class="pg-btn"><i class="bi bi-chevron-left"></i></button>
+              <button class="pg-btn active">1</button>
+              <button class="pg-btn" onclick="showToast('Loading page 2…','info')">2</button>
+              <button class="pg-btn" onclick="showToast('Loading page 3…','info')">3</button>
+              <span style="align-self:center;font-size:.75rem;color:var(--text-tertiary)">…</span>
+              <button class="pg-btn" onclick="showToast('Loading last page…','info')">207</button>
+              <button class="pg-btn"><i class="bi bi-chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Queue -->
+        <div class="glass-card" style="overflow:hidden">
+          <div class="glass-card-header">
+            <h5><i class="bi bi-hourglass-split" style="color:var(--accent-orange)"></i>Pending Approval</h5>
+            <span style="background:#fff3e0;color:#e65100;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;">45</span>
+          </div>
+          <div class="glass-card-body" style="padding-top:.75rem">
+
+            <div class="pending-item">
+              <div class="pending-avatar">DK</div>
+              <div class="pending-body">
+                <div class="pending-top">
+                  <div>
+                    <div class="pending-name">David Kipkorir</div>
+                    <div class="pending-meta">DEP-2026-00788 · R-00045</div>
+                  </div>
+                  <div class="pending-amount">KES 125K</div>
+                </div>
+                <div class="pending-detail">
+                  <span class="method-badge cash" style="font-size:.68rem;padding:.2rem .5rem"><i class="bi bi-cash-stack"></i>Cash</span>
+                  &nbsp;Loan Repayment · Ref: CASH-1423
+                </div>
+                <div class="pending-actions">
+                  <button class="pend-btn approve" onclick="showToast('David Kipkorir\'s deposit approved ✓','success')"><i class="bi bi-check"></i> Approve</button>
+                  <button class="pend-btn reject" onclick="showToast('Deposit rejected','danger')"><i class="bi bi-x"></i> Reject</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pending-item">
+              <div class="pending-avatar" style="background:linear-gradient(135deg,#607d8b,#455a64)">PN</div>
+              <div class="pending-body">
+                <div class="pending-top">
+                  <div>
+                    <div class="pending-name">Peter Njoroge</div>
+                    <div class="pending-meta">DEP-2026-00780 · R-00892</div>
+                  </div>
+                  <div class="pending-amount">KES 75K</div>
+                </div>
+                <div class="pending-detail">
+                  <span class="method-badge cheque" style="font-size:.68rem;padding:.2rem .5rem"><i class="bi bi-file-text"></i>Cheque</span>
+                  &nbsp;Share Capital · KCB Bank · Clear: Jan 18
+                </div>
+                <div class="pending-actions">
+                  <button class="pend-btn approve" onclick="showToast('Peter Njoroge\'s deposit approved ✓','success')"><i class="bi bi-check"></i> Approve</button>
+                  <button class="pend-btn reject" onclick="showToast('Deposit rejected','danger')"><i class="bi bi-x"></i> Reject</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pending-item">
+              <div class="pending-avatar" style="background:linear-gradient(135deg,var(--accent-blue),var(--accent-teal))">AK</div>
+              <div class="pending-body">
+                <div class="pending-top">
+                  <div>
+                    <div class="pending-name">Alice Kamau</div>
+                    <div class="pending-meta">DEP-2026-00775 · R-01234</div>
+                  </div>
+                  <div class="pending-amount">KES 180K</div>
+                </div>
+                <div class="pending-detail">
+                  <span class="method-badge bank" style="font-size:.68rem;padding:.2rem .5rem"><i class="bi bi-bank"></i>Bank</span>
+                  &nbsp;Savings · Equity Bank · FT261800234
+                </div>
+                <div class="pending-actions">
+                  <button class="pend-btn approve" onclick="showToast('Alice Kamau\'s deposit approved ✓','success')"><i class="bi bi-check"></i> Approve</button>
+                  <button class="pend-btn reject" onclick="showToast('Deposit rejected','danger')"><i class="bi bi-x"></i> Reject</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding-top:.75rem;text-align:center">
+              <button class="btn-outline-green" style="font-size:.78rem;width:100%">View All 45 Pending <i class="bi bi-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RECONCILIATION + QUICK ENTRY ── -->
+      <div class="content-grid wide">
+
+        <!-- Reconciliation Panel -->
+        <div class="glass-card" style="overflow:hidden">
+          <div class="glass-card-header">
+            <h5><i class="bi bi-arrow-left-right" style="color:var(--accent-teal)"></i>Reconciliation Status</h5>
+            <button class="btn-primary-green" style="font-size:.75rem;padding:.4rem .875rem" onclick="openModal('reconcileModal')">
+              <i class="bi bi-play-circle"></i> Run Reconcile
+            </button>
+          </div>
+          <div class="glass-card-body">
+            <div class="recon-stats">
+              <div class="recon-stat">
+                <div class="rs-label">System</div>
+                <div class="rs-value">KES 8.2M</div>
+                <div class="rs-sub">Recorded deposits</div>
+              </div>
+              <div class="recon-stat">
+                <div class="rs-label">Statement</div>
+                <div class="rs-value">KES 8.15M</div>
+                <div class="rs-sub">Bank/M-Pesa statement</div>
+              </div>
+              <div class="recon-stat" style="background:#e8f5e9">
+                <div class="rs-label" style="color:#2e7d32">Matched</div>
+                <div class="rs-value" style="color:#2e7d32">1,189</div>
+                <div class="rs-sub" style="color:#4caf50">96.4% match rate</div>
+              </div>
+              <div class="recon-stat" style="background:#fff3e0">
+                <div class="rs-label" style="color:#e65100">Unmatched</div>
+                <div class="rs-value" style="color:#e65100">45</div>
+                <div class="rs-sub" style="color:#ff9800">3.6% discrepancy</div>
+              </div>
+            </div>
+
+            <div style="font-size:.78rem;font-weight:700;color:var(--text-secondary);margin-bottom:.625rem">
+              <i class="bi bi-exclamation-triangle" style="color:var(--status-warning)"></i> Unmatched / Discrepancies
+            </div>
+
+            <div class="recon-item missing">
+              <div class="recon-top">
+                <span class="recon-ids">DEP-2026-00745 · Sarah Akinyi · M-Pesa · KES 50,000</span>
+                <span class="recon-time">Jan 15, 10:30 AM</span>
+              </div>
+              <div class="recon-issue"><i class="bi bi-x-circle" style="color:var(--status-danger)"></i> Not found in M-Pesa statement</div>
+              <div style="margin-top:.5rem;display:flex;gap:.375rem">
+                <button class="pend-btn approve" style="font-size:.7rem" onclick="showToast('Manual match applied','success')"><i class="bi bi-link"></i> Match Manually</button>
+                <button class="pend-btn reject" style="font-size:.7rem" onclick="showToast('Item flagged for review','warning')"><i class="bi bi-flag"></i> Flag</button>
+              </div>
+            </div>
+
+            <div class="recon-item mismatch">
+              <div class="recon-top">
+                <span class="recon-ids">DEP-2026-00720 ↔ RHK7890 · David Kipkorir · M-Pesa</span>
+                <span class="recon-time">Jan 15, 9:15 AM</span>
+              </div>
+              <div class="recon-issue"><i class="bi bi-exclamation-triangle" style="color:var(--status-warning)"></i> Amount mismatch — System: KES 100,000 vs Statement: KES 99,500</div>
+              <div style="margin-top:.5rem;display:flex;gap:.375rem">
+                <button class="pend-btn approve" style="font-size:.7rem" onclick="showToast('Adjustment applied','success')"><i class="bi bi-pencil"></i> Adjust</button>
+                <button class="pend-btn reject" style="font-size:.7rem" onclick="showToast('Item flagged for review','warning')"><i class="bi bi-flag"></i> Flag</button>
+              </div>
+            </div>
+
+            <div class="recon-item matched">
+              <div class="recon-top">
+                <span class="recon-ids">DEP-2026-00789 ↔ RHK7X9M2PQ · Sarah Akinyi · M-Pesa · KES 50,000</span>
+                <span class="recon-time" style="color:var(--status-success)"><i class="bi bi-check-circle"></i> Matched</span>
+              </div>
+              <div class="recon-issue" style="color:var(--status-success)"><i class="bi bi-check2-circle"></i> Perfect match on Jan 15, 2:45 PM</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Entry + Activity -->
+        <div style="display:flex;flex-direction:column;gap:1.25rem">
+
+          <!-- Quick Entry Form -->
+          <div class="glass-card" style="overflow:hidden">
+            <div class="glass-card-header">
+              <h5><i class="bi bi-plus-square" style="color:var(--primary-green)"></i>Quick Deposit Entry</h5>
+            </div>
+            <div class="glass-card-body">
+              <p style="font-size:.75rem;color:var(--text-secondary);margin-bottom:1rem">Record offline deposits (cash, cheque) or manual entries</p>
+              <div class="form-field">
+                <label>Member ID / Name</label>
+                <input type="search" placeholder="Search member…" id="qeMember" oninput="updatePreview()" />
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Deposit Type</label>
+                  <select id="qeType" onchange="updatePreview()">
+                    <option>Savings</option>
+                    <option>Loan Repayment</option>
+                    <option>Share Capital</option>
+                    <option>Fixed Deposit</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Payment Method</label>
+                  <select id="qeMethod" onchange="updatePreview()">
+                    <option>Cash</option>
+                    <option>Cheque</option>
+                    <option>Bank Transfer</option>
+                    <option>M-Pesa</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-field">
+                <label>Amount (KES)</label>
+                <input type="number" placeholder="0.00" id="qeAmount" oninput="updatePreview()" />
+              </div>
+              <div class="form-field">
+                <label>Reference Number</label>
+                <input type="text" placeholder="e.g. CASH-1234 / Cheque No." id="qeRef" />
+              </div>
+
+              <div class="preview-box">
+                <div style="font-size:.75rem;font-weight:700;color:var(--text-secondary);margin-bottom:.5rem">
+                  <i class="bi bi-receipt"></i> Deposit Preview
+                </div>
+                <div class="preview-row">
+                  <span class="pr-label">Deposit Amount</span>
+                  <span class="pr-value" id="prevAmount">KES 0</span>
+                </div>
+                <div class="preview-row">
+                  <span class="pr-label">Processing Fee</span>
+                  <span class="pr-value" id="prevFee">KES 0</span>
+                </div>
+                <div class="preview-row net">
+                  <span class="pr-label">Net Deposit</span>
+                  <span class="pr-value" id="prevNet">KES 0</span>
+                </div>
+              </div>
+
+              <button class="btn-primary-green" style="width:100%;justify-content:center" onclick="submitQuickEntry()">
+                <i class="bi bi-check-circle"></i> Record Deposit
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="glass-card" style="overflow:hidden">
+            <div class="glass-card-header">
+              <h5><i class="bi bi-activity" style="color:var(--accent-blue)"></i>Recent Activity</h5>
+              <span style="font-size:.72rem;color:var(--text-tertiary)">Live</span>
+            </div>
+            <div class="glass-card-body" style="padding-top:.5rem;padding-bottom:.75rem">
+              <div class="activity-feed">
+                <div class="activity-item">
+                  <div class="activity-dot">SA</div>
+                  <div><div class="activity-name">Sarah Akinyi</div><div class="activity-meta">KES 50,000 · M-Pesa · Savings</div></div>
+                  <span class="activity-time">2m ago</span>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:#fff3e0;color:#e65100">DK</div>
+                  <div><div class="activity-name">David Kipkorir</div><div class="activity-meta">KES 125,000 · Cash · Loan Repayment</div></div>
+                  <span class="activity-time">30m ago</span>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:#f3e5f5;color:#6a1b9a">MW</div>
+                  <div><div class="activity-name">Mary Wanjiku</div><div class="activity-meta">KES 200,000 · Bank · Share Capital</div></div>
+                  <span class="activity-time">1h ago</span>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:#e3f2fd;color:#1565c0">JO</div>
+                  <div><div class="activity-name">John Otieno</div><div class="activity-meta">KES 500,000 · Cheque · Fixed Deposit</div></div>
+                  <span class="activity-time">2h ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ANALYTICS ── -->
+      <div class="content-grid" style="grid-template-columns: 1fr 1fr">
+        <!-- 7-Day Trend -->
+        <div class="glass-card" style="overflow:hidden">
+          <div class="glass-card-header">
+            <h5><i class="bi bi-bar-chart" style="color:var(--primary-green)"></i>7-Day Deposit Trend</h5>
+          </div>
+          <div class="glass-card-body">
+            <div class="bar-chart">
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:62%"><div class="bar-tip">KES 4.2M</div></div>
+                </div>
+                <span class="bar-day">Mon</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:75%"><div class="bar-tip">KES 5.1M</div></div>
+                </div>
+                <span class="bar-day">Tue</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:85%"><div class="bar-tip">KES 5.8M</div></div>
+                </div>
+                <span class="bar-day">Wed</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:100%"><div class="bar-tip">KES 6.8M</div></div>
+                </div>
+                <span class="bar-day">Thu</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:96%"><div class="bar-tip">KES 6.5M</div></div>
+                </div>
+                <span class="bar-day">Fri</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:41%;background:linear-gradient(180deg,var(--accent-teal),var(--accent-blue))"><div class="bar-tip">KES 2.8M</div></div>
+                </div>
+                <span class="bar-day">Sat</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-wrap">
+                  <div class="bar-fill" style="height:18%;background:linear-gradient(180deg,var(--text-tertiary),var(--border-color))"><div class="bar-tip">KES 1.2M</div></div>
+                </div>
+                <span class="bar-day">Sun</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deposits by Type -->
+        <div class="glass-card" style="overflow:hidden">
+          <div class="glass-card-header">
+            <h5><i class="bi bi-pie-chart" style="color:var(--accent-purple)"></i>Deposits by Type</h5>
+          </div>
+          <div class="glass-card-body">
+            <div class="type-rows">
+              <div class="type-row-item">
+                <div class="type-row-top">
+                  <span class="type-row-name">Savings</span>
+                  <div style="text-align:right"><span class="type-row-amount">KES 85M</span><br><span class="type-pct">55% of total</span></div>
+                </div>
+                <div class="type-progress">
+                  <div class="type-progress-fill" style="width:55%;background:linear-gradient(90deg,var(--primary-green),var(--accent-teal))"></div>
+                </div>
+              </div>
+              <div class="type-row-item">
+                <div class="type-row-top">
+                  <span class="type-row-name">Share Capital</span>
+                  <div style="text-align:right"><span class="type-row-amount">KES 38M</span><br><span class="type-pct">24% of total</span></div>
+                </div>
+                <div class="type-progress">
+                  <div class="type-progress-fill" style="width:24%;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple))"></div>
+                </div>
+              </div>
+              <div class="type-row-item">
+                <div class="type-row-top">
+                  <span class="type-row-name">Loan Repayment</span>
+                  <div style="text-align:right"><span class="type-row-amount">KES 26M</span><br><span class="type-pct">17% of total</span></div>
+                </div>
+                <div class="type-progress">
+                  <div class="type-progress-fill" style="width:17%;background:linear-gradient(90deg,var(--accent-orange),var(--accent-red))"></div>
+                </div>
+              </div>
+              <div class="type-row-item">
+                <div class="type-row-top">
+                  <span class="type-row-name">Fixed Deposit</span>
+                  <div style="text-align:right"><span class="type-row-amount">KES 7M</span><br><span class="type-pct">4% of total</span></div>
+                </div>
+                <div class="type-progress">
+                  <div class="type-progress-fill" style="width:4%;background:linear-gradient(90deg,var(--accent-purple),#e91e63)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Depositors -->
+      <div class="glass-card" style="overflow:hidden;margin-top:1.25rem">
+        <div class="glass-card-header">
+          <h5><i class="bi bi-trophy" style="color:var(--accent-orange)"></i>Top 5 Depositors — This Month</h5>
+          <button class="btn-ghost" style="font-size:.75rem;padding:.375rem .75rem" onclick="showToast('Exporting top depositors report…','info')">
+            <i class="bi bi-download"></i> Export
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Member</th>
+                <th>Total Deposits</th>
+                <th>Frequency</th>
+                <th>Avg. Deposit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="rank-badge">1</span></td>
+                <td><div class="member-cell"><div class="member-avatar" style="width:28px;height:28px;font-size:.65rem">SA</div><div>Sarah Akinyi<br><span class="member-id">R-00123</span></div></div></td>
+                <td style="font-weight:700;color:var(--primary-green-dark)">KES 2.5M</td>
+                <td>45 deposits</td>
+                <td>KES 55,555</td>
+              </tr>
+              <tr>
+                <td><span class="rank-badge" style="background:linear-gradient(135deg,#9e9e9e,#757575)">2</span></td>
+                <td><div class="member-cell"><div class="member-avatar" style="width:28px;height:28px;font-size:.65rem;background:linear-gradient(135deg,var(--accent-orange),var(--accent-red))">DK</div><div>David Kipkorir<br><span class="member-id">R-00045</span></div></div></td>
+                <td style="font-weight:700">KES 1.8M</td>
+                <td>38 deposits</td>
+                <td>KES 47,368</td>
+              </tr>
+              <tr>
+                <td><span class="rank-badge" style="background:linear-gradient(135deg,#a1887f,#795548)">3</span></td>
+                <td><div class="member-cell"><div class="member-avatar" style="width:28px;height:28px;font-size:.65rem;background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue))">MW</div><div>Mary Wanjiku<br><span class="member-id">R-00234</span></div></div></td>
+                <td style="font-weight:700">KES 1.5M</td>
+                <td>42 deposits</td>
+                <td>KES 35,714</td>
+              </tr>
+              <tr>
+                <td><span class="rank-badge" style="background:linear-gradient(135deg,var(--text-tertiary),var(--text-secondary))">4</span></td>
+                <td><div class="member-cell"><div class="member-avatar" style="width:28px;height:28px;font-size:.65rem;background:linear-gradient(135deg,var(--accent-teal),var(--accent-blue))">JO</div><div>John Otieno<br><span class="member-id">R-00456</span></div></div></td>
+                <td style="font-weight:700">KES 1.2M</td>
+                <td>25 deposits</td>
+                <td>KES 48,000</td>
+              </tr>
+              <tr>
+                <td><span class="rank-badge" style="background:linear-gradient(135deg,var(--text-tertiary),var(--text-secondary))">5</span></td>
+                <td><div class="member-cell"><div class="member-avatar" style="width:28px;height:28px;font-size:.65rem;background:linear-gradient(135deg,#e91e63,var(--accent-purple))">GM</div><div>Grace Muthoni<br><span class="member-id">R-00678</span></div></div></td>
+                <td style="font-weight:700">KES 950K</td>
+                <td>32 deposits</td>
+                <td>KES 29,687</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </main>
+</div><!-- /admin-layout -->
+
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- 1. Record Deposit Modal -->
+<div class="modal-overlay" id="recordModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h4><i class="bi bi-plus-circle" style="color:var(--primary-green)"></i> Record New Deposit</h4>
+      <button class="modal-close" onclick="closeModal('recordModal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Member ID / Name *</label>
+        <input type="search" placeholder="Search by name or ID…" required />
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Deposit Type *</label>
+          <select required>
+            <option value="">Select type</option>
+            <option>Savings</option>
+            <option>Loan Repayment</option>
+            <option>Share Capital</option>
+            <option>Fixed Deposit</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Payment Method *</label>
+          <select required>
+            <option value="">Select method</option>
+            <option>M-Pesa</option>
+            <option>Bank Transfer</option>
+            <option>Cash</option>
+            <option>Cheque</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Amount (KES) *</label>
+        <input type="number" placeholder="0.00" min="0" required />
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Reference No.</label>
+          <input type="text" placeholder="e.g. MPESA-ABC1234" />
+        </div>
+        <div class="form-field">
+          <label>Date *</label>
+          <input type="date" required />
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Notes</label>
+        <textarea rows="2" placeholder="Optional notes…" style="resize:vertical"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('recordModal')">Cancel</button>
+      <button class="btn-primary-green" onclick="closeModal('recordModal');showToast('Deposit recorded successfully ✓','success')">
+        <i class="bi bi-check-circle"></i> Record Deposit
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Deposit Details Modal -->
+<div class="modal-overlay" id="detailsModal">
+  <div class="modal-box lg">
+    <div class="modal-header">
+      <h4><i class="bi bi-file-earmark-text" style="color:var(--accent-blue)"></i> Deposit Details</h4>
+      <button class="modal-close" onclick="closeModal('detailsModal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border-color);margin-bottom:1rem;flex-wrap:wrap">
+        <div class="member-avatar" style="width:48px;height:48px;font-size:.9rem" id="det-avatar">SA</div>
+        <div>
+          <div style="font-size:1.1rem;font-weight:700" id="det-name">Sarah Akinyi</div>
+          <div style="font-size:.78rem;color:var(--text-secondary)" id="det-id-ref">DEP-2026-00789 · R-00123</div>
+        </div>
+        <span class="status-badge completed" id="det-status-badge" style="margin-left:auto">Completed</span>
+      </div>
+      <div class="detail-row"><span class="detail-label">Deposit ID</span><span class="detail-value" id="det-dep-id">DEP-2026-00789</span></div>
+      <div class="detail-row"><span class="detail-label">Member</span><span class="detail-value" id="det-member">Sarah Akinyi</span></div>
+      <div class="detail-row"><span class="detail-label">Deposit Type</span><span class="detail-value" id="det-type">Savings</span></div>
+      <div class="detail-row"><span class="detail-label">Payment Method</span><span class="detail-value" id="det-method">M-Pesa</span></div>
+      <div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value" id="det-amount" style="font-weight:800;color:var(--primary-green-dark);font-size:1.05rem">KES 50,000</span></div>
+      <div class="detail-row"><span class="detail-label">Date & Time</span><span class="detail-value" id="det-date">Jan 16, 2026 2:45 PM</span></div>
+      <div class="detail-row"><span class="detail-label">Member ID</span><span class="detail-value" id="det-member-id">R-00123</span></div>
+      <div class="detail-row"><span class="detail-label">Reference No.</span><span class="detail-value" id="det-ref" style="font-family:monospace">MPESA-789ABC</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="det-status">Completed</span></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('detailsModal')">Close</button>
+      <button class="btn-ghost" onclick="showToast('Printing receipt…','info')"><i class="bi bi-printer"></i> Print</button>
+      <button class="btn-primary-green" onclick="showToast('Report downloaded','success')"><i class="bi bi-download"></i> Download</button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Export Modal -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h4><i class="bi bi-download" style="color:var(--accent-blue)"></i> Export Deposits</h4>
+      <button class="modal-close" onclick="closeModal('exportModal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Date Range</label>
+        <div class="form-row">
+          <input type="date" placeholder="From" />
+          <input type="date" placeholder="To" />
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Filter by Status</label>
+        <select>
+          <option value="">All Statuses</option>
+          <option>Completed</option>
+          <option>Pending</option>
+          <option>Processing</option>
+          <option>Failed</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Filter by Method</label>
+        <select>
+          <option value="">All Methods</option>
+          <option>M-Pesa</option>
+          <option>Bank Transfer</option>
+          <option>Cash</option>
+          <option>Cheque</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Export Format</label>
+        <select>
+          <option>CSV (.csv)</option>
+          <option>Excel (.xlsx)</option>
+          <option>PDF Report</option>
+          <option>JSON</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('exportModal')">Cancel</button>
+      <button class="btn-primary-green" onclick="closeModal('exportModal');showToast('Export started — file will download shortly','success')">
+        <i class="bi bi-download"></i> Export Now
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Reconcile Modal -->
+<div class="modal-overlay" id="reconcileModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h4><i class="bi bi-arrow-left-right" style="color:var(--accent-teal)"></i> Run Reconciliation</h4>
+      <button class="modal-close" onclick="closeModal('reconcileModal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--primary-green-ultra-light);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem;font-size:.82rem;color:var(--primary-green-dark)">
+        <i class="bi bi-info-circle"></i> This will compare system records against bank/M-Pesa statements for the selected period.
+      </div>
+      <div class="form-field">
+        <label>Reconciliation Period</label>
+        <div class="form-row">
+          <input type="date" />
+          <input type="date" />
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Source</label>
+        <select>
+          <option>M-Pesa Statement</option>
+          <option>KCB Bank Statement</option>
+          <option>Equity Bank Statement</option>
+          <option>Co-op Bank Statement</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Upload Statement File (Optional)</label>
+        <input type="file" accept=".csv,.xlsx,.pdf" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('reconcileModal')">Cancel</button>
+      <button class="btn-primary-green" onclick="closeModal('reconcileModal');runReconcile()">
+        <i class="bi bi-play-circle"></i> Run Reconciliation
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+/* =============================================
+   SIDEBAR TOGGLE — sidebar-toggle.js logic
+   ============================================= */
+(function() {
+  'use strict';
+
+  const sidebar   = document.getElementById('adminSidebar');
+  const overlay   = document.getElementById('sidebarOverlay');
+  const mainEl    = document.getElementById('adminMain');
+  const deskBtn   = document.getElementById('sidebarToggle');
+  const mobBtn    = document.getElementById('topbarSidebarToggle');
+  const toggleIcon = document.getElementById('toggleIcon');
+
+  let desktopCollapsed = localStorage.getItem('spSidebarCollapsed') === 'true';
+  let mobileOpen = false;
+
+  const isMobile = () => window.innerWidth <= 900;
+
+  function applyDesktopState() {
+    if (desktopCollapsed) {
+      sidebar.classList.add('collapsed');
+      mainEl.classList.add('sidebar-collapsed');
+      if (toggleIcon) { toggleIcon.className = 'bi bi-layout-sidebar-reverse'; }
+    } else {
+      sidebar.classList.remove('collapsed');
+      mainEl.classList.remove('sidebar-collapsed');
+      if (toggleIcon) { toggleIcon.className = 'bi bi-layout-sidebar'; }
+    }
+  }
+
+  function openMobileSidebar() {
+    mobileOpen = true;
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileSidebar() {
+    mobileOpen = false;
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function init() {
+    if (!isMobile()) {
+      applyDesktopState();
+    }
+  }
+
+  // Desktop toggle
+  if (deskBtn) {
+    deskBtn.addEventListener('click', () => {
+      desktopCollapsed = !desktopCollapsed;
+      localStorage.setItem('spSidebarCollapsed', desktopCollapsed);
+      applyDesktopState();
+    });
+  }
+
+  // Mobile toggle
+  if (mobBtn) {
+    mobBtn.addEventListener('click', () => {
+      mobileOpen ? closeMobileSidebar() : openMobileSidebar();
+    });
+  }
+
+  // Overlay click closes mobile sidebar
+  overlay.addEventListener('click', closeMobileSidebar);
+
+  // Close on nav link click (mobile)
+  document.querySelectorAll('.admin-sidebar .nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMobile()) closeMobileSidebar();
+    });
+  });
+
+  // ESC closes mobile sidebar
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileOpen) closeMobileSidebar();
+  });
+
+  // Resize handler
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (!isMobile()) {
+        closeMobileSidebar();
+        applyDesktopState();
+      }
+    }, 150);
+  });
+
+  init();
+})();
+
+
+/* =============================================
+   DEPOSITS CUSTOM — deposits-custom.js logic
+   ============================================= */
+
+/* Toast */
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const icons = { success:'bi-check-circle', warning:'bi-exclamation-triangle', danger:'bi-x-circle', info:'bi-info-circle' };
+  const colors = { success:'var(--status-success)', warning:'var(--status-warning)', danger:'var(--status-danger)', info:'var(--status-info)' };
+
+  const t = document.createElement('div');
+  t.className = `toast-item ${type}`;
+  t.innerHTML = `<i class="bi ${icons[type]||'bi-info-circle'}" style="color:${colors[type]};font-size:1rem"></i><span>${message}</span>`;
+  container.appendChild(t);
+
+  setTimeout(() => { t.style.animation = 'fadeOut .3s forwards'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+/* Modals */
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+// ESC closes topmost modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const open = document.querySelector('.modal-overlay.active');
+    if (open) closeModal(open.id);
+  }
+});
+
+/* Open deposit details modal */
+function openDetails(id, name, type, method, amount, status, date, memberId, ref) {
+  const initials = name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('det-avatar').textContent = initials;
+  document.getElementById('det-name').textContent = name;
+  document.getElementById('det-id-ref').textContent = id + ' · ' + memberId;
+  document.getElementById('det-dep-id').textContent = id;
+  document.getElementById('det-member').textContent = name;
+  document.getElementById('det-type').textContent = type;
+  document.getElementById('det-method').textContent = method;
+  document.getElementById('det-amount').textContent = amount;
+  document.getElementById('det-date').textContent = date;
+  document.getElementById('det-member-id').textContent = memberId;
+  document.getElementById('det-ref').textContent = ref;
+  document.getElementById('det-status').textContent = status;
+
+  const sb = document.getElementById('det-status-badge');
+  sb.className = 'status-badge ' + status.toLowerCase().replace(' ','');
+  sb.textContent = status;
+
+  openModal('detailsModal');
+}
+
+/* Quick Entry preview */
+function updatePreview() {
+  const amt = parseFloat(document.getElementById('qeAmount').value) || 0;
+  const method = document.getElementById('qeMethod').value;
+  let fee = 0;
+  if (method === 'M-Pesa') fee = Math.min(Math.round(amt * 0.0015), 300);
+  else if (method === 'Bank Transfer') fee = Math.min(Math.round(amt * 0.002), 500);
+
+  const fmt = n => 'KES ' + n.toLocaleString('en-KE');
+  document.getElementById('prevAmount').textContent = fmt(amt);
+  document.getElementById('prevFee').textContent = fmt(fee);
+  document.getElementById('prevNet').textContent = fmt(amt - fee);
+}
+
+/* Quick entry submit */
+function submitQuickEntry() {
+  const member = document.getElementById('qeMember').value.trim();
+  const amount = document.getElementById('qeAmount').value;
+  if (!member || !amount || parseFloat(amount) <= 0) {
+    showToast('Please fill in Member and Amount', 'warning'); return;
+  }
+  showToast(`Deposit of KES ${parseFloat(amount).toLocaleString()} recorded for ${member} ✓`, 'success');
+  document.getElementById('qeMember').value = '';
+  document.getElementById('qeAmount').value = '';
+  document.getElementById('qeRef').value = '';
+  updatePreview();
+}
+
+/* Table filter */
+function filterTable(val) {
+  const search = (document.getElementById('tableSearch').value || '').toLowerCase();
+  const status = (document.getElementById('statusFilter').value || '').toLowerCase();
+  const method = (document.getElementById('methodFilter').value || '').toLowerCase();
+  const rows = document.querySelectorAll('#tableBody tr');
+  let shown = 0;
+  rows.forEach(row => {
+    const txt = row.textContent.toLowerCase();
+    const matchS = !search || txt.includes(search);
+    const matchSt = !status || txt.includes(status);
+    const matchM  = !method || txt.includes(method);
+    const show = matchS && matchSt && matchM;
+    row.style.display = show ? '' : 'none';
+    if (show) shown++;
+  });
+  const info = document.querySelector('.pagination-info');
+  if (info) info.textContent = `Showing ${shown} result${shown===1?'':'s'}`;
+}
+
+/* Reconcile runner */
+function runReconcile() {
+  showToast('Reconciliation started — processing 1,234 deposits…', 'info');
+  setTimeout(() => showToast('Reconciliation complete — 45 unmatched items found', 'warning'), 2500);
+}
+
+/* Tooltip init (Bootstrap) */
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof bootstrap !== 'undefined') {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+  }
+});
+</script>
+
+</body>
+</html>

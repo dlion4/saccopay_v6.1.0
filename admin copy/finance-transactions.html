@@ -1,0 +1,2366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rongo SACCO Transaction Monitoring - Real-time financial transaction management">
+    <title>Transaction Monitoring | Rongo SACCO Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="./admin-dashboard.css">
+</head>
+<body>
+    
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>Rongo SACCO</h1>
+                    <p>Admin Portal</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                <!-- Dashboard Section -->
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="bi bi-speedometer2 nav-icon"></i>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+                
+                <!-- Member Management -->
+                <div class="nav-section-title">Members</div>
+                <div class="nav-item">
+                    <a href="members-all.html" class="nav-link">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span>All Members</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="members-kyc.html" class="nav-link">
+                        <i class="bi bi-person-check nav-icon"></i>
+                        <span>KYC Pending</span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                        <i class="bi bi-person-plus nav-icon"></i>
+                        <span>Register Member</span>
+                    </a>
+                </div>
+                
+                <!-- Financial Operations -->
+                <div class="nav-section-title">Financial</div>
+                <div class="nav-item">
+                    <a href="transactions.html" class="nav-link active">
+                        <i class="bi bi-arrow-left-right nav-icon"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="deposits.html" class="nav-link">
+                        <i class="bi bi-piggy-bank nav-icon"></i>
+                        <span>Deposits</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="withdrawals.html" class="nav-link">
+                        <i class="bi bi-cash-coin nav-icon"></i>
+                        <span>Withdrawals</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="shares.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Share Capital</span>
+                    </a>
+                </div>
+                
+                <!-- Loan Management -->
+                <div class="nav-section-title">Loans</div>
+                <div class="nav-item">
+                    <a href="loans-overview.html" class="nav-link">
+                        <i class="bi bi-clipboard-data nav-icon"></i>
+                        <span>Loan Portfolio</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-applications.html" class="nav-link">
+                        <i class="bi bi-file-earmark-text nav-icon"></i>
+                        <span>Applications</span>
+                        <span class="nav-badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-disbursements.html" class="nav-link">
+                        <i class="bi bi-send nav-icon"></i>
+                        <span>Disbursements</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-repayments.html" class="nav-link">
+                        <i class="bi bi-arrow-down-circle nav-icon"></i>
+                        <span>Repayments</span>
+                    </a>
+                </div>
+                
+                <!-- Reports -->
+                <div class="nav-section-title">Reports</div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                        <span>All Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="compliance.html" class="nav-link">
+                        <i class="bi bi-clipboard-check nav-icon"></i>
+                        <span>Compliance</span>
+                    </a>
+                </div>
+                
+                <!-- Settings -->
+                <div class="nav-section-title">Settings</div>
+                <div class="nav-item">
+                    <a href="config.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="bi bi-person-gear nav-icon"></i>
+                        <span>Staff Management</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Navigation Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <!-- Search Bar -->
+                    <div class="topbar-search">
+                        <i class="bi bi-search topbar-search-icon"></i>
+                        <input type="text" id="globalSearch" placeholder="Search transactions by ID, member, amount...">
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="topbar-actions">
+                        <!-- Quick Actions -->
+                        <button class="topbar-action-btn" title="Quick Actions" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="topbar-action-btn" title="Notifications" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                            <i class="bi bi-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        
+                        <!-- Messages -->
+                        <button class="topbar-action-btn" title="Messages" data-bs-toggle="modal" data-bs-target="#messagesModal">
+                            <i class="bi bi-chat-dots"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        
+                        <!-- Help -->
+                        <button class="topbar-action-btn" title="Help Center" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <i class="bi bi-question-circle"></i>
+                        </button>
+                        
+                        <!-- User Profile -->
+                        <div class="user-profile" data-bs-toggle="modal" data-bs-target="#profileModal" style="cursor: pointer;">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info">
+                                <h4>John Maina</h4>
+                                <p>General Manager</p>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="bi bi-house-door"></i>
+                        <span>Home</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item">
+                        <span>Financial</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item active">
+                        <span>Transactions</span>
+                    </div>
+                </nav>
+                
+                <!-- Page Header with Live Stats -->
+                <div class="dashboard-header mb-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                        <div>
+                            <h2>Transaction Monitoring</h2>
+                            <p>Real-time monitoring and management of all SACCO financial transactions</p>
+                            <div class="d-flex gap-3 align-items-center mt-2">
+                                <div class="live-indicator">
+                                    <span class="pulse-dot"></span>
+                                    <span class="text-success">Live Updates</span>
+                                </div>
+                                <span class="text-secondary">Last updated: <strong id="lastUpdate">Just now</strong></span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#reconciliationModal">
+                                <i class="bi bi-calculator"></i> Reconcile
+                            </button>
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#exportTransactionsModal">
+                                <i class="bi bi-download"></i> Export
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addManualTransactionModal">
+                                <i class="bi bi-plus-circle"></i> Add Transaction
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Transaction Statistics Dashboard -->
+                <div class="stats-grid mb-4">
+                    <!-- Today's Transactions -->
+                    <div class="stat-card" onclick="filterByDate('today')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Today's Volume</div>
+                                <div class="stat-card-value">KES 15.2M</div>
+                                <span class="stat-card-change positive">
+                                    <i class="bi bi-arrow-up"></i> +18.5%
+                                </span>
+                            </div>
+                            <div class="stat-card-icon success">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>2,456 transactions</span>
+                                <span class="text-primary">Filter →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pending Transactions -->
+                    <div class="stat-card" onclick="filterByStatus('pending')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Pending Approval</div>
+                                <div class="stat-card-value">34</div>
+                                <span class="stat-card-change negative">
+                                    <i class="bi bi-clock"></i> Needs action
+                                </span>
+                            </div>
+                            <div class="stat-card-icon warning">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>KES 8.5M total value</span>
+                                <span class="text-primary">Review →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Failed Transactions -->
+                    <div class="stat-card" onclick="filterByStatus('failed')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Failed Today</div>
+                                <div class="stat-card-value">12</div>
+                                <span class="stat-card-change negative">
+                                    <i class="bi bi-exclamation-triangle"></i> Investigate
+                                </span>
+                            </div>
+                            <div class="stat-card-icon danger">
+                                <i class="bi bi-x-circle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>KES 450K lost</span>
+                                <span class="text-primary">Fix →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Success Rate -->
+                    <div class="stat-card" data-bs-toggle="modal" data-bs-target="#successRateModal" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Success Rate</div>
+                                <div class="stat-card-value">99.5%</div>
+                                <span class="stat-card-change positive">
+                                    <i class="bi bi-check-circle"></i> Excellent
+                                </span>
+                            </div>
+                            <div class="stat-card-icon info">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>2,444/2,456 successful</span>
+                                <span class="text-primary">Details →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Transaction Metrics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="metric-mini-card deposits" onclick="filterByType('deposit')">
+                            <div class="metric-mini-icon">
+                                <i class="bi bi-arrow-down-circle"></i>
+                            </div>
+                            <div class="metric-mini-info">
+                                <span>Deposits</span>
+                                <strong>KES 8.2M</strong>
+                                <small>1,234 txns</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-mini-card withdrawals" onclick="filterByType('withdrawal')">
+                            <div class="metric-mini-icon">
+                                <i class="bi bi-arrow-up-circle"></i>
+                            </div>
+                            <div class="metric-mini-info">
+                                <span>Withdrawals</span>
+                                <strong>KES 3.8M</strong>
+                                <small>567 txns</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-mini-card loans" onclick="filterByType('loan')">
+                            <div class="metric-mini-icon">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <div class="metric-mini-info">
+                                <span>Loan Payments</span>
+                                <strong>KES 2.5M</strong>
+                                <small>456 txns</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-mini-card shares" onclick="filterByType('shares')">
+                            <div class="metric-mini-icon">
+                                <i class="bi bi-pie-chart"></i>
+                            </div>
+                            <div class="metric-mini-info">
+                                <span>Share Purchases</span>
+                                <strong>KES 700K</strong>
+                                <small>199 txns</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filters & Search -->
+                <div class="glass-card mb-4">
+                    <div class="glass-card-body">
+                        <div class="row g-3 align-items-end">
+                            <!-- Search -->
+                            <div class="col-md-3">
+                                <label class="form-label">Search Transaction</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="transactionSearch" placeholder="ID, Member, Amount...">
+                                </div>
+                            </div>
+                            
+                            <!-- Date Range -->
+                            <div class="col-md-2">
+                                <label class="form-label">Date Range</label>
+                                <select class="form-select" id="dateFilter" onchange="applyFilters()">
+                                    <option value="today" selected>Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Transaction Type -->
+                            <div class="col-md-2">
+                                <label class="form-label">Type</label>
+                                <select class="form-select" id="typeFilter" onchange="applyFilters()">
+                                    <option value="all">All Types</option>
+                                    <option value="deposit">Deposits</option>
+                                    <option value="withdrawal">Withdrawals</option>
+                                    <option value="loan">Loan Payments</option>
+                                    <option value="shares">Share Purchase</option>
+                                    <option value="transfer">Transfers</option>
+                                    <option value="fee">Fees</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="statusFilter" onchange="applyFilters()">
+                                    <option value="all">All Status</option>
+                                    <option value="success">Successful</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="failed">Failed</option>
+                                    <option value="reversed">Reversed</option>
+                                    <option value="void">Void</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Payment Method -->
+                            <div class="col-md-2">
+                                <label class="form-label">Method</label>
+                                <select class="form-select" id="methodFilter" onchange="applyFilters()">
+                                    <option value="all">All Methods</option>
+                                    <option value="mpesa">M-Pesa</option>
+                                    <option value="bank">Bank Transfer</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="cheque">Cheque</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="col-md-1">
+                                <div class="d-flex flex-column gap-2">
+                                    <button class="btn btn-outline btn-sm" onclick="resetFilters()" title="Reset Filters">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#advancedFiltersModal" title="Advanced Filters">
+                                        <i class="bi bi-funnel"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Filters Display -->
+                        <div class="mt-3" id="activeFiltersDisplay">
+                            <div class="d-flex gap-2 flex-wrap align-items-center">
+                                <small class="text-secondary">Active Filters:</small>
+                                <span class="filter-tag">
+                                    Today
+                                    <button class="filter-tag-close" onclick="removeFilter('date')">×</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bulk Actions & View Options -->
+                <div class="glass-card mb-4">
+                    <div class="glass-card-body">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAllTransactions" onchange="toggleSelectAll(this)">
+                                    <label class="form-check-label" for="selectAllTransactions">
+                                        Select All (<span id="selectedCount">0</span> selected)
+                                    </label>
+                                </div>
+                                
+                                <div class="btn-group" id="bulkActions" style="display: none;">
+                                    <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#bulkApproveModal">
+                                        <i class="bi bi-check-all"></i> Approve
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#bulkRejectModal">
+                                        <i class="bi bi-x"></i> Reject
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bulkExportModal">
+                                        <i class="bi bi-download"></i> Export
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bulkReceiptsModal">
+                                        <i class="bi bi-receipt"></i> Receipts
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-secondary">Per Page:</span>
+                                <select class="form-select form-select-sm" style="width: auto;" onchange="changePerPage(this.value)">
+                                    <option value="25" selected>25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="250">250</option>
+                                </select>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="bi bi-sort-down"></i> Sort
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="sortTransactions('recent')">Most Recent</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortTransactions('oldest')">Oldest First</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortTransactions('amount-high')">Highest Amount</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortTransactions('amount-low')">Lowest Amount</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortTransactions('member')">Member Name</a></li>
+                                    </ul>
+                                </div>
+                                
+                                <button class="btn btn-sm btn-outline" onclick="refreshTransactions()" title="Refresh">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Transactions Table -->
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">
+                                        <input type="checkbox" class="form-check-input">
+                                    </th>
+                                    <th>Transaction ID</th>
+                                    <th>Date & Time</th>
+                                    <th>Member</th>
+                                    <th>Type</th>
+                                    <th>Method</th>
+                                    <th>Amount</th>
+                                    <th>Fee</th>
+                                    <th>Status</th>
+                                    <th width="200">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Transaction Row 1 - Successful Deposit -->
+                                <tr class="transaction-row" onclick="viewTransactionDetails('TXN-2024-050123')">
+                                    <td onclick="event.stopPropagation()">
+                                        <input type="checkbox" class="form-check-input transaction-checkbox">
+                                    </td>
+                                    <td>
+                                        <strong class="transaction-id">TXN-2024-050123</strong>
+                                        <div class="transaction-ref small text-secondary">
+                                            M-Pesa: QR45KJ8L3P
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>Today, 11:42 AM</div>
+                                        <small class="text-secondary">Jan 23, 2024</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar-xs">SA</div>
+                                            <div>
+                                                <div class="member-name-link" onclick="event.stopPropagation(); viewMember('R-00123')">Sarah Akinyi</div>
+                                                <small class="text-secondary">R-00123</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="transaction-type deposit">
+                                            <i class="bi bi-arrow-down-circle"></i> Deposit
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="payment-method mpesa">
+                                            <i class="bi bi-phone"></i> M-Pesa
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="amount-positive">KES 50,000</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary">KES 50</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-success">Success</span>
+                                    </td>
+                                    <td onclick="event.stopPropagation()">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-ghost" onclick="viewTransactionDetails('TXN-2024-050123')" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editTransactionModal" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#generateReceiptModal" title="Receipt">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                            <div class="dropdown d-inline">
+                                                <button class="btn btn-sm btn-ghost dropdown-toggle" onclick="event.stopPropagation();" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverseTransactionModal"><i class="bi bi-arrow-counterclockwise"></i> Reverse</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#voidTransactionModal"><i class="bi bi-slash-circle"></i> Void</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addNoteModal"><i class="bi bi-sticky"></i> Add Note</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewProofModal"><i class="bi bi-file-image"></i> View Proof</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="flagTransaction('TXN-2024-050123')"><i class="bi bi-flag"></i> Flag as Suspicious</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Transaction Row 2 - Pending Approval -->
+                                <tr class="transaction-row pending" onclick="viewTransactionDetails('TXN-2024-050122')">
+                                    <td onclick="event.stopPropagation()">
+                                        <input type="checkbox" class="form-check-input transaction-checkbox">
+                                    </td>
+                                    <td>
+                                        <strong class="transaction-id">TXN-2024-050122</strong>
+                                        <div class="transaction-ref small text-secondary">
+                                            Cash Payment
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>Today, 10:30 AM</div>
+                                        <small class="text-secondary">Jan 23, 2024</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar-xs">DK</div>
+                                            <div>
+                                                <div class="member-name-link" onclick="event.stopPropagation(); viewMember('R-00045')">David Kipkorir</div>
+                                                <small class="text-secondary">R-00045</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="transaction-type withdrawal">
+                                            <i class="bi bi-arrow-up-circle"></i> Withdrawal
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="payment-method cash">
+                                            <i class="bi bi-cash"></i> Cash
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="amount-negative">KES 120,000</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary">KES 100</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-warning">Pending</span>
+                                    </td>
+                                    <td onclick="event.stopPropagation()">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-success" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#approveTransactionModal" title="Approve">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#rejectTransactionModal" title="Reject">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="viewTransactionDetails('TXN-2024-050122')" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editTransactionModal" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Transaction Row 3 - Failed -->
+                                <tr class="transaction-row failed" onclick="viewTransactionDetails('TXN-2024-050121')">
+                                    <td onclick="event.stopPropagation()">
+                                        <input type="checkbox" class="form-check-input transaction-checkbox">
+                                    </td>
+                                    <td>
+                                        <strong class="transaction-id">TXN-2024-050121</strong>
+                                        <div class="transaction-ref small text-danger">
+                                            Error: Insufficient balance
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>Today, 09:15 AM</div>
+                                        <small class="text-secondary">Jan 23, 2024</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar-xs">MW</div>
+                                            <div>
+                                                <div class="member-name-link" onclick="event.stopPropagation(); viewMember('R-00234')">Mary Wanjiku</div>
+                                                <small class="text-secondary">R-00234</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="transaction-type loan">
+                                            <i class="bi bi-cash-coin"></i> Loan Payment
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="payment-method mpesa">
+                                            <i class="bi bi-phone"></i> M-Pesa
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="amount-negative">KES 25,000</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary">-</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-danger">Failed</span>
+                                    </td>
+                                    <td onclick="event.stopPropagation()">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#retryTransactionModal" title="Retry">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="viewTransactionDetails('TXN-2024-050121')" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#contactMemberModal" title="Contact">
+                                                <i class="bi bi-envelope"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Transaction Row 4 - Bank Transfer -->
+                                <tr class="transaction-row" onclick="viewTransactionDetails('TXN-2024-050120')">
+                                    <td onclick="event.stopPropagation()">
+                                        <input type="checkbox" class="form-check-input transaction-checkbox">
+                                    </td>
+                                    <td>
+                                        <strong class="transaction-id">TXN-2024-050120</strong>
+                                        <div class="transaction-ref small text-secondary">
+                                            KCB: FT2456789234
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>Today, 08:45 AM</div>
+                                        <small class="text-secondary">Jan 23, 2024</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar-xs">JO</div>
+                                            <div>
+                                                <div class="member-name-link" onclick="event.stopPropagation(); viewMember('R-00456')">John Otieno</div>
+                                                <small class="text-secondary">R-00456</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="transaction-type deposit">
+                                            <i class="bi bi-arrow-down-circle"></i> Deposit
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="payment-method bank">
+                                            <i class="bi bi-bank"></i> Bank
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="amount-positive">KES 350,000</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary">KES 200</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-success">Success</span>
+                                    </td>
+                                    <td onclick="event.stopPropagation()">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-ghost" onclick="viewTransactionDetails('TXN-2024-050120')" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#generateReceiptModal" title="Receipt">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editTransactionModal" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <div class="dropdown d-inline">
+                                                <button class="btn btn-sm btn-ghost dropdown-toggle" onclick="event.stopPropagation();" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverseTransactionModal"><i class="bi bi-arrow-counterclockwise"></i> Reverse</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addNoteModal"><i class="bi bi-sticky"></i> Add Note</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewProofModal"><i class="bi bi-file-image"></i> View Proof</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Transaction Row 5 - Share Purchase -->
+                                <tr class="transaction-row" onclick="viewTransactionDetails('TXN-2024-050119')">
+                                    <td onclick="event.stopPropagation()">
+                                        <input type="checkbox" class="form-check-input transaction-checkbox">
+                                    </td>
+                                    <td>
+                                        <strong class="transaction-id">TXN-2024-050119</strong>
+                                        <div class="transaction-ref small text-secondary">
+                                            Cheque: 001234
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>Yesterday, 4:30 PM</div>
+                                        <small class="text-secondary">Jan 22, 2024</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar-xs">GM</div>
+                                            <div>
+                                                <div class="member-name-link" onclick="event.stopPropagation(); viewMember('R-00678')">Grace Muthoni</div>
+                                                <small class="text-secondary">R-00678</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="transaction-type shares">
+                                            <i class="bi bi-pie-chart"></i> Shares
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="payment-method cheque">
+                                            <i class="bi bi-receipt-cutoff"></i> Cheque
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="amount-positive">KES 85,000</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary">KES 0</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-success">Success</span>
+                                    </td>
+                                    <td onclick="event.stopPropagation()">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-ghost" onclick="viewTransactionDetails('TXN-2024-050119')" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#generateReceiptModal" title="Receipt">
+                                                <i class="bi bi-receipt"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editTransactionModal" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+                        <div class="text-secondary">
+                            Showing 1-5 of 2,456 transactions
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(2)">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(3)">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(4)">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(5)">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" onclick="loadPage(2)">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- MODALS -->
+    
+    <!-- Transaction Details Modal -->
+    <div class="modal fade" id="transactionDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-receipt"></i> Transaction Details - <span id="txnId">TXN-2024-050123</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Left Column - Main Details -->
+                        <div class="col-md-8">
+                            <!-- Transaction Header -->
+                            <div class="transaction-detail-header">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h4>KES 50,000.00</h4>
+                                        <p class="text-secondary mb-0">Deposit via M-Pesa</p>
+                                    </div>
+                                    <span class="badge badge-success" style="font-size: 1rem;">Success</span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Transaction ID</small>
+                                        <p class="mb-0"><strong>TXN-2024-050123</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">M-Pesa Reference</small>
+                                        <p class="mb-0"><strong>QR45KJ8L3P</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Date & Time</small>
+                                        <p class="mb-0">January 23, 2024 at 11:42 AM</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Processed By</small>
+                                        <p class="mb-0">SACCOPay Gateway</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Member Information -->
+                            <div class="detail-section">
+                                <h6>Member Information</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <div class="member-avatar">SA</div>
+                                            <div>
+                                                <strong>Sarah Akinyi</strong>
+                                                <div class="text-secondary small">Member ID: R-00123</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Phone Number</small>
+                                        <p class="mb-0">+254 712 345 678</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Email</small>
+                                        <p class="mb-0">sarah.akinyi@email.com</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Member Tier</small>
+                                        <p class="mb-0"><span class="badge" style="background: gold; color: #000;">Gold</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction Breakdown -->
+                            <div class="detail-section">
+                                <h6>Transaction Breakdown</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Transaction Amount</td>
+                                        <td class="text-end"><strong>KES 50,000.00</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Transaction Fee</td>
+                                        <td class="text-end">KES 50.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Processing Fee</td>
+                                        <td class="text-end">KES 0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tax (VAT)</td>
+                                        <td class="text-end">KES 8.00</td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td><strong>Net Amount Credited</strong></td>
+                                        <td class="text-end"><strong class="text-success">KES 49,942.00</strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Payment Details -->
+                            <div class="detail-section">
+                                <h6>Payment Details</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Payment Method</small>
+                                        <p class="mb-0"><i class="bi bi-phone text-success"></i> M-Pesa</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Sender Number</small>
+                                        <p class="mb-0">+254 712 345 678</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Paybill Number</small>
+                                        <p class="mb-0">522533</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-secondary">Account Number</small>
+                                        <p class="mb-0">R-00123</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction Timeline -->
+                            <div class="detail-section">
+                                <h6>Transaction Timeline</h6>
+                                <div class="timeline">
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-success"></div>
+                                        <div class="timeline-content">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>Transaction Completed</strong>
+                                                <small class="text-secondary">11:42:15 AM</small>
+                                            </div>
+                                            <p class="mb-0 text-secondary small">Amount credited to member account</p>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-info"></div>
+                                        <div class="timeline-content">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>Payment Verified</strong>
+                                                <small class="text-secondary">11:42:10 AM</small>
+                                            </div>
+                                            <p class="mb-0 text-secondary small">M-Pesa confirmation received</p>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-primary"></div>
+                                        <div class="timeline-content">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>Payment Initiated</strong>
+                                                <small class="text-secondary">11:42:00 AM</small>
+                                            </div>
+                                            <p class="mb-0 text-secondary small">Member sent KES 50,000 via M-Pesa</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column - Actions & Notes -->
+                        <div class="col-md-4">
+                            <div class="detail-actions-panel">
+                                <h6>Quick Actions</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#generateReceiptModal">
+                                        <i class="bi bi-receipt"></i> Generate Receipt
+                                    </button>
+                                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editTransactionModal">
+                                        <i class="bi bi-pencil"></i> Edit Transaction
+                                    </button>
+                                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#sendToMemberModal">
+                                        <i class="bi bi-send"></i> Send to Member
+                                    </button>
+                                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#reverseTransactionModal">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reverse Transaction
+                                    </button>
+                                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#voidTransactionModal">
+                                        <i class="bi bi-slash-circle"></i> Void Transaction
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h6>Transaction Notes</h6>
+                                    <div class="notes-list">
+                                        <div class="note-item">
+                                            <div class="note-header">
+                                                <strong>John Maina</strong>
+                                                <small>2 hours ago</small>
+                                            </div>
+                                            <p class="mb-0 small">Regular monthly deposit. No issues.</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                                        <i class="bi bi-plus"></i> Add Note
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h6>System Information</h6>
+                                    <table class="table table-sm small">
+                                        <tr>
+                                            <td>IP Address</td>
+                                            <td>196.201.214.45</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Device</td>
+                                            <td>Mobile (Android)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Location</td>
+                                            <td>Nairobi, Kenya</td>
+                                        </tr>
+                                        <tr>
+                                            <td>API Version</td>
+                                            <td>v2.1.0</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadTransactionPDF()">
+                        <i class="bi bi-download"></i> Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Manual Transaction Modal -->
+    <div class="modal fade" id="addManualTransactionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Add Manual Transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Use this to record offline transactions (cash, cheque) that were processed outside the system.
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Select Member *</label>
+                            <select class="form-select" required>
+                                <option value="">Search and select member...</option>
+                                <option value="R-00123">Sarah Akinyi (R-00123)</option>
+                                <option value="R-00045">David Kipkorir (R-00045)</option>
+                                <option value="R-00234">Mary Wanjiku (R-00234)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Transaction Type *</label>
+                            <select class="form-select" required>
+                                <option value="">Select type...</option>
+                                <option value="deposit">Deposit</option>
+                                <option value="withdrawal">Withdrawal</option>
+                                <option value="loan-payment">Loan Payment</option>
+                                <option value="share-purchase">Share Purchase</option>
+                                <option value="fee">Fee Payment</option>
+                                <option value="dividend">Dividend Payment</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Payment Method *</label>
+                            <select class="form-select" required>
+                                <option value="">Select method...</option>
+                                <option value="cash">Cash</option>
+                                <option value="cheque">Cheque</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="mpesa">M-Pesa (Manual)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Amount (KES) *</label>
+                            <input type="number" class="form-control" placeholder="50,000" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Transaction Date *</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Transaction Time *</label>
+                            <input type="time" class="form-control" required>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label">Reference Number</label>
+                            <input type="text" class="form-control" placeholder="Cheque number, bank reference, etc.">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label">Description/Notes</label>
+                            <textarea class="form-control" rows="3" placeholder="Add any additional details about this transaction..."></textarea>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label">Upload Proof (Optional)</label>
+                            <input type="file" class="form-control" accept="image/*,application/pdf">
+                            <small class="text-secondary">Upload receipt, cheque scan, or bank slip</small>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="autoApprove" checked>
+                                <label class="form-check-label" for="autoApprove">
+                                    Auto-approve this transaction (skip pending status)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="notifyMember" checked>
+                                <label class="form-check-label" for="notifyMember">
+                                    Send SMS notification to member
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addManualTransaction()">
+                        <i class="bi bi-check-circle"></i> Add Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Transaction Modal -->
+    <div class="modal fade" id="editTransactionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Editing transactions should only be done to correct errors. All changes are logged.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Transaction ID</label>
+                        <input type="text" class="form-control" value="TXN-2024-050123" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Amount (KES)</label>
+                        <input type="number" class="form-control" value="50000">
+                        <small class="text-secondary">Original: KES 50,000</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Transaction Type</label>
+                        <select class="form-select">
+                            <option value="deposit" selected>Deposit</option>
+                            <option value="withdrawal">Withdrawal</option>
+                            <option value="loan">Loan Payment</option>
+                            <option value="shares">Share Purchase</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select">
+                            <option value="success" selected>Success</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Reference Number</label>
+                        <input type="text" class="form-control" value="QR45KJ8L3P">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Reason for Edit *</label>
+                        <textarea class="form-control" rows="3" placeholder="Explain why this transaction is being edited..." required></textarea>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmEdit" required>
+                        <label class="form-check-label" for="confirmEdit">
+                            I confirm this edit is necessary and accurate
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTransactionEdit()">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reverse Transaction Modal -->
+    <div class="modal fade" id="reverseTransactionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="bi bi-arrow-counterclockwise"></i> Reverse Transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Reversing this transaction will create a counter-entry and return funds to the original source.
+                    </div>
+                    
+                    <h6>Transaction Details</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td>Transaction ID:</td>
+                            <td><strong>TXN-2024-050123</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Member:</td>
+                            <td>Sarah Akinyi (R-00123)</td>
+                        </tr>
+                        <tr>
+                            <td>Amount:</td>
+                            <td><strong>KES 50,000</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Type:</td>
+                            <td>Deposit</td>
+                        </tr>
+                        <tr>
+                            <td>Date:</td>
+                            <td>Jan 23, 2024 11:42 AM</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Reason for Reversal *</label>
+                        <select class="form-select" id="reverseReason">
+                            <option value="">Select reason...</option>
+                            <option value="duplicate">Duplicate Transaction</option>
+                            <option value="error">Processing Error</option>
+                            <option value="member-request">Member Request</option>
+                            <option value="fraud">Suspected Fraud</option>
+                            <option value="wrong-amount">Wrong Amount</option>
+                            <option value="wrong-account">Wrong Account</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Additional Details *</label>
+                        <textarea class="form-control" rows="3" placeholder="Provide detailed explanation for this reversal..." required></textarea>
+                    </div>
+                    
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="notifyMemberReverse" checked>
+                        <label class="form-check-label" for="notifyMemberReverse">
+                            Notify member via SMS about reversal
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmReverse" required>
+                        <label class="form-check-label" for="confirmReverse">
+                            I confirm this transaction should be reversed
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmReversal()">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reverse Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Approve Transaction Modal -->
+    <div class="modal fade" id="approveTransactionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-check-circle"></i> Approve Transaction</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        <i class="bi bi-info-circle"></i> Approving this transaction will process the payment and update member balances.
+                    </div>
+                    
+                    <h6>Transaction to Approve</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td>Transaction ID:</td>
+                            <td><strong>TXN-2024-050122</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Member:</td>
+                            <td>David Kipkorir (R-00045)</td>
+                        </tr>
+                        <tr>
+                            <td>Type:</td>
+                            <td>Cash Withdrawal</td>
+                        </tr>
+                        <tr>
+                            <td>Amount:</td>
+                            <td><strong class="text-danger">KES 120,000</strong></td>
+                        </tr>
+                    </table>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Approval Notes (Optional)</label>
+                        <textarea class="form-control" rows="2" placeholder="Add any notes about this approval..."></textarea>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmApprove" required>
+                        <label class="form-check-label" for="confirmApprove">
+                            I have verified all transaction details and approve this payment
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="approveTransaction()">
+                        <i class="bi bi-check-circle"></i> Approve Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reject Transaction Modal -->
+    <div class="modal fade" id="rejectTransactionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-x-circle"></i> Reject Transaction</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Rejecting this transaction will cancel it permanently.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Reason for Rejection *</label>
+                        <select class="form-select" required>
+                            <option value="">Select reason...</option>
+                            <option value="insufficient">Insufficient Balance</option>
+                            <option value="suspicious">Suspicious Activity</option>
+                            <option value="incorrect">Incorrect Information</option>
+                            <option value="duplicate">Duplicate Transaction</option>
+                            <option value="unauthorized">Unauthorized</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Detailed Explanation *</label>
+                        <textarea class="form-control" rows="3" placeholder="Provide detailed reason for rejection..." required></textarea>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="notifyReject" checked>
+                        <label class="form-check-label" for="notifyReject">
+                            Notify member via SMS
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="rejectTransaction()">
+                        <i class="bi bi-x-circle"></i> Reject Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Generate Receipt Modal -->
+    <div class="modal fade" id="generateReceiptModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-receipt"></i> Generate Receipt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Receipt Type</label>
+                        <select class="form-select">
+                            <option value="official">Official Receipt</option>
+                            <option value="payment-confirmation">Payment Confirmation</option>
+                            <option value="deposit-slip">Deposit Slip</option>
+                            <option value="withdrawal-voucher">Withdrawal Voucher</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Format</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="receiptFormat" id="pdfFormat" checked>
+                            <label class="btn btn-outline-primary" for="pdfFormat">PDF</label>
+                            
+                            <input type="radio" class="btn-check" name="receiptFormat" id="printFormat">
+                            <label class="btn btn-outline-primary" for="printFormat">Print</label>
+                            
+                            <input type="radio" class="btn-check" name="receiptFormat" id="emailFormat">
+                            <label class="btn btn-outline-primary" for="emailFormat">Email</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Include Details</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeMember" checked>
+                            <label class="form-check-label" for="includeMember">
+                                Member Information
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeBreakdown" checked>
+                            <label class="form-check-label" for="includeBreakdown">
+                                Fee Breakdown
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeSignature">
+                            <label class="form-check-label" for="includeSignature">
+                                Digital Signature
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="autoEmail">
+                        <label class="form-check-label" for="autoEmail">
+                            Send copy to member's email automatically
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="generateReceipt()">
+                        <i class="bi bi-download"></i> Generate Receipt
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Export Transactions Modal -->
+    <div class="modal fade" id="exportTransactionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-download"></i> Export Transactions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Export Format</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="exportFormat" id="excelExport" checked>
+                            <label class="btn btn-outline-primary" for="excelExport">Excel</label>
+                            
+                            <input type="radio" class="btn-check" name="exportFormat" id="csvExport">
+                            <label class="btn btn-outline-primary" for="csvExport">CSV</label>
+                            
+                            <input type="radio" class="btn-check" name="exportFormat" id="pdfExport">
+                            <label class="btn btn-outline-primary" for="pdfExport">PDF</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Date Range</label>
+                        <select class="form-select">
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month" selected>This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Include Columns</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Transaction ID</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Date & Time</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Member Details</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Amount</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Type</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Method</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Status</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">Fees</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Filter by Status</label>
+                        <select class="form-select">
+                            <option value="all" selected>All Transactions</option>
+                            <option value="success">Successful Only</option>
+                            <option value="pending">Pending Only</option>
+                            <option value="failed">Failed Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="exportTransactions()">
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reconciliation Modal -->
+    <div class="modal fade" id="reconciliationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-calculator"></i> Transaction Reconciliation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Reconcile system transactions with bank statements or M-Pesa statements.
+                    </div>
+                    
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mpesaReconcile">M-Pesa</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bankReconcile">Bank</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cashReconcile">Cash</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="mpesaReconcile">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Reconciliation Period</label>
+                                    <select class="form-select">
+                                        <option value="today">Today</option>
+                                        <option value="yesterday">Yesterday</option>
+                                        <option value="week">This Week</option>
+                                        <option value="month">This Month</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">M-Pesa Paybill</label>
+                                    <select class="form-select">
+                                        <option value="522533">522533 (Main Paybill)</option>
+                                        <option value="522534">522534 (Secondary)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Upload M-Pesa Statement</label>
+                                    <input type="file" class="form-control" accept=".xlsx,.xls,.csv">
+                                    <small class="text-secondary">Upload the M-Pesa statement Excel or CSV file</small>
+                                </div>
+                            </div>
+                            
+                            <div class="reconciliation-summary mt-4">
+                                <h6>Quick Summary</h6>
+                                <div class="row g-3 text-center">
+                                    <div class="col-4">
+                                        <div class="summary-box">
+                                            <small>System Total</small>
+                                            <h5 class="mb-0">KES 15.2M</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="summary-box">
+                                            <small>M-Pesa Total</small>
+                                            <h5 class="mb-0">KES 15.2M</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="summary-box">
+                                            <small>Difference</small>
+                                            <h5 class="mb-0 text-success">KES 0</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="bankReconcile">
+                            <p>Bank reconciliation content...</p>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="cashReconcile">
+                            <p>Cash reconciliation content...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="startReconciliation()">
+                        <i class="bi bi-play-circle"></i> Start Reconciliation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions Modal -->
+    <div class="modal fade" id="quickActionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#addManualTransactionModal">
+                            <i class="bi bi-plus-circle"></i> Add Manual Transaction
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#reconciliationModal">
+                            <i class="bi bi-calculator"></i> Reconcile Transactions
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#exportTransactionsModal">
+                            <i class="bi bi-download"></i> Export Transactions
+                        </a>
+                        <a href="members-all.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people"></i> View All Members
+                        </a>
+                        <a href="analytics.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-graph-up"></i> View Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-circle"></i> Account Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar mx-auto" style="width: 80px; height: 80px; font-size: 2rem;">JM</div>
+                        <h5 class="mt-3">John Maina</h5>
+                        <p class="text-secondary">General Manager</p>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                    <div class="list-group">
+                        <a href="profile.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person"></i> Edit Profile
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-key"></i> Change Password
+                        </a>
+                        <a href="config.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action text-danger">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Filter functions
+        function filterByDate(period) {
+            document.getElementById('dateFilter').value = period;
+            applyFilters();
+            console.log('Filtered by date:', period);
+        }
+        
+        function filterByStatus(status) {
+            document.getElementById('statusFilter').value = status;
+            applyFilters();
+            console.log('Filtered by status:', status);
+        }
+        
+        function filterByType(type) {
+            document.getElementById('typeFilter').value = type;
+            applyFilters();
+            console.log('Filtered by type:', type);
+        }
+        
+        function applyFilters() {
+            const date = document.getElementById('dateFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const method = document.getElementById('methodFilter').value;
+            
+            console.log('Applying filters:', { date, type, status, method });
+            updateActiveFiltersDisplay();
+            // Backend would fetch filtered data here
+        }
+        
+        function resetFilters() {
+            document.getElementById('dateFilter').value = 'today';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('methodFilter').value = 'all';
+            applyFilters();
+        }
+        
+        function removeFilter(filterType) {
+            console.log('Removing filter:', filterType);
+            applyFilters();
+        }
+        
+        function updateActiveFiltersDisplay() {
+            // Update active filters display
+            console.log('Updating filter display');
+        }
+        
+        // Selection functions
+        function toggleSelectAll(checkbox) {
+            const checkboxes = document.querySelectorAll('.transaction-checkbox');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.transaction-checkbox:checked');
+            document.getElementById('selectedCount').textContent = checkedBoxes.length;
+            document.getElementById('bulkActions').style.display = checkedBoxes.length > 0 ? 'block' : 'none';
+        }
+        
+        // Add event listeners to transaction checkboxes
+        document.querySelectorAll('.transaction-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+        
+        // Sort functions
+        function sortTransactions(sortBy) {
+            console.log('Sorting by:', sortBy);
+            // Backend would re-fetch sorted data
+        }
+        
+        // Pagination
+        function loadPage(page) {
+            console.log('Loading page:', page);
+        }
+        
+        function changePerPage(value) {
+            console.log('Changing items per page to:', value);
+        }
+        
+        // Transaction details
+        function viewTransactionDetails(txnId) {
+            console.log('Viewing transaction:', txnId);
+            document.getElementById('txnId').textContent = txnId;
+            const modal = new bootstrap.Modal(document.getElementById('transactionDetailsModal'));
+            modal.show();
+        }
+        
+        function viewMember(memberId) {
+            console.log('Viewing member:', memberId);
+            window.location.href = `members-all.html?id=${memberId}`;
+        }
+        
+        // Transaction actions
+        function addManualTransaction() {
+            console.log('Adding manual transaction');
+            showNotification('Manual transaction added successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addManualTransactionModal')).hide();
+        }
+        
+        function saveTransactionEdit() {
+            if (!document.getElementById('confirmEdit').checked) {
+                alert('Please confirm the edit');
+                return;
+            }
+            console.log('Saving transaction edit');
+            showNotification('Transaction updated successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('editTransactionModal')).hide();
+        }
+        
+        function confirmReversal() {
+            if (!document.getElementById('confirmReverse').checked) {
+                alert('Please confirm the reversal');
+                return;
+            }
+            console.log('Reversing transaction');
+            showNotification('Transaction reversed successfully!', 'warning');
+            bootstrap.Modal.getInstance(document.getElementById('reverseTransactionModal')).hide();
+            setTimeout(() => window.location.reload(), 1500);
+        }
+        
+        function approveTransaction() {
+            if (!document.getElementById('confirmApprove').checked) {
+                alert('Please confirm the approval');
+                return;
+            }
+            console.log('Approving transaction');
+            showNotification('Transaction approved successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('approveTransactionModal')).hide();
+            setTimeout(() => window.location.reload(), 1500);
+        }
+        
+        function rejectTransaction() {
+            console.log('Rejecting transaction');
+            showNotification('Transaction rejected', 'danger');
+            bootstrap.Modal.getInstance(document.getElementById('rejectTransactionModal')).hide();
+            setTimeout(() => window.location.reload(), 1500);
+        }
+        
+        function generateReceipt() {
+            console.log('Generating receipt');
+            showNotification('Receipt generated successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('generateReceiptModal')).hide();
+        }
+        
+        function exportTransactions() {
+            console.log('Exporting transactions');
+            showNotification('Export started. Download will begin shortly...', 'info');
+            bootstrap.Modal.getInstance(document.getElementById('exportTransactionsModal')).hide();
+        }
+        
+        function startReconciliation() {
+            console.log('Starting reconciliation');
+            showNotification('Reconciliation process started...', 'info');
+        }
+        
+        function flagTransaction(txnId) {
+            if (confirm('Are you sure you want to flag this transaction as suspicious?')) {
+                console.log('Flagging transaction:', txnId);
+                showNotification('Transaction flagged for review', 'warning');
+            }
+        }
+        
+        function refreshTransactions() {
+            console.log('Refreshing transactions');
+            showNotification('Refreshing...', 'info');
+            setTimeout(() => {
+                showNotification('Updated!', 'success');
+            }, 1000);
+        }
+        
+        function downloadTransactionPDF() {
+            console.log('Downloading transaction PDF');
+            showNotification('Downloading PDF...', 'info');
+        }
+        
+        // Utility function
+        function showNotification(message, type) {
+            const bgColor = {
+                'success': '#4caf50',
+                'warning': '#ffc107',
+                'danger': '#f44336',
+                'info': '#2196f3'
+            }[type] || '#00d084';
+            
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-' + type + ' position-fixed top-0 end-0 m-3';
+            notification.style.zIndex = '9999';
+            notification.innerHTML = `<i class="bi bi-check-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Auto-update last updated time
+        setInterval(() => {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('lastUpdate').textContent = time;
+        }, 30000);
+    </script>
+    
+    <style>
+        /* Transaction Row Styles */
+        .transaction-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .transaction-row:hover {
+            background: var(--primary-green-ultra-light);
+        }
+        
+        .transaction-row.pending {
+            border-left: 3px solid var(--status-warning);
+        }
+        
+        .transaction-row.failed {
+            border-left: 3px solid var(--status-danger);
+        }
+        
+        .transaction-id {
+            color: var(--primary-green);
+            font-family: var(--font-mono);
+        }
+        
+        .transaction-ref {
+            font-size: 0.75rem;
+        }
+        
+        /* Member Avatar (Extra Small) */
+        .member-avatar-xs {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .member-name-link {
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .member-name-link:hover {
+            color: var(--primary-green);
+            text-decoration: underline;
+        }
+        
+        /* Transaction Types */
+        .transaction-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .transaction-type.deposit {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--status-success);
+        }
+        
+        .transaction-type.withdrawal {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--status-danger);
+        }
+        
+        .transaction-type.loan {
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--status-info);
+        }
+        
+        .transaction-type.shares {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--status-pending);
+        }
+        
+        /* Payment Methods */
+        .payment-method {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .payment-method.mpesa {
+            color: var(--status-success);
+        }
+        
+        .payment-method.bank {
+            color: var(--status-info);
+        }
+        
+        .payment-method.cash {
+            color: var(--status-warning);
+        }
+        
+        .payment-method.cheque {
+            color: var(--text-secondary);
+        }
+        
+        /* Amount Styling */
+        .amount-positive {
+            color: var(--status-success);
+        }
+        
+        .amount-negative {
+            color: var(--status-danger);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+        
+        /* Metric Mini Cards */
+        .metric-mini-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-mini-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .metric-mini-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .metric-mini-card.deposits .metric-mini-icon {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--status-success);
+        }
+        
+        .metric-mini-card.withdrawals .metric-mini-icon {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--status-danger);
+        }
+        
+        .metric-mini-card.loans .metric-mini-icon {
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--status-info);
+        }
+        
+        .metric-mini-card.shares .metric-mini-icon {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--status-pending);
+        }
+        
+        .metric-mini-info span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-mini-info strong {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            display: block;
+        }
+        
+        .metric-mini-info small {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Live Indicator */
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--status-success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+        
+        /* Transaction Detail Sections */
+        .transaction-detail-header {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-section:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-section h6 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .detail-actions-panel {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            position: sticky;
+            top: 20px;
+        }
+        
+        .detail-actions-panel h6 {
+            margin-bottom: 1rem;
+        }
+        
+        /* Notes List */
+        .notes-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .note-item {
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.5rem;
+        }
+        
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Summary Boxes */
+        .summary-box {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+        }
+        
+        .summary-box small {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -26px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--border-color);
+        }
+        
+        .timeline-content {
+            padding: 0.5rem 0;
+        }
+    </style>
+</body>
+</html>

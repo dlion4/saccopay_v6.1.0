@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SACCO Settings - Rongo SACCO | SACCOPay Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           SETTINGS PAGE STYLES
+        ======================================== */
+
+        /* Settings Hero */
+        .settings-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            color: white;
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2xl);
+            flex-wrap: wrap;
+        }
+
+        .settings-hero-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .settings-hero-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .settings-hero-info h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+        .settings-hero-info p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .settings-hero-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .settings-hero-meta-item {
+            text-align: center;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            min-width: 100px;
+        }
+
+        .settings-hero-meta-item .shm-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .settings-hero-meta-item .shm-label {
+            font-size: 0.68rem;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
+        /* Settings Sections */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .settings-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-green-light);
+        }
+
+        .settings-card-header {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .settings-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .settings-card-header h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .settings-card-body {
+            padding: var(--spacing-lg) var(--spacing-xl);
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-row:hover {
+            padding-left: var(--spacing-sm);
+            background: var(--primary-green-ultra-light);
+            border-radius: var(--radius-sm);
+        }
+
+        .setting-info h6 {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin: 0 0 2px;
+        }
+
+        .setting-info p {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            margin: 0;
+        }
+
+        .setting-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: right;
+            flex-shrink: 0;
+            margin-left: var(--spacing-md);
+        }
+
+        .setting-value .edit-hint {
+            font-size: 0.65rem;
+            color: var(--text-tertiary);
+            font-weight: 400;
+        }
+
+        /* Toggle Switch */
+        .toggle-wrap {
+            flex-shrink: 0;
+        }
+
+        .form-switch .form-check-input {
+            width: 44px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        /* Modal */
+        .mhdr {
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: var(--spacing-lg) var(--spacing-xl);
+        }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .mhdr.blue { background: linear-gradient(135deg, #1565c0, #1976d2); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .mhdr.teal { background: linear-gradient(135deg, #00695c, #00897b); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+
+        .modal-content {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Form */
+        .flbl {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .finput {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .finput:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+            outline: none;
+        }
+        .fselect {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .fselect:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+            outline: none;
+        }
+
+        /* Detail Row */
+        .drow {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        /* Filter Tab */
+        .ftab {
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ftab:hover {
+            background: var(--primary-green-ultra-light);
+            border-color: var(--primary-green-light);
+        }
+        .ftab.active {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(0,208,132,0.25);
+        }
+
+        @media (max-width: 768px) {
+            .settings-hero { flex-direction: column; align-items: stretch; }
+            .settings-hero-meta { justify-content: center; }
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand"><div class="sidebar-brand-logo">S</div><div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Rongo SACCO</p></div></div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loan Disbursements</span></a></div>
+            <div class="nav-item"><a href="loan-repayments.html" class="nav-link"><i class="bi bi-arrow-counterclockwise nav-icon"></i><span>Loan Repayments</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span></a></div>
+            <div class="nav-item"><a href="wallet.html" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>SACCOPay Wallet</span></a></div>
+            <div class="nav-section-title">Reports & Compliance</div>
+            <div class="nav-item"><a href="reports.html" class="nav-link"><i class="bi bi-file-earmark-text nav-icon"></i><span>All Reports</span></a></div>
+            <div class="nav-item"><a href="compliance.html" class="nav-link"><i class="bi bi-building-check nav-icon"></i><span>Compliance</span></a></div>
+            <div class="nav-section-title">System</div>
+            <div class="nav-item"><a href="settings.html" class="nav-link active"><i class="bi bi-gear nav-icon"></i><span>SACCO Settings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell nav-icon"></i><span>Notifications</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search settings..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i></button>
+                    <div class="user-profile" onclick="openModal('profileModal')"><div class="user-avatar">JK</div><div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Super Admin</p></div></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">SACCO Settings</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-gear" style="color:var(--primary-green);"></i> SACCO Settings</h2>
+                        <p>Configure your Rongo SACCO — general, financial, operational & system preferences</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Hero -->
+            <div class="settings-hero fade-in">
+                <div class="settings-hero-logo">R</div>
+                <div class="settings-hero-info">
+                    <h2>Rongo SACCO Society Ltd</h2>
+                    <p>P.O. Box 45-40404, Rongo, Migori County, Kenya</p>
+                    <p style="font-size:0.75rem;opacity:0.5;margin-top:4px;">SASRA License: DT/0198 | Reg: CS/7842 | Est. 1982</p>
+                </div>
+                <div class="settings-hero-meta">
+                    <div class="settings-hero-meta-item"><div class="shm-value">28</div><div class="shm-label">Settings</div></div>
+                    <div class="settings-hero-meta-item"><div class="shm-value">1,847</div><div class="shm-label">Members</div></div>
+                    <div class="settings-hero-meta-item"><div class="shm-value">KES 256M</div><div class="shm-label">Total Assets</div></div>
+                </div>
+            </div>
+
+            <!-- Settings Grid -->
+            <div class="settings-grid fade-in">
+
+                <!-- General Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-building"></i></div>
+                        <h5>General</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('SACCO Name','Rongo SACCO Society Ltd','text')">
+                            <div class="setting-info"><h6>SACCO Name</h6><p>Official registered name</p></div>
+                            <div class="setting-value">Rongo SACCO Ltd <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('Registration Number','CS/7842','text')">
+                            <div class="setting-info"><h6>Registration Number</h6><p>Ministry of Cooperatives</p></div>
+                            <div class="setting-value">CS/7842 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('SASRA License','DT/0198','text')">
+                            <div class="setting-info"><h6>SASRA License</h6><p>SASRA deposit-taking license</p></div>
+                            <div class="setting-value">DT/0198 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('SACCO Email','info@rongosacco.co.ke','email')">
+                            <div class="setting-info"><h6>Official Email</h6><p>Primary contact email</p></div>
+                            <div class="setting-value">info@rongosacco.co.ke <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('SACCO Phone','+254 20 277 1000','phone')">
+                            <div class="setting-info"><h6>Phone Number</h6><p>Main office line</p></div>
+                            <div class="setting-value">+254 20 277 1000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('Physical Address','P.O. Box 45-40404, Rongo, Migori','textarea')">
+                            <div class="setting-info"><h6>Physical Address</h6><p>Head office location</p></div>
+                            <div class="setting-value">P.O. Box 45-40404 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('Website','www.rongosacco.co.ke','url')">
+                            <div class="setting-info"><h6>Website URL</h6><p>SACCO website address</p></div>
+                            <div class="setting-value">www.rongosacco.co.ke <span class="edit-hint">✎</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-currency-exchange"></i></div>
+                        <h5>Financial</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Share Price (KES)','1000','currency')">
+                            <div class="setting-info"><h6>Share Price</h6><p>Per share value</p></div>
+                            <div class="setting-value">KES 1,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Minimum Share Purchase','1','number')">
+                            <div class="setting-info"><h6>Min. Share Purchase</h6><p>Minimum shares per transaction</p></div>
+                            <div class="setting-value">1 share <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Maximum Share Holdings','5000','number')">
+                            <div class="setting-info"><h6>Max. Share Holdings</h6><p>Maximum per member</p></div>
+                            <div class="setting-value">5,000 shares <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Minimum Savings Deposit','500','currency')">
+                            <div class="setting-info"><h6>Min. Savings Deposit</h6><p>Minimum deposit amount</p></div>
+                            <div class="setting-value">KES 500 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Minimum Savings Balance','1000','currency')">
+                            <div class="setting-info"><h6>Min. Savings Balance</h6><p>Minimum account balance</p></div>
+                            <div class="setting-value">KES 1,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Interest Rate (Regular)</h6><p>Regular savings interest rate</p></div>
+                            <div class="setting-value">7% p.a. <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Regular Savings Interest Rate','7','percent')">✎</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-cash-stack"></i></div>
+                        <h5>Loans</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Maximum Loan Amount','5000000','currency')">
+                            <div class="setting-info"><h6>Max. Loan Amount</h6><p>Maximum loan per member</p></div>
+                            <div class="setting-value">KES 5,000,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Minimum Loan Amount','5000','currency')">
+                            <div class="setting-info"><h6>Min. Loan Amount</h6><p>Minimum loan per member</p></div>
+                            <div class="setting-value">KES 5,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Processing Fee Rate','1','percent')">
+                            <div class="setting-info"><h6>Processing Fee</h6><p>Loan processing fee rate</p></div>
+                            <div class="setting-value">1% <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Late Payment Penalty','5','percent')">
+                            <div class="setting-info"><h6>Late Payment Penalty</h6><p>Per month overdue</p></div>
+                            <div class="setting-value">5% <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Grace Period (Days)','7','number')">
+                            <div class="setting-info"><h6>Grace Period</h6><p>Days before penalty applies</p></div>
+                            <div class="setting-value">7 days <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Interest Rate (Personal)','14','percent')">
+                            <div class="setting-info"><h6>Interest (Personal)</h6><p>Personal loan interest rate</p></div>
+                            <div class="setting-value">14% p.a. <span class="edit-hint">✎</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Withdrawal & Transfer Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-arrow-left-right"></i></div>
+                        <h5>Withdrawals & Transfers</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Max. Daily Withdrawal','200000','currency')">
+                            <div class="setting-info"><h6>Max. Daily Withdrawal</h6><p>Member daily withdrawal limit</p></div>
+                            <div class="setting-value">KES 200,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Max. Single Transfer','150000','currency')">
+                            <div class="setting-info"><h6>Max. Single Transfer</h6><p>Per transaction limit</p></div>
+                            <div class="setting-value">KES 150,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Transfer Fee','50','currency')">
+                            <div class="setting-info"><h6>Transfer Fee</h6><p>Internal transfer charge</p></div>
+                            <div class="setting-value">KES 50 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('M-Pesa Withdrawal Fee','35','currency')">
+                            <div class="setting-info"><h6>M-Pesa Withdrawal Fee</h6><p>Charge for M-Pesa withdrawals</p></div>
+                            <div class="setting-value">KES 35 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Allow External Withdrawals</h6><p>M-Pesa/Bank withdrawals enabled</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleExternal" onchange="toggleSetting('External withdrawals',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Auto-Save Withdrawals</h6><p>Withdrawals require OTP approval</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleOTP" onchange="toggleSetting('OTP requirement',this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Membership Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-people"></i></div>
+                        <h5>Membership</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Minimum Age','18','number')">
+                            <div class="setting-info"><h6>Minimum Age</h6><p>Age requirement for membership</p></div>
+                            <div class="setting-value">18 years <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Maximum Age','70','number')">
+                            <div class="setting-info"><h6>Maximum Age</h6><p>Age limit for new members</p></div>
+                            <div class="setting-value">70 years <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Registration Fee','1000','currency')">
+                            <div class="setting-info"><h6>Registration Fee</h6><p>One-time joining fee</p></div>
+                            <div class="setting-value">KES 1,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Membership Shares Required','5','number')">
+                            <div class="setting-info"><h6>Min. Shares Required</h6><p>Shares needed to become member</p></div>
+                            <div class="setting-value">5 shares (KES 5,000) <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Allow Online Registration</h6><p>Members can register via portal</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleOnlineReg" onchange="toggleSetting('Online registration',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Require Document Upload</h6><p>ID & KRA PIN required on registration</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleDocReq" onchange="toggleSetting('Document requirement',this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wallet Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(0,188,212,0.1);color:var(--accent-teal);"><i class="bi bi-wallet2"></i></div>
+                        <h5>SACCOPay Wallet</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Max. Wallet Balance','1000000','currency')">
+                            <div class="setting-info"><h6>Max. Wallet Balance</h6><p>Maximum wallet limit per member</p></div>
+                            <div class="setting-value">KES 1,000,000 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Min. Wallet Top-up','100','currency')">
+                            <div class="setting-info"><h6>Min. Wallet Top-up</h6><p>Minimum deposit amount</p></div>
+                            <div class="setting-value">KES 100 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Wallet Transfer Fee','0','currency')">
+                            <div class="setting-info"><h6>Wallet Transfer Fee</h6><p>Internal wallet transfer</p></div>
+                            <div class="setting-value">KES 0 <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Enable M-Pesa Integration</h6><p>Allow M-Pesa top-ups & withdrawals</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleMpesa" onchange="toggleSetting('M-Pesa integration',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Enable QR Payments</h6><p>Allow QR code payments</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleQR" onchange="toggleSetting('QR payments',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Enable Wallet-to-Bank</h6><p>Allow transfers to bank accounts</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" id="toggleBank" onchange="toggleSetting('Wallet-to-bank',this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification & Communication -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(121,85,72,0.1);color:#795548;"><i class="bi bi-bell"></i></div>
+                        <h5>Notifications</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>SMS Notifications</h6><p>Transaction alerts via SMS</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleSMS" onchange="toggleSetting('SMS notifications',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Email Notifications</h6><p>Transaction alerts via email</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggleEmail" onchange="toggleSetting('Email notifications',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Push Notifications</h6><p>In-app & browser push alerts</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="togglePush" onchange="toggleSetting('Push notifications',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('SMS Sender ID','RONGOSACCO','text')">
+                            <div class="setting-info"><h6>SMS Sender ID</h6><p>Name displayed on member phones</p></div>
+                            <div class="setting-value">RONGOSACCO <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editTextModal" onclick="openEdit('Admin Alert Email','admin@rongosacco.co.ke','email')">
+                            <div class="setting-info"><h6>Admin Alert Email</h6><p>Admin notification email</p></div>
+                            <div class="setting-value">admin@rongosacco.co.ke <span class="edit-hint">✎</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-shield-lock"></i></div>
+                        <h5>Security</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Min. Password Length','8','number')">
+                            <div class="setting-info"><h6>Min. Password Length</h6><p>Password strength requirement</p></div>
+                            <div class="setting-value">8 characters <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Session Timeout (mins)','15','number')">
+                            <div class="setting-info"><h6>Session Timeout</h6><p>Auto-logout after inactivity</p></div>
+                            <div class="setting-value">15 minutes <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('Max Login Attempts','5','number')">
+                            <div class="setting-info"><h6>Max Login Attempts</h6><p>Before account lockout</p></div>
+                            <div class="setting-value">5 attempts <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row" data-bs-toggle="modal" data-bs-target="#editNumberModal" onclick="openEditNumber('OTP Expiry (mins)','5','number')">
+                            <div class="setting-info"><h6>OTP Expiry</h6><p>OTP code validity period</p></div>
+                            <div class="setting-value">5 minutes <span class="edit-hint">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Two-Factor Auth (Admin)</h6><p>Require OTP for admin login</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" checked id="toggle2FA" onchange="toggleSetting('2FA',this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>IP Restriction</h6><p>Restrict admin access to office IPs</p></div>
+                            <div class="toggle-wrap">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" id="toggleIP" onchange="toggleSetting('IP restriction',this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System & Integration -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <div class="settings-card-icon" style="background:rgba(0,150,136,0.1);color:#00897b;"><i class="bi bi-laptop"></i></div>
+                        <h5>System & Integrations</h5>
+                    </div>
+                    <div class="settings-card-body">
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Time Zone</h6><p>System time zone</p></div>
+                            <div class="setting-value">EAT (UTC+3) <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#editSelectModal" onclick="openSelect('Time Zone','EAT (UTC+3)',['EAT (UTC+3)','CAT (UTC+2)','WAT (UTC+1)'])">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Currency</h6><p>System currency</p></div>
+                            <div class="setting-value">KES <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#editSelectModal" onclick="openSelect('Currency','KES',['KES','UGX','TZS','RWF'])">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Date Format</h6><p>Display date format</p></div>
+                            <div class="setting-value">DD/MM/YYYY <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#editSelectModal" onclick="openSelect('Date Format','DD/MM/YYYY',['DD/MM/YYYY','MM/DD/YYYY','YYYY-MM-DD'])">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Language</h6><p>System interface language</p></div>
+                            <div class="setting-value">English <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#editSelectModal" onclick="openSelect('Language','English',['English','Swahili','Dholuo'])">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>Accounting Software</h6><p>Integration with external system</p></div>
+                            <div class="setting-value">QuickBooks <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#editSelectModal" onclick="openSelect('Accounting Software','QuickBooks',['QuickBooks','Sage','Tally','None'])">✎</span></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h6>M-Pesa API Status</h6><p>Lipa na M-Pesa integration</p></div>
+                            <div class="setting-value" style="color:var(--status-success);"><i class="bi bi-check-circle-fill me-1"></i>Connected <span class="edit-hint" data-bs-toggle="modal" data-bs-target="#apiConfigModal">✎</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="glass-card fade-in">
+                <div class="glass-card-body">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--spacing-md);">
+                        <div>
+                            <h6 style="font-weight:600;margin:0;"><i class="bi bi-arrow-repeat me-1" style="color:var(--primary-green);"></i> Actions</h6>
+                            <p style="font-size:0.78rem;color:var(--text-tertiary);margin:2px 0 0;">Manage SACCO-wide settings and preferences</p>
+                        </div>
+                        <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#auditLogModal"><i class="bi bi-journal-text"></i> Audit Log</button>
+                            <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#backupRestoreModal"><i class="bi bi-download"></i> Backup</button>
+                            <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#systemStatusModal"><i class="bi bi-heart-pulse"></i> System Status</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveAllSettings()"><i class="bi bi-check-circle"></i> Save All Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     SETTINGS MODALS
+==================================================================== -->
+
+<!-- Edit Text -->
+<div class="modal fade" id="editTextModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i><span id="etTitle">Edit Setting</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl" id="etLabel">Value</label><input type="text" class="form-control finput" id="etInput" placeholder="Enter value"></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="saveTextEdit()"><i class="bi bi-check"></i> Save</button></div>
+</div></div></div>
+
+<!-- Edit Number -->
+<div class="modal fade" id="editNumberModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i><span id="enTitle">Edit Setting</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl" id="enLabel">Value</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="enPrefix" style="display:none;background:var(--bg-tertiary);border:2px solid var(--border-color);border-right:none;">KES</span>
+                    <input type="number" class="form-control finput" id="enInput" placeholder="Enter value" style="border-left:2px solid var(--border-color);">
+                    <span class="input-group-text" id="enSuffix" style="display:none;background:var(--bg-tertiary);border:2px solid var(--border-color);border-left:none;">%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="saveNumberEdit()"><i class="bi bi-check"></i> Save</button></div>
+</div></div></div>
+
+<!-- Edit Select -->
+<div class="modal fade" id="editSelectModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-pencil me-2"></i><span id="esTitle">Edit Setting</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl" id="esLabel">Value</label><select class="form-select fselect" id="esSelect"></select></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="saveSelectEdit()"><i class="bi bi-check"></i> Save</button></div>
+</div></div></div>
+
+<!-- API Config -->
+<div class="modal fade" id="apiConfigModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr teal"><h5 class="modal-title"><i class="bi bi-plug me-2"></i>API Integration — M-Pesa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><div style="padding:var(--spacing-lg);background:rgba(76,175,80,0.05);border-radius:var(--radius-md);border:1px solid rgba(76,175,80,0.15);text-align:center;margin-bottom:var(--spacing-lg);"><i class="bi bi-check-circle-fill" style="color:var(--status-success);font-size:2rem;"></i><h6 style="margin-top:var(--spacing-sm);font-weight:700;color:var(--status-success);">Connected</h6><p style="font-size:0.78rem;color:var(--text-tertiary);">Last tested: Dec 18, 2024 • Response: 120ms</p></div></div>
+            <div class="col-md-6"><label class="flbl">API Key</label><input type="text" class="form-control finput" value="****-****-****-a2b4" readonly></div>
+            <div class="col-md-6"><label class="flbl">Consumer Secret</label><input type="password" class="form-control finput" value="********" readonly></div>
+            <div class="col-md-6"><label class="flbl">Pass Key</label><input type="text" class="form-control finput" value="****-****-****-b8x9" readonly></div>
+            <div class="col-md-6"><label class="flbl">Shortcode</label><input type="text" class="form-control finput" value="174379" readonly></div>
+            <div class="col-md-6"><label class="flbl">Environment</label><input type="text" class="form-control finput" value="Production" readonly></div>
+            <div class="col-md-6"><label class="flbl">Callback URL</label><input type="text" class="form-control finput" value="https://api.rongosacco.co.ke/mpesa/callback" readonly></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('API credentials rotated')"><i class="bi bi-arrow-clockwise"></i> Rotate Keys</button><button class="btn btn-outline btn-sm" onclick="showToast('Test successful! Response: 85ms')"><i class="bi bi-heart-pulse"></i> Test Connection</button></div>
+</div></div></div>
+
+<!-- Audit Log -->
+<div class="modal fade" id="auditLogModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content">
+    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-journal-text me-2"></i>Settings Audit Log</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-3"><div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Actions</option><option>Updated</option><option>Enabled</option><option>Disabled</option><option>Configured</option></select></div><div class="col-md-4"><input type="date" class="form-control finput form-control-sm"></div><div class="col-md-4"><input type="text" class="form-control finput form-control-sm" placeholder="Search..."></div></div>
+        <div class="timeline" style="position:relative;padding-left:28px;">
+            <div class="tl-item done" style="padding-bottom:var(--spacing-md);">
+                <div class="tl-time">Today, 10:30 AM</div>
+                <div class="tl-content"><strong>James Kariuki</strong> updated <strong>Share Price</strong> from KES 800 to KES 1,000</div>
+            </div>
+            <div class="tl-item done" style="padding-bottom:var(--spacing-md);">
+                <div class="tl-time">Today, 9:15 AM</div>
+                <div class="tl-content"><strong>James Kariuki</strong> enabled <strong>Two-Factor Auth</strong> for admin login</div>
+            </div>
+            <div class="tl-item done" style="padding-bottom:var(--spacing-md);">
+                <div class="tl-time">Dec 17, 4:00 PM</div>
+                <div class="tl-content"><strong>David Otieno</strong> updated <strong>Min. Savings Balance</strong> from KES 500 to KES 1,000</div>
+            </div>
+            <div class="tl-item done" style="padding-bottom:var(--spacing-md);">
+                <div class="tl-time">Dec 17, 2:00 PM</div>
+                <div class="tl-content"><strong>System</strong> auto-configured <strong>M-Pesa API</strong> — connection verified</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Audit log exported')"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- Backup & Restore -->
+<div class="modal fade" id="backupRestoreModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-box-arrow-in-down me-2"></i>Backup & Restore</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><div style="padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                <div class="drow"><span class="dl">Last Backup</span><span class="dv">Dec 18, 2024 — 2:30 AM</span></div>
+                <div class="drow"><span class="dl">Backup Size</span><span class="dv">256 MB</span></div>
+                <div class="drow"><span class="dl">Auto-Backup Frequency</span><span class="dv">Daily at 2:00 AM</span></div>
+                <div class="drow"><span class="dl">Retention</span><span class="dv">30 days</span></div>
+            </div></div>
+            <div class="col-md-6"><button class="btn btn-primary w-100" onclick="showToast('Backup started...')"><i class="bi bi-cloud-arrow-up"></i> Backup Now</button></div>
+            <div class="col-md-6"><button class="btn btn-outline w-100" onclick="showToast('Restore wizard opened')"><i class="bi bi-cloud-arrow-down"></i> Restore</button></div>
+            <div class="col-12"><button class="btn btn-ghost w-100" onclick="showToast('Auto-backup settings saved')"><i class="bi bi-gear"></i> Configure Auto-Backup</button></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- System Status -->
+<div class="modal fade" id="systemStatusModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-heart-pulse me-2"></i>System Status</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-6"><div class="drow"><span class="dl">Server Status</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill me-1"></i>Online</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">Database</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill me-1"></i>Connected</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">M-Pesa API</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill me-1"></i>Connected (120ms)</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">SMS Gateway</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill me-1"></i>Active</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">Email Service</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill me-1"></i>Active</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">Storage Usage</span><span class="dv">67% (23.4 GB/35 GB)</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">Memory Usage</span><span class="dv">72%</span></div></div>
+            <div class="col-6"><div class="drow"><span class="dl">CPU Load</span><span class="dv">14% (Normal)</span></div></div>
+        </div>
+        <div style="margin-top:var(--spacing-lg);text-align:center;"><button class="btn btn-outline btn-sm" onclick="showToast('System diagnostics complete')"><i class="bi bi-arrow-clockwise"></i> Run Diagnostics</button></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- Notifications & Profile -->
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" style="max-height:350px;overflow-y:auto;"><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-success);"></span><strong style="font-size:0.82rem;">Setting Updated</strong><small style="margin-left:auto;color:var(--text-tertiary);">10:30 AM</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Share price changed to KES 1,000</p></div><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-success);"></span><strong style="font-size:0.82rem;">Backup Complete</strong><small style="margin-left:auto;color:var(--text-tertiary);">2:30 AM</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Daily backup successful — 256 MB</p></div></div><div class="modal-footer"><button class="btn btn-ghost btn-sm">Mark All Read</button><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Super Admin • Rongo SACCO</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+
+// Toggle Settings
+function toggleSetting(name, el){showToast(name+' '+(el.checked?'enabled':'disabled'));}
+
+// Edit Text Modal
+let currentEditLabel = '';
+function openEdit(label, value, type){
+    currentEditLabel = label;
+    document.getElementById('etTitle').textContent = 'Edit: '+label;
+    document.getElementById('etLabel').textContent = label;
+    const input = document.getElementById('etInput');
+    input.value = value;
+    input.type = type === 'email' ? 'email' : type === 'url' ? 'url' : type === 'phone' ? 'tel' : type === 'textarea' ? 'text' : 'text';
+    input.placeholder = 'Enter '+label.toLowerCase();
+}
+
+function saveTextEdit(){
+    const val = document.getElementById('etInput').value;
+    bootstrap.Modal.getInstance(document.getElementById('editTextModal')).hide();
+    showToast(currentEditLabel + ' updated to: ' + val);
+}
+
+// Edit Number Modal
+let currentNumberLabel = '';
+function openEditNumber(label, value, type){
+    currentNumberLabel = label;
+    document.getElementById('enTitle').textContent = 'Edit: '+label;
+    document.getElementById('enLabel').textContent = label;
+    document.getElementById('enInput').value = value;
+    const prefix = document.getElementById('enPrefix');
+    const suffix = document.getElementById('enSuffix');
+    prefix.style.display = type === 'currency' ? 'flex' : 'none';
+    suffix.style.display = type === 'percent' ? 'flex' : 'none';
+    if(type === 'currency') prefix.textContent = 'KES';
+    if(type === 'percent') suffix.textContent = '%';
+}
+
+function saveNumberEdit(){
+    const val = document.getElementById('enInput').value;
+    bootstrap.Modal.getInstance(document.getElementById('editNumberModal')).hide();
+    showToast(currentNumberLabel + ' updated to: ' + val);
+}
+
+// Edit Select Modal
+function openSelect(label, value, options){
+    document.getElementById('esTitle').textContent = 'Edit: '+label;
+    document.getElementById('esLabel').textContent = label;
+    const select = document.getElementById('esSelect');
+    select.innerHTML = '';
+    options.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        if(opt === value) o.selected = true;
+        select.appendChild(o);
+    });
+}
+
+function saveSelectEdit(){
+    const val = document.getElementById('esSelect').value;
+    bootstrap.Modal.getInstance(document.getElementById('editSelectModal')).hide();
+    showToast(currentEditLabel + ' updated to: ' + val);
+}
+
+// Save All
+function saveAllSettings(){showToast('All settings saved successfully!');}
+</script>
+</body>
+</html>

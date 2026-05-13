@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savings Management - SACCOPay Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+    <style>
+        /* ========================================
+           SAVINGS PAGE — SPECIFIC STYLES
+        ======================================== */
+
+        /* Savings Account Cards */
+        .savings-accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .savings-account-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .savings-account-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .sac-header {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sac-header::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .sac-header.shares { background: linear-gradient(135deg, #1a237e, #283593); }
+        .sac-header.withdrawable { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .sac-header.deposits { background: linear-gradient(135deg, #00838f, #00acc1); }
+        .sac-header.holiday { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .sac-header.junior { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .sac-header.emergency { background: linear-gradient(135deg, #c62828, #e53935); }
+
+        .sac-type-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .sac-type-label {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .sac-balance {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 4px 0;
+        }
+
+        .sac-sub {
+            font-size: 0.78rem;
+            opacity: 0.8;
+        }
+
+        .sac-body {
+            padding: var(--spacing-lg) var(--spacing-xl);
+        }
+
+        .sac-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 0.82rem;
+        }
+
+        .sac-stat-row .label { color: var(--text-tertiary); }
+        .sac-stat-row .value { font-weight: 600; color: var(--text-primary); }
+
+        .sac-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            margin-top: var(--spacing-md);
+        }
+
+        /* Lock Indicator */
+        .lock-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+        }
+
+        .lock-indicator.locked {
+            background: rgba(244,67,54,0.1);
+            color: var(--status-danger);
+        }
+
+        .lock-indicator.unlocked {
+            background: rgba(76,175,80,0.1);
+            color: var(--status-success);
+        }
+
+        /* Share Certificate Badge */
+        .share-cert {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: rgba(26,35,130,0.1);
+            color: #1a237e;
+        }
+
+        /* Member Cell */
+        .m-cell { display: flex; align-items: center; gap: var(--spacing-sm); }
+        .m-avatar {
+            width: 34px; height: 34px; border-radius: var(--radius-full);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.72rem; color: white; flex-shrink: 0;
+        }
+        .m-avatar.c1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .m-avatar.c2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+        .m-avatar.c3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+        .m-avatar.c4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .m-avatar.c5 { background: linear-gradient(135deg, #f44336, #ef5350); }
+        .m-avatar.c6 { background: linear-gradient(135deg, #00bcd4, #26c6da); }
+        .m-avatar.c7 { background: linear-gradient(135deg, #1a237e, #283593); }
+        .m-name { font-size: 0.85rem; font-weight: 600; }
+        .m-sub { font-size: 0.7rem; color: var(--text-tertiary); }
+
+        /* Filter Tab */
+        .ftab {
+            padding: 8px 18px; border-radius: var(--radius-full);
+            background: var(--bg-secondary); border: 1px solid var(--border-color);
+            color: var(--text-secondary); font-size: 0.82rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .ftab:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); color: var(--primary-green-dark); }
+        .ftab.active { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(0,208,132,0.25); }
+        .ftab .cnt { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: var(--radius-full); font-size: 0.68rem; font-weight: 700; }
+        .ftab:not(.active) .cnt { background: var(--bg-tertiary); color: var(--text-tertiary); }
+
+        /* Modal Custom Headers */
+        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
+        .mhdr .btn-close { filter: brightness(0) invert(1); }
+        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+        .mhdr.blue { background: linear-gradient(135deg, #1a237e, #283593); }
+        .mhdr.teal { background: linear-gradient(135deg, #00838f, #00acc1); }
+        .mhdr.orange { background: linear-gradient(135deg, #e65100, #f57c00); }
+        .mhdr.purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
+        .mhdr.red { background: linear-gradient(135deg, #c62828, #e53935); }
+        .mhdr.success { background: linear-gradient(135deg, #2e7d32, #43a047); }
+
+        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .modal-body { padding: var(--spacing-xl); }
+        .modal-footer { border-top: 1px solid var(--border-color); padding: var(--spacing-lg) var(--spacing-xl); }
+
+        /* Form */
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s ease; }
+        .finput:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+        .fselect { border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s ease; }
+        .fselect:focus { border-color: var(--primary-green); box-shadow: 0 0 0 4px var(--primary-green-ultra-light); outline: none; }
+
+        /* Detail Row */
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .drow:last-child { border-bottom: none; }
+        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); }
+
+        /* Mini Stat */
+        .mstat { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); background: var(--bg-tertiary); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm); }
+        .mstat-l { font-size: 0.8rem; color: var(--text-secondary); }
+        .mstat-v { font-size: 1rem; font-weight: 700; }
+
+        /* Quick Actions */
+        .qa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--spacing-md); }
+        .qa-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--spacing-lg); text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .qa-card:hover { border-color: var(--primary-green); background: var(--primary-green-ultra-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .qa-icon { width: 44px; height: 44px; margin: 0 auto var(--spacing-sm); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .qa-card h6 { font-size: 0.82rem; font-weight: 600; margin-bottom: 2px; }
+        .qa-card p { font-size: 0.7rem; color: var(--text-tertiary); margin: 0; }
+
+        /* OTP Section */
+        .otp-section {
+            text-align: center;
+            padding: var(--spacing-xl);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+        }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px var(--primary-green-ultra-light);
+            outline: none;
+        }
+
+        /* Step Wizard */
+        .step-bar {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .step-circle.active { background: var(--primary-green); color: white; }
+        .step-circle.done { background: var(--primary-green); color: white; }
+        .step-circle.pending { background: var(--border-color); color: var(--text-tertiary); }
+
+        .step-label { font-size: 0.7rem; font-weight: 600; }
+        .step-label.active { color: var(--primary-green); }
+        .step-label.pending { color: var(--text-tertiary); }
+
+        /* Channel Card */
+        .channel-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .channel-option:hover { border-color: var(--primary-green-light); background: var(--primary-green-ultra-light); }
+        .channel-option.selected { border-color: var(--primary-green); background: var(--primary-green-ultra-light); box-shadow: 0 0 0 3px rgba(0,208,132,0.15); }
+
+        .channel-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .channel-option .ch-name { font-weight: 600; font-size: 0.88rem; }
+        .channel-option .ch-desc { font-size: 0.72rem; color: var(--text-tertiary); }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background:var(--border-color); }
+        .tl-item { position:relative; padding-bottom:var(--spacing-lg); padding-left:var(--spacing-lg); }
+        .tl-item::before { content:''; position:absolute; left:-20px; top:5px; width:12px; height:12px; border-radius:50%; border:2px solid var(--primary-green); background:white; }
+        .tl-item.done::before { background:var(--primary-green); }
+        .tl-item.out::before { border-color:var(--status-danger); background:var(--status-danger); }
+        .tl-item.share::before { border-color:#1a237e; background:#1a237e; }
+        .tl-content { background:var(--bg-tertiary); padding:var(--spacing-md); border-radius:var(--radius-md); font-size:0.83rem; }
+        .tl-time { font-size:0.72rem; color:var(--text-tertiary); margin-bottom:3px; }
+
+        /* Savings Type Badge */
+        .stbadge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; }
+        .stbadge.shares { background: rgba(26,35,130,0.1); color: #1a237e; }
+        .stbadge.regular { background: rgba(0,208,132,0.1); color: var(--primary-green); }
+        .stbadge.fixed { background: rgba(0,131,143,0.1); color: #00838f; }
+        .stbadge.holiday { background: rgba(230,81,0,0.1); color: #e65100; }
+        .stbadge.junior { background: rgba(106,27,154,0.1); color: #6a1b9a; }
+        .stbadge.emergency { background: rgba(198,40,40,0.1); color: #c62828; }
+
+        /* Interest Rate Badge */
+        .rate-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(0,208,132,0.08);
+            color: var(--primary-green);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .savings-accounts-grid { grid-template-columns: repeat(2, 1fr); }
+            .qa-grid { grid-template-columns: repeat(2, 1fr); }
+            .otp-inputs { gap: 6px; }
+            .otp-input { width: 40px; height: 48px; font-size: 1.2rem; }
+        }
+        @media (max-width: 480px) {
+            .savings-accounts-grid { grid-template-columns: 1fr; }
+            .qa-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-logo">S</div>
+            <div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Admin Dashboard</p></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main Menu</div>
+            <div class="nav-item"><a href="index.html" class="nav-link"><i class="bi bi-grid-1x2 nav-icon"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a href="analytics.html" class="nav-link"><i class="bi bi-graph-up nav-icon"></i><span>Analytics</span></a></div>
+            <div class="nav-section-title">Members & KYC</div>
+            <div class="nav-item"><a href="members.html" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+            <div class="nav-item"><a href="kyc.html" class="nav-link"><i class="bi bi-shield-check nav-icon"></i><span>KYC Verification</span><span class="nav-badge">12</span></a></div>
+            <div class="nav-section-title">Financial Operations</div>
+            <div class="nav-item"><a href="transactions.html" class="nav-link"><i class="bi bi-arrow-left-right nav-icon"></i><span>Transactions</span></a></div>
+            <div class="nav-item"><a href="loan-disbursements.html" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loan Disbursements</span></a></div>
+            <div class="nav-item"><a href="loan-repayments.html" class="nav-link"><i class="bi bi-arrow-counterclockwise nav-icon"></i><span>Loan Repayments</span></a></div>
+            <div class="nav-item"><a href="savings.html" class="nav-link active"><i class="bi bi-piggy-bank nav-icon"></i><span>Savings</span><span class="nav-badge">New</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-wallet2 nav-icon"></i><span>Wallets</span></a></div>
+            <div class="nav-section-title">Vendors</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-shop nav-icon"></i><span>Vendor Management</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-receipt nav-icon"></i><span>Settlements</span></a></div>
+            <div class="nav-section-title">System</div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-gear nav-icon"></i><span>Settings</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-file-earmark-text nav-icon"></i><span>Reports</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-bell nav-icon"></i><span>Notifications</span><span class="nav-badge">5</span></a></div>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-content">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-icon d-lg-none" onclick="toggleSidebar()"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
+                    <div class="topbar-search"><i class="bi bi-search topbar-search-icon"></i><input type="text" placeholder="Search members, accounts, transactions..."></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="topbar-action-btn" onclick="openModal('notificationsModal')"><i class="bi bi-bell"></i><span class="notification-badge">5</span></button>
+                    <button class="topbar-action-btn" onclick="openModal('quickActionsPopup')"><i class="bi bi-lightning"></i></button>
+                    <div class="user-profile" onclick="openModal('profileModal')">
+                        <div class="user-avatar">JK</div>
+                        <div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Super Admin</p></div>
+                        <i class="bi bi-chevron-down d-none d-md-block" style="color:var(--text-tertiary);"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- Header -->
+            <div class="dashboard-header fade-in">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-house"></i> Dashboard</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item">Financial Operations</span>
+                    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+                    <span class="breadcrumb-item active">Savings Management</span>
+                </div>
+                <div class="flex-between flex-wrap" style="gap:var(--spacing-md);">
+                    <div>
+                        <h2><i class="bi bi-piggy-bank" style="color:var(--primary-green);"></i> Savings Management</h2>
+                        <p>Manage member savings accounts, share capital, deposits, withdrawals & interest</p>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#interestConfigModal"><i class="bi bi-percent"></i> Interest Config</button>
+                        <button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#savingsReportsModal"><i class="bi bi-file-earmark-bar-graph"></i> Reports</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#depositModal"><i class="bi bi-plus-lg"></i> New Deposit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Savings Account Type Cards -->
+            <div class="savings-accounts-grid fade-in">
+                <!-- 1. Share Capital (Non-Withdrawable) -->
+                <div class="savings-account-card" data-bs-toggle="modal" data-bs-target="#shareCapitalDetailModal">
+                    <div class="sac-header shares">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="sac-type-icon"><i class="bi bi-shield-lock"></i></div>
+                            <span class="lock-indicator locked"><i class="bi bi-lock-fill"></i> Non-Withdrawable</span>
+                        </div>
+                        <div class="sac-type-label">Share Capital</div>
+                        <div class="sac-balance">KES 28.5M</div>
+                        <div class="sac-sub">1,247 shareholders • KES 1,000/share</div>
+                    </div>
+                    <div class="sac-body">
+                        <div class="sac-stat-row"><span class="label">Total Shares Issued</span><span class="value">28,500</span></div>
+                        <div class="sac-stat-row"><span class="label">Members with Shares</span><span class="value">1,247</span></div>
+                        <div class="sac-stat-row"><span class="label">Avg Shares/Member</span><span class="value">22.8</span></div>
+                        <div class="sac-stat-row"><span class="label">New Shares (This Month)</span><span class="value" style="color:var(--status-success);">+342</span></div>
+                        <div class="sac-actions">
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;border-color:#1a237e;color:#1a237e;" data-bs-toggle="modal" data-bs-target="#buySharesModal" onclick="event.stopPropagation()"><i class="bi bi-plus"></i> Buy Shares</button>
+                            <button class="btn btn-sm btn-ghost" style="flex:1;font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#shareCapitalDetailModal" onclick="event.stopPropagation()"><i class="bi bi-eye"></i> Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Regular Savings (Withdrawable) -->
+                <div class="savings-account-card" data-bs-toggle="modal" data-bs-target="#regularSavingsDetailModal">
+                    <div class="sac-header withdrawable">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="sac-type-icon"><i class="bi bi-wallet2"></i></div>
+                            <span class="lock-indicator unlocked"><i class="bi bi-unlock-fill"></i> Withdrawable</span>
+                        </div>
+                        <div class="sac-type-label">Regular Savings</div>
+                        <div class="sac-balance">KES 67.3M</div>
+                        <div class="sac-sub">1,580 accounts • 7% p.a. interest</div>
+                    </div>
+                    <div class="sac-body">
+                        <div class="sac-stat-row"><span class="label">Active Accounts</span><span class="value">1,580</span></div>
+                        <div class="sac-stat-row"><span class="label">Deposits (Month)</span><span class="value" style="color:var(--status-success);">+KES 8.2M</span></div>
+                        <div class="sac-stat-row"><span class="label">Withdrawals (Month)</span><span class="value" style="color:var(--status-danger);">-KES 3.1M</span></div>
+                        <div class="sac-stat-row"><span class="label">Interest Earned (YTD)</span><span class="value" style="color:var(--primary-green);">KES 4.7M</span></div>
+                        <div class="sac-actions">
+                            <button class="btn btn-sm btn-primary" style="flex:1;font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#depositModal" onclick="event.stopPropagation()"><i class="bi bi-plus"></i> Deposit</button>
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#withdrawalModal" onclick="event.stopPropagation()"><i class="bi bi-dash"></i> Withdraw</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Fixed Deposits -->
+                <div class="savings-account-card" data-bs-toggle="modal" data-bs-target="#fixedDepositDetailModal">
+                    <div class="sac-header deposits">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="sac-type-icon"><i class="bi bi-safe2"></i></div>
+                            <span class="lock-indicator locked"><i class="bi bi-hourglass-split"></i> Term-Locked</span>
+                        </div>
+                        <div class="sac-type-label">Fixed Deposits</div>
+                        <div class="sac-balance">KES 42.1M</div>
+                        <div class="sac-sub">328 accounts • 9-12% p.a.</div>
+                    </div>
+                    <div class="sac-body">
+                        <div class="sac-stat-row"><span class="label">Active FDs</span><span class="value">328</span></div>
+                        <div class="sac-stat-row"><span class="label">Maturing (30 days)</span><span class="value" style="color:var(--accent-orange);">18</span></div>
+                        <div class="sac-stat-row"><span class="label">Avg Interest Rate</span><span class="value"><span class="rate-badge">10.5% p.a.</span></span></div>
+                        <div class="sac-stat-row"><span class="label">Interest Payable</span><span class="value" style="color:var(--primary-green);">KES 1.8M</span></div>
+                        <div class="sac-actions">
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;border-color:#00838f;color:#00838f;" data-bs-toggle="modal" data-bs-target="#newFixedDepositModal" onclick="event.stopPropagation()"><i class="bi bi-plus"></i> New FD</button>
+                            <button class="btn btn-sm btn-ghost" style="flex:1;font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#fixedDepositDetailModal" onclick="event.stopPropagation()"><i class="bi bi-eye"></i> Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Holiday Savings -->
+                <div class="savings-account-card" data-bs-toggle="modal" data-bs-target="#holidaySavingsDetailModal">
+                    <div class="sac-header holiday">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="sac-type-icon"><i class="bi bi-sun"></i></div>
+                            <span class="lock-indicator locked"><i class="bi bi-calendar-event"></i> Seasonal</span>
+                        </div>
+                        <div class="sac-type-label">Holiday / Merry-Go-Round</div>
+                        <div class="sac-balance">KES 5.8M</div>
+                        <div class="sac-sub">412 members • Dec release</div>
+                    </div>
+                    <div class="sac-body">
+                        <div class="sac-stat-row"><span class="label">Target Amount</span><span class="value">KES 8.5M</span></div>
+                        <div class="sac-stat-row"><span class="label">Progress</span><span class="value" style="color:var(--accent-orange);">68%</span></div>
+                        <div class="sac-stat-row"><span class="label">Release Date</span><span class="value">Dec 20, 2024</span></div>
+                        <div class="sac-stat-row"><span class="label">Interest Rate</span><span class="value"><span class="rate-badge">5% p.a.</span></span></div>
+                        <div class="sac-actions">
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;border-color:#e65100;color:#e65100;" data-bs-toggle="modal" data-bs-target="#depositModal" onclick="event.stopPropagation()"><i class="bi bi-plus"></i> Deposit</button>
+                            <button class="btn btn-sm btn-ghost" style="flex:1;font-size:0.72rem;" onclick="event.stopPropagation();showToast('Holiday savings details')"><i class="bi bi-eye"></i> Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Junior Savings -->
+                <div class="savings-account-card" data-bs-toggle="modal" data-bs-target="#juniorSavingsDetailModal">
+                    <div class="sac-header junior">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="sac-type-icon"><i class="bi bi-emoji-smile"></i></div>
+                            <span class="lock-indicator locked"><i class="bi bi-lock-fill"></i> Until 18 yrs</span>
+                        </div>
+                        <div class="sac-type-label">Junior Savings (Watoto)</div>
+                        <div class="sac-balance">KES 3.2M</div>
+                        <div class="sac-sub">186 accounts • 8% p.a.</div>
+                    </div>
+                    <div class="sac-body">
+                        <div class="sac-stat-row"><span class="label">Active Juniors</span><span class="value">186</span></div>
+                        <div class="sac-stat-row"><span class="label">Deposits (Month)</span><span class="value" style="color:var(--status-success);">+KES 380K</span></div>
+                        <div class="sac-stat-row"><span class="label">Avg Balance</span><span class="value">KES 17,200</span></div>
+                        <div class="sac-stat-row"><span class="label">Interest Rate</span><span class="value"><span class="rate-badge">8% p.a.</span></span></div>
+                        <div class="sac-actions">
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;border-color:#6a1b9a;color:#6a1b9a;" data-bs-toggle="modal" data-bs-target="#depositModal" onclick="event.stopPropagation()"><i class="bi bi-plus"></i> Deposit</button>
+                            <button class="btn btn-sm btn-ghost" style="flex:1;font-size:0.72rem;" onclick="event.stopPropagation();showToast('Junior savings details')"><i class="bi bi-eye"></i> Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Emergency Fund -->
+                <div class="savings-account-card" data-bs-toggle="modal" data-bs-target="#emergencyFundDetailModal">
+                    <div class="sac-header emergency">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="sac-type-icon"><i class="bi bi-heart-pulse"></i></div>
+                            <span class="lock-indicator unlocked"><i class="bi bi-unlock-fill"></i> Quick Access</span>
+                        </div>
+                        <div class="sac-type-label">Emergency Fund</div>
+                        <div class="sac-balance">KES 8.9M</div>
+                        <div class="sac-sub">892 members • 6% p.a.</div>
+                    </div>
+                    <div class="sac-body">
+                        <div class="sac-stat-row"><span class="label">Active Accounts</span><span class="value">892</span></div>
+                        <div class="sac-stat-row"><span class="label">Withdrawals (Month)</span><span class="value" style="color:var(--status-danger);">-KES 1.2M</span></div>
+                        <div class="sac-stat-row"><span class="label">Max Withdrawal</span><span class="value">80% of balance</span></div>
+                        <div class="sac-stat-row"><span class="label">Processing Time</span><span class="value">Instant (M-Pesa)</span></div>
+                        <div class="sac-actions">
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;border-color:#c62828;color:#c62828;" data-bs-toggle="modal" data-bs-target="#depositModal" onclick="event.stopPropagation()"><i class="bi bi-plus"></i> Deposit</button>
+                            <button class="btn btn-sm btn-outline" style="flex:1;font-size:0.72rem;" data-bs-toggle="modal" data-bs-target="#withdrawalModal" onclick="event.stopPropagation()"><i class="bi bi-dash"></i> Withdraw</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="glass-card fade-in mb-4">
+                <div class="glass-card-header"><h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-lightning" style="color:var(--primary-green);"></i> Quick Actions</h3></div>
+                <div class="glass-card-body">
+                    <div class="qa-grid">
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#depositModal"><div class="qa-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-box-arrow-in-down"></i></div><h6>Deposit</h6><p>Process member deposit</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#withdrawalModal"><div class="qa-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-box-arrow-up"></i></div><h6>Withdrawal</h6><p>Process withdrawal request</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#buySharesModal"><div class="qa-icon" style="background:rgba(26,35,130,0.1);color:#1a237e;"><i class="bi bi-shield-plus"></i></div><h6>Buy Shares</h6><p>Purchase share capital</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#transferSavingsModal"><div class="qa-icon" style="background:rgba(0,131,143,0.1);color:#00838f;"><i class="bi bi-arrow-left-right"></i></div><h6>Transfer</h6><p>Between savings accounts</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#newFixedDepositModal"><div class="qa-icon" style="background:rgba(0,188,212,0.1);color:var(--accent-teal);"><i class="bi bi-safe2"></i></div><h6>New Fixed Deposit</h6><p>Create term deposit</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#dividendDistModal"><div class="qa-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-gift"></i></div><h6>Dividends</h6><p>Process dividend distribution</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#interestConfigModal"><div class="qa-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-percent"></i></div><h6>Interest Config</h6><p>Set interest rates</p></div>
+                        <div class="qa-card" data-bs-toggle="modal" data-bs-target="#savingsReportsModal"><div class="qa-icon" style="background:rgba(121,85,72,0.1);color:#795548;"><i class="bi bi-bar-chart-line"></i></div><h6>Reports</h6><p>Generate savings reports</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity + Charts Row -->
+            <div class="row g-4 mb-4">
+                <!-- Recent Activity -->
+                <div class="col-lg-7 fade-in">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;"><i class="bi bi-clock-history" style="color:var(--primary-green);"></i> Recent Activity</h3>
+                            <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#activityLogModal"><i class="bi bi-list-ul"></i> Full Log</button>
+                        </div>
+                        <div class="glass-card-body" style="max-height:450px;overflow-y:auto;">
+                            <div class="timeline">
+                                <div class="tl-item done"><div class="tl-time">Today, 3:45 PM</div><div class="tl-content"><span class="stbadge regular"><i class="bi bi-arrow-down-circle"></i> Deposit</span> <strong style="color:var(--primary-green);">KES 25,000</strong> deposited by <strong>Mary Wanjiku</strong> via M-Pesa<br><small class="text-secondary">Regular Savings • Ref: SAV-2024-08921</small><div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openTxDetail('SAV-2024-08921')">View</button></div></div></div>
+                                <div class="tl-item out"><div class="tl-time">Today, 2:15 PM</div><div class="tl-content"><span class="stbadge emergency"><i class="bi bi-arrow-up-circle"></i> Withdrawal</span> <strong style="color:var(--status-danger);">KES 50,000</strong> withdrawn by <strong>Peter Omondi</strong> to M-Pesa<br><small class="text-secondary">Emergency Fund • OTP verified ✓ • Ref: WDR-2024-03451</small><div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openTxDetail('WDR-2024-03451')">View</button></div></div></div>
+                                <div class="tl-item share"><div class="tl-time">Today, 11:30 AM</div><div class="tl-content"><span class="stbadge shares"><i class="bi bi-shield-plus"></i> Shares</span> <strong>John Kamau</strong> purchased <strong>10 shares</strong> (KES 10,000) from Regular Savings<br><small class="text-secondary">Share balance: 45 shares • Transfer approved</small><div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openTxDetail('SHR-2024-00782')">View</button></div></div></div>
+                                <div class="tl-item done"><div class="tl-time">Today, 10:00 AM</div><div class="tl-content"><span class="stbadge fixed"><i class="bi bi-safe2"></i> Fixed Deposit</span> <strong>Sarah Auma</strong> created new FD of <strong style="color:#00838f;">KES 200,000</strong> for 12 months at 10% p.a.<br><small class="text-secondary">Maturity: Dec 18, 2025 • Ref: FD-2024-00234</small><div style="margin-top:5px;"><button class="btn btn-ghost btn-sm" style="font-size:0.7rem;" onclick="openTxDetail('FD-2024-00234')">View</button></div></div></div>
+                                <div class="tl-item done"><div class="tl-time">Yesterday, 4:20 PM</div><div class="tl-content"><span class="stbadge regular"><i class="bi bi-arrow-down-circle"></i> Bulk</span> <strong>Monthly salary deductions</strong> processed — <strong style="color:var(--primary-green);">KES 2.4M</strong> deposited for <strong>342 members</strong><br><small class="text-secondary">Auto-deduction via payroll • All confirmed</small></div></div>
+                                <div class="tl-item out"><div class="tl-time">Yesterday, 2:00 PM</div><div class="tl-content"><span class="badge badge-pending" style="font-size:0.68rem;">Pending OTP</span> Withdrawal of <strong>KES 80,000</strong> by <strong>Grace Akinyi</strong> — awaiting member OTP verification<br><small class="text-secondary">Regular Savings → KCB Bank • OTP sent to 0722-XXX-456</small><div style="margin-top:5px;"><button class="btn btn-outline btn-sm" style="font-size:0.7rem;" data-bs-toggle="modal" data-bs-target="#pendingOTPModal">Process OTP</button></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Savings Distribution -->
+                <div class="col-lg-5 fade-in">
+                    <div class="glass-card" style="height:100%;">
+                        <div class="glass-card-header flex-between">
+                            <h3 style="font-size:1.05rem;font-weight:600;">Savings Distribution</h3>
+                            <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#savingsBreakdownModal"><i class="bi bi-arrows-angle-expand"></i></button>
+                        </div>
+                        <div class="glass-card-body">
+                            <!-- Donut Chart -->
+                            <div style="display:flex;align-items:center;justify-content:center;gap:var(--spacing-xl);padding:var(--spacing-md) 0;">
+                                <div style="width:170px;height:170px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;background:conic-gradient(#1a237e 0deg 66deg, #00d084 66deg 222deg, #00838f 222deg 280deg, #e65100 280deg 314deg, #6a1b9a 314deg 335deg, #c62828 335deg 360deg);">
+                                    <div style="width:110px;height:110px;background:var(--bg-secondary);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                        <div style="font-size:1.3rem;font-weight:800;">KES 156M</div>
+                                        <div style="font-size:0.68rem;color:var(--text-tertiary);">Total Savings</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:6px;font-size:0.78rem;">
+                                    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#shareCapitalDetailModal"><span style="width:10px;height:10px;border-radius:50%;background:#1a237e;flex-shrink:0;"></span>Shares 18%</div>
+                                    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#regularSavingsDetailModal"><span style="width:10px;height:10px;border-radius:50%;background:#00d084;flex-shrink:0;"></span>Regular 43%</div>
+                                    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#fixedDepositDetailModal"><span style="width:10px;height:10px;border-radius:50%;background:#00838f;flex-shrink:0;"></span>Fixed 27%</div>
+                                    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:10px;height:10px;border-radius:50%;background:#e65100;flex-shrink:0;"></span>Holiday 4%</div>
+                                    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:10px;height:10px;border-radius:50%;background:#6a1b9a;flex-shrink:0;"></span>Junior 2%</div>
+                                    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;"><span style="width:10px;height:10px;border-radius:50%;background:#c62828;flex-shrink:0;"></span>Emergency 6%</div>
+                                </div>
+                            </div>
+                            <!-- Monthly Trend -->
+                            <div style="padding-top:var(--spacing-lg);border-top:1px solid var(--border-color);">
+                                <h6 style="font-size:0.82rem;font-weight:600;margin-bottom:var(--spacing-md);">Net Savings Growth (6 months)</h6>
+                                <div style="display:flex;align-items:flex-end;gap:8px;height:60px;">
+                                    <div style="flex:1;background:rgba(0,208,132,0.25);border-radius:3px 3px 0 0;height:45%;" title="Jul: +KES 3.2M"></div>
+                                    <div style="flex:1;background:rgba(0,208,132,0.35);border-radius:3px 3px 0 0;height:55%;" title="Aug: +KES 4.1M"></div>
+                                    <div style="flex:1;background:rgba(0,208,132,0.45);border-radius:3px 3px 0 0;height:62%;" title="Sep: +KES 4.8M"></div>
+                                    <div style="flex:1;background:rgba(0,208,132,0.55);border-radius:3px 3px 0 0;height:50%;" title="Oct: +KES 3.6M"></div>
+                                    <div style="flex:1;background:rgba(0,208,132,0.7);border-radius:3px 3px 0 0;height:72%;" title="Nov: +KES 5.5M"></div>
+                                    <div style="flex:1;background:linear-gradient(180deg,var(--primary-green),var(--accent-teal));border-radius:3px 3px 0 0;height:85%;" title="Dec: +KES 5.1M"></div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text-tertiary);margin-top:4px;"><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
+                            </div>
+                            <!-- Pending Withdrawals -->
+                            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-md);background:rgba(255,152,0,0.06);border-radius:var(--radius-md);border:1px solid rgba(255,152,0,0.2);">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <div><i class="bi bi-hourglass-split" style="color:var(--accent-orange);"></i> <strong style="font-size:0.82rem;">3 Pending Withdrawals</strong><br><small style="color:var(--text-tertiary);">KES 185,000 awaiting OTP verification</small></div>
+                                    <button class="btn btn-outline btn-sm" style="font-size:0.7rem;border-color:var(--accent-orange);color:var(--accent-orange);" data-bs-toggle="modal" data-bs-target="#pendingWithdrawalsModal">Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Transactions Table -->
+            <div class="table-container fade-in">
+                <div class="table-header" style="flex-wrap:wrap;gap:var(--spacing-md);">
+                    <div><h3>Savings Transactions</h3><p style="font-size:0.78rem;color:var(--text-secondary);margin-top:3px;">Showing 2,847 records</p></div>
+                    <div class="table-actions" style="flex-wrap:wrap;gap:var(--spacing-sm);">
+                        <input type="text" class="form-control form-control-sm finput" placeholder="Search..." style="min-width:180px;">
+                        <select class="form-select form-select-sm fselect" style="width:auto;"><option value="">All Types</option><option>Deposit</option><option>Withdrawal</option><option>Share Purchase</option><option>Transfer</option><option>Interest</option><option>Dividend</option></select>
+                        <select class="form-select form-select-sm fselect" style="width:auto;"><option value="">All Accounts</option><option>Share Capital</option><option>Regular Savings</option><option>Fixed Deposit</option><option>Holiday</option><option>Junior</option><option>Emergency</option></select>
+                        <button class="btn btn-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#exportSavingsModal"><i class="bi bi-download"></i> Export</button>
+                    </div>
+                </div>
+
+                <div style="padding:0 var(--spacing-xl);padding-top:var(--spacing-md);">
+                    <div class="filter-tabs" style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;">
+                        <button class="ftab active" onclick="setFilter(this,'all')">All <span class="cnt">2,847</span></button>
+                        <button class="ftab" onclick="setFilter(this,'deposits')">Deposits <span class="cnt">1,842</span></button>
+                        <button class="ftab" onclick="setFilter(this,'withdrawals')">Withdrawals <span class="cnt">523</span></button>
+                        <button class="ftab" onclick="setFilter(this,'shares')">Share Purchases <span class="cnt">342</span></button>
+                        <button class="ftab" onclick="setFilter(this,'transfers')">Transfers <span class="cnt">89</span></button>
+                        <button class="ftab" onclick="setFilter(this,'interest')">Interest <span class="cnt">48</span></button>
+                        <button class="ftab" onclick="setFilter(this,'pending')">Pending <span class="cnt">3</span></button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead><tr>
+                            <th><input type="checkbox" onchange="toggleAll(this)"></th>
+                            <th>Ref</th><th>Member</th><th>Type</th><th>Account</th><th>Amount</th><th>Channel</th><th>Status</th><th>Date</th><th>Actions</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox" class="rchk"></td>
+                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('SAV-2024-08921')">SAV-08921</code></td>
+                                <td><div class="m-cell"><div class="m-avatar c1">MW</div><div><div class="m-name">Mary Wanjiku</div><div class="m-sub">SP-10023</div></div></div></td>
+                                <td><span class="stbadge regular"><i class="bi bi-arrow-down-circle"></i> Deposit</span></td>
+                                <td>Regular Savings</td>
+                                <td style="font-weight:700;color:var(--status-success);">+KES 25,000</td>
+                                <td><span style="font-size:0.72rem;color:#388e3c;"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Confirmed</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 3:45 PM</td>
+                                <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('SAV-2024-08921')"><i class="bi bi-eye"></i></button><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openTxDetail('SAV-2024-08921')"><i class="bi bi-eye me-2"></i>View Details</a></li><li><a class="dropdown-item" href="#" onclick="showToast('Receipt sent')"><i class="bi bi-envelope me-2"></i>Send Receipt</a></li><li><a class="dropdown-item" href="#" onclick="showToast('PDF downloaded')"><i class="bi bi-file-pdf me-2"></i>Download PDF</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#reverseTxModal"><i class="bi bi-arrow-counterclockwise me-2"></i>Reverse</a></li></ul></td>
+                            </tr>
+                            <tr style="background:rgba(244,67,54,0.02);">
+                                <td><input type="checkbox" class="rchk"></td>
+                                <td><code style="color:var(--status-danger);cursor:pointer;" onclick="openTxDetail('WDR-2024-03451')">WDR-03451</code></td>
+                                <td><div class="m-cell"><div class="m-avatar c6">PO</div><div><div class="m-name">Peter Omondi</div><div class="m-sub">SP-10145</div></div></div></td>
+                                <td><span class="stbadge emergency"><i class="bi bi-arrow-up-circle"></i> Withdrawal</span></td>
+                                <td>Emergency Fund</td>
+                                <td style="font-weight:700;color:var(--status-danger);">-KES 50,000</td>
+                                <td><span style="font-size:0.72rem;color:#388e3c;"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Confirmed</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 2:15 PM</td>
+                                <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('WDR-2024-03451')"><i class="bi bi-eye"></i></button><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openTxDetail('WDR-2024-03451')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="showToast('Receipt sent')"><i class="bi bi-envelope me-2"></i>Send Receipt</a></li></ul></td>
+                            </tr>
+                            <tr style="background:rgba(26,35,130,0.02);">
+                                <td><input type="checkbox" class="rchk"></td>
+                                <td><code style="color:#1a237e;cursor:pointer;" onclick="openTxDetail('SHR-2024-00782')">SHR-00782</code></td>
+                                <td><div class="m-cell"><div class="m-avatar c7">JK</div><div><div class="m-name">John Kamau</div><div class="m-sub">SP-10015</div></div></div></td>
+                                <td><span class="stbadge shares"><i class="bi bi-shield-plus"></i> Share Purchase</span></td>
+                                <td>Share Capital</td>
+                                <td style="font-weight:700;color:#1a237e;">KES 10,000</td>
+                                <td><span style="font-size:0.72rem;color:var(--primary-green);"><i class="bi bi-arrow-left-right"></i> Transfer</span></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Confirmed</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 11:30 AM</td>
+                                <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('SHR-2024-00782')"><i class="bi bi-eye"></i></button><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openTxDetail('SHR-2024-00782')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="showToast('Certificate generated')"><i class="bi bi-file-earmark-text me-2"></i>Share Certificate</a></li></ul></td>
+                            </tr>
+                            <tr style="background:rgba(255,152,0,0.03);">
+                                <td><input type="checkbox" class="rchk"></td>
+                                <td><code style="color:var(--accent-orange);">WDR-03450</code></td>
+                                <td><div class="m-cell"><div class="m-avatar c3">GA</div><div><div class="m-name">Grace Akinyi</div><div class="m-sub">SP-10067</div></div></div></td>
+                                <td><span class="stbadge regular"><i class="bi bi-arrow-up-circle"></i> Withdrawal</span></td>
+                                <td>Regular Savings</td>
+                                <td style="font-weight:700;color:var(--accent-orange);">-KES 80,000</td>
+                                <td><span style="font-size:0.72rem;color:var(--accent-blue);"><i class="bi bi-bank"></i> KCB Bank</span></td>
+                                <td><span class="badge badge-pending"><i class="bi bi-hourglass-split" style="font-size:0.3rem;"></i> Awaiting OTP</span></td>
+                                <td style="font-size:0.78rem;">Dec 17, 2:00 PM</td>
+                                <td><button class="btn btn-outline btn-sm" style="font-size:0.68rem;" data-bs-toggle="modal" data-bs-target="#pendingOTPModal"><i class="bi bi-key"></i> OTP</button><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#pendingOTPModal"><i class="bi bi-key me-2"></i>Process OTP</a></li><li><a class="dropdown-item" href="#" onclick="showToast('OTP resent to member')"><i class="bi bi-arrow-clockwise me-2"></i>Resend OTP</a></li><li><a class="dropdown-item text-danger" href="#" onclick="showToast('Withdrawal cancelled')"><i class="bi bi-x-circle me-2"></i>Cancel</a></li></ul></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="rchk"></td>
+                                <td><code style="color:#00838f;cursor:pointer;" onclick="openTxDetail('FD-2024-00234')">FD-00234</code></td>
+                                <td><div class="m-cell"><div class="m-avatar c2">SA</div><div><div class="m-name">Sarah Auma</div><div class="m-sub">SP-10089</div></div></div></td>
+                                <td><span class="stbadge fixed"><i class="bi bi-safe2"></i> Fixed Deposit</span></td>
+                                <td>Fixed Deposit</td>
+                                <td style="font-weight:700;color:#00838f;">KES 200,000</td>
+                                <td><span style="font-size:0.72rem;color:var(--primary-green);"><i class="bi bi-arrow-left-right"></i> Transfer</span></td>
+                                <td><span class="badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.3rem;"></i> Active</span></td>
+                                <td style="font-size:0.78rem;">Dec 18, 10:00 AM</td>
+                                <td><button class="btn btn-ghost btn-icon btn-sm" onclick="openTxDetail('FD-2024-00234')"><i class="bi bi-eye"></i></button><button class="btn btn-ghost btn-icon btn-sm" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="openTxDetail('FD-2024-00234')"><i class="bi bi-eye me-2"></i>View</a></li><li><a class="dropdown-item" href="#" onclick="showToast('FD certificate downloaded')"><i class="bi bi-file-pdf me-2"></i>FD Certificate</a></li></ul></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="padding:var(--spacing-lg) var(--spacing-xl);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--spacing-md);">
+                    <div style="font-size:0.82rem;color:var(--text-secondary);">Showing <strong>1-5</strong> of <strong>2,847</strong></div>
+                    <nav><ul class="pagination pagination-sm mb-0" style="gap:3px;"><li class="page-item disabled"><a class="page-link" href="#" style="border-radius:var(--radius-sm);">&laquo;</a></li><li class="page-item active"><a class="page-link" href="#" style="border-radius:var(--radius-sm);background:var(--primary-green);border-color:var(--primary-green);">1</a></li><li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);">2</a></li><li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);">3</a></li><li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);">...</a></li><li class="page-item"><a class="page-link" href="#" style="border-radius:var(--radius-sm);">&raquo;</a></li></ul></nav>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ====================================================================
+     MODALS (28 Total)
+==================================================================== -->
+
+<!-- 1. DEPOSIT MODAL (Multi-Step) -->
+<div class="modal fade" id="depositModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-box-arrow-in-down me-2"></i>Process Deposit</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="step-bar"><div class="step-item" onclick="depStep(1)"><div class="step-circle active" id="ds1">1</div><span class="step-label active" id="dsl1">Member</span></div><div class="step-item" onclick="depStep(2)"><div class="step-circle pending" id="ds2">2</div><span class="step-label pending" id="dsl2">Details</span></div><div class="step-item" onclick="depStep(3)"><div class="step-circle pending" id="ds3">3</div><span class="step-label pending" id="dsl3">Channel</span></div><div class="step-item" onclick="depStep(4)"><div class="step-circle pending" id="ds4">4</div><span class="step-label pending" id="dsl4">Confirm</span></div></div>
+
+        <div id="dep1">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-person me-2"></i>Select Member</h6>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="flbl">Member ID / Name</label><input type="text" class="form-control finput" placeholder="Search member..." id="depMemberSearch"></div>
+                <div class="col-md-6"><label class="flbl">SACCO</label><select class="form-select fselect"><option>All SACCOs</option><option>Ukulima SACCO</option><option>Stima SACCO</option><option>Mwalimu SACCO</option></select></div>
+            </div>
+            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);"><div class="m-avatar c1" style="width:48px;height:48px;font-size:1rem;">MW</div><div><div style="font-weight:700;">Mary Wanjiku</div><div style="font-size:0.78rem;color:var(--text-secondary);">SP-10023 • Ukulima SACCO • KYC: <span style="color:var(--status-success);">✓ Verified</span></div></div></div>
+                <div class="row g-2 mt-2"><div class="col-4"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.7rem;">Regular</span><span class="mstat-v" style="font-size:0.85rem;color:var(--primary-green);">KES 125K</span></div></div><div class="col-4"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.7rem;">Shares</span><span class="mstat-v" style="font-size:0.85rem;color:#1a237e;">35</span></div></div><div class="col-4"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.7rem;">Emergency</span><span class="mstat-v" style="font-size:0.85rem;color:#c62828;">KES 18K</span></div></div></div>
+            </div>
+        </div>
+
+        <div id="dep2" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-cash-stack me-2"></i>Deposit Details</h6>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="flbl">Savings Account</label><select class="form-select fselect"><option>Regular Savings (Withdrawable)</option><option>Emergency Fund</option><option>Holiday Savings</option><option>Junior Savings (Watoto)</option></select></div>
+                <div class="col-md-6"><label class="flbl">Deposit Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount" id="depAmount"></div>
+                <div class="col-md-6"><label class="flbl">Deposit Type</label><select class="form-select fselect"><option>Regular Monthly</option><option>One-time Deposit</option><option>Salary Deduction</option><option>Top-up</option></select></div>
+                <div class="col-md-6"><label class="flbl">Reference / Narration</label><input type="text" class="form-control finput" placeholder="e.g. Dec salary deduction"></div>
+            </div>
+        </div>
+
+        <div id="dep3" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-credit-card me-2"></i>Payment Channel</h6>
+            <div class="channel-option selected" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(76,175,80,0.1);color:#388e3c;"><i class="bi bi-phone"></i></div><div><div class="ch-name">M-Pesa</div><div class="ch-desc">STK Push to member's registered number • Instant</div></div><input type="radio" name="depChannel" checked style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(0,150,136,0.1);color:#009688;"><i class="bi bi-phone"></i></div><div><div class="ch-name">Airtel Money</div><div class="ch-desc">Airtel Money push to registered number • Instant</div></div><input type="radio" name="depChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-bank"></i></div><div><div class="ch-name">Bank Transfer</div><div class="ch-desc">From member's bank account • 1-2 business days</div></div><input type="radio" name="depChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-credit-card"></i></div><div><div class="ch-name">Debit/Credit Card</div><div class="ch-desc">Visa / Mastercard via payment gateway • Instant</div></div><input type="radio" name="depChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-cash"></i></div><div><div class="ch-name">Cash (Over-the-Counter)</div><div class="ch-desc">Cash deposit at SACCO branch • Receipt generated</div></div><input type="radio" name="depChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-wallet2"></i></div><div><div class="ch-name">SACCOPay Wallet</div><div class="ch-desc">From member's SACCOPay wallet • Instant</div></div><input type="radio" name="depChannel" style="margin-left:auto;"></div>
+        </div>
+
+        <div id="dep4" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-check2-square me-2"></i>Review & Confirm</h6>
+            <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i> A confirmation notification will be sent to the member after processing.</div>
+            <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);">
+                <div class="drow"><span class="dl">Member</span><span class="dv">Mary Wanjiku (SP-10023)</span></div>
+                <div class="drow"><span class="dl">Account</span><span class="dv">Regular Savings</span></div>
+                <div class="drow"><span class="dl">Amount</span><span class="dv" style="color:var(--primary-green);font-size:1.1rem;">KES 25,000</span></div>
+                <div class="drow"><span class="dl">Channel</span><span class="dv"><i class="bi bi-phone"></i> M-Pesa</span></div>
+                <div class="drow"><span class="dl">New Balance</span><span class="dv">KES 150,000</span></div>
+                <div class="drow"><span class="dl">Processed By</span><span class="dv">James Kariuki (Admin)</span></div>
+            </div>
+            <div class="form-check mt-3"><input class="form-check-input" type="checkbox" checked id="depNotify"><label class="form-check-label" for="depNotify" style="font-size:0.82rem;">Send SMS confirmation to member</label></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline" id="depPrevBtn" style="display:none;" onclick="depPrev()"><i class="bi bi-arrow-left"></i> Previous</button><button class="btn btn-primary" id="depNextBtn" onclick="depNext()">Next <i class="bi bi-arrow-right"></i></button><button class="btn btn-primary" id="depSubmitBtn" style="display:none;" onclick="submitDeposit()"><i class="bi bi-check-circle"></i> Process Deposit</button></div>
+</div></div></div>
+
+<!-- 2. WITHDRAWAL MODAL (Multi-Step with OTP) -->
+<div class="modal fade" id="withdrawalModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr red"><h5 class="modal-title"><i class="bi bi-box-arrow-up me-2"></i>Process Withdrawal</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="step-bar"><div class="step-item"><div class="step-circle active" id="ws1">1</div><span class="step-label active" id="wsl1">Member</span></div><div class="step-item"><div class="step-circle pending" id="ws2">2</div><span class="step-label pending" id="wsl2">Details</span></div><div class="step-item"><div class="step-circle pending" id="ws3">3</div><span class="step-label pending" id="wsl3">Destination</span></div><div class="step-item"><div class="step-circle pending" id="ws4">4</div><span class="step-label pending" id="wsl4">OTP Verify</span></div><div class="step-item"><div class="step-circle pending" id="ws5">5</div><span class="step-label pending" id="wsl5">Confirm</span></div></div>
+
+        <div id="wdr1">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-person me-2"></i>Select Member</h6>
+            <div class="row g-3"><div class="col-md-6"><label class="flbl">Member ID / Name</label><input type="text" class="form-control finput" placeholder="Search member..."></div><div class="col-md-6"><label class="flbl">SACCO</label><select class="form-select fselect"><option>All SACCOs</option><option>Ukulima SACCO</option><option>Stima SACCO</option></select></div></div>
+            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);"><div class="m-avatar c6" style="width:48px;height:48px;font-size:1rem;">PO</div><div><div style="font-weight:700;">Peter Omondi</div><div style="font-size:0.78rem;color:var(--text-secondary);">SP-10145 • Ukulima SACCO • Phone: 0722-XXX-789</div></div></div>
+                <div class="row g-2 mt-2"><div class="col-3"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.68rem;">Regular</span><span class="mstat-v" style="font-size:0.82rem;color:var(--primary-green);">KES 185K</span></div></div><div class="col-3"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.68rem;">Emergency</span><span class="mstat-v" style="font-size:0.82rem;color:#c62828;">KES 62K</span></div></div><div class="col-3"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.68rem;">Shares</span><span class="mstat-v" style="font-size:0.82rem;color:#1a237e;">28 <i class="bi bi-lock-fill" style="font-size:0.55rem;"></i></span></div></div><div class="col-3"><div class="mstat" style="margin:0;"><span class="mstat-l" style="font-size:0.68rem;">Active Loans</span><span class="mstat-v" style="font-size:0.82rem;">1</span></div></div></div>
+            </div>
+        </div>
+
+        <div id="wdr2" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-cash-stack me-2"></i>Withdrawal Details</h6>
+            <div class="alert alert-warning" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Note:</strong> Share Capital is non-withdrawable. Only Regular Savings and Emergency Fund can be withdrawn.</div>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="flbl">Source Account</label><select class="form-select fselect"><option>Regular Savings (KES 185,000)</option><option>Emergency Fund (KES 62,000 — Max: KES 49,600)</option></select></div>
+                <div class="col-md-6"><label class="flbl">Withdrawal Amount (KES)</label><input type="number" class="form-control finput" placeholder="Enter amount" max="185000"></div>
+                <div class="col-md-6"><label class="flbl">Reason</label><select class="form-select fselect"><option>Personal Use</option><option>Medical Emergency</option><option>Education Fees</option><option>Business Investment</option><option>Loan Repayment</option><option>Other</option></select></div>
+                <div class="col-md-6"><label class="flbl">Processing Priority</label><select class="form-select fselect"><option>Standard (1-2 hours)</option><option>Urgent (Within 30 mins — KES 100 fee)</option></select></div>
+            </div>
+            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-md);background:rgba(244,67,54,0.05);border-radius:var(--radius-md);border:1px solid rgba(244,67,54,0.15);font-size:0.82rem;">
+                <div class="row g-1"><div class="col-4"><span class="text-secondary">Available:</span><br><strong>KES 185,000</strong></div><div class="col-4"><span class="text-secondary">Withdrawal:</span><br><strong style="color:var(--status-danger);">KES 50,000</strong></div><div class="col-4"><span class="text-secondary">New Balance:</span><br><strong style="color:var(--primary-green);">KES 135,000</strong></div></div>
+            </div>
+        </div>
+
+        <div id="wdr3" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-send me-2"></i>Withdrawal Destination</h6>
+            <div class="channel-option selected" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(76,175,80,0.1);color:#388e3c;"><i class="bi bi-phone"></i></div><div><div class="ch-name">M-Pesa</div><div class="ch-desc">Send to 0722-XXX-789 • Instant • No fee</div></div><input type="radio" name="wdrChannel" checked style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(0,150,136,0.1);color:#009688;"><i class="bi bi-phone"></i></div><div><div class="ch-name">Airtel Money</div><div class="ch-desc">Send to Airtel number • Instant • No fee</div></div><input type="radio" name="wdrChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-bank"></i></div><div><div class="ch-name">Bank Transfer</div><div class="ch-desc">KCB / Equity / Co-op Bank • 1-24 hrs • KES 50 fee</div></div><input type="radio" name="wdrChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-credit-card"></i></div><div><div class="ch-name">Debit Card</div><div class="ch-desc">Refund to linked Visa/Mastercard • 2-5 days</div></div><input type="radio" name="wdrChannel" style="margin-left:auto;"></div>
+            <div class="channel-option" onclick="selectChannel(this)"><div class="channel-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-wallet2"></i></div><div><div class="ch-name">SACCOPay Wallet</div><div class="ch-desc">To member's SACCOPay wallet • Instant</div></div><input type="radio" name="wdrChannel" style="margin-left:auto;"></div>
+            <div class="row g-3 mt-3"><div class="col-md-6"><label class="flbl">Account / Phone Number</label><input type="text" class="form-control finput" value="0722-XXX-789"></div><div class="col-md-6"><label class="flbl">Bank Name (if applicable)</label><select class="form-select fselect"><option>N/A — M-Pesa</option><option>KCB Bank</option><option>Equity Bank</option><option>Co-operative Bank</option><option>NCBA</option><option>Absa Kenya</option></select></div></div>
+        </div>
+
+        <div id="wdr4" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-shield-lock me-2"></i>Member OTP Verification</h6>
+            <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Security:</strong> An OTP has been sent to the member for authorization. The member must approve this withdrawal.</div>
+            <div class="otp-section">
+                <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,208,132,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);"><i class="bi bi-shield-lock-fill" style="font-size:1.8rem;color:var(--primary-green);"></i></div>
+                <h5 style="font-weight:700;margin-bottom:4px;">Enter OTP Code</h5>
+                <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">A 6-digit code has been sent to member's phone <strong>0722-XXX-789</strong></p>
+                <div class="otp-inputs"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"></div>
+                <p style="font-size:0.78rem;color:var(--text-tertiary);">OTP expires in <strong id="otpTimer" style="color:var(--status-danger);">04:58</strong></p>
+                <div style="display:flex;justify-content:center;gap:var(--spacing-md);margin-top:var(--spacing-md);">
+                    <button class="btn btn-ghost btn-sm" onclick="resendOTP('sms')"><i class="bi bi-phone"></i> Resend SMS</button>
+                    <button class="btn btn-ghost btn-sm" onclick="resendOTP('email')"><i class="bi bi-envelope"></i> Send to Email</button>
+                    <button class="btn btn-ghost btn-sm" onclick="resendOTP('dashboard')"><i class="bi bi-grid"></i> Send to Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="wdr5" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-check2-square me-2"></i>Review & Process</h6>
+            <div style="text-align:center;padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);"><div style="width:56px;height:56px;border-radius:50%;background:rgba(76,175,80,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-sm);"><i class="bi bi-check-circle-fill" style="font-size:1.8rem;color:var(--status-success);"></i></div><h5 style="color:var(--status-success);font-weight:700;">OTP Verified ✓</h5><p style="font-size:0.82rem;color:var(--text-secondary);">Member has authorized this withdrawal</p></div>
+            <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);">
+                <div class="drow"><span class="dl">Member</span><span class="dv">Peter Omondi (SP-10145)</span></div>
+                <div class="drow"><span class="dl">Source</span><span class="dv">Emergency Fund</span></div>
+                <div class="drow"><span class="dl">Amount</span><span class="dv" style="color:var(--status-danger);font-size:1.1rem;">KES 50,000</span></div>
+                <div class="drow"><span class="dl">Destination</span><span class="dv"><i class="bi bi-phone"></i> M-Pesa (0722-XXX-789)</span></div>
+                <div class="drow"><span class="dl">Fee</span><span class="dv">KES 0</span></div>
+                <div class="drow"><span class="dl">Net Amount</span><span class="dv" style="color:var(--primary-green);font-weight:700;">KES 50,000</span></div>
+                <div class="drow"><span class="dl">New Balance</span><span class="dv">KES 12,000</span></div>
+                <div class="drow"><span class="dl">OTP Status</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill"></i> Verified</span></div>
+                <div class="drow"><span class="dl">Admin</span><span class="dv">James Kariuki</span></div>
+            </div>
+            <div class="row g-3 mt-3"><div class="col-12"><label class="flbl">Admin Authorization PIN</label><input type="password" class="form-control finput" placeholder="Enter your admin PIN" maxlength="6"></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline" id="wdrPrevBtn" style="display:none;" onclick="wdrPrev()"><i class="bi bi-arrow-left"></i> Back</button><button class="btn btn-primary" id="wdrNextBtn" onclick="wdrNext()" style="background:linear-gradient(135deg,#c62828,#e53935);">Next <i class="bi bi-arrow-right"></i></button><button class="btn btn-primary" id="wdrOTPBtn" style="display:none;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));" onclick="verifyOTP()"><i class="bi bi-shield-check"></i> Verify OTP</button><button class="btn btn-primary" id="wdrSubmitBtn" style="display:none;background:linear-gradient(135deg,#c62828,#e53935);" onclick="submitWithdrawal()"><i class="bi bi-send"></i> Process Withdrawal</button></div>
+</div></div></div>
+
+<!-- 3. BUY SHARES MODAL (Transfer from Withdrawable to Non-Withdrawable) -->
+<div class="modal fade" id="buySharesModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-shield-plus me-2"></i>Buy Shares — Transfer to Share Capital</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i><strong>Important:</strong> Share capital is <strong>non-withdrawable</strong>. Shares can only be transferred to another member or refunded upon exit from the SACCO (subject to Board approval).</div>
+        <div class="step-bar"><div class="step-item"><div class="step-circle active" id="ss1">1</div><span class="step-label active" id="ssl1">Member</span></div><div class="step-item"><div class="step-circle pending" id="ss2">2</div><span class="step-label pending" id="ssl2">Shares</span></div><div class="step-item"><div class="step-circle pending" id="ss3">3</div><span class="step-label pending" id="ssl3">OTP</span></div><div class="step-item"><div class="step-circle pending" id="ss4">4</div><span class="step-label pending" id="ssl4">Confirm</span></div></div>
+
+        <div id="shr1">
+            <h6 class="mb-3" style="font-weight:600;">Select Member</h6>
+            <div class="row g-3"><div class="col-md-6"><label class="flbl">Member ID / Name</label><input type="text" class="form-control finput" placeholder="Search member..."></div><div class="col-md-6"><label class="flbl">Current Shares</label><div style="padding:10px 14px;background:var(--bg-tertiary);border-radius:var(--radius-md);font-weight:700;color:#1a237e;">35 shares (KES 35,000)</div></div></div>
+            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-lg);background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                <div style="display:flex;align-items:center;gap:var(--spacing-md);"><div class="m-avatar c7" style="width:48px;height:48px;font-size:1rem;">JK</div><div><div style="font-weight:700;">John Kamau</div><div style="font-size:0.78rem;color:var(--text-secondary);">SP-10015 • Regular Savings Balance: <strong style="color:var(--primary-green);">KES 125,000</strong></div></div></div>
+            </div>
+        </div>
+
+        <div id="shr2" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;">Share Purchase Details</h6>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="flbl">Number of Shares</label><input type="number" class="form-control finput" value="10" min="1" placeholder="Shares to buy" id="shareCount"></div>
+                <div class="col-md-6"><label class="flbl">Share Price</label><input type="text" class="form-control finput" value="KES 1,000 / share" readonly style="background:var(--bg-tertiary);"></div>
+                <div class="col-md-6"><label class="flbl">Total Cost</label><div style="padding:10px 14px;background:rgba(26,35,130,0.05);border-radius:var(--radius-md);font-weight:800;font-size:1.1rem;color:#1a237e;">KES 10,000</div></div>
+                <div class="col-md-6"><label class="flbl">Source</label><select class="form-select fselect"><option>Regular Savings (KES 125,000)</option><option>Emergency Fund (KES 18,000)</option><option>External — M-Pesa</option><option>External — Bank Transfer</option></select></div>
+            </div>
+            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-md);background:rgba(26,35,130,0.05);border-radius:var(--radius-md);font-size:0.82rem;">
+                <div class="row g-1"><div class="col-4"><span class="text-secondary">Current Shares:</span><br><strong>35</strong></div><div class="col-4"><span class="text-secondary">New Shares:</span><br><strong style="color:#1a237e;">+ 10</strong></div><div class="col-4"><span class="text-secondary">Total After:</span><br><strong style="color:#1a237e;">45 shares</strong></div></div>
+            </div>
+        </div>
+
+        <div id="shr3" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-shield-lock me-2"></i>Member Authorization (OTP)</h6>
+            <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Shares are <strong>non-withdrawable</strong>. Member must confirm this purchase via OTP.</div>
+            <div class="otp-section">
+                <div style="width:64px;height:64px;border-radius:50%;background:rgba(26,35,130,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);"><i class="bi bi-shield-lock-fill" style="font-size:1.8rem;color:#1a237e;"></i></div>
+                <h5 style="font-weight:700;">Confirm Share Purchase</h5>
+                <p style="font-size:0.82rem;color:var(--text-secondary);">OTP sent to <strong>0722-XXX-123</strong></p>
+                <div class="otp-inputs"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"></div>
+                <div style="display:flex;justify-content:center;gap:var(--spacing-md);margin-top:var(--spacing-md);"><button class="btn btn-ghost btn-sm" onclick="resendOTP('sms')"><i class="bi bi-phone"></i> Resend</button><button class="btn btn-ghost btn-sm" onclick="resendOTP('email')"><i class="bi bi-envelope"></i> Email</button></div>
+            </div>
+        </div>
+
+        <div id="shr4" style="display:none;">
+            <h6 class="mb-3" style="font-weight:600;"><i class="bi bi-check2-square me-2"></i>Confirm Share Purchase</h6>
+            <div style="text-align:center;margin-bottom:var(--spacing-lg);"><div style="width:56px;height:56px;border-radius:50%;background:rgba(76,175,80,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-sm);"><i class="bi bi-check-circle-fill" style="font-size:1.8rem;color:var(--status-success);"></i></div><h5 style="color:var(--status-success);">OTP Verified</h5></div>
+            <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);">
+                <div class="drow"><span class="dl">Member</span><span class="dv">John Kamau (SP-10015)</span></div>
+                <div class="drow"><span class="dl">Shares Purchased</span><span class="dv" style="color:#1a237e;font-weight:700;">10 shares</span></div>
+                <div class="drow"><span class="dl">Total Cost</span><span class="dv" style="font-size:1.1rem;font-weight:700;">KES 10,000</span></div>
+                <div class="drow"><span class="dl">Source</span><span class="dv">Regular Savings</span></div>
+                <div class="drow"><span class="dl">New Savings Balance</span><span class="dv" style="color:var(--primary-green);">KES 115,000</span></div>
+                <div class="drow"><span class="dl">New Share Balance</span><span class="dv" style="color:#1a237e;">45 shares (KES 45,000)</span></div>
+                <div class="drow"><span class="dl">Status</span><span class="dv"><i class="bi bi-lock-fill" style="color:var(--status-danger);"></i> Non-Withdrawable</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline" id="shrPrevBtn" style="display:none;" onclick="shrPrev()"><i class="bi bi-arrow-left"></i> Back</button><button class="btn btn-primary" id="shrNextBtn" style="background:linear-gradient(135deg,#1a237e,#283593);" onclick="shrNext()">Next <i class="bi bi-arrow-right"></i></button><button class="btn btn-primary" id="shrOTPBtn" style="display:none;background:linear-gradient(135deg,#1a237e,#283593);" onclick="verifyShrOTP()"><i class="bi bi-shield-check"></i> Verify OTP</button><button class="btn btn-primary" id="shrSubmitBtn" style="display:none;background:linear-gradient(135deg,#1a237e,#283593);" onclick="submitSharePurchase()"><i class="bi bi-shield-plus"></i> Complete Purchase</button></div>
+</div></div></div>
+
+<!-- 4. TRANSFER SAVINGS MODAL -->
+<div class="modal fade" id="transferSavingsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr teal"><h5 class="modal-title"><i class="bi bi-arrow-left-right me-2"></i>Transfer Between Accounts</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Member</label><input type="text" class="form-control finput" placeholder="Search member..."></div>
+            <div class="col-md-6"><label class="flbl">From Account</label><select class="form-select fselect"><option>Regular Savings (KES 125,000)</option><option>Emergency Fund (KES 18,000)</option></select></div>
+            <div class="col-md-6"><label class="flbl">To Account</label><select class="form-select fselect"><option>Share Capital (Buy Shares)</option><option>Fixed Deposit (Create FD)</option><option>Emergency Fund</option><option>Holiday Savings</option></select></div>
+            <div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Transfer amount"></div>
+            <div class="col-md-6"><label class="flbl">Narration</label><input type="text" class="form-control finput" placeholder="e.g. Top up emergency fund"></div>
+        </div>
+        <div class="alert alert-warning mt-3" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>If transferring to <strong>Share Capital</strong>, the amount becomes <strong>non-withdrawable</strong>. Member OTP will be required.</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#00838f,#00acc1);" onclick="submitTransfer()"><i class="bi bi-arrow-left-right"></i> Transfer</button></div>
+</div></div></div>
+
+<!-- 5. NEW FIXED DEPOSIT -->
+<div class="modal fade" id="newFixedDepositModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr teal"><h5 class="modal-title"><i class="bi bi-safe2 me-2"></i>Create Fixed Deposit</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-12"><label class="flbl">Member</label><input type="text" class="form-control finput" placeholder="Search member..."></div>
+            <div class="col-md-6"><label class="flbl">Amount (KES)</label><input type="number" class="form-control finput" placeholder="Min: KES 10,000"></div>
+            <div class="col-md-6"><label class="flbl">Tenure</label><select class="form-select fselect"><option>3 Months (9% p.a.)</option><option>6 Months (10% p.a.)</option><option>12 Months (11% p.a.)</option><option>24 Months (12% p.a.)</option></select></div>
+            <div class="col-md-6"><label class="flbl">Source</label><select class="form-select fselect"><option>Regular Savings</option><option>M-Pesa</option><option>Bank Transfer</option></select></div>
+            <div class="col-md-6"><label class="flbl">Interest Payout</label><select class="form-select fselect"><option>At Maturity</option><option>Monthly</option><option>Quarterly</option></select></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox"><label class="form-check-label" style="font-size:0.82rem;">Auto-renew on maturity</label></div></div>
+        </div>
+        <div style="margin-top:var(--spacing-lg);padding:var(--spacing-lg);background:rgba(0,131,143,0.05);border-radius:var(--radius-md);">
+            <h6 style="font-size:0.82rem;font-weight:600;color:#00838f;">Projected Returns</h6>
+            <div class="row g-1 text-center"><div class="col-4"><div style="font-size:0.68rem;color:var(--text-tertiary);">Deposit</div><div style="font-weight:700;">KES 200,000</div></div><div class="col-4"><div style="font-size:0.68rem;color:var(--text-tertiary);">Interest (12 mo)</div><div style="font-weight:700;color:#00838f;">KES 22,000</div></div><div class="col-4"><div style="font-size:0.68rem;color:var(--text-tertiary);">Maturity Value</div><div style="font-weight:700;color:var(--primary-green);">KES 222,000</div></div></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#00838f,#00acc1);" onclick="submitFD()"><i class="bi bi-safe2"></i> Create Fixed Deposit</button></div>
+</div></div></div>
+
+<!-- 6. PENDING OTP VERIFICATION -->
+<div class="modal fade" id="pendingOTPModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-key me-2"></i>Pending OTP Verification</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="background:var(--bg-tertiary);border-radius:var(--radius-md);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <div class="drow"><span class="dl">Member</span><span class="dv">Grace Akinyi (SP-10067)</span></div>
+            <div class="drow"><span class="dl">Transaction</span><span class="dv">Withdrawal — KES 80,000</span></div>
+            <div class="drow"><span class="dl">Destination</span><span class="dv"><i class="bi bi-bank"></i> KCB Bank</span></div>
+            <div class="drow"><span class="dl">OTP Sent To</span><span class="dv">0722-XXX-456 (SMS)</span></div>
+            <div class="drow"><span class="dl">Requested</span><span class="dv">Dec 17, 2:00 PM</span></div>
+        </div>
+        <div class="otp-section">
+            <p style="font-size:0.82rem;color:var(--text-secondary);">Enter OTP provided by the member:</p>
+            <div class="otp-inputs"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"><input type="text" class="otp-input" maxlength="1" oninput="otpFocus(this)"></div>
+            <div style="display:flex;justify-content:center;gap:var(--spacing-md);margin-top:var(--spacing-md);"><button class="btn btn-ghost btn-sm" onclick="resendOTP('sms')"><i class="bi bi-arrow-clockwise"></i> Resend OTP</button><button class="btn btn-ghost btn-sm" onclick="resendOTP('email')"><i class="bi bi-envelope"></i> Send Email</button></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-ghost btn-sm" style="color:var(--status-danger);" onclick="cancelPendingTx()"><i class="bi bi-x-circle"></i> Reject</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#e65100,#f57c00);" onclick="verifyPendingOTP()"><i class="bi bi-shield-check"></i> Verify & Process</button></div>
+</div></div></div>
+
+<!-- 7. PENDING WITHDRAWALS -->
+<div class="modal fade" id="pendingWithdrawalsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-hourglass-split me-2"></i>Pending Withdrawals (Awaiting OTP)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Member</th><th>Amount</th><th>Account</th><th>Destination</th><th>OTP Sent</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                <tr><td>Grace Akinyi</td><td style="font-weight:600;color:var(--status-danger);">KES 80,000</td><td>Regular</td><td>KCB Bank</td><td>Dec 17, 2:00 PM</td><td><span class="badge badge-pending">Awaiting</span></td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#pendingOTPModal">Process</button></td></tr>
+                <tr><td>Daniel Kipchoge</td><td style="font-weight:600;color:var(--status-danger);">KES 45,000</td><td>Regular</td><td>M-Pesa</td><td>Dec 18, 9:00 AM</td><td><span class="badge badge-pending">Awaiting</span></td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#pendingOTPModal">Process</button></td></tr>
+                <tr><td>Faith Wairimu</td><td style="font-weight:600;color:var(--status-danger);">KES 60,000</td><td>Emergency</td><td>Equity Bank</td><td>Dec 18, 11:00 AM</td><td><span class="badge badge-pending">Awaiting</span></td><td><button class="btn btn-outline btn-sm" style="font-size:0.65rem;" data-bs-toggle="modal" data-bs-target="#pendingOTPModal">Process</button></td></tr>
+            </tbody></table>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div>
+</div></div></div>
+
+<!-- 8. TRANSACTION DETAIL -->
+<div class="modal fade" id="txDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction Detail — <span id="txRef">SAV-08921</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div style="text-align:center;padding:var(--spacing-lg);border-bottom:1px dashed var(--border-color);margin-bottom:var(--spacing-lg);"><div style="width:56px;height:56px;border-radius:50%;background:rgba(76,175,80,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-sm);"><i class="bi bi-check-circle-fill" style="font-size:1.8rem;color:var(--status-success);"></i></div><div style="font-size:1.5rem;font-weight:800;color:var(--status-success);">KES 25,000</div><div style="font-size:0.82rem;color:var(--text-secondary);">Deposit Confirmed</div></div>
+        <div class="drow"><span class="dl">Reference</span><span class="dv"><code id="txRefCode">SAV-2024-08921</code></span></div>
+        <div class="drow"><span class="dl">Member</span><span class="dv">Mary Wanjiku (SP-10023)</span></div>
+        <div class="drow"><span class="dl">Account</span><span class="dv">Regular Savings</span></div>
+        <div class="drow"><span class="dl">Type</span><span class="dv"><span class="stbadge regular"><i class="bi bi-arrow-down-circle"></i> Deposit</span></span></div>
+        <div class="drow"><span class="dl">Channel</span><span class="dv"><i class="bi bi-phone"></i> M-Pesa (QJK8X2M1PL)</span></div>
+        <div class="drow"><span class="dl">Date</span><span class="dv">Dec 18, 2024 • 3:45 PM</span></div>
+        <div class="drow"><span class="dl">Balance After</span><span class="dv" style="font-weight:700;color:var(--primary-green);">KES 150,000</span></div>
+        <div class="drow"><span class="dl">Processed By</span><span class="dv">System (Auto-matched)</span></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Receipt sent to member')"><i class="bi bi-envelope"></i> Send Receipt</button><button class="btn btn-outline btn-sm" onclick="showToast('PDF downloaded')"><i class="bi bi-file-pdf"></i> PDF</button></div>
+</div></div></div>
+
+<!-- 9. INTEREST CONFIG -->
+<div class="modal fade" id="interestConfigModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr" style="background:linear-gradient(135deg,#ff9800,#ffb74d);"><h5 class="modal-title"><i class="bi bi-percent me-2"></i>Interest Rate Configuration</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="table-responsive"><table class="data-table" style="font-size:0.85rem;"><thead><tr><th>Account Type</th><th>Current Rate</th><th>New Rate</th><th>Calc Method</th><th>Last Updated</th></tr></thead>
+        <tbody>
+            <tr><td><span class="stbadge shares"><i class="bi bi-shield-lock"></i> Share Capital</span></td><td>Dividend-based</td><td><input type="text" class="form-control form-control-sm finput" value="Dividend" style="width:100px;"></td><td>Annual</td><td>Jan 2024</td></tr>
+            <tr><td><span class="stbadge regular"><i class="bi bi-wallet2"></i> Regular Savings</span></td><td><span class="rate-badge">7% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="7" style="width:80px;" step="0.5">%</td><td>Daily balance</td><td>Jul 2024</td></tr>
+            <tr><td><span class="stbadge fixed"><i class="bi bi-safe2"></i> Fixed Deposit (3M)</span></td><td><span class="rate-badge">9% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="9" style="width:80px;" step="0.5">%</td><td>Fixed</td><td>Jul 2024</td></tr>
+            <tr><td><span class="stbadge fixed"><i class="bi bi-safe2"></i> Fixed Deposit (6M)</span></td><td><span class="rate-badge">10% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="10" style="width:80px;" step="0.5">%</td><td>Fixed</td><td>Jul 2024</td></tr>
+            <tr><td><span class="stbadge fixed"><i class="bi bi-safe2"></i> Fixed Deposit (12M)</span></td><td><span class="rate-badge">11% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="11" style="width:80px;" step="0.5">%</td><td>Fixed</td><td>Jul 2024</td></tr>
+            <tr><td><span class="stbadge holiday"><i class="bi bi-sun"></i> Holiday</span></td><td><span class="rate-badge">5% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="5" style="width:80px;" step="0.5">%</td><td>Daily balance</td><td>Jan 2024</td></tr>
+            <tr><td><span class="stbadge junior"><i class="bi bi-emoji-smile"></i> Junior</span></td><td><span class="rate-badge">8% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="8" style="width:80px;" step="0.5">%</td><td>Daily balance</td><td>Jan 2024</td></tr>
+            <tr><td><span class="stbadge emergency"><i class="bi bi-heart-pulse"></i> Emergency</span></td><td><span class="rate-badge">6% p.a.</span></td><td><input type="number" class="form-control form-control-sm finput" value="6" style="width:80px;" step="0.5">%</td><td>Daily balance</td><td>Jan 2024</td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#ff9800,#ffb74d);" onclick="saveInterestConfig()"><i class="bi bi-check-circle"></i> Save Changes</button></div>
+</div></div></div>
+
+<!-- 10. DIVIDEND DISTRIBUTION -->
+<div class="modal fade" id="dividendDistModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-gift me-2"></i>Dividend Distribution</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="alert alert-info"><i class="bi bi-info-circle-fill me-1"></i>Dividends are distributed based on share holdings and SACCO performance.</div>
+        <div class="row g-3">
+            <div class="col-md-6"><label class="flbl">Financial Year</label><select class="form-select fselect"><option>2024</option><option>2023</option></select></div>
+            <div class="col-md-6"><label class="flbl">Dividend Rate</label><input type="text" class="form-control finput" value="12% on shares" placeholder="e.g. 12%"></div>
+            <div class="col-md-6"><label class="flbl">Total Pool</label><input type="text" class="form-control finput" value="KES 3,420,000" readonly style="background:var(--bg-tertiary);"></div>
+            <div class="col-md-6"><label class="flbl">Eligible Members</label><input type="text" class="form-control finput" value="1,247" readonly style="background:var(--bg-tertiary);"></div>
+            <div class="col-12"><label class="flbl">Distribution Method</label><select class="form-select fselect"><option>Credit to Regular Savings</option><option>Credit to Share Capital (Reinvest)</option><option>Disburse via M-Pesa</option></select></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-outline btn-sm" onclick="showToast('Preview generated')"><i class="bi bi-eye"></i> Preview</button><button class="btn btn-primary" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);" onclick="processDividends()"><i class="bi bi-gift"></i> Process Distribution</button></div>
+</div></div></div>
+
+<!-- 11. SHARE CAPITAL DETAIL -->
+<div class="modal fade" id="shareCapitalDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header mhdr blue"><h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Share Capital Overview</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3 mb-4"><div class="col-md-3"><div class="mstat"><span class="mstat-l">Total Shares</span><span class="mstat-v" style="color:#1a237e;">28,500</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Value</span><span class="mstat-v">KES 28.5M</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Shareholders</span><span class="mstat-v">1,247</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">New (Month)</span><span class="mstat-v" style="color:var(--status-success);">+342</span></div></div></div>
+        <h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Top Shareholders</h6>
+        <div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Member</th><th>Shares</th><th>Value</th><th>% of Total</th><th>Actions</th></tr></thead>
+        <tbody>
+            <tr><td>Peter Omondi</td><td>120</td><td>KES 120,000</td><td>0.42%</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="showToast('Share certificate generated')"><i class="bi bi-file-earmark"></i> Certificate</button></td></tr>
+            <tr><td>Sarah Auma</td><td>95</td><td>KES 95,000</td><td>0.33%</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="showToast('Share certificate generated')"><i class="bi bi-file-earmark"></i> Certificate</button></td></tr>
+            <tr><td>John Kamau</td><td>45</td><td>KES 45,000</td><td>0.16%</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.68rem;" onclick="showToast('Share certificate generated')"><i class="bi bi-file-earmark"></i> Certificate</button></td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" data-bs-toggle="modal" data-bs-target="#buySharesModal"><i class="bi bi-plus"></i> Buy Shares</button><button class="btn btn-outline btn-sm" onclick="showToast('Share register exported')"><i class="bi bi-download"></i> Export</button></div>
+</div></div></div>
+
+<!-- 12-16. REMAINING DETAIL MODALS + REPORTS + REVERSE + EXPORT -->
+<div class="modal fade" id="regularSavingsDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-wallet2 me-2"></i>Regular Savings Overview</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3 mb-4"><div class="col-md-3"><div class="mstat"><span class="mstat-l">Total Balance</span><span class="mstat-v" style="color:var(--primary-green);">KES 67.3M</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Accounts</span><span class="mstat-v">1,580</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Deposits (M)</span><span class="mstat-v" style="color:var(--status-success);">+KES 8.2M</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Withdrawals (M)</span><span class="mstat-v" style="color:var(--status-danger);">-KES 3.1M</span></div></div></div><h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Top Savers</h6><div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Member</th><th>Balance</th><th>Monthly Deposit</th><th>Interest (YTD)</th></tr></thead><tbody><tr><td>Peter Omondi</td><td style="font-weight:600;">KES 185,000</td><td>KES 15,000</td><td style="color:var(--primary-green);">KES 8,200</td></tr><tr><td>Mary Wanjiku</td><td style="font-weight:600;">KES 150,000</td><td>KES 25,000</td><td style="color:var(--primary-green);">KES 6,800</td></tr><tr><td>Sarah Auma</td><td style="font-weight:600;">KES 125,000</td><td>KES 12,000</td><td style="color:var(--primary-green);">KES 5,600</td></tr></tbody></table></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#depositModal"><i class="bi bi-plus"></i> New Deposit</button></div></div></div></div>
+
+<div class="modal fade" id="fixedDepositDetailModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header mhdr teal"><h5 class="modal-title"><i class="bi bi-safe2 me-2"></i>Fixed Deposits Overview</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3 mb-3"><div class="col-md-3"><div class="mstat"><span class="mstat-l">Total FD</span><span class="mstat-v" style="color:#00838f;">KES 42.1M</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Active</span><span class="mstat-v">328</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Maturing (30d)</span><span class="mstat-v" style="color:var(--accent-orange);">18</span></div></div><div class="col-md-3"><div class="mstat"><span class="mstat-l">Interest Due</span><span class="mstat-v" style="color:var(--primary-green);">KES 1.8M</span></div></div></div><h6 style="font-weight:600;margin-bottom:var(--spacing-md);">Maturing Soon</h6><div class="table-responsive"><table class="data-table" style="font-size:0.82rem;"><thead><tr><th>Member</th><th>Amount</th><th>Rate</th><th>Maturity</th><th>Interest</th><th>Action</th></tr></thead><tbody><tr><td>Alice Muthoni</td><td>KES 100,000</td><td>10%</td><td>Jan 5, 2025</td><td style="color:var(--primary-green);">KES 10,000</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="showToast('Renewal reminder sent')"><i class="bi bi-bell"></i> Remind</button></td></tr><tr><td>Daniel Kipchoge</td><td>KES 250,000</td><td>11%</td><td>Jan 12, 2025</td><td style="color:var(--primary-green);">KES 27,500</td><td><button class="btn btn-ghost btn-sm" style="font-size:0.65rem;" onclick="showToast('Renewal reminder sent')"><i class="bi bi-bell"></i> Remind</button></td></tr></tbody></table></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-primary btn-sm" style="background:linear-gradient(135deg,#00838f,#00acc1);" data-bs-toggle="modal" data-bs-target="#newFixedDepositModal"><i class="bi bi-plus"></i> New FD</button></div></div></div></div>
+
+<div class="modal fade" id="savingsReportsModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header mhdr" style="background:linear-gradient(135deg,#795548,#a1887f);"><h5 class="modal-title"><i class="bi bi-bar-chart-line me-2"></i>Savings Reports</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3"><div class="col-md-6"><div class="qa-card" onclick="genReport('portfolio')"><div class="qa-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-pie-chart"></i></div><h6>Savings Portfolio</h6><p>Complete overview all accounts</p></div></div><div class="col-md-6"><div class="qa-card" onclick="genReport('deposits')"><div class="qa-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-arrow-down-circle"></i></div><h6>Deposit Report</h6><p>All deposits by period</p></div></div><div class="col-md-6"><div class="qa-card" onclick="genReport('withdrawals')"><div class="qa-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-arrow-up-circle"></i></div><h6>Withdrawal Report</h6><p>All withdrawals by period</p></div></div><div class="col-md-6"><div class="qa-card" onclick="genReport('interest')"><div class="qa-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-percent"></i></div><h6>Interest Report</h6><p>Interest earned & payable</p></div></div><div class="col-md-6"><div class="qa-card" onclick="genReport('shares')"><div class="qa-icon" style="background:rgba(26,35,130,0.1);color:#1a237e;"><i class="bi bi-shield-lock"></i></div><h6>Share Register</h6><p>All shareholders & holdings</p></div></div><div class="col-md-6"><div class="qa-card" onclick="genReport('member')"><div class="qa-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-person-lines-fill"></i></div><h6>Member Statements</h6><p>Individual account statements</p></div></div></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="reverseTxModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header" style="background:linear-gradient(135deg,#f44336,#ef5350);color:white;border:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--spacing-lg) var(--spacing-xl);"><h5 class="modal-title"><i class="bi bi-arrow-counterclockwise me-2"></i>Reverse Transaction</h5><button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:brightness(0) invert(1);"></button></div><div class="modal-body"><div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>This action will reverse the transaction and adjust the member's balance.</div><div class="row g-3"><div class="col-12"><label class="flbl">Reason</label><select class="form-select fselect"><option>Duplicate entry</option><option>Wrong member</option><option>Wrong amount</option><option>System error</option><option>Other</option></select></div><div class="col-12"><label class="flbl">Comments</label><textarea class="form-control finput" rows="2" placeholder="Explain..."></textarea></div><div class="col-12"><label class="flbl">Admin PIN</label><input type="password" class="form-control finput" maxlength="6" placeholder="Enter PIN"></div></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn" style="background:#f44336;color:white;" onclick="reverseTx()"><i class="bi bi-arrow-counterclockwise"></i> Reverse</button></div></div></div></div>
+
+<div class="modal fade" id="exportSavingsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Savings Data</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3"><div class="col-md-6"><label class="flbl">Format</label><select class="form-select fselect"><option>CSV</option><option>Excel</option><option>PDF</option></select></div><div class="col-md-6"><label class="flbl">Period</label><select class="form-select fselect"><option>This Month</option><option>Last 3 Months</option><option>This Year</option><option>All Time</option></select></div><div class="col-md-6"><label class="flbl">Account Type</label><select class="form-select fselect"><option>All</option><option>Share Capital</option><option>Regular Savings</option><option>Fixed Deposit</option><option>Emergency</option></select></div><div class="col-md-6"><label class="flbl">Transaction Type</label><select class="form-select fselect"><option>All</option><option>Deposits</option><option>Withdrawals</option><option>Transfers</option></select></div></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="exportSavings()"><i class="bi bi-download"></i> Export</button></div></div></div></div>
+
+<!-- Detail Modals for Holiday, Junior, Emergency (slim versions) -->
+<div class="modal fade" id="holidaySavingsDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr orange"><h5 class="modal-title"><i class="bi bi-sun me-2"></i>Holiday Savings</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3 mb-3"><div class="col-6"><div class="mstat"><span class="mstat-l">Balance</span><span class="mstat-v" style="color:#e65100;">KES 5.8M</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Target</span><span class="mstat-v">KES 8.5M</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Members</span><span class="mstat-v">412</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Release</span><span class="mstat-v">Dec 20</span></div></div></div><div style="height:10px;background:var(--bg-tertiary);border-radius:var(--radius-full);overflow:hidden;margin-bottom:var(--spacing-md);"><div style="width:68%;height:100%;background:linear-gradient(90deg,#e65100,#f57c00);border-radius:var(--radius-full);"></div></div><p style="font-size:0.82rem;text-align:center;color:var(--text-secondary);">68% of target reached — <strong>2 days</strong> to release</p></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" style="border-color:#e65100;color:#e65100;" data-bs-toggle="modal" data-bs-target="#depositModal"><i class="bi bi-plus"></i> Deposit</button></div></div></div></div>
+
+<div class="modal fade" id="juniorSavingsDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr purple"><h5 class="modal-title"><i class="bi bi-emoji-smile me-2"></i>Junior Savings (Watoto)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3 mb-3"><div class="col-6"><div class="mstat"><span class="mstat-l">Balance</span><span class="mstat-v" style="color:#6a1b9a;">KES 3.2M</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Accounts</span><span class="mstat-v">186</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Interest</span><span class="mstat-v"><span class="rate-badge">8% p.a.</span></span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Avg Balance</span><span class="mstat-v">KES 17.2K</span></div></div></div><div class="alert alert-info" style="font-size:0.82rem;"><i class="bi bi-lock-fill me-1"></i>Junior savings are locked until the child turns 18 years old. Only parent/guardian can make deposits.</div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" style="border-color:#6a1b9a;color:#6a1b9a;" data-bs-toggle="modal" data-bs-target="#depositModal"><i class="bi bi-plus"></i> Deposit</button></div></div></div></div>
+
+<div class="modal fade" id="emergencyFundDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr red"><h5 class="modal-title"><i class="bi bi-heart-pulse me-2"></i>Emergency Fund</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3 mb-3"><div class="col-6"><div class="mstat"><span class="mstat-l">Balance</span><span class="mstat-v" style="color:#c62828;">KES 8.9M</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Members</span><span class="mstat-v">892</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Max Withdrawal</span><span class="mstat-v">80%</span></div></div><div class="col-6"><div class="mstat"><span class="mstat-l">Processing</span><span class="mstat-v" style="color:var(--status-success);">Instant</span></div></div></div><div class="alert alert-warning" style="font-size:0.82rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Members can withdraw up to <strong>80%</strong> of their emergency fund balance. Withdrawals are processed instantly via M-Pesa with OTP verification.</div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" style="border-color:#c62828;color:#c62828;" data-bs-toggle="modal" data-bs-target="#withdrawalModal"><i class="bi bi-dash"></i> Withdraw</button></div></div></div></div>
+
+<!-- Activity Log / Notifications / Quick Actions / Profile -->
+<div class="modal fade" id="activityLogModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-list-ul me-2"></i>Savings Activity Log</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-3 mb-3"><div class="col-md-4"><select class="form-select fselect form-select-sm"><option>All Activities</option><option>Deposits</option><option>Withdrawals</option><option>Share Purchases</option><option>Transfers</option><option>Interest</option></select></div><div class="col-md-4"><input type="date" class="form-control finput form-control-sm"></div><div class="col-md-4"><input type="text" class="form-control finput form-control-sm" placeholder="Search..."></div></div><div class="timeline"><div class="tl-item done"><div class="tl-time">Dec 18, 3:45 PM</div><div class="tl-content">Deposit KES 25,000 — Mary Wanjiku — Regular Savings via M-Pesa</div></div><div class="tl-item out"><div class="tl-time">Dec 18, 2:15 PM</div><div class="tl-content">Withdrawal KES 50,000 — Peter Omondi — Emergency Fund to M-Pesa</div></div><div class="tl-item share"><div class="tl-time">Dec 18, 11:30 AM</div><div class="tl-content">Share Purchase — John Kamau — 10 shares (KES 10,000) from Regular Savings</div></div><div class="tl-item done"><div class="tl-time">Dec 18, 10:00 AM</div><div class="tl-content">Fixed Deposit — Sarah Auma — KES 200,000 for 12 months at 10%</div></div><div class="tl-item done"><div class="tl-time">Dec 17, 4:20 PM</div><div class="tl-content">Bulk payroll deductions — KES 2.4M for 342 members</div></div></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Log exported')"><i class="bi bi-download"></i> Export</button></div></div></div></div>
+
+<div class="modal fade" id="notificationsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notifications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" style="max-height:380px;overflow-y:auto;"><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-orange);"></span><strong style="font-size:0.82rem;">Pending OTP</strong><small style="margin-left:auto;color:var(--text-tertiary);">2 hrs</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">3 withdrawals awaiting OTP verification</p></div><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-success);"></span><strong style="font-size:0.82rem;">Bulk Deposit</strong><small style="margin-left:auto;color:var(--text-tertiary);">Yesterday</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">342 salary deductions processed — KES 2.4M</p></div><div style="padding:var(--spacing-md);border-bottom:1px solid var(--border-color);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-teal);"></span><strong style="font-size:0.82rem;">FD Maturing</strong><small style="margin-left:auto;color:var(--text-tertiary);">Today</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">18 fixed deposits maturing in next 30 days</p></div><div style="padding:var(--spacing-md);"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#e65100;"></span><strong style="font-size:0.82rem;">Holiday Release</strong><small style="margin-left:auto;color:var(--text-tertiary);">2 days</small></div><p style="font-size:0.78rem;color:var(--text-secondary);margin:0;">Holiday savings release scheduled for Dec 20</p></div></div><div class="modal-footer"><button class="btn btn-ghost btn-sm">Mark All Read</button><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button></div></div></div></div>
+
+<div class="modal fade" id="quickActionsPopup" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-lightning me-2"></i>Quick Actions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#depositModal"><i class="bi bi-box-arrow-in-down me-2" style="color:var(--primary-green);"></i>Deposit</button><button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#withdrawalModal"><i class="bi bi-box-arrow-up me-2" style="color:var(--status-danger);"></i>Withdrawal</button><button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#buySharesModal"><i class="bi bi-shield-plus me-2" style="color:#1a237e;"></i>Buy Shares</button><button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#transferSavingsModal"><i class="bi bi-arrow-left-right me-2" style="color:#00838f;"></i>Transfer</button><button class="btn btn-ghost w-100 text-start" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#savingsReportsModal"><i class="bi bi-bar-chart me-2" style="color:#795548;"></i>Reports</button></div></div></div></div></div>
+
+<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-body" style="padding:var(--spacing-xl);text-align:center;"><div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div><h5 style="font-weight:700;margin-bottom:2px;">James Kariuki</h5><p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Super Admin • SACCOPay HQ</p><div style="display:flex;flex-direction:column;gap:var(--spacing-sm);"><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>My Profile</button><button class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>Settings</button><hr style="margin:var(--spacing-sm) 0;"><button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></div></div></div></div></div>
+
+<!-- Savings Breakdown -->
+<div class="modal fade" id="savingsBreakdownModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-pie-chart me-2"></i>Savings Distribution Breakdown</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="table-responsive"><table class="data-table" style="font-size:0.85rem;"><thead><tr><th>Account Type</th><th>Accounts</th><th>Total Balance</th><th>% of Total</th><th>Interest Rate</th><th>Withdrawable</th></tr></thead><tbody><tr><td><span class="stbadge shares"><i class="bi bi-shield-lock"></i> Share Capital</span></td><td>1,247</td><td style="font-weight:600;">KES 28.5M</td><td>18%</td><td>Dividend</td><td><span class="lock-indicator locked"><i class="bi bi-lock-fill"></i> No</span></td></tr><tr><td><span class="stbadge regular"><i class="bi bi-wallet2"></i> Regular Savings</span></td><td>1,580</td><td style="font-weight:600;">KES 67.3M</td><td>43%</td><td>7%</td><td><span class="lock-indicator unlocked"><i class="bi bi-unlock-fill"></i> Yes</span></td></tr><tr><td><span class="stbadge fixed"><i class="bi bi-safe2"></i> Fixed Deposit</span></td><td>328</td><td style="font-weight:600;">KES 42.1M</td><td>27%</td><td>9-12%</td><td><span class="lock-indicator locked"><i class="bi bi-hourglass-split"></i> Term</span></td></tr><tr><td><span class="stbadge holiday"><i class="bi bi-sun"></i> Holiday</span></td><td>412</td><td style="font-weight:600;">KES 5.8M</td><td>4%</td><td>5%</td><td><span class="lock-indicator locked"><i class="bi bi-calendar"></i> Seasonal</span></td></tr><tr><td><span class="stbadge junior"><i class="bi bi-emoji-smile"></i> Junior</span></td><td>186</td><td style="font-weight:600;">KES 3.2M</td><td>2%</td><td>8%</td><td><span class="lock-indicator locked"><i class="bi bi-lock-fill"></i> Until 18</span></td></tr><tr><td><span class="stbadge emergency"><i class="bi bi-heart-pulse"></i> Emergency</span></td><td>892</td><td style="font-weight:600;">KES 8.9M</td><td>6%</td><td>6%</td><td><span class="lock-indicator unlocked"><i class="bi bi-unlock-fill"></i> Yes (80%)</span></td></tr></tbody><tfoot><tr style="font-weight:700;background:var(--bg-tertiary);"><td>Total</td><td>—</td><td>KES 155.8M</td><td>100%</td><td>—</td><td>—</td></tr></tfoot></table></div></div><div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Close</button><button class="btn btn-outline btn-sm" onclick="showToast('Breakdown exported')"><i class="bi bi-download"></i> Export</button></div></div></div></div>
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<!-- ====================================================================
+     JAVASCRIPT
+==================================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// === UTILS ===
+function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
+function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+function closeAllModals(){document.querySelectorAll('.modal.show').forEach(m=>{const i=bootstrap.Modal.getInstance(m);if(i)i.hide();});}
+function toggleSidebar(){const s=document.getElementById('adminSidebar');s.style.transform=s.style.transform==='translateX(0px)'?'translateX(-100%)':'translateX(0px)';}
+
+// === OTP FOCUS ===
+function otpFocus(el){if(el.value.length===1&&el.nextElementSibling)el.nextElementSibling.focus();}
+function resendOTP(method){const n={sms:'SMS',email:'Email',dashboard:'Dashboard'};showToast('OTP resent via '+n[method]+'!');}
+
+// === CHANNEL SELECTION ===
+function selectChannel(el){el.closest('.modal-body').querySelectorAll('.channel-option').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');el.querySelector('input[type=radio]').checked=true;}
+
+// === DEPOSIT WIZARD ===
+let depCur=1;
+function depStep(s){depCur=s;depUpdate();}
+function depNext(){if(depCur<4){depCur++;depUpdate();}}
+function depPrev(){if(depCur>1){depCur--;depUpdate();}}
+function depUpdate(){for(let i=1;i<=4;i++){const e=document.getElementById('dep'+i);const c=document.getElementById('ds'+i);const l=document.getElementById('dsl'+i);if(e)e.style.display=i===depCur?'block':'none';if(c){c.className='step-circle '+(i<depCur?'done':i===depCur?'active':'pending');}if(l){l.className='step-label '+(i<=depCur?'active':'pending');}}document.getElementById('depPrevBtn').style.display=depCur>1?'inline-flex':'none';document.getElementById('depNextBtn').style.display=depCur<4?'inline-flex':'none';document.getElementById('depSubmitBtn').style.display=depCur===4?'inline-flex':'none';}
+function submitDeposit(){bootstrap.Modal.getInstance(document.getElementById('depositModal')).hide();showToast('Deposit of KES 25,000 processed successfully! Ref: SAV-2024-08922');depCur=1;depUpdate();}
+document.getElementById('depositModal').addEventListener('hidden.bs.modal',()=>{depCur=1;depUpdate();});
+
+// === WITHDRAWAL WIZARD ===
+let wdrCur=1;
+function wdrNext(){if(wdrCur<5){wdrCur++;wdrUpdate();}}
+function wdrPrev(){if(wdrCur>1){wdrCur--;wdrUpdate();}}
+function wdrUpdate(){for(let i=1;i<=5;i++){const e=document.getElementById('wdr'+i);const c=document.getElementById('ws'+i);const l=document.getElementById('wsl'+i);if(e)e.style.display=i===wdrCur?'block':'none';if(c)c.className='step-circle '+(i<wdrCur?'done':i===wdrCur?'active':'pending');if(l)l.className='step-label '+(i<=wdrCur?'active':'pending');}document.getElementById('wdrPrevBtn').style.display=wdrCur>1?'inline-flex':'none';document.getElementById('wdrNextBtn').style.display=(wdrCur<4)?'inline-flex':'none';document.getElementById('wdrOTPBtn').style.display=wdrCur===4?'inline-flex':'none';document.getElementById('wdrSubmitBtn').style.display=wdrCur===5?'inline-flex':'none';}
+function verifyOTP(){wdrCur=5;wdrUpdate();showToast('OTP verified successfully!');}
+function submitWithdrawal(){bootstrap.Modal.getInstance(document.getElementById('withdrawalModal')).hide();showToast('Withdrawal of KES 50,000 processed! Sent to M-Pesa 0722-XXX-789');wdrCur=1;wdrUpdate();}
+document.getElementById('withdrawalModal').addEventListener('hidden.bs.modal',()=>{wdrCur=1;wdrUpdate();});
+
+// === SHARE PURCHASE WIZARD ===
+let shrCur=1;
+function shrNext(){if(shrCur<4){shrCur++;shrUpdate();}}
+function shrPrev(){if(shrCur>1){shrCur--;shrUpdate();}}
+function shrUpdate(){for(let i=1;i<=4;i++){const e=document.getElementById('shr'+i);const c=document.getElementById('ss'+i);const l=document.getElementById('ssl'+i);if(e)e.style.display=i===shrCur?'block':'none';if(c)c.className='step-circle '+(i<shrCur?'done':i===shrCur?'active':'pending');if(l)l.className='step-label '+(i<=shrCur?'active':'pending');}document.getElementById('shrPrevBtn').style.display=shrCur>1?'inline-flex':'none';document.getElementById('shrNextBtn').style.display=(shrCur<3)?'inline-flex':'none';document.getElementById('shrOTPBtn').style.display=shrCur===3?'inline-flex':'none';document.getElementById('shrSubmitBtn').style.display=shrCur===4?'inline-flex':'none';}
+function verifyShrOTP(){shrCur=4;shrUpdate();showToast('OTP verified! Share purchase authorized.');}
+function submitSharePurchase(){bootstrap.Modal.getInstance(document.getElementById('buySharesModal')).hide();showToast('10 shares purchased successfully! Non-withdrawable. Certificate: SHR-2024-00783');shrCur=1;shrUpdate();}
+document.getElementById('buySharesModal').addEventListener('hidden.bs.modal',()=>{shrCur=1;shrUpdate();});
+
+// === SIMPLE ACTIONS ===
+function submitTransfer(){bootstrap.Modal.getInstance(document.getElementById('transferSavingsModal')).hide();showToast('Transfer completed successfully!');}
+function submitFD(){bootstrap.Modal.getInstance(document.getElementById('newFixedDepositModal')).hide();showToast('Fixed Deposit created! Ref: FD-2024-00235. Maturity: Dec 2025');}
+function verifyPendingOTP(){bootstrap.Modal.getInstance(document.getElementById('pendingOTPModal')).hide();showToast('OTP verified! Withdrawal of KES 80,000 processed to KCB Bank.');}
+function cancelPendingTx(){bootstrap.Modal.getInstance(document.getElementById('pendingOTPModal')).hide();showToast('Withdrawal request cancelled. Member notified.');}
+function saveInterestConfig(){bootstrap.Modal.getInstance(document.getElementById('interestConfigModal')).hide();showToast('Interest rates updated successfully!');}
+function processDividends(){bootstrap.Modal.getInstance(document.getElementById('dividendDistModal')).hide();showToast('Dividends distributed to 1,247 members! Total: KES 3.42M');}
+function reverseTx(){bootstrap.Modal.getInstance(document.getElementById('reverseTxModal')).hide();showToast('Transaction reversed. Member balance adjusted.');}
+function exportSavings(){bootstrap.Modal.getInstance(document.getElementById('exportSavingsModal')).hide();showToast('Savings data exported! Check downloads.');}
+function genReport(t){bootstrap.Modal.getInstance(document.getElementById('savingsReportsModal')).hide();showToast('Report generated successfully!');}
+
+// === TX DETAIL ===
+function openTxDetail(ref){document.getElementById('txRef').textContent=ref;document.getElementById('txRefCode').textContent=ref;closeAllModals();setTimeout(()=>openModal('txDetailModal'),350);}
+
+// === FILTERS ===
+function setFilter(btn,s){document.querySelectorAll('.filter-tabs .ftab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');showToast('Filter: '+s);}
+function toggleAll(el){document.querySelectorAll('.rchk').forEach(c=>c.checked=el.checked);}
+
+// === OTP TIMER ===
+let otpSec=298;
+setInterval(()=>{if(otpSec>0){otpSec--;const m=Math.floor(otpSec/60);const s=otpSec%60;const el=document.getElementById('otpTimer');if(el)el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}},1000);
+</script>
+</body>
+</html>

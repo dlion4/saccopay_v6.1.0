@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rongo SACCO Member Directory - Manage all members">
+    <title>Member Directory | Rongo SACCO Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="./admin-dashboard.css">
+</head>
+<body>
+    
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>Rongo SACCO</h1>
+                    <p>Admin Portal</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="sidebar-nav">
+                <!-- Dashboard Section -->
+                <div class="nav-section-title">Dashboard</div>
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="bi bi-speedometer2 nav-icon"></i>
+                        <span>Overview</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="bi bi-graph-up nav-icon"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+                
+                <!-- Member Management -->
+                <div class="nav-section-title">Members</div>
+                <div class="nav-item">
+                    <a href="members-all.html" class="nav-link active">
+                        <i class="bi bi-people nav-icon"></i>
+                        <span>All Members</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="members-kyc.html" class="nav-link">
+                        <i class="bi bi-person-check nav-icon"></i>
+                        <span>KYC Pending</span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                        <i class="bi bi-person-plus nav-icon"></i>
+                        <span>Register Member</span>
+                    </a>
+                </div>
+                
+                <!-- Financial Operations -->
+                <div class="nav-section-title">Financial</div>
+                <div class="nav-item">
+                    <a href="transactions.html" class="nav-link">
+                        <i class="bi bi-arrow-left-right nav-icon"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="deposits.html" class="nav-link">
+                        <i class="bi bi-piggy-bank nav-icon"></i>
+                        <span>Deposits</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="withdrawals.html" class="nav-link">
+                        <i class="bi bi-cash-coin nav-icon"></i>
+                        <span>Withdrawals</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="shares.html" class="nav-link">
+                        <i class="bi bi-pie-chart nav-icon"></i>
+                        <span>Share Capital</span>
+                    </a>
+                </div>
+                
+                <!-- Loan Management -->
+                <div class="nav-section-title">Loans</div>
+                <div class="nav-item">
+                    <a href="loans-overview.html" class="nav-link">
+                        <i class="bi bi-clipboard-data nav-icon"></i>
+                        <span>Loan Portfolio</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-applications.html" class="nav-link">
+                        <i class="bi bi-file-earmark-text nav-icon"></i>
+                        <span>Applications</span>
+                        <span class="nav-badge">8</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-disbursements.html" class="nav-link">
+                        <i class="bi bi-send nav-icon"></i>
+                        <span>Disbursements</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="loan-repayments.html" class="nav-link">
+                        <i class="bi bi-arrow-down-circle nav-icon"></i>
+                        <span>Repayments</span>
+                    </a>
+                </div>
+                
+                <!-- Reports -->
+                <div class="nav-section-title">Reports</div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <i class="bi bi-file-earmark-bar-graph nav-icon"></i>
+                        <span>All Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="compliance.html" class="nav-link">
+                        <i class="bi bi-clipboard-check nav-icon"></i>
+                        <span>Compliance</span>
+                    </a>
+                </div>
+                
+                <!-- Settings -->
+                <div class="nav-section-title">Settings</div>
+                <div class="nav-item">
+                    <a href="config.html" class="nav-link">
+                        <i class="bi bi-gear nav-icon"></i>
+                        <span>SACCO Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="bi bi-person-gear nav-icon"></i>
+                        <span>Staff Management</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Navigation Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <!-- Search Bar -->
+                    <div class="topbar-search">
+                        <i class="bi bi-search topbar-search-icon"></i>
+                        <input type="text" id="globalSearch" placeholder="Search members by name, ID, phone...">
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="topbar-actions">
+                        <!-- Quick Actions -->
+                        <button class="topbar-action-btn" title="Quick Actions" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="topbar-action-btn" title="Notifications" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                            <i class="bi bi-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        
+                        <!-- Messages -->
+                        <button class="topbar-action-btn" title="Messages" data-bs-toggle="modal" data-bs-target="#messagesModal">
+                            <i class="bi bi-chat-dots"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        
+                        <!-- Help -->
+                        <button class="topbar-action-btn" title="Help Center" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <i class="bi bi-question-circle"></i>
+                        </button>
+                        
+                        <!-- User Profile -->
+                        <div class="user-profile" data-bs-toggle="modal" data-bs-target="#profileModal" style="cursor: pointer;">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info">
+                                <h4>John Maina</h4>
+                                <p>General Manager</p>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="bi bi-house-door"></i>
+                        <span>Home</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item">
+                        <span>Members</span>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                    <div class="breadcrumb-item active">
+                        <span>All Members</span>
+                    </div>
+                </nav>
+                
+                <!-- Page Header with Actions -->
+                <div class="dashboard-header mb-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                        <div>
+                            <h2>Member Directory</h2>
+                            <p>Manage and view all 2,847 members of Rongo SACCO</p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#importMembersModal">
+                                <i class="bi bi-upload"></i> Import Members
+                            </button>
+                            <button class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#exportMembersModal">
+                                <i class="bi bi-download"></i> Export
+                            </button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                                <i class="bi bi-person-plus"></i> Register Member
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member Statistics Summary -->
+                <div class="stats-grid mb-4">
+                    <!-- Total Members -->
+                    <div class="stat-card" data-bs-toggle="modal" data-bs-target="#allMembersStatsModal" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Total Members</div>
+                                <div class="stat-card-value">2,847</div>
+                                <span class="stat-card-change positive">
+                                    <i class="bi bi-arrow-up"></i> +156 this month
+                                </span>
+                            </div>
+                            <div class="stat-card-icon primary">
+                                <i class="bi bi-people"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>Click for detailed breakdown</span>
+                                <span class="text-primary">View →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Members -->
+                    <div class="stat-card" onclick="applyFilter('active')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Active Members</div>
+                                <div class="stat-card-value">2,645</div>
+                                <span class="stat-card-change positive">
+                                    <i class="bi bi-check-circle"></i> 92.9%
+                                </span>
+                            </div>
+                            <div class="stat-card-icon success">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>Made transaction in last 90 days</span>
+                                <span class="text-primary">Filter →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dormant Members -->
+                    <div class="stat-card" onclick="applyFilter('dormant')" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Dormant Members</div>
+                                <div class="stat-card-value">202</div>
+                                <span class="stat-card-change negative">
+                                    <i class="bi bi-exclamation-triangle"></i> 7.1%
+                                </span>
+                            </div>
+                            <div class="stat-card-icon warning">
+                                <i class="bi bi-person-dash"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>No activity for 90+ days</span>
+                                <span class="text-primary">Filter →</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- KYC Pending -->
+                    <div class="stat-card" onclick="window.location.href='members-kyc.html'" style="cursor: pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">KYC Pending</div>
+                                <div class="stat-card-value">12</div>
+                                <span class="stat-card-change negative">
+                                    <i class="bi bi-clock"></i> Needs action
+                                </span>
+                            </div>
+                            <div class="stat-card-icon info">
+                                <i class="bi bi-shield-exclamation"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>Awaiting verification</span>
+                                <span class="text-primary">Process →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters and View Options -->
+                <div class="glass-card mb-4">
+                    <div class="glass-card-body">
+                        <div class="row g-3 align-items-end">
+                            <!-- Search -->
+                            <div class="col-md-3">
+                                <label class="form-label">Search Members</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="memberSearch" placeholder="Name, ID, Phone...">
+                                </div>
+                            </div>
+                            
+                            <!-- Status Filter -->
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="statusFilter">
+                                    <option value="all">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="dormant">Dormant</option>
+                                    <option value="suspended">Suspended</option>
+                                    <option value="pending">Pending KYC</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Tier Filter -->
+                            <div class="col-md-2">
+                                <label class="form-label">Member Tier</label>
+                                <select class="form-select" id="tierFilter">
+                                    <option value="all">All Tiers</option>
+                                    <option value="gold">Gold</option>
+                                    <option value="silver">Silver</option>
+                                    <option value="bronze">Bronze</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Date Joined -->
+                            <div class="col-md-2">
+                                <label class="form-label">Joined</label>
+                                <select class="form-select" id="dateFilter">
+                                    <option value="all">All Time</option>
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="quarter">This Quarter</option>
+                                    <option value="year">This Year</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="col-md-3">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline flex-fill" onclick="resetFilters()">
+                                        <i class="bi bi-x-circle"></i> Reset
+                                    </button>
+                                    <button class="btn btn-primary flex-fill" data-bs-toggle="modal" data-bs-target="#advancedFiltersModal">
+                                        <i class="bi bi-funnel"></i> Advanced
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Filters Display -->
+                        <div class="mt-3" id="activeFilters">
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="filter-tag">
+                                    Showing: All Members
+                                    <button class="filter-tag-close" onclick="resetFilters()">×</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- View Toggle and Bulk Actions -->
+                <div class="glass-card mb-4">
+                    <div class="glass-card-body">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAll" onchange="toggleSelectAll(this)">
+                                    <label class="form-check-label" for="selectAll">
+                                        Select All (<span id="selectedCount">0</span> selected)
+                                    </label>
+                                </div>
+                                
+                                <div class="btn-group" id="bulkActions" style="display: none;">
+                                    <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#bulkMessageModal">
+                                        <i class="bi bi-envelope"></i> Message
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#bulkExportModal">
+                                        <i class="bi bi-download"></i> Export
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#bulkActionModal">
+                                        <i class="bi bi-three-dots"></i> More
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-secondary">View:</span>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="viewMode" id="tableView" checked onchange="switchView('table')">
+                                    <label class="btn btn-outline-primary btn-sm" for="tableView">
+                                        <i class="bi bi-table"></i> Table
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="viewMode" id="gridView" onchange="switchView('grid')">
+                                    <label class="btn btn-outline-primary btn-sm" for="gridView">
+                                        <i class="bi bi-grid-3x3"></i> Grid
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="viewMode" id="cardView" onchange="switchView('card')">
+                                    <label class="btn btn-outline-primary btn-sm" for="cardView">
+                                        <i class="bi bi-card-list"></i> Cards
+                                    </label>
+                                </div>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-sort-down"></i> Sort
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="sortMembers('name')">Name (A-Z)</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortMembers('recent')">Recently Added</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortMembers('deposits')">Highest Deposits</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortMembers('shares')">Most Shares</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="sortMembers('loans')">Loan Value</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Table View -->
+                <div id="tableViewContainer" class="table-container">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">
+                                        <input type="checkbox" class="form-check-input">
+                                    </th>
+                                    <th>Member ID</th>
+                                    <th>Member Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Tier</th>
+                                    <th>Total Deposits</th>
+                                    <th>Shares</th>
+                                    <th>Loans</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th width="150">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input member-checkbox"></td>
+                                    <td><strong>R-00123</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar">SA</div>
+                                            <div>
+                                                <strong>Sarah Akinyi</strong>
+                                                <div class="small text-secondary">sarah.akinyi@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+254 712 345 678</td>
+                                    <td><span class="badge" style="background: gold; color: #000;">Gold</span></td>
+                                    <td><strong>KES 2,500,000</strong></td>
+                                    <td>KES 500,000</td>
+                                    <td>3 (KES 5M)</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Jan 15, 2023</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#memberDetailModal" onclick="loadMemberDetails('R-00123')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberModal" onclick="loadEditMember('R-00123')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Send Message</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#recordTransactionModal"><i class="bi bi-cash"></i> Record Transaction</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewStatementsModal"><i class="bi bi-file-text"></i> View Statements</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#suspendMemberModal"><i class="bi bi-slash-circle text-warning"></i> Suspend</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input member-checkbox"></td>
+                                    <td><strong>R-00045</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar">DK</div>
+                                            <div>
+                                                <strong>David Kipkorir</strong>
+                                                <div class="small text-secondary">david.k@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+254 722 456 789</td>
+                                    <td><span class="badge" style="background: silver; color: #000;">Silver</span></td>
+                                    <td><strong>KES 1,800,000</strong></td>
+                                    <td>KES 400,000</td>
+                                    <td>2 (KES 3M)</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Mar 22, 2023</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Send Message</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#recordTransactionModal"><i class="bi bi-cash"></i> Record Transaction</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewStatementsModal"><i class="bi bi-file-text"></i> View Statements</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#suspendMemberModal"><i class="bi bi-slash-circle text-warning"></i> Suspend</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input member-checkbox"></td>
+                                    <td><strong>R-00234</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar">MW</div>
+                                            <div>
+                                                <strong>Mary Wanjiku</strong>
+                                                <div class="small text-secondary">mary.w@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+254 733 567 890</td>
+                                    <td><span class="badge" style="background: silver; color: #000;">Silver</span></td>
+                                    <td><strong>KES 1,500,000</strong></td>
+                                    <td>KES 350,000</td>
+                                    <td>4 (KES 4.2M)</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>Feb 10, 2023</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Send Message</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#recordTransactionModal"><i class="bi bi-cash"></i> Record Transaction</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewStatementsModal"><i class="bi bi-file-text"></i> View Statements</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#suspendMemberModal"><i class="bi bi-slash-circle text-warning"></i> Suspend</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input member-checkbox"></td>
+                                    <td><strong>R-00456</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar">JO</div>
+                                            <div>
+                                                <strong>John Otieno</strong>
+                                                <div class="small text-secondary">john.o@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+254 744 678 901</td>
+                                    <td><span class="badge" style="background: #cd7f32; color: #fff;">Bronze</span></td>
+                                    <td><strong>KES 850,000</strong></td>
+                                    <td>KES 180,000</td>
+                                    <td>1 (KES 500K)</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>May 05, 2023</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Send Message</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#recordTransactionModal"><i class="bi bi-cash"></i> Record Transaction</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewStatementsModal"><i class="bi bi-file-text"></i> View Statements</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#suspendMemberModal"><i class="bi bi-slash-circle text-warning"></i> Suspend</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input member-checkbox"></td>
+                                    <td><strong>R-00678</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="member-avatar bg-warning">GM</div>
+                                            <div>
+                                                <strong>Grace Muthoni</strong>
+                                                <div class="small text-secondary">grace.m@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>+254 755 789 012</td>
+                                    <td><span class="badge" style="background: #cd7f32; color: #fff;">Bronze</span></td>
+                                    <td><strong>KES 450,000</strong></td>
+                                    <td>KES 120,000</td>
+                                    <td>0</td>
+                                    <td><span class="badge badge-warning">Dormant</span></td>
+                                    <td>Aug 18, 2022</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Send Message</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reactivateMemberModal"><i class="bi bi-arrow-clockwise text-success"></i> Reactivate</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewStatementsModal"><i class="bi bi-file-text"></i> View Statements</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+                        <div class="text-secondary">
+                            Showing 1-5 of 2,847 members
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(2)">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(3)">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(4)">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#" onclick="loadPage(5)">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" onclick="loadPage(2)">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <div>
+                            <select class="form-select form-select-sm" onchange="changePerPage(this.value)">
+                                <option value="5">5 per page</option>
+                                <option value="10">10 per page</option>
+                                <option value="25" selected>25 per page</option>
+                                <option value="50">50 per page</option>
+                                <option value="100">100 per page</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grid View (Hidden by default) -->
+                <div id="gridViewContainer" style="display: none;">
+                    <div class="row g-4">
+                        <!-- Member Card -->
+                        <div class="col-md-4">
+                            <div class="member-grid-card" data-bs-toggle="modal" data-bs-target="#memberDetailModal" onclick="loadMemberDetails('R-00123')">
+                                <div class="member-grid-header">
+                                    <div class="member-grid-avatar">SA</div>
+                                    <div class="member-grid-tier">
+                                        <span class="badge" style="background: gold; color: #000;">Gold</span>
+                                    </div>
+                                </div>
+                                <div class="member-grid-info">
+                                    <h5>Sarah Akinyi</h5>
+                                    <p class="text-secondary mb-2">R-00123</p>
+                                    <div class="member-grid-stats">
+                                        <div>
+                                            <small>Deposits</small>
+                                            <strong>KES 2.5M</strong>
+                                        </div>
+                                        <div>
+                                            <small>Shares</small>
+                                            <strong>KES 500K</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="member-grid-footer">
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Add more grid cards... -->
+                        <div class="col-md-4">
+                            <div class="member-grid-card" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                <div class="member-grid-header">
+                                    <div class="member-grid-avatar">DK</div>
+                                    <div class="member-grid-tier">
+                                        <span class="badge" style="background: silver; color: #000;">Silver</span>
+                                    </div>
+                                </div>
+                                <div class="member-grid-info">
+                                    <h5>David Kipkorir</h5>
+                                    <p class="text-secondary mb-2">R-00045</p>
+                                    <div class="member-grid-stats">
+                                        <div>
+                                            <small>Deposits</small>
+                                            <strong>KES 1.8M</strong>
+                                        </div>
+                                        <div>
+                                            <small>Shares</small>
+                                            <strong>KES 400K</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="member-grid-footer">
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="member-grid-card" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                <div class="member-grid-header">
+                                    <div class="member-grid-avatar">MW</div>
+                                    <div class="member-grid-tier">
+                                        <span class="badge" style="background: silver; color: #000;">Silver</span>
+                                    </div>
+                                </div>
+                                <div class="member-grid-info">
+                                    <h5>Mary Wanjiku</h5>
+                                    <p class="text-secondary mb-2">R-00234</p>
+                                    <div class="member-grid-stats">
+                                        <div>
+                                            <small>Deposits</small>
+                                            <strong>KES 1.5M</strong>
+                                        </div>
+                                        <div>
+                                            <small>Shares</small>
+                                            <strong>KES 350K</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="member-grid-footer">
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination for grid -->
+                    <div class="d-flex justify-content-center mt-4">
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- Card View (Hidden by default) -->
+                <div id="cardViewContainer" style="display: none;">
+                    <div class="d-flex flex-column gap-3">
+                        <!-- Member List Card -->
+                        <div class="member-list-card">
+                            <div class="member-list-left">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
+                                </div>
+                                <div class="member-list-avatar">SA</div>
+                                <div class="member-list-info">
+                                    <h5>Sarah Akinyi</h5>
+                                    <p>R-00123 • +254 712 345 678</p>
+                                    <div class="d-flex gap-2">
+                                        <span class="badge" style="background: gold; color: #000;">Gold</span>
+                                        <span class="badge badge-success">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="member-list-stats">
+                                <div class="stat-item">
+                                    <small>Deposits</small>
+                                    <strong>KES 2.5M</strong>
+                                </div>
+                                <div class="stat-item">
+                                    <small>Shares</small>
+                                    <strong>KES 500K</strong>
+                                </div>
+                                <div class="stat-item">
+                                    <small>Loans</small>
+                                    <strong>3 (KES 5M)</strong>
+                                </div>
+                                <div class="stat-item">
+                                    <small>Joined</small>
+                                    <strong>Jan 15, 2023</strong>
+                                </div>
+                            </div>
+                            <div class="member-list-actions">
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#memberDetailModal">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#sendMessageModal"><i class="bi bi-envelope"></i> Message</a></li>
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#recordTransactionModal"><i class="bi bi-cash"></i> Transaction</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Add more cards... -->
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- MODALS -->
+    
+    <!-- Register Member Modal -->
+    <div class="modal fade" id="registerMemberModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-plus"></i> Register New Member</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-pills mb-3" id="registerTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="personal-tab" data-bs-toggle="pill" data-bs-target="#personal" type="button">
+                                1. Personal Info
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contact-tab" data-bs-toggle="pill" data-bs-target="#contact" type="button">
+                                2. Contact Details
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="financial-tab" data-bs-toggle="pill" data-bs-target="#financial" type="button">
+                                3. Financial Info
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="documents-tab" data-bs-toggle="pill" data-bs-target="#documents" type="button">
+                                4. Documents
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="registerTabContent">
+                        <div class="tab-pane fade show active" id="personal">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Middle Name</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">National ID *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Gender *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Marital Status</label>
+                                    <select class="form-select">
+                                        <option value="">Select status</option>
+                                        <option value="single">Single</option>
+                                        <option value="married">Married</option>
+                                        <option value="divorced">Divorced</option>
+                                        <option value="widowed">Widowed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="contact">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" placeholder="+254 7XX XXX XXX" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Alternative Phone</label>
+                                    <input type="tel" class="form-control" placeholder="+254 7XX XXX XXX">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Physical Address *</label>
+                                    <textarea class="form-control" rows="2" required></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">County</label>
+                                    <select class="form-select">
+                                        <option value="">Select county</option>
+                                        <option value="migori">Migori</option>
+                                        <option value="nairobi">Nairobi</option>
+                                        <option value="mombasa">Mombasa</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Postal Code</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="financial">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Occupation *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Employer</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Monthly Income Range *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Select range</option>
+                                        <option value="0-30k">KES 0 - 30,000</option>
+                                        <option value="30-50k">KES 30,000 - 50,000</option>
+                                        <option value="50-100k">KES 50,000 - 100,000</option>
+                                        <option value="100k+">KES 100,000+</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Initial Share Purchase *</label>
+                                    <input type="number" class="form-control" placeholder="Minimum KES 5,000" min="5000" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Next of Kin Name *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Next of Kin Phone *</label>
+                                    <input type="tel" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Relationship *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Select relationship</option>
+                                        <option value="spouse">Spouse</option>
+                                        <option value="parent">Parent</option>
+                                        <option value="child">Child</option>
+                                        <option value="sibling">Sibling</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="documents">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">National ID Copy *</label>
+                                    <input type="file" class="form-control" accept="image/*,application/pdf">
+                                    <small class="text-secondary">Upload front and back of ID</small>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Passport Photo *</label>
+                                    <input type="file" class="form-control" accept="image/*">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">KRA PIN Certificate</label>
+                                    <input type="file" class="form-control" accept="image/*,application/pdf">
+                                    <small class="text-secondary">Optional but recommended</small>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Proof of Residence</label>
+                                    <input type="file" class="form-control" accept="image/*,application/pdf">
+                                    <small class="text-secondary">Utility bill, lease agreement, etc.</small>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                        <label class="form-check-label" for="termsCheck">
+                                            I confirm that all information provided is accurate and I agree to the SACCO terms and conditions
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitMemberRegistration()">
+                        <i class="bi bi-check-circle"></i> Register Member
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Member Detail Modal -->
+    <div class="modal fade" id="memberDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-circle"></i> Member Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Member Header -->
+                    <div class="member-profile-header">
+                        <div class="d-flex gap-4 align-items-start">
+                            <div class="member-profile-avatar">SA</div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h3>Sarah Akinyi</h3>
+                                        <p class="text-secondary mb-2">Member ID: R-00123</p>
+                                        <div class="d-flex gap-2 mb-2">
+                                            <span class="badge" style="background: gold; color: #000;">Gold Tier</span>
+                                            <span class="badge badge-success">Active</span>
+                                        </div>
+                                        <p><i class="bi bi-telephone"></i> +254 712 345 678 | <i class="bi bi-envelope"></i> sarah.akinyi@email.com</p>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editMemberModal">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#sendMessageModal">
+                                            <i class="bi bi-envelope"></i> Message
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Member Stats -->
+                    <div class="row g-3 my-4">
+                        <div class="col-md-3">
+                            <div class="stat-box">
+                                <small class="text-secondary">Total Deposits</small>
+                                <h4 class="text-success mb-0">KES 2,500,000</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-box">
+                                <small class="text-secondary">Share Capital</small>
+                                <h4 class="text-primary mb-0">KES 500,000</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-box">
+                                <small class="text-secondary">Active Loans</small>
+                                <h4 class="text-info mb-0">3 (KES 5M)</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-box">
+                                <small class="text-secondary">Member Since</small>
+                                <h4 class="mb-0">Jan 15, 2023</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs" id="memberDetailTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">Overview</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#transactions">Transactions</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#loans">Loans</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#documents">Documents</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activity">Activity Log</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content p-3">
+                        <div class="tab-pane fade show active" id="overview">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6>Personal Information</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Full Name:</strong></td>
+                                            <td>Sarah Akinyi Omondi</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>National ID:</strong></td>
+                                            <td>12345678</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Date of Birth:</strong></td>
+                                            <td>March 15, 1985 (39 years)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Gender:</strong></td>
+                                            <td>Female</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Marital Status:</strong></td>
+                                            <td>Married</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Contact Information</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Phone:</strong></td>
+                                            <td>+254 712 345 678</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Email:</strong></td>
+                                            <td>sarah.akinyi@email.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Address:</strong></td>
+                                            <td>P.O. Box 123, Rongo</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>County:</strong></td>
+                                            <td>Migori</td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <h6 class="mt-3">Next of Kin</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Name:</strong></td>
+                                            <td>John Omondi</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Phone:</strong></td>
+                                            <td>+254 722 111 222</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Relationship:</strong></td>
+                                            <td>Spouse</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="transactions">
+                            <p>Recent transactions will be displayed here...</p>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#viewStatementsModal">
+                                <i class="bi bi-file-text"></i> View Full Statement
+                            </button>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="loans">
+                            <p>Loan history will be displayed here...</p>
+                            <button class="btn btn-sm btn-primary" onclick="window.location.href='loan-applications.html'">
+                                <i class="bi bi-plus-circle"></i> New Loan Application
+                            </button>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="documents">
+                            <p>Member documents will be displayed here...</p>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="activity">
+                            <p>Activity log will be displayed here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions Modal -->
+    <div class="modal fade" id="quickActionsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#registerMemberModal">
+                            <i class="bi bi-person-plus"></i> Register New Member
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#importMembersModal">
+                            <i class="bi bi-upload"></i> Import Members (Bulk)
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#exportMembersModal">
+                            <i class="bi bi-download"></i> Export Member Data
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#bulkMessageModal">
+                            <i class="bi bi-envelope-open"></i> Send Bulk Message
+                        </a>
+                        <a href="analytics.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-graph-up"></i> View Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Export Members Modal -->
+    <div class="modal fade" id="exportMembersModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-download"></i> Export Member Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Export Format</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="exportFormat" id="excelFormat" checked>
+                            <label class="btn btn-outline-primary" for="excelFormat">Excel</label>
+                            
+                            <input type="radio" class="btn-check" name="exportFormat" id="csvFormat">
+                            <label class="btn btn-outline-primary" for="csvFormat">CSV</label>
+                            
+                            <input type="radio" class="btn-check" name="exportFormat" id="pdfFormat">
+                            <label class="btn btn-outline-primary" for="pdfFormat">PDF</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fields to Include</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked id="field1">
+                            <label class="form-check-label" for="field1">Personal Information</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked id="field2">
+                            <label class="form-check-label" for="field2">Contact Details</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked id="field3">
+                            <label class="form-check-label" for="field3">Financial Summary</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="field4">
+                            <label class="form-check-label" for="field4">Transaction History</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="field5">
+                            <label class="form-check-label" for="field5">Loan Details</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Filter by Status</label>
+                        <select class="form-select">
+                            <option value="all">All Members</option>
+                            <option value="active">Active Only</option>
+                            <option value="dormant">Dormant Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-download"></i> Download Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Advanced Filters Modal -->
+    <div class="modal fade" id="advancedFiltersModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-funnel"></i> Advanced Filters</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Deposit Range</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="Min">
+                                <span class="input-group-text">to</span>
+                                <input type="number" class="form-control" placeholder="Max">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Share Range</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="Min">
+                                <span class="input-group-text">to</span>
+                                <input type="number" class="form-control" placeholder="Max">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Age Range</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="Min">
+                                <span class="input-group-text">to</span>
+                                <input type="number" class="form-control" placeholder="Max">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Gender</label>
+                            <select class="form-select">
+                                <option value="">All</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">County</label>
+                            <select class="form-select">
+                                <option value="">All Counties</option>
+                                <option value="migori">Migori</option>
+                                <option value="nairobi">Nairobi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Has Active Loan</label>
+                            <select class="form-select">
+                                <option value="">Any</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="resetAdvancedFilters()">Reset All</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Import Members Modal -->
+    <div class="modal fade" id="importMembersModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-upload"></i> Import Members (Bulk)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Download our Excel template, fill in member details, and upload below.
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-outline-primary w-100">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel Template
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Upload Filled Template</label>
+                        <input type="file" class="form-control" accept=".xlsx,.xls,.csv">
+                        <small class="text-secondary">Accepted formats: Excel (.xlsx, .xls) or CSV</small>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="validateImport" checked>
+                        <label class="form-check-label" for="validateImport">
+                            Validate data before import
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Start Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-circle"></i> Account Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar mx-auto" style="width: 80px; height: 80px; font-size: 2rem;">JM</div>
+                        <h5 class="mt-3">John Maina</h5>
+                        <p class="text-secondary">General Manager</p>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                    <div class="list-group">
+                        <a href="profile.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-person"></i> Edit Profile
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="bi bi-key"></i> Change Password
+                        </a>
+                        <a href="config.html" class="list-group-item list-group-item-action">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action text-danger">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Placeholder modals for other actions -->
+    <!-- Add more modals as needed: editMemberModal, sendMessageModal, recordTransactionModal, etc. -->
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // View switching
+        function switchView(view) {
+            document.getElementById('tableViewContainer').style.display = view === 'table' ? 'block' : 'none';
+            document.getElementById('gridViewContainer').style.display = view === 'grid' ? 'block' : 'none';
+            document.getElementById('cardViewContainer').style.display = view === 'card' ? 'block' : 'none';
+            console.log('Switched to ' + view + ' view');
+        }
+        
+        // Filter functions
+        function applyFilter(filterType) {
+            const statusFilter = document.getElementById('statusFilter');
+            statusFilter.value = filterType;
+            console.log('Applied filter:', filterType);
+            updateActiveFilters(filterType);
+        }
+        
+        function resetFilters() {
+            document.getElementById('memberSearch').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('tierFilter').value = 'all';
+            document.getElementById('dateFilter').value = 'all';
+            updateActiveFilters('all');
+            console.log('Filters reset');
+        }
+        
+        function updateActiveFilters(filter) {
+            const activeFiltersDiv = document.getElementById('activeFilters');
+            let filterText = 'Showing: All Members';
+            
+            if (filter === 'active') filterText = 'Showing: Active Members Only';
+            if (filter === 'dormant') filterText = 'Showing: Dormant Members Only';
+            
+            activeFiltersDiv.innerHTML = `
+                <div class="d-flex gap-2 flex-wrap">
+                    <span class="filter-tag">
+                        ${filterText}
+                        <button class="filter-tag-close" onclick="resetFilters()">×</button>
+                    </span>
+                </div>
+            `;
+        }
+        
+        // Select all functionality
+        function toggleSelectAll(checkbox) {
+            const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+            memberCheckboxes.forEach(cb => cb.checked = checkbox.checked);
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.member-checkbox:checked');
+            document.getElementById('selectedCount').textContent = checkedBoxes.length;
+            document.getElementById('bulkActions').style.display = checkedBoxes.length > 0 ? 'block' : 'none';
+        }
+        
+        // Add event listeners to all member checkboxes
+        document.querySelectorAll('.member-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+        
+        // Sort functions
+        function sortMembers(sortBy) {
+            console.log('Sorting by:', sortBy);
+            // In real implementation, this would re-fetch and re-render data
+            alert('Sorting by: ' + sortBy + '\n(Backend integration needed)');
+        }
+        
+        // Pagination
+        function loadPage(page) {
+            console.log('Loading page:', page);
+            // In real implementation, this would fetch data for the selected page
+        }
+        
+        function changePerPage(value) {
+            console.log('Changing items per page to:', value);
+            // In real implementation, this would re-fetch data with new page size
+        }
+        
+        // Load member details
+        function loadMemberDetails(memberId) {
+            console.log('Loading details for member:', memberId);
+            // In real implementation, this would fetch member data from API
+        }
+        
+        function loadEditMember(memberId) {
+            console.log('Loading edit form for member:', memberId);
+            // In real implementation, this would populate edit form
+        }
+        
+        // Member registration
+        function submitMemberRegistration() {
+            console.log('Submitting member registration');
+            // In real implementation, this would validate and submit form data
+            alert('Member registration submitted!\n(Backend integration needed)');
+        }
+        
+        // Advanced filters
+        function resetAdvancedFilters() {
+            console.log('Resetting advanced filters');
+            // Reset all advanced filter inputs
+        }
+        
+        // Search functionality
+        const globalSearch = document.getElementById('globalSearch');
+        const memberSearch = document.getElementById('memberSearch');
+        
+        [globalSearch, memberSearch].forEach(searchInput => {
+            searchInput?.addEventListener('input', function(e) {
+                console.log('Searching for:', e.target.value);
+                // In real implementation, this would filter the table
+            });
+        });
+    </script>
+    
+    <style>
+        /* Additional Custom Styles for Members Page */
+        
+        /* Filter Tags */
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--primary-green-ultra-light);
+            color: var(--primary-green-dark);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .filter-tag-close {
+            background: none;
+            border: none;
+            color: var(--primary-green);
+            font-size: 1.25rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 0.25rem;
+        }
+        
+        .filter-tag-close:hover {
+            color: var(--status-danger);
+        }
+        
+        /* Member Avatar */
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+        
+        /* Grid View Cards */
+        .member-grid-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .member-grid-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        
+        .member-grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .member-grid-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .member-grid-info h5 {
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+        
+        .member-grid-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .member-grid-stats small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .member-grid-stats strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .member-grid-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* List/Card View */
+        .member-list-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            transition: all 0.2s ease;
+        }
+        
+        .member-list-card:hover {
+            background: var(--primary-green-ultra-light);
+            border-color: var(--primary-green-light);
+        }
+        
+        .member-list-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .member-list-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .member-list-info h5 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .member-list-info p {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .member-list-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .member-list-stats .stat-item {
+            text-align: center;
+        }
+        
+        .member-list-stats .stat-item small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .member-list-stats .stat-item strong {
+            display: block;
+            color: var(--text-primary);
+        }
+        
+        .member-list-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Member Profile Modal */
+        .member-profile-header {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+        }
+        
+        .member-profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        
+        /* Stat Box */
+        .stat-box {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .member-list-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .member-list-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .member-list-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</body>
+</html>
