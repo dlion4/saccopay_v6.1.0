@@ -2,185 +2,757 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <meta name="description" content="Rongo SACCO Admin Dashboard - SACCOPay Platform">
     <title>Dashboard Overview | Rongo SACCO - SACCOPay Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="./admin-dashboard.css">
+    <link rel="stylesheet" href="./admin-dashboard-master.css">
+    <link rel="stylesheet" href="./dashboard-custom.css">
     <style>
-        /* SACCO Welcome Banner */
-        .welcome-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-2xl);
-            color: white;
-            margin-bottom: var(--spacing-xl);
-            position: relative;
-            overflow: hidden;
-        }
-        .welcome-banner::before {
-            content: '';
-            position: absolute; top: -60px; right: -60px;
-            width: 240px; height: 240px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,208,132,0.18), transparent);
-        }
-        .welcome-banner::after {
-            content: '';
-            position: absolute; bottom: -40px; left: -40px;
-            width: 180px; height: 180px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,188,212,0.12), transparent);
-        }
-        .wb-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--spacing-xl); flex-wrap: wrap; }
-        .wb-logo {
-            width: 72px; height: 72px; border-radius: var(--radius-lg);
-            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; font-weight: 800; flex-shrink: 0;
-        }
-        .wb-info { flex: 1; min-width: 200px; }
-        .wb-info h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; }
-        .wb-info p { font-size: 0.85rem; opacity: 0.7; margin: 0; }
-        .wb-info .wb-meta { font-size: 0.72rem; opacity: 0.5; margin-top: 4px; }
-        .wb-quick {
-            display: flex; gap: var(--spacing-md); flex-wrap: wrap;
-        }
-        .wb-quick-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: white;
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
-            font-size: 0.78rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s;
-            display: inline-flex; align-items: center; gap: 6px;
-        }
-        .wb-quick-btn:hover { background: rgba(0,208,132,0.2); border-color: var(--primary-green); }
+        /* ============================================
+   RONGO SACCO - DASHBOARD PAGE CUSTOM CSS
+   Designed for: dashboard.html
+   Depends on: admin-dashboard-master.css
+   ============================================ */
 
-        /* Quick Action Tile */
-        .qa-tile {
-            background: var(--glass-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
-            padding: var(--spacing-lg); text-align: center;
-            cursor: pointer; transition: all 0.3s; text-decoration: none; color: inherit;
-            display: block;
-        }
-        .qa-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg), var(--shadow-glow); border-color: var(--primary-green-light); color: inherit; }
-        .qa-tile-icon {
-            width: 44px; height: 44px; margin: 0 auto var(--spacing-sm);
-            border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
-        }
-        .qa-tile h6 { font-size: 0.82rem; font-weight: 600; margin: 0; }
-        .qa-tile p { font-size: 0.68rem; color: var(--text-tertiary); margin: 2px 0 0; }
+/* ---------- MOBILE OVERFLOW GUARD ---------- */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    position: relative;
+}
 
-        /* Mini Chart Bars (CSS) */
-        .mini-bars { display: flex; align-items: flex-end; gap: 4px; height: 60px; padding: var(--spacing-sm) 0; }
-        .mini-bar { flex: 1; border-radius: 3px 3px 0 0; transition: all 0.3s; }
-        .mini-bar:hover { opacity: 0.8; }
+.admin-layout {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+}
 
-        /* Donut */
-        .donut-mini {
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            position: relative;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .donut-mini::before {
-            content: '';
-            position: absolute; inset: 16px;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-        }
-        .donut-mini-center { position: relative; text-align: center; z-index: 1; }
+.admin-main {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
 
-        /* Progress Ring (Setup) */
-        .setup-progress {
-            display: flex; align-items: center; gap: var(--spacing-md);
-            padding: var(--spacing-md);
-            background: rgba(0,208,132,0.05);
-            border: 1px solid rgba(0,208,132,0.15);
-            border-radius: var(--radius-md);
-        }
+.dashboard-content {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
 
-        /* Activity Timeline */
-        .timeline { position: relative; padding-left: 28px; }
-        .timeline::before {
-            content: ''; position: absolute; left: 11px; top: 0; bottom: 0;
-            width: 2px; background: var(--border-color);
-        }
-        .timeline-item {
-            position: relative; padding-bottom: var(--spacing-lg); padding-left: var(--spacing-lg);
-        }
-        .timeline-item::before {
-            content: ''; position: absolute; left: -20px; top: 5px;
-            width: 12px; height: 12px; border-radius: 50%;
-            border: 2px solid var(--primary-green); background: white;
-        }
-        .timeline-item.success::before { background: var(--primary-green); }
-        .timeline-item.warning::before { border-color: var(--accent-orange); background: var(--accent-orange); }
-        .timeline-item.danger::before { border-color: var(--status-danger); background: var(--status-danger); }
-        .timeline-item.info::before { border-color: var(--accent-blue); background: var(--accent-blue); }
-        .timeline-content { background: var(--bg-tertiary); padding: var(--spacing-md); border-radius: var(--radius-md); font-size: 0.83rem; }
-        .timeline-time { font-size: 0.72rem; color: var(--text-tertiary); margin-bottom: 3px; }
+/* Fix Bootstrap row negative margins */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
 
-        /* List Group */
-        .list-group-item {
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
-            margin-bottom: 8px;
-            background: var(--bg-secondary);
-            transition: all 0.2s;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .list-group-item:hover { background: var(--primary-green-ultra-light); border-color: var(--primary-green-light); }
+.row > [class*="col-"] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
 
-        /* Member avatar */
-        .m-cell { display: flex; align-items: center; gap: var(--spacing-sm); }
-        .m-av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.7rem; color: white; flex-shrink: 0; }
-        .m-av.c1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
-        .m-av.c2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
-        .m-av.c3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
-        .m-av.c4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
-        .m-av.c5 { background: linear-gradient(135deg, #f44336, #ef5350); }
-        .m-av.c6 { background: linear-gradient(135deg, #00695c, #00897b); }
+@media (max-width: 575.98px) {
+    .row > [class*="col-"] {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .dashboard-content {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}
 
-        /* Modal */
-        .mhdr { color: white; border: none; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: var(--spacing-lg) var(--spacing-xl); }
-        .mhdr .btn-close { filter: brightness(0) invert(1); }
-        .mhdr.green { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
-        .mhdr.dark { background: linear-gradient(135deg, #0f172a, #1e293b); }
-        .modal-content { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
-        .modal-body { padding: var(--spacing-xl); }
-        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
-        .drow:last-child { border-bottom: none; }
-        .drow .dl { color: var(--text-tertiary); font-weight: 500; }
-        .drow .dv { font-weight: 600; }
+/* Ensure all media never overflow */
+img, video, canvas, svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
 
-        /* Service Status Dots */
-        .service-status {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 0; border-bottom: 1px solid var(--border-color);
-        }
-        .service-status:last-child { border-bottom: none; }
-        .ss-left { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+/* Prevent any element from exceeding viewport */
+* {
+    max-width: 100vw;
+}
 
-        @media (max-width: 768px) {
-            .welcome-banner { padding: var(--spacing-xl); }
-            .wb-info h1 { font-size: 1.2rem; }
-        }
+.table-responsive, .modal-dialog, .dropdown-menu {
+    max-width: none;
+}
+
+/* ---------- WELCOME BANNER ---------- */
+.welcome-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    color: white;
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,208,132,0.18), transparent);
+}
+
+.welcome-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,188,212,0.12), transparent);
+}
+
+.wb-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.wb-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.wb-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.wb-info h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.wb-info p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin: 0;
+}
+
+.wb-info .wb-meta {
+    font-size: 0.72rem;
+    opacity: 0.5;
+    margin-top: 4px;
+}
+
+.wb-quick {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.wb-quick-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.wb-quick-btn:hover {
+    background: rgba(0,208,132,0.2);
+    border-color: var(--primary-green);
+    color: white;
+}
+
+/* ---------- COMPACT METRIC CARDS ---------- */
+.compact-metric {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.compact-metric:hover {
+    background: var(--primary-green-ultra-light) !important;
+    border-color: var(--primary-green) !important;
+    transform: translateY(-2px);
+}
+
+/* ---------- QUICK ACTION TILES ---------- */
+.qa-tile {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.qa-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-green-light);
+    color: inherit;
+}
+
+.qa-tile-icon {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto var(--spacing-sm);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.qa-tile h6 {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.qa-tile p {
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    margin: 2px 0 0;
+}
+
+/* ---------- MINI BAR CHART ---------- */
+.mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 140px;
+    padding: var(--spacing-sm) 0;
+}
+
+.mini-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    transition: all 0.3s ease;
+    min-width: 8px;
+}
+
+.mini-bar:hover {
+    opacity: 0.8;
+    transform: scaleY(1.05);
+    transform-origin: bottom;
+}
+
+/* ---------- DONUT CHART ---------- */
+.donut-mini {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.donut-mini::before {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+}
+
+.donut-mini-center {
+    position: relative;
+    text-align: center;
+    z-index: 1;
+}
+
+/* ---------- LEGEND DOT ---------- */
+.legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
+/* ---------- TIMELINE ---------- */
+.timeline {
+    position: relative;
+    padding-left: 28px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: var(--spacing-lg);
+    padding-left: var(--spacing-lg);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-green);
+    background: white;
+}
+
+.timeline-item.success::before { background: var(--primary-green); }
+.timeline-item.warning::before { border-color: var(--accent-orange); background: var(--accent-orange); }
+.timeline-item.danger::before { border-color: var(--status-danger); background: var(--status-danger); }
+.timeline-item.info::before { border-color: var(--accent-blue); background: var(--accent-blue); }
+
+.timeline-content {
+    background: var(--bg-tertiary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: 0.83rem;
+}
+
+.timeline-time {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    margin-bottom: 3px;
+}
+
+/* ---------- LIST GROUP ITEMS ---------- */
+.list-group-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: 8px;
+    background: var(--bg-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.list-group-item:hover {
+    background: var(--primary-green-ultra-light);
+    border-color: var(--primary-green-light);
+}
+
+.list-group-item:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- MEMBER AVATARS ---------- */
+.m-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.m-av {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.m-av.c1 { background: linear-gradient(135deg, var(--primary-green), var(--accent-teal)); }
+.m-av.c2 { background: linear-gradient(135deg, #2196f3, #42a5f5); }
+.m-av.c3 { background: linear-gradient(135deg, #9c27b0, #ba68c8); }
+.m-av.c4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+.m-av.c5 { background: linear-gradient(135deg, #f44336, #ef5350); }
+.m-av.c6 { background: linear-gradient(135deg, #00695c, #00897b); }
+
+/* ---------- TRANSACTION STYLES ---------- */
+.tx-ref {
+    color: var(--primary-green);
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.tx-ref:hover {
+    color: var(--accent-teal);
+    text-decoration: underline;
+}
+
+.tx-ref-failed {
+    color: var(--status-danger);
+}
+
+.tx-type {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    display: inline-block;
+}
+
+.tx-type-repayment { color: var(--accent-blue); background: rgba(33,150,243,0.1); }
+.tx-type-deposit { color: var(--primary-green); background: rgba(0,208,132,0.1); }
+.tx-type-disbursement { color: var(--accent-orange); background: rgba(255,152,0,0.1); }
+.tx-type-shares { color: #1a237e; background: rgba(26,35,126,0.1); }
+.tx-type-withdrawal { color: var(--status-danger); background: rgba(244,67,54,0.1); }
+
+.tx-channel {
+    font-size: 0.72rem;
+    color: #388e3c;
+}
+
+/* ---------- MODAL HEADERS ---------- */
+.mhdr {
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.mhdr .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.mhdr.green {
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+}
+
+.mhdr.dark {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.modal-content {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-body {
+    padding: var(--spacing-xl);
+}
+
+/* ---------- DETAIL ROWS ---------- */
+.drow {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.drow:last-child {
+    border-bottom: none;
+}
+
+.drow .dl {
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.drow .dv {
+    font-weight: 600;
+}
+
+/* ---------- TABLE CONTAINER ---------- */
+.table-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.table-header h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ---------- GLASS CARD HEADER ---------- */
+.glass-card-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.glass-card-header.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ---------- STAT CARD OVERRIDES ---------- */
+.stat-card {
+    max-width: 100% !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.stat-card-value {
+    word-break: break-word;
+}
+
+/* ---------- RESPONSIVE ADJUSTMENTS ---------- */
+@media (max-width: 575.98px) {
+    .welcome-banner {
+        padding: var(--spacing-lg);
+    }
+
+    .wb-info h1 {
+        font-size: 1.1rem;
+    }
+
+    .wb-info p {
+        font-size: 0.75rem;
+    }
+
+    .wb-logo {
+        width: 56px;
+        height: 56px;
+        font-size: 1.4rem;
+    }
+
+    .wb-quick {
+        width: 100%;
+    }
+
+    .wb-quick-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .mini-bars {
+        height: 100px;
+    }
+
+    .donut-mini {
+        width: 120px;
+        height: 120px;
+    }
+
+    .timeline {
+        padding-left: 20px;
+    }
+
+    .timeline-item {
+        padding-left: var(--spacing-sm);
+    }
+
+    .timeline-item::before {
+        left: -16px;
+        width: 10px;
+        height: 10px;
+    }
+
+    .timeline::before {
+        left: 9px;
+    }
+
+    .list-group-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .list-group-item .btn {
+        align-self: stretch;
+    }
+
+    .m-cell {
+        min-width: 0;
+    }
+
+    .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .drow {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .wb-info h1 {
+        font-size: 1.3rem;
+    }
+
+    .mini-bars {
+        height: 120px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .welcome-banner {
+        padding: var(--spacing-xl);
+    }
+
+    .wb-info h1 {
+        font-size: 1.4rem;
+    }
+}
+
+/* ---------- SCROLLABLE TABS (if needed) ---------- */
+.nav-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.nav-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+/* ---------- ANIMATIONS ---------- */
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- STAT CARD HOVER ---------- */
+.stat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ---------- GLASS CARD HOVER ---------- */
+.glass-card {
+    transition: border-color 0.2s ease;
+}
+
+.glass-card:hover {
+    border-color: var(--primary-green-light);
+}
+
+/* ---------- TABLE ROW HOVER ---------- */
+.data-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+    background: var(--primary-green-ultra-light);
+}
+
+/* ---------- TOPBAR RESPONSIVE ---------- */
+@media (max-width: 991.98px) {
+    .topbar-content {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .topbar-search {
+        order: 3;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .topbar-actions {
+        order: 2;
+        margin-left: auto;
+    }
+}
+
+/* ---------- SIDEBAR MOBILE ---------- */
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .admin-sidebar.show {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
     </style>
+<base target="_blank">
 </head>
 <body>
 <div class="admin-layout">
 
     <!-- SIDEBAR -->
-    <aside class="admin-sidebar">
+    <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-brand">
             <div class="sidebar-brand-logo"><i class="bi bi-bank2"></i></div>
             <div class="sidebar-brand-text"><h1>SACCOPay</h1><p>Rongo SACCO</p></div>
+            <button class="sidebar-toggle d-lg-none" id="sidebarToggle" aria-label="Close sidebar">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section-title">Main Menu</div>
@@ -205,10 +777,16 @@
         </nav>
     </aside>
 
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- MAIN -->
     <main class="admin-main">
         <header class="admin-topbar">
             <div class="topbar-content">
+                <button class="sidebar-toggle d-lg-none me-2" id="topbarSidebarToggle" aria-label="Open sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
                 <div class="topbar-search">
                     <i class="bi bi-search topbar-search-icon"></i>
                     <input type="text" placeholder="Search members, transactions, loans...">
@@ -219,21 +797,14 @@
                     <button class="topbar-action-btn" title="Help" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-circle"></i></button>
                     <div class="user-profile" data-bs-toggle="modal" data-bs-target="#profileModal" style="cursor:pointer;">
                         <div class="user-avatar">JK</div>
-                        <div class="user-info"><h4>James Kariuki</h4><p>Default Admin</p></div>
-                        <i class="bi bi-chevron-down"></i>
+                        <div class="user-info d-none d-md-block"><h4>James Kariuki</h4><p>Default Admin</p></div>
+                        <i class="bi bi-chevron-down d-none d-md-block"></i>
                     </div>
                 </div>
             </div>
         </header>
 
         <div class="dashboard-content">
-
-            <!-- Breadcrumb -->
-            <!-- <nav class="breadcrumb">
-                <div class="breadcrumb-item"><i class="bi bi-house-door"></i> <span>Home</span></div>
-                <i class="bi bi-chevron-right"></i>
-                <div class="breadcrumb-item active"><span>Dashboard</span></div>
-            </nav> -->
 
             <!-- Welcome Banner -->
             <div class="welcome-banner fade-in">
@@ -242,7 +813,7 @@
                     <div class="wb-info">
                         <h1>Welcome back, James 👋</h1>
                         <p>Rongo SACCO Society Ltd — Here's what's happening today</p>
-                        <div class="wb-meta">SACCO ID: SACCO-RS-2024-001 • SASRA: DT/0198 • Status: <span style="color:var(--primary-green);">● Active</span></div>
+                        <div class="wb-meta">SACCO ID: SACCO-RS-2024-001 • SASRA: DT/0198 • Status: <span class="text-success">● Active</span></div>
                     </div>
                     <div class="wb-quick">
                         <button class="wb-quick-btn" data-bs-toggle="modal" data-bs-target="#quickActionsModal"><i class="bi bi-lightning"></i> Quick Actions</button>
@@ -252,178 +823,206 @@
             </div>
 
             <!-- System Alert -->
-            <div class="alert alert-info fade-in" style="margin-bottom:var(--spacing-xl);display:flex;align-items:center;gap:var(--spacing-md);">
-                <i class="bi bi-info-circle-fill"></i>
-                <div style="flex:1;">
+            <div class="alert alert-info d-flex align-items-center gap-2 fade-in mb-4">
+                <i class="bi bi-info-circle-fill fs-5"></i>
+                <div class="flex-grow-1">
                     <strong>SASRA Q4 Return:</strong> Filing deadline in <strong>28 days</strong> (Jan 15, 2025). Draft is ready for your review.
                 </div>
-                <a href="compliance.html" class="btn btn-sm btn-primary" style="text-decoration:none;">Review Now</a>
+                <a href="compliance.html" class="btn btn-sm btn-primary text-nowrap">Review Now</a>
             </div>
 
             <!-- KEY METRICS -->
-            <div class="stats-grid">
-                <!-- Total Members -->
-                <div class="stat-card" onclick="window.location.href='members.html'" style="cursor:pointer;">
-                    <div class="stat-card-header">
-                        <div>
-                            <div class="stat-card-title">Total Members</div>
-                            <div class="stat-card-value">1,847</div>
-                            <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> +24 this month</span>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="stat-card" onclick="window.location.href='members.html'" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Total Members</div>
+                                <div class="stat-card-value">1,847</div>
+                                <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> +24 this month</span>
+                            </div>
+                            <div class="stat-card-icon success"><i class="bi bi-people"></i></div>
                         </div>
-                        <div class="stat-card-icon success"><i class="bi bi-people"></i></div>
-                    </div>
-                    <div class="stat-card-footer">
-                        <div class="stat-card-meta">
-                            <span>1,736 fully verified</span>
-                            <a href="members.html">View →</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total Savings -->
-                <div class="stat-card" onclick="window.location.href='savings.html'" style="cursor:pointer;">
-                    <div class="stat-card-header">
-                        <div>
-                            <div class="stat-card-title">Total Savings</div>
-                            <div class="stat-card-value">KES 156M</div>
-                            <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> +5.2% this month</span>
-                        </div>
-                        <div class="stat-card-icon primary"><i class="bi bi-piggy-bank"></i></div>
-                    </div>
-                    <div class="stat-card-footer">
-                        <div class="stat-card-meta">
-                            <span>+KES 8.2M deposits</span>
-                            <a href="savings.html">View →</a>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>1,736 fully verified</span>
+                                <a href="members.html">View →</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Active Loans -->
-                <div class="stat-card" onclick="window.location.href='loan-disbursements.html'" style="cursor:pointer;">
-                    <div class="stat-card-header">
-                        <div>
-                            <div class="stat-card-title">Loan Portfolio</div>
-                            <div class="stat-card-value">KES 48.7M</div>
-                            <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> 142 active loans</span>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="stat-card" onclick="window.location.href='savings.html'" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Total Savings</div>
+                                <div class="stat-card-value">KES 156M</div>
+                                <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> +5.2% this month</span>
+                            </div>
+                            <div class="stat-card-icon primary"><i class="bi bi-piggy-bank"></i></div>
                         </div>
-                        <div class="stat-card-icon info"><i class="bi bi-cash-stack"></i></div>
-                    </div>
-                    <div class="stat-card-footer">
-                        <div class="stat-card-meta">
-                            <span>23 pending approval</span>
-                            <a href="loan-disbursements.html">Review →</a>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>+KES 8.2M deposits</span>
+                                <a href="savings.html">View →</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Share Capital -->
-                <div class="stat-card" onclick="window.location.href='savings.html'" style="cursor:pointer;">
-                    <div class="stat-card-header">
-                        <div>
-                            <div class="stat-card-title">Share Capital</div>
-                            <div class="stat-card-value">KES 28.5M</div>
-                            <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> +342 shares</span>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="stat-card" onclick="window.location.href='loan-disbursements.html'" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Loan Portfolio</div>
+                                <div class="stat-card-value">KES 48.7M</div>
+                                <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> 142 active loans</span>
+                            </div>
+                            <div class="stat-card-icon info"><i class="bi bi-cash-stack"></i></div>
                         </div>
-                        <div class="stat-card-icon warning"><i class="bi bi-shield-lock"></i></div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>23 pending approval</span>
+                                <a href="loan-disbursements.html">Review →</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card-footer">
-                        <div class="stat-card-meta">
-                            <span>1,247 shareholders</span>
-                            <a href="savings.html">View →</a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="stat-card" onclick="window.location.href='savings.html'" style="cursor:pointer;">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-card-title">Share Capital</div>
+                                <div class="stat-card-value">KES 28.5M</div>
+                                <span class="stat-card-change positive"><i class="bi bi-arrow-up"></i> +342 shares</span>
+                            </div>
+                            <div class="stat-card-icon warning"><i class="bi bi-shield-lock"></i></div>
+                        </div>
+                        <div class="stat-card-footer">
+                            <div class="stat-card-meta">
+                                <span>1,247 shareholders</span>
+                                <a href="savings.html">View →</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- SECONDARY METRICS -->
-            <!-- COMPACT SECONDARY METRICS -->
-<div class="row g-3 mb-4">
-    
-    <!-- Today's Collections -->
-    <div class="col-12 col-md-6 col-xl-3">
-        <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-success border-1" onclick="window.location.href='loan-repayments.html'" style="cursor:pointer; transition: background 0.2s;" onmouseover="this.classList.add('bg-light')" onmouseout="this.classList.remove('bg-light')">
-            <div class="flex-shrink-0 bg-success-subtle text-success rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
-                <i class="bi bi-arrow-down-circle"></i>
-            </div>
-            <div class="flex-grow-1 min-w-0">
-                <div class="text-secondary small text-truncate">All Collections</div>
-                <div class="d-flex justify-content-between align-items-baseline mt-1">
-                    <h5 class="mb-0 fw-bold">KES 248K</h5>
-                    <small class="text-success fw-medium" style="font-size: 0.75rem;"> view</small>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-success border-3 compact-metric" onclick="window.location.href='loan-repayments.html'" style="cursor:pointer;">
+                        <div class="flex-shrink-0 bg-success-subtle text-success rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                            <i class="bi bi-arrow-down-circle"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="text-secondary small text-truncate">All Collections</div>
+                            <div class="d-flex justify-content-between align-items-baseline mt-1">
+                                <h5 class="mb-0 fw-bold">KES 248K</h5>
+                                <small class="text-success fw-medium" style="font-size: 0.75rem;">view</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-warning border-3 compact-metric" onclick="window.location.href='loan-repayments.html'" style="cursor:pointer;">
+                        <div class="flex-shrink-0 bg-warning-subtle text-warning rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="text-secondary small text-truncate">All Loans</div>
+                            <div class="d-flex justify-content-between align-items-baseline mt-1">
+                                <h5 class="mb-0 fw-bold">7</h5>
+                                <small class="text-success fw-medium" style="font-size: 0.75rem;">view</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-primary border-3 compact-metric" onclick="window.location.href='notifications.html'" style="cursor:pointer;">
+                        <div class="flex-shrink-0 bg-primary-subtle text-primary rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="text-secondary small text-truncate">All Member Requests</div>
+                            <div class="d-flex justify-content-between align-items-baseline mt-1">
+                                <h5 class="mb-0 fw-bold">5</h5>
+                                <small class="text-success fw-medium" style="font-size: 0.75rem;">view</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-info border-3 compact-metric" onclick="window.location.href='analytics.html'" style="cursor:pointer;">
+                        <div class="flex-shrink-0 bg-info-subtle text-info rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="text-secondary small text-truncate">Repaid Loans</div>
+                            <div class="d-flex justify-content-between align-items-baseline mt-1">
+                                <h5 class="mb-0 fw-bold">8 / <span class="text-muted">12</span></h5>
+                                <small class="text-success fw-medium" style="font-size: 0.75rem;">view</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Overdue Loans -->
-    <div class="col-12 col-md-6 col-xl-3">
-        <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-warning border-1" onclick="window.location.href='loan-repayments.html'" style="cursor:pointer; transition: background 0.2s;" onmouseover="this.classList.add('bg-light')" onmouseout="this.classList.remove('bg-light')">
-            <div class="flex-shrink-0 bg-warning-subtle text-warning rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
-                <i class="bi bi-clock-history"></i>
-            </div>
-            <div class="flex-grow-1 min-w-0">
-                <div class="text-secondary small text-truncate">All Loans</div>
-                <div class="d-flex justify-content-between align-items-baseline mt-1">
-                    <h5 class="mb-0 fw-bold">7</h5>
-                    <small class="text-success fw-medium" style="font-size: 0.75rem;"> view</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pending OTP -->
-    <div class="col-12 col-md-6 col-xl-3">
-        <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-primary border-1" onclick="window.location.href='notifications.html'" style="cursor:pointer; transition: background 0.2s;" onmouseover="this.classList.add('bg-light')" onmouseout="this.classList.remove('bg-light')">
-            <div class="flex-shrink-0 bg-primary-subtle text-primary rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
-                <i class="bi bi-shield-lock"></i>
-            </div>
-            <div class="flex-grow-1 min-w-0">
-                <div class="text-secondary small text-truncate">All Member Requests</div>
-                <div class="d-flex justify-content-between align-items-baseline mt-1">
-                    <h5 class="mb-0 fw-bold">5</h5>
-<small class="text-success fw-medium" style="font-size: 0.75rem;"> view</small>                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Collection Rate -->
-    <div class="col-12 col-md-6 col-xl-3">
-        <div class="glass-card p-3 d-flex align-items-center gap-3 border-start border-info border-1" onclick="window.location.href='analytics.html'" style="cursor:pointer; transition: background 0.2s;" onmouseover="this.classList.add('bg-light')" onmouseout="this.classList.remove('bg-light')">
-            <div class="flex-shrink-0 bg-info-subtle text-info rounded p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.25rem;">
-                <i class="bi bi-graph-up-arrow"></i>
-            </div>
-            <div class="flex-grow-1 min-w-0">
-                <div class="text-secondary small text-truncate">Repaid Loans</div>
-                <div class="d-flex justify-content-between align-items-baseline mt-1">
-                    <h5 class="mb-0 fw-bold">8 / <span class="text-muted"> 12</span></h5>
-                    <small class="text-success fw-medium" style="font-size: 0.75rem;"> view</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
 
             <!-- QUICK ACTIONS GRID -->
-            <h5 style="font-weight:700;margin-bottom:var(--spacing-md);"><i class="bi bi-lightning" style="color:var(--primary-green);"></i> Quick Actions</h5>
+            <h5 class="fw-bold mb-3"><i class="bi bi-lightning text-success me-2"></i>Quick Actions</h5>
             <div class="row g-3 mb-4">
-                <div class="col-md-2 col-sm-4 col-6"><a href="loan-disbursements.html" class="qa-tile"><div class="qa-tile-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-plus-circle"></i></div><h6>New Loan</h6><p>Create application</p></a></div>
-                <div class="col-md-2 col-sm-4 col-6"><a href="savings.html" class="qa-tile"><div class="qa-tile-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-box-arrow-in-down"></i></div><h6>Deposit</h6><p>Process deposit</p></a></div>
-                <div class="col-md-2 col-sm-4 col-6"><a href="savings.html" class="qa-tile"><div class="qa-tile-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-box-arrow-up"></i></div><h6>Withdrawal</h6><p>Process withdrawal</p></a></div>
-                <div class="col-md-2 col-sm-4 col-6"><a href="members.html" class="qa-tile"><div class="qa-tile-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-person-plus"></i></div><h6>Add Member</h6><p>Register new</p></a></div>
-                <div class="col-md-2 col-sm-4 col-6"><a href="reports.html" class="qa-tile"><div class="qa-tile-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-file-earmark-bar-graph"></i></div><h6>Reports</h6><p>Generate report</p></a></div>
-                <div class="col-md-2 col-sm-4 col-6"><a href="compliance.html" class="qa-tile"><div class="qa-tile-icon" style="background:rgba(0,105,92,0.1);color:#00695c;"><i class="bi bi-shield-check"></i></div><h6>Compliance</h6><p>Review filings</p></a></div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="loan-disbursements.html" class="qa-tile">
+                        <div class="qa-tile-icon" style="background:rgba(0,208,132,0.1);color:var(--primary-green);"><i class="bi bi-plus-circle"></i></div>
+                        <h6>New Loan</h6>
+                        <p>Create application</p>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="savings.html" class="qa-tile">
+                        <div class="qa-tile-icon" style="background:rgba(33,150,243,0.1);color:var(--accent-blue);"><i class="bi bi-box-arrow-in-down"></i></div>
+                        <h6>Deposit</h6>
+                        <p>Process deposit</p>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="savings.html" class="qa-tile">
+                        <div class="qa-tile-icon" style="background:rgba(244,67,54,0.1);color:var(--status-danger);"><i class="bi bi-box-arrow-up"></i></div>
+                        <h6>Withdrawal</h6>
+                        <p>Process withdrawal</p>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="members.html" class="qa-tile">
+                        <div class="qa-tile-icon" style="background:rgba(255,152,0,0.1);color:var(--accent-orange);"><i class="bi bi-person-plus"></i></div>
+                        <h6>Add Member</h6>
+                        <p>Register new</p>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="reports.html" class="qa-tile">
+                        <div class="qa-tile-icon" style="background:rgba(156,39,176,0.1);color:var(--accent-purple);"><i class="bi bi-file-earmark-bar-graph"></i></div>
+                        <h6>Reports</h6>
+                        <p>Generate report</p>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="compliance.html" class="qa-tile">
+                        <div class="qa-tile-icon" style="background:rgba(0,105,92,0.1);color:#00695c;"><i class="bi bi-shield-check"></i></div>
+                        <h6>Compliance</h6>
+                        <p>Review filings</p>
+                    </a>
+                </div>
             </div>
 
-            <!-- TWO COLUMN LAYOUT: Trends + Distribution -->
+            <!-- TWO COLUMN: Trends + Distribution -->
             <div class="row g-4 mb-4">
-                <!-- Transaction Trends (CSS Bars) -->
-                <div class="col-lg-7">
+                <!-- Transaction Trends -->
+                <div class="col-12 col-lg-7">
                     <div class="glass-card">
-                        <div class="glass-card-header flex-between">
+                        <div class="glass-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <div>
-                                <h3 style="font-size:1.05rem;font-weight:600;margin:0;">Transaction Trends — Last 7 Days</h3>
-                                <p style="font-size:0.78rem;color:var(--text-secondary);margin:2px 0 0;">Daily transaction volume across all services</p>
+                                <h3 class="mb-0" style="font-size:1.05rem;font-weight:600;">Transaction Trends — Last 7 Days</h3>
+                                <p class="mb-0 text-secondary" style="font-size:0.78rem;">Daily transaction volume across all services</p>
                             </div>
                             <a href="analytics.html" class="btn btn-sm btn-outline" style="font-size:0.72rem;">View Analytics →</a>
                         </div>
@@ -437,37 +1036,48 @@
                                 <div class="mini-bar" style="height:50%;background:linear-gradient(180deg,rgba(0,208,132,0.55),rgba(0,208,132,0.25));" title="Sat: KES 1.1M"></div>
                                 <div class="mini-bar" style="height:90%;background:linear-gradient(180deg,var(--primary-green),var(--accent-teal));" title="Today: KES 1.52M"></div>
                             </div>
-                            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-tertiary);margin-top:var(--spacing-sm);"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span><strong style="color:var(--primary-green);">Today</strong></span></div>
-                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-md);margin-top:var(--spacing-lg);padding-top:var(--spacing-lg);border-top:1px solid var(--border-color);">
-                                <div><div style="font-size:0.7rem;color:var(--text-tertiary);">Total Volume</div><div style="font-size:1.1rem;font-weight:700;color:var(--primary-green);">KES 9.72M</div></div>
-                                <div><div style="font-size:0.7rem;color:var(--text-tertiary);">Total Transactions</div><div style="font-size:1.1rem;font-weight:700;">412</div></div>
-                                <div><div style="font-size:0.7rem;color:var(--text-tertiary);">Avg per day</div><div style="font-size:1.1rem;font-weight:700;color:var(--accent-blue);">KES 1.39M</div></div>
+                            <div class="d-flex justify-content-between text-secondary" style="font-size:0.72rem;margin-top:0.5rem;">
+                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span><strong class="text-success">Today</strong></span>
+                            </div>
+                            <div class="row g-2 mt-3 pt-3" style="border-top:1px solid var(--border-color);">
+                                <div class="col-4">
+                                    <div class="text-secondary" style="font-size:0.7rem;">Total Volume</div>
+                                    <div class="fw-bold" style="font-size:1.1rem;color:var(--primary-green);">KES 9.72M</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-secondary" style="font-size:0.7rem;">Total Transactions</div>
+                                    <div class="fw-bold" style="font-size:1.1rem;">412</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-secondary" style="font-size:0.7rem;">Avg per day</div>
+                                    <div class="fw-bold" style="font-size:1.1rem;color:var(--accent-blue);">KES 1.39M</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Savings Distribution (CSS Donut) -->
-                <div class="col-lg-5">
-                    <div class="glass-card" style="height:100%;">
-                        <div class="glass-card-header flex-between">
-                            <h3 style="font-size:1.05rem;font-weight:600;margin:0;">Savings Distribution</h3>
+                <!-- Savings Distribution -->
+                <div class="col-12 col-lg-5">
+                    <div class="glass-card h-100">
+                        <div class="glass-card-header d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0" style="font-size:1.05rem;font-weight:600;">Savings Distribution</h3>
                             <a href="savings.html" class="btn btn-sm btn-outline" style="font-size:0.72rem;">Details →</a>
                         </div>
-                        <div class="glass-card-body" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:var(--spacing-md);">
+                        <div class="glass-card-body d-flex flex-column align-items-center gap-3">
                             <div class="donut-mini" style="background:conic-gradient(#1a237e 0deg 65deg, var(--primary-green) 65deg 220deg, #00838f 220deg 280deg, #e65100 280deg 314deg, #6a1b9a 314deg 335deg, #c62828 335deg 360deg);">
                                 <div class="donut-mini-center">
-                                    <div style="font-size:1.1rem;font-weight:800;">KES 156M</div>
-                                    <div style="font-size:0.65rem;color:var(--text-tertiary);">Total</div>
+                                    <div class="fw-bold" style="font-size:1.1rem;">KES 156M</div>
+                                    <div class="text-secondary" style="font-size:0.65rem;">Total</div>
                                 </div>
                             </div>
-                            <div style="width:100%;font-size:0.75rem;">
-                                <div style="display:flex;justify-content:space-between;padding:3px 0;"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--primary-green);margin-right:6px;"></span>Regular Savings</span><strong>43%</strong></div>
-                                <div style="display:flex;justify-content:space-between;padding:3px 0;"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#00838f;margin-right:6px;"></span>Fixed Deposits</span><strong>27%</strong></div>
-                                <div style="display:flex;justify-content:space-between;padding:3px 0;"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#1a237e;margin-right:6px;"></span>Share Capital</span><strong>18%</strong></div>
-                                <div style="display:flex;justify-content:space-between;padding:3px 0;"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c62828;margin-right:6px;"></span>Emergency Fund</span><strong>6%</strong></div>
-                                <div style="display:flex;justify-content:space-between;padding:3px 0;"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e65100;margin-right:6px;"></span>Holiday</span><strong>4%</strong></div>
-                                <div style="display:flex;justify-content:space-between;padding:3px 0;"><span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6a1b9a;margin-right:6px;"></span>Junior</span><strong>2%</strong></div>
+                            <div class="w-100" style="font-size:0.75rem;">
+                                <div class="d-flex justify-content-between py-1"><span><span class="legend-dot" style="background:var(--primary-green);"></span>Regular Savings</span><strong>43%</strong></div>
+                                <div class="d-flex justify-content-between py-1"><span><span class="legend-dot" style="background:#00838f;"></span>Fixed Deposits</span><strong>27%</strong></div>
+                                <div class="d-flex justify-content-between py-1"><span><span class="legend-dot" style="background:#1a237e;"></span>Share Capital</span><strong>18%</strong></div>
+                                <div class="d-flex justify-content-between py-1"><span><span class="legend-dot" style="background:#c62828;"></span>Emergency Fund</span><strong>6%</strong></div>
+                                <div class="d-flex justify-content-between py-1"><span><span class="legend-dot" style="background:#e65100;"></span>Holiday</span><strong>4%</strong></div>
+                                <div class="d-flex justify-content-between py-1"><span><span class="legend-dot" style="background:#6a1b9a;"></span>Junior</span><strong>2%</strong></div>
                             </div>
                         </div>
                     </div>
@@ -476,307 +1086,704 @@
 
             <!-- RECENT TRANSACTIONS -->
             <div class="table-container mb-4">
-                <div class="table-header">
-                    <h3>Recent Transactions</h3>
-                    <div class="table-actions">
+                <div class="table-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h3 class="mb-0">Recent Transactions</h3>
+                    <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-ghost" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-funnel"></i> Filter</button>
                         <button class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#exportModal"><i class="bi bi-download"></i> Export</button>
-                        <a href="transactions.html" class="btn btn-sm btn-primary" style="text-decoration:none;">View All</a>
+                        <a href="transactions.html" class="btn btn-sm btn-primary">View All</a>
                     </div>
                 </div>
                 <div class="table-responsive">
                     <table class="data-table">
-                        <thead><tr><th>Reference</th><th>Member</th><th>Type</th><th>Amount</th><th>Channel</th><th>Status</th><th>Time</th><th>Actions</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Member</th>
+                                <th class="d-none d-md-table-cell">Type</th>
+                                <th>Amount</th>
+                                <th class="d-none d-lg-table-cell">Channel</th>
+                                <th>Status</th>
+                                <th class="d-none d-md-table-cell">Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('TRX-08745')">TRX-08745</code></td>
-                                <td><div class="m-cell"><div class="m-av c5">DK</div><div><div style="font-size:0.82rem;font-weight:600;">David Kipkorir</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10145</div></div></div></td>
-                                <td><span style="font-size:0.72rem;color:var(--accent-blue);">Loan Repayment</span></td>
+                                <td><code class="tx-ref" onclick="openTxDetail('TRX-08745')">TRX-08745</code></td>
+                                <td>
+                                    <div class="m-cell">
+                                        <div class="m-av c5">DK</div>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:0.82rem;">David Kipkorir</div>
+                                            <div class="text-secondary" style="font-size:0.68rem;">SP-10145</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell"><span class="tx-type tx-type-repayment">Loan Repayment</span></td>
                                 <td><strong>KES 15,000</strong></td>
-                                <td><span style="font-size:0.72rem;color:#388e3c;"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td class="d-none d-lg-table-cell"><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa</span></td>
                                 <td><span class="badge badge-success">Success</span></td>
-                                <td style="font-size:0.78rem;">11:42 AM</td>
-                                <td><button class="btn btn-sm btn-ghost btn-icon" onclick="openTxDetail('TRX-08745')"><i class="bi bi-eye"></i></button></td>
+                                <td class="d-none d-md-table-cell" style="font-size:0.78rem;">11:42 AM</td>
+                                <td><button class="btn btn-sm btn-ghost" onclick="openTxDetail('TRX-08745')"><i class="bi bi-eye"></i></button></td>
                             </tr>
                             <tr>
-                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('TRX-08744')">TRX-08744</code></td>
-                                <td><div class="m-cell"><div class="m-av c1">SW</div><div><div style="font-size:0.82rem;font-weight:600;">Sarah Wanjiku</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10089</div></div></div></td>
-                                <td><span style="font-size:0.72rem;color:var(--primary-green);">Deposit</span></td>
+                                <td><code class="tx-ref" onclick="openTxDetail('TRX-08744')">TRX-08744</code></td>
+                                <td>
+                                    <div class="m-cell">
+                                        <div class="m-av c1">SW</div>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:0.82rem;">Sarah Wanjiku</div>
+                                            <div class="text-secondary" style="font-size:0.68rem;">SP-10089</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell"><span class="tx-type tx-type-deposit">Deposit</span></td>
                                 <td><strong>KES 45,000</strong></td>
-                                <td><span style="font-size:0.72rem;color:var(--accent-blue);"><i class="bi bi-bank"></i> Bank</span></td>
+                                <td class="d-none d-lg-table-cell"><span class="tx-channel"><i class="bi bi-bank"></i> Bank</span></td>
                                 <td><span class="badge badge-success">Success</span></td>
-                                <td style="font-size:0.78rem;">11:15 AM</td>
-                                <td><button class="btn btn-sm btn-ghost btn-icon" onclick="openTxDetail('TRX-08744')"><i class="bi bi-eye"></i></button></td>
+                                <td class="d-none d-md-table-cell" style="font-size:0.78rem;">11:15 AM</td>
+                                <td><button class="btn btn-sm btn-ghost" onclick="openTxDetail('TRX-08744')"><i class="bi bi-eye"></i></button></td>
                             </tr>
                             <tr>
-                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('TRX-08743')">TRX-08743</code></td>
-                                <td><div class="m-cell"><div class="m-av c2">JM</div><div><div style="font-size:0.82rem;font-weight:600;">John Mwangi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10067</div></div></div></td>
-                                <td><span style="font-size:0.72rem;color:var(--accent-orange);">Loan Disbursement</span></td>
+                                <td><code class="tx-ref" onclick="openTxDetail('TRX-08743')">TRX-08743</code></td>
+                                <td>
+                                    <div class="m-cell">
+                                        <div class="m-av c2">JM</div>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:0.82rem;">John Mwangi</div>
+                                            <div class="text-secondary" style="font-size:0.68rem;">SP-10067</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell"><span class="tx-type tx-type-disbursement">Loan Disbursement</span></td>
                                 <td><strong>KES 300,000</strong></td>
-                                <td><span style="font-size:0.72rem;color:#388e3c;"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td class="d-none d-lg-table-cell"><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa</span></td>
                                 <td><span class="badge badge-pending">Processing</span></td>
-                                <td style="font-size:0.78rem;">10:50 AM</td>
-                                <td><button class="btn btn-sm btn-ghost btn-icon" onclick="openTxDetail('TRX-08743')"><i class="bi bi-eye"></i></button></td>
+                                <td class="d-none d-md-table-cell" style="font-size:0.78rem;">10:50 AM</td>
+                                <td><button class="btn btn-sm btn-ghost" onclick="openTxDetail('TRX-08743')"><i class="bi bi-eye"></i></button></td>
                             </tr>
                             <tr>
-                                <td><code style="color:var(--primary-green);cursor:pointer;" onclick="openTxDetail('TRX-08742')">TRX-08742</code></td>
-                                <td><div class="m-cell"><div class="m-av c3">MA</div><div><div style="font-size:0.82rem;font-weight:600;">Mary Akinyi</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10023</div></div></div></td>
-                                <td><span style="font-size:0.72rem;color:#1a237e;">Share Purchase</span></td>
+                                <td><code class="tx-ref" onclick="openTxDetail('TRX-08742')">TRX-08742</code></td>
+                                <td>
+                                    <div class="m-cell">
+                                        <div class="m-av c3">MA</div>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:0.82rem;">Mary Akinyi</div>
+                                            <div class="text-secondary" style="font-size:0.68rem;">SP-10023</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell"><span class="tx-type tx-type-shares">Share Purchase</span></td>
                                 <td><strong>KES 25,000</strong></td>
-                                <td><span style="font-size:0.72rem;color:var(--primary-green);"><i class="bi bi-arrow-left-right"></i> Transfer</span></td>
+                                <td class="d-none d-lg-table-cell"><span class="tx-channel"><i class="bi bi-arrow-left-right"></i> Transfer</span></td>
                                 <td><span class="badge badge-success">Success</span></td>
-                                <td style="font-size:0.78rem;">10:30 AM</td>
-                                <td><button class="btn btn-sm btn-ghost btn-icon" onclick="openTxDetail('TRX-08742')"><i class="bi bi-eye"></i></button></td>
+                                <td class="d-none d-md-table-cell" style="font-size:0.78rem;">10:30 AM</td>
+                                <td><button class="btn btn-sm btn-ghost" onclick="openTxDetail('TRX-08742')"><i class="bi bi-eye"></i></button></td>
                             </tr>
                             <tr>
-                                <td><code style="color:var(--status-danger);cursor:pointer;" onclick="openTxDetail('TRX-08741')">TRX-08741</code></td>
-                                <td><div class="m-cell"><div class="m-av c4">PO</div><div><div style="font-size:0.82rem;font-weight:600;">Peter Ochieng</div><div style="font-size:0.68rem;color:var(--text-tertiary);">SP-10078</div></div></div></td>
-                                <td><span style="font-size:0.72rem;color:var(--status-danger);">Withdrawal</span></td>
+                                <td><code class="tx-ref tx-ref-failed" onclick="openTxDetail('TRX-08741')">TRX-08741</code></td>
+                                <td>
+                                    <div class="m-cell">
+                                        <div class="m-av c4">PO</div>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:0.82rem;">Peter Ochieng</div>
+                                            <div class="text-secondary" style="font-size:0.68rem;">SP-10078</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell"><span class="tx-type tx-type-withdrawal">Withdrawal</span></td>
                                 <td><strong>KES 80,000</strong></td>
-                                <td><span style="font-size:0.72rem;color:#388e3c;"><i class="bi bi-phone"></i> M-Pesa</span></td>
+                                <td class="d-none d-lg-table-cell"><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa</span></td>
                                 <td><span class="badge badge-danger">Failed</span></td>
-                                <td style="font-size:0.78rem;">09:45 AM</td>
-                                <td><button class="btn btn-sm btn-ghost btn-icon" onclick="openTxDetail('TRX-08741')"><i class="bi bi-eye"></i></button></td>
+                                <td class="d-none d-md-table-cell" style="font-size:0.78rem;">09:45 AM</td>
+                                <td><button class="btn btn-sm btn-ghost" onclick="openTxDetail('TRX-08741')"><i class="bi bi-eye"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- TWO COLUMN: Pending Approvals + Activity -->
-            <div class="grid-2">
+            <!-- TWO COLUMN: Pending + Activity -->
+            <div class="row g-4">
                 <!-- Pending Approvals -->
-                <div class="glass-card">
-                    <div class="glass-card-header flex-between">
-                        <h3 style="font-size:1.05rem;font-weight:600;margin:0;">Pending Approvals</h3>
-                        <span class="badge badge-warning">8 items</span>
-                    </div>
-                    <div class="glass-card-body">
-                        <!-- Loan Applications -->
-                        <div class="mb-3">
-                            <div class="flex-between mb-2"><h6 style="font-size:0.82rem;font-weight:700;margin:0;">Loan Applications</h6><span class="badge badge-info">3</span></div>
-                            <div class="list-group-item">
-                                <div><strong style="font-size:0.85rem;">Bernard Kiprop — KES 750,000</strong><div style="font-size:0.7rem;color:var(--text-tertiary);">Business Loan • Submitted 2hrs ago</div></div>
-                                <a href="loan-disbursements.html" class="btn btn-sm btn-primary" style="font-size:0.7rem;text-decoration:none;">Review</a>
-                            </div>
-                            <div class="list-group-item">
-                                <div><strong style="font-size:0.85rem;">Grace Akinyi — KES 300,000</strong><div style="font-size:0.7rem;color:var(--text-tertiary);">Personal Loan • Awaiting guarantor</div></div>
-                                <a href="loan-disbursements.html" class="btn btn-sm btn-primary" style="font-size:0.7rem;text-decoration:none;">Review</a>
-                            </div>
-                            <a href="loan-disbursements.html" class="btn btn-sm btn-outline mt-2 w-100" style="text-decoration:none;">View All Loan Applications</a>
+                <div class="col-12 col-lg-6">
+                    <div class="glass-card">
+                        <div class="glass-card-header d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0" style="font-size:1.05rem;font-weight:600;">Pending Approvals</h3>
+                            <span class="badge badge-warning">8 items</span>
                         </div>
-
-                        <!-- KYC Verifications -->
-                        <div class="mb-3">
-                            <div class="flex-between mb-2"><h6 style="font-size:0.82rem;font-weight:700;margin:0;">KYC Verifications</h6><span class="badge badge-warning">2</span></div>
-                            <div class="list-group-item">
-                                <div><strong style="font-size:0.85rem;">Alice Muthoni</strong><div style="font-size:0.7rem;color:var(--text-tertiary);">New registration • Documents uploaded</div></div>
-                                <a href="kyc.html" class="btn btn-sm btn-outline" style="font-size:0.7rem;text-decoration:none;">Verify</a>
+                        <div class="glass-card-body">
+                            <!-- Loan Applications -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0" style="font-size:0.82rem;font-weight:700;">Loan Applications</h6>
+                                    <span class="badge badge-info">3</span>
+                                </div>
+                                <div class="list-group-item">
+                                    <div>
+                                        <strong style="font-size:0.85rem;">Bernard Kiprop — KES 750,000</strong>
+                                        <div class="text-secondary" style="font-size:0.7rem;">Business Loan • Submitted 2hrs ago</div>
+                                    </div>
+                                    <a href="loan-disbursements.html" class="btn btn-sm btn-primary" style="font-size:0.7rem;text-decoration:none;">Review</a>
+                                </div>
+                                <div class="list-group-item">
+                                    <div>
+                                        <strong style="font-size:0.85rem;">Grace Akinyi — KES 300,000</strong>
+                                        <div class="text-secondary" style="font-size:0.7rem;">Personal Loan • Awaiting guarantor</div>
+                                    </div>
+                                    <a href="loan-disbursements.html" class="btn btn-sm btn-primary" style="font-size:0.7rem;text-decoration:none;">Review</a>
+                                </div>
+                                <a href="loan-disbursements.html" class="btn btn-sm btn-outline mt-2 w-100" style="text-decoration:none;">View All Loan Applications</a>
                             </div>
-                            <a href="kyc.html" class="btn btn-sm btn-outline mt-2 w-100" style="text-decoration:none;">View KYC Queue</a>
-                        </div>
 
-                        <!-- Withdrawal OTPs -->
-                        <div>
-                            <div class="flex-between mb-2"><h6 style="font-size:0.82rem;font-weight:700;margin:0;">OTP Approvals</h6><span class="badge badge-danger">3</span></div>
-                            <div class="list-group-item">
-                                <div><strong style="font-size:0.85rem;">Peter Omondi — KES 80,000</strong><div style="font-size:0.7rem;color:var(--text-tertiary);">Withdrawal OTP • <span style="color:var(--status-danger);">Expires in 4 min</span></div></div>
-                                <a href="notifications.html" class="btn btn-sm btn-primary" style="font-size:0.7rem;text-decoration:none;">Process</a>
+                            <!-- KYC Verifications -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0" style="font-size:0.82rem;font-weight:700;">KYC Verifications</h6>
+                                    <span class="badge badge-warning">2</span>
+                                </div>
+                                <div class="list-group-item">
+                                    <div>
+                                        <strong style="font-size:0.85rem;">Alice Muthoni</strong>
+                                        <div class="text-secondary" style="font-size:0.7rem;">New registration • Documents uploaded</div>
+                                    </div>
+                                    <a href="kyc.html" class="btn btn-sm btn-outline" style="font-size:0.7rem;text-decoration:none;">Verify</a>
+                                </div>
+                                <a href="kyc.html" class="btn btn-sm btn-outline mt-2 w-100" style="text-decoration:none;">View KYC Queue</a>
                             </div>
-                            <a href="notifications.html" class="btn btn-sm btn-outline mt-2 w-100" style="text-decoration:none;">View All OTPs</a>
+
+                            <!-- OTP Approvals -->
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0" style="font-size:0.82rem;font-weight:700;">OTP Approvals</h6>
+                                    <span class="badge badge-danger">3</span>
+                                </div>
+                                <div class="list-group-item">
+                                    <div>
+                                        <strong style="font-size:0.85rem;">Peter Omondi — KES 80,000</strong>
+                                        <div class="text-secondary" style="font-size:0.7rem;">Withdrawal OTP • <span class="text-danger">Expires in 4 min</span></div>
+                                    </div>
+                                    <a href="notifications.html" class="btn btn-sm btn-primary" style="font-size:0.7rem;text-decoration:none;">Process</a>
+                                </div>
+                                <a href="notifications.html" class="btn btn-sm btn-outline mt-2 w-100" style="text-decoration:none;">View All OTPs</a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- System Health -->
-                <div class="#">
-
-                    <!-- RECENT ACTIVITY -->
-            <div class="glass-card mt-0">
-                <div class="glass-card-header flex-between">
-                    <h3 style="font-size:1.05rem;font-weight:600;margin:0;">Recent Activity</h3>
-                    <a href="reports.html" class="btn btn-sm btn-outline" style="text-decoration:none;">View Full Audit Trail</a>
-                </div>
-                <div class="glass-card-body">
-                    <div class="timeline">
-                        <div class="timeline-item success">
-                            <div class="timeline-time">2 min ago</div>
-                            <div class="timeline-content">
-                                <strong>Payment Received</strong> — KES 15,000 from David Kipkorir for loan LN-00845<br>
-                                <small style="color:var(--text-secondary);">via M-Pesa • Receipt RPY-04521</small>
-                            </div>
+                <!-- Recent Activity -->
+                <div class="col-12 col-lg-6">
+                    <div class="glass-card">
+                        <div class="glass-card-header d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0" style="font-size:1.05rem;font-weight:600;">Recent Activity</h3>
+                            <a href="reports.html" class="btn btn-sm btn-outline" style="text-decoration:none;">View Full Audit Trail</a>
                         </div>
-                        <div class="timeline-item info">
-                            <div class="timeline-time">15 min ago</div>
-                            <div class="timeline-content">
-                                <strong>New Member Registered</strong> — Alice Muthoni applied via online portal<br>
-                                <small style="color:var(--text-secondary);">KYC documents uploaded • Awaiting your approval</small>
-                            </div>
-                        </div>
-                        <div class="timeline-item warning">
-                            <div class="timeline-time">1 hour ago</div>
-                            <div class="timeline-content">
-                                <strong>OTP Pending</strong> — Peter Omondi requested withdrawal of KES 80,000<br>
-                                <small style="color:var(--text-secondary);">Awaiting your OTP approval • <a href="notifications.html" style="color:var(--primary-green);">Process now</a></small>
-                            </div>
-                        </div>
-                        <div class="timeline-item danger">
-                            <div class="timeline-time">3 hours ago</div>
-                            <div class="timeline-content">
-                                <strong>AML Alert</strong> — Suspicious structuring pattern detected for Bernard Kiprop<br>
-                                <small style="color:var(--text-secondary);">4 deposits totaling KES 980K • <a href="compliance.html" style="color:var(--primary-green);">Review case</a></small>
-                            </div>
-                        </div>
-                        <div class="timeline-item success">
-                            <div class="timeline-time">Yesterday, 4:50 PM</div>
-                            <div class="timeline-content">
-                                <strong>Loan Approved</strong> — Mary Wanjiku's personal loan of KES 250,000 disbursed<br>
-                                <small style="color:var(--text-secondary);">Approved by James Kariuki • Sent via M-Pesa</small>
-                            </div>
-                        </div>
-                        <div class="timeline-item info">
-                            <div class="timeline-time">Yesterday, 2:00 AM</div>
-                            <div class="timeline-content">
-                                <strong>Daily Backup Complete</strong> — All systems backed up successfully (256 MB)<br>
-                                <small style="color:var(--text-secondary);">Next backup: Tomorrow 2:00 AM</small>
+                        <div class="glass-card-body">
+                            <div class="timeline">
+                                <div class="timeline-item success">
+                                    <div class="timeline-time">2 min ago</div>
+                                    <div class="timeline-content">
+                                        <strong>Payment Received</strong> — KES 15,000 from David Kipkorir for loan LN-00845<br>
+                                        <small class="text-secondary">via M-Pesa • Receipt RPY-04521</small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item info">
+                                    <div class="timeline-time">15 min ago</div>
+                                    <div class="timeline-content">
+                                        <strong>New Member Registered</strong> — Alice Muthoni applied via online portal<br>
+                                        <small class="text-secondary">KYC documents uploaded • Awaiting your approval</small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item warning">
+                                    <div class="timeline-time">1 hour ago</div>
+                                    <div class="timeline-content">
+                                        <strong>OTP Pending</strong> — Peter Omondi requested withdrawal of KES 80,000<br>
+                                        <small class="text-secondary">Awaiting your OTP approval • <a href="notifications.html" class="text-success">Process now</a></small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item danger">
+                                    <div class="timeline-time">3 hours ago</div>
+                                    <div class="timeline-content">
+                                        <strong>AML Alert</strong> — Suspicious structuring pattern detected for Bernard Kiprop<br>
+                                        <small class="text-secondary">4 deposits totaling KES 980K • <a href="compliance.html" class="text-success">Review case</a></small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item success">
+                                    <div class="timeline-time">Yesterday, 4:50 PM</div>
+                                    <div class="timeline-content">
+                                        <strong>Loan Approved</strong> — Mary Wanjiku's personal loan of KES 250,000 disbursed<br>
+                                        <small class="text-secondary">Approved by James Kariuki • Sent via M-Pesa</small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item info">
+                                    <div class="timeline-time">Yesterday, 2:00 AM</div>
+                                    <div class="timeline-content">
+                                        <strong>Daily Backup Complete</strong> — All systems backed up successfully (256 MB)<br>
+                                        <small class="text-secondary">Next backup: Tomorrow 2:00 AM</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
-                </div>
-            </div>
-
-            
 
         </div>
     </main>
 </div>
 
-<!-- ====================================================================
-     MODALS
-==================================================================== -->
+<!-- ==================== MODALS ==================== -->
 
 <!-- Quick Actions -->
-<div class="modal fade" id="quickActionsModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-lightning me-2"></i>Quick Actions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body"><div style="display:flex;flex-direction:column;gap:8px;">
-        <a href="loan-disbursements.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-plus-circle me-2" style="color:var(--primary-green);"></i>New Loan Application</a>
-        <a href="savings.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-box-arrow-in-down me-2" style="color:var(--accent-blue);"></i>Process Deposit</a>
-        <a href="savings.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-box-arrow-up me-2" style="color:var(--status-danger);"></i>Process Withdrawal</a>
-        <a href="members.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-person-plus me-2" style="color:var(--accent-orange);"></i>Register Member</a>
-        <a href="loan-repayments.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-cash-coin me-2" style="color:var(--primary-green);"></i>Record Repayment</a>
-        <a href="reports.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-file-earmark-bar-graph me-2" style="color:var(--accent-purple);"></i>Generate Report</a>
-        <a href="notifications.html" class="btn btn-ghost w-100 text-start" style="text-decoration:none;"><i class="bi bi-shield-lock me-2" style="color:var(--accent-teal);"></i>Process OTP Approvals</a>
-    </div></div>
-</div></div></div>
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header mhdr green">
+                <h5 class="modal-title"><i class="bi bi-lightning me-2"></i>Quick Actions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-2">
+                    <a href="loan-disbursements.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-plus-circle me-2 text-success"></i>New Loan Application</a>
+                    <a href="savings.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i>Process Deposit</a>
+                    <a href="savings.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-box-arrow-up me-2 text-danger"></i>Process Withdrawal</a>
+                    <a href="members.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-person-plus me-2 text-warning"></i>Register Member</a>
+                    <a href="loan-repayments.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-cash-coin me-2 text-success"></i>Record Repayment</a>
+                    <a href="reports.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-file-earmark-bar-graph me-2 text-purple"></i>Generate Report</a>
+                    <a href="notifications.html" class="btn btn-ghost w-100 text-start"><i class="bi bi-shield-lock me-2 text-info"></i>Process OTP Approvals</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Transaction Detail -->
-<div class="modal fade" id="txDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction — <span id="txRef">TRX-08745</span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div style="text-align:center;padding:var(--spacing-lg);border-bottom:1px dashed var(--border-color);margin-bottom:var(--spacing-lg);">
-            <div style="width:48px;height:48px;border-radius:50%;background:rgba(76,175,80,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-sm);"><i class="bi bi-check-circle-fill" style="font-size:1.5rem;color:var(--status-success);"></i></div>
-            <div style="font-size:1.5rem;font-weight:800;color:var(--status-success);">KES 15,000</div>
-            <div style="font-size:0.82rem;color:var(--text-secondary);">Loan Repayment Confirmed</div>
+<div class="modal fade" id="txDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header mhdr green">
+                <h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction — <span id="txRef">TRX-08745</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center py-4" style="border-bottom:1px dashed var(--border-color);margin-bottom:1rem;">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width:48px;height:48px;background:rgba(76,175,80,0.12);">
+                        <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                    </div>
+                    <div class="fw-bold" style="font-size:1.5rem;color:var(--status-success);">KES 15,000</div>
+                    <div class="text-secondary" style="font-size:0.82rem;">Loan Repayment Confirmed</div>
+                </div>
+                <div class="drow"><span class="dl">Reference</span><span class="dv"><code id="txRefCode">TRX-2024-08745</code></span></div>
+                <div class="drow"><span class="dl">Member</span><span class="dv">David Kipkorir (SP-10145)</span></div>
+                <div class="drow"><span class="dl">Type</span><span class="dv">Loan Repayment</span></div>
+                <div class="drow"><span class="dl">Loan Ref</span><span class="dv">LN-2024-00845</span></div>
+                <div class="drow"><span class="dl">Channel</span><span class="dv"><i class="bi bi-phone"></i> M-Pesa (QJK8X2M1PL)</span></div>
+                <div class="drow"><span class="dl">Date & Time</span><span class="dv">Today, 11:42 AM</span></div>
+                <div class="drow"><span class="dl">Status</span><span class="dv text-success"><i class="bi bi-check-circle-fill"></i> Confirmed</span></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-outline btn-sm" onclick="showToast('Receipt sent')"><i class="bi bi-envelope"></i> Send Receipt</button>
+                <button class="btn btn-outline btn-sm" onclick="showToast('PDF downloaded')"><i class="bi bi-file-pdf"></i> PDF</button>
+            </div>
         </div>
-        <div class="drow"><span class="dl">Reference</span><span class="dv"><code id="txRefCode">TRX-2024-08745</code></span></div>
-        <div class="drow"><span class="dl">Member</span><span class="dv">David Kipkorir (SP-10145)</span></div>
-        <div class="drow"><span class="dl">Type</span><span class="dv">Loan Repayment</span></div>
-        <div class="drow"><span class="dl">Loan Ref</span><span class="dv">LN-2024-00845</span></div>
-        <div class="drow"><span class="dl">Channel</span><span class="dv"><i class="bi bi-phone"></i> M-Pesa (QJK8X2M1PL)</span></div>
-        <div class="drow"><span class="dl">Date & Time</span><span class="dv">Today, 11:42 AM</span></div>
-        <div class="drow"><span class="dl">Status</span><span class="dv" style="color:var(--status-success);"><i class="bi bi-check-circle-fill"></i> Confirmed</span></div>
     </div>
-    <div class="modal-footer" style="border-top:1px solid var(--border-color);padding:var(--spacing-lg) var(--spacing-xl);">
-        <button class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
-        <button class="btn btn-outline btn-sm" onclick="showToast('Receipt sent')"><i class="bi bi-envelope"></i> Send Receipt</button>
-        <button class="btn btn-outline btn-sm" onclick="showToast('PDF downloaded')"><i class="bi bi-file-pdf"></i> PDF</button>
-    </div>
-</div></div></div>
+</div>
 
 <!-- Filter Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-funnel me-2"></i>Filter Transactions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body"><div class="row g-3">
-        <div class="col-md-6"><label style="font-size:0.78rem;font-weight:600;text-transform:uppercase;margin-bottom:5px;">Date Range</label><select class="form-select"><option>Today</option><option>Last 7 Days</option><option>Last 30 Days</option><option>Custom</option></select></div>
-        <div class="col-md-6"><label style="font-size:0.78rem;font-weight:600;text-transform:uppercase;margin-bottom:5px;">Type</label><select class="form-select"><option>All Types</option><option>Deposits</option><option>Withdrawals</option><option>Loans</option><option>Repayments</option><option>Transfers</option></select></div>
-        <div class="col-md-6"><label style="font-size:0.78rem;font-weight:600;text-transform:uppercase;margin-bottom:5px;">Channel</label><select class="form-select"><option>All Channels</option><option>M-Pesa</option><option>Airtel Money</option><option>Bank</option><option>Wallet</option><option>Cash</option></select></div>
-        <div class="col-md-6"><label style="font-size:0.78rem;font-weight:600;text-transform:uppercase;margin-bottom:5px;">Status</label><select class="form-select"><option>All</option><option>Success</option><option>Pending</option><option>Failed</option></select></div>
-    </div></div>
-    <div class="modal-footer" style="border-top:1px solid var(--border-color);padding:var(--spacing-lg) var(--spacing-xl);"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="applyFilter()"><i class="bi bi-funnel"></i> Apply Filter</button></div>
-</div></div></div>
-
-<!-- Export Modal -->
-<div class="modal fade" id="exportModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header mhdr dark"><h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Transactions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body"><div class="row g-3">
-        <div class="col-md-6"><label style="font-size:0.78rem;font-weight:600;text-transform:uppercase;margin-bottom:5px;">Format</label><select class="form-select"><option>CSV</option><option>Excel</option><option>PDF</option></select></div>
-        <div class="col-md-6"><label style="font-size:0.78rem;font-weight:600;text-transform:uppercase;margin-bottom:5px;">Period</label><select class="form-select"><option>Today</option><option>This Week</option><option>This Month</option><option>Custom</option></select></div>
-    </div></div>
-    <div class="modal-footer" style="border-top:1px solid var(--border-color);padding:var(--spacing-lg) var(--spacing-xl);"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="exportData()"><i class="bi bi-download"></i> Export</button></div>
-</div></div></div>
-
-<!-- Help Modal -->
-<div class="modal fade" id="helpModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header mhdr green"><h5 class="modal-title"><i class="bi bi-question-circle me-2"></i>Help Center</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body"><div style="display:flex;flex-direction:column;gap:8px;">
-        <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('Knowledge base opened')" style="text-decoration:none;"><i class="bi bi-book me-2" style="color:var(--primary-green);"></i>Knowledge Base</a>
-        <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('Contact support')" style="text-decoration:none;"><i class="bi bi-headset me-2" style="color:var(--accent-blue);"></i>Contact Support</a>
-        <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('Video tutorials')" style="text-decoration:none;"><i class="bi bi-play-circle me-2" style="color:var(--accent-purple);"></i>Video Tutorials</a>
-        <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('System status')" style="text-decoration:none;"><i class="bi bi-activity me-2" style="color:var(--accent-orange);"></i>System Status</a>
-    </div></div>
-</div></div></div>
-
-<!-- Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
-    <div class="modal-body" style="padding:var(--spacing-xl);text-align:center;">
-        <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));display:flex;align-items:center;justify-content:center;margin:0 auto var(--spacing-md);color:white;font-size:1.4rem;font-weight:700;">JK</div>
-        <h5 style="font-weight:700;">James Kariuki</h5>
-        <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:var(--spacing-lg);">Default Admin • Rongo SACCO</p>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-            <a href="staff.html" class="btn btn-ghost btn-sm w-100" style="text-decoration:none;"><i class="bi bi-person me-2"></i>My Profile</a>
-            <a href="settings.html" class="btn btn-ghost btn-sm w-100" style="text-decoration:none;"><i class="bi bi-gear me-2"></i>SACCO Settings</a>
-            <hr style="margin:var(--spacing-sm) 0;">
-            <button class="btn btn-ghost btn-sm w-100" style="color:var(--status-danger);" onclick="confirmLogout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+<div class="modal fade" id="filterModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header mhdr dark">
+                <h5 class="modal-title"><i class="bi bi-funnel me-2"></i>Filter Transactions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-uppercase">Date Range</label>
+                        <select class="form-select"><option>Today</option><option>Last 7 Days</option><option>Last 30 Days</option><option>Custom</option></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-uppercase">Type</label>
+                        <select class="form-select"><option>All Types</option><option>Deposits</option><option>Withdrawals</option><option>Loans</option><option>Repayments</option><option>Transfers</option></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-uppercase">Channel</label>
+                        <select class="form-select"><option>All Channels</option><option>M-Pesa</option><option>Airtel Money</option><option>Bank</option><option>Wallet</option><option>Cash</option></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-uppercase">Status</label>
+                        <select class="form-select"><option>All</option><option>Success</option><option>Pending</option><option>Failed</option></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" onclick="applyFilter()"><i class="bi bi-funnel"></i> Apply Filter</button>
+            </div>
         </div>
     </div>
-</div></div></div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header mhdr dark">
+                <h5 class="modal-title"><i class="bi bi-download me-2"></i>Export Transactions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-uppercase">Format</label>
+                        <select class="form-select"><option>CSV</option><option>Excel</option><option>PDF</option></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-uppercase">Period</label>
+                        <select class="form-select"><option>Today</option><option>This Week</option><option>This Month</option><option>Custom</option></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" onclick="exportData()"><i class="bi bi-download"></i> Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header mhdr green">
+                <h5 class="modal-title"><i class="bi bi-question-circle me-2"></i>Help Center</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-2">
+                    <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('Knowledge base opened')"><i class="bi bi-book me-2 text-success"></i>Knowledge Base</a>
+                    <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('Contact support')"><i class="bi bi-headset me-2 text-primary"></i>Contact Support</a>
+                    <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('Video tutorials')"><i class="bi bi-play-circle me-2 text-purple"></i>Video Tutorials</a>
+                    <a href="#" class="btn btn-ghost w-100 text-start" onclick="showToast('System status')"><i class="bi bi-activity me-2 text-warning"></i>System Status</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width:68px;height:68px;background:linear-gradient(135deg,var(--primary-green),var(--accent-teal));color:white;font-size:1.4rem;font-weight:700;">JK</div>
+                <h5 class="fw-bold">James Kariuki</h5>
+                <p class="text-secondary" style="font-size:0.78rem;margin-bottom:1.5rem;">Default Admin • Rongo SACCO</p>
+                <div class="d-flex flex-column gap-2">
+                    <a href="staff.html" class="btn btn-ghost btn-sm w-100"><i class="bi bi-person me-2"></i>My Profile</a>
+                    <a href="settings.html" class="btn btn-ghost btn-sm w-100"><i class="bi bi-gear me-2"></i>SACCO Settings</a>
+                    <hr class="my-2">
+                    <button class="btn btn-ghost btn-sm w-100 text-danger" onclick="confirmLogout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Toast -->
-<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./sidebar-toggle.js"></script>
+<script src="./dashboard-custom.js"></script>
 <script>
-function showToast(m){document.getElementById('toastMsg').innerHTML='<i class="bi bi-check-circle-fill me-2"></i>'+m;new bootstrap.Toast(document.getElementById('successToast')).show();}
-function openModal(id){new bootstrap.Modal(document.getElementById(id)).show();}
+    /* ============================================
+   RONGO SACCO - DASHBOARD PAGE CUSTOM JS
+   Designed for: dashboard.html
+   Depends on: sidebar-toggle.js
+   ============================================ */
 
-function openTxDetail(ref){
-    document.getElementById('txRef').textContent = ref;
-    document.getElementById('txRefCode').textContent = 'TRX-2024-' + ref.split('-')[1];
+// ---------- Toast Notification ----------
+function showToast(message, type = 'success') {
+    const toastEl = document.getElementById('successToast');
+    const toastMsg = document.getElementById('toastMsg');
+    if (!toastEl || !toastMsg) return;
+
+    const icon = type === 'success' ? 'check-circle-fill' : 
+                 type === 'warning' ? 'exclamation-triangle-fill' : 'info-circle-fill';
+
+    toastMsg.innerHTML = '<i class="bi bi-' + icon + ' me-2"></i>' + message;
+
+    const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+    toast.show();
+}
+
+// ---------- Open Modal by ID ----------
+function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        const modal = new bootstrap.Modal(el);
+        modal.show();
+    }
+}
+
+// ---------- Transaction Detail ----------
+function openTxDetail(ref) {
+    const txRef = document.getElementById('txRef');
+    const txRefCode = document.getElementById('txRefCode');
+    if (txRef) txRef.textContent = ref;
+    if (txRefCode) txRefCode.textContent = 'TRX-2024-' + ref.split('-')[1];
     openModal('txDetailModal');
 }
 
-function applyFilter(){
-    bootstrap.Modal.getInstance(document.getElementById('filterModal')).hide();
+// ---------- Apply Filter ----------
+function applyFilter() {
+    const modalEl = document.getElementById('filterModal');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
     showToast('Filter applied successfully!');
 }
 
-function exportData(){
-    bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+// ---------- Export Data ----------
+function exportData() {
+    const modalEl = document.getElementById('exportModal');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
     showToast('Transactions exported! Check downloads.');
 }
 
-function confirmLogout(){
-    if(confirm('Are you sure you want to logout?')){
+// ---------- Confirm Logout ----------
+function confirmLogout() {
+    if (confirm('Are you sure you want to logout?')) {
         showToast('Logging out...');
         setTimeout(() => window.location.href = '#', 1000);
     }
 }
+
+// ---------- Animate Mini Bars on Scroll ----------
+document.addEventListener('DOMContentLoaded', function() {
+    const miniBars = document.querySelectorAll('.mini-bar');
+
+    const barObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const bars = entry.target.querySelectorAll('.mini-bar');
+                bars.forEach((bar, index) => {
+                    const targetHeight = bar.style.height;
+                    bar.style.height = '0%';
+                    setTimeout(() => {
+                        bar.style.height = targetHeight;
+                    }, index * 100 + 200);
+                });
+                barObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    const barsContainer = document.querySelector('.mini-bars');
+    if (barsContainer) {
+        // Store original heights
+        const bars = barsContainer.querySelectorAll('.mini-bar');
+        bars.forEach(bar => {
+            bar.dataset.height = bar.style.height;
+        });
+        barObserver.observe(barsContainer);
+    }
+});
+
+// ---------- Stat Card Counter Animation ----------
+document.addEventListener('DOMContentLoaded', function() {
+    const statValues = document.querySelectorAll('.stat-card-value');
+
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const text = el.textContent;
+
+                // Check if it's a number
+                const numMatch = text.replace(/,/g, '').match(/[\d.]+/);
+                if (numMatch) {
+                    const target = parseFloat(numMatch[0]);
+                    const prefix = text.substring(0, text.indexOf(numMatch[0]));
+                    const suffix = text.substring(text.indexOf(numMatch[0]) + numMatch[0].length);
+                    const isDecimal = text.includes('.');
+
+                    let current = 0;
+                    const duration = 1500;
+                    const startTime = performance.now();
+
+                    function updateCounter(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+
+                        // Easing function
+                        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                        current = target * easeOutQuart;
+
+                        if (isDecimal) {
+                            el.textContent = prefix + current.toFixed(1) + suffix;
+                        } else {
+                            el.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            el.textContent = text; // Ensure final value is exact
+                        }
+                    }
+
+                    requestAnimationFrame(updateCounter);
+                }
+
+                counterObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    statValues.forEach(el => counterObserver.observe(el));
+});
+
+// ---------- Compact Metric Hover Effects ----------
+document.querySelectorAll('.compact-metric').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-2px)';
+    });
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+    });
+});
+
+// ---------- QA Tile Click Tracking ----------
+document.querySelectorAll('.qa-tile').forEach(tile => {
+    tile.addEventListener('click', function(e) {
+        const label = this.querySelector('h6')?.textContent || 'Unknown';
+        console.log('Quick action clicked:', label);
+    });
+});
+
+// ---------- Welcome Banner Parallax Effect ----------
+document.addEventListener('DOMContentLoaded', function() {
+    const banner = document.querySelector('.welcome-banner');
+    if (!banner) return;
+
+    banner.addEventListener('mousemove', function(e) {
+        const rect = banner.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+        const before = banner.querySelector('::before');
+        const after = banner.querySelector('::after');
+
+        // Subtle parallax on pseudo elements via CSS custom properties
+        banner.style.setProperty('--parallax-x', x * 20 + 'px');
+        banner.style.setProperty('--parallax-y', y * 20 + 'px');
+    });
+});
+
+// ---------- Table Row Click Handler ----------
+document.querySelectorAll('.data-table tbody tr').forEach(row => {
+    row.addEventListener('click', function(e) {
+        // Don't trigger if clicking a button
+        if (e.target.closest('button')) return;
+
+        const ref = this.querySelector('.tx-ref');
+        if (ref) {
+            ref.click();
+        }
+    });
+});
+
+// ---------- Keyboard Shortcuts ----------
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + K = Quick Actions
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openModal('quickActionsModal');
+    }
+
+    // Ctrl/Cmd + F = Focus Search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        const searchInput = document.querySelector('.topbar-search input');
+        if (searchInput) searchInput.focus();
+    }
+
+    // Escape = close sidebar on mobile
+    if (e.key === 'Escape') {
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+            if (overlay) overlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    }
+});
+
+// ---------- Real-time Clock (optional) ----------
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+
+    // You can display this in the topbar if needed
+    const clockEl = document.getElementById('topbarClock');
+    if (clockEl) clockEl.textContent = timeString;
+}
+
+// Update clock every minute
+setInterval(updateClock, 60000);
+updateClock();
+
+// ---------- Notification Badge Polling (simulated) ----------
+function checkNotifications() {
+    // In a real app, this would fetch from an API
+    // For demo, we just log
+    console.log('Checking notifications...');
+}
+
+// Check every 30 seconds
+setInterval(checkNotifications, 30000);
+
+// ---------- Service Worker Registration (optional) ----------
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => console.log('SW registered:', registration))
+            .catch(error => console.log('SW registration failed:', error));
+    });
+}
+
+// ---------- Print Styles ----------
+window.addEventListener('beforeprint', function() {
+    document.body.classList.add('printing');
+});
+
+window.addEventListener('afterprint', function() {
+    document.body.classList.remove('printing');
+});
+
+console.log('Dashboard page custom JS loaded successfully');
 </script>
 </body>
 </html>
-

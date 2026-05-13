@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════════════════
+   REUSABLE SIDEBAR SCROLL SYSTEM — Add to ALL pages
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Scrollable sidebar with fixed header/footer */
+.sp-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;                 /* Lock to viewport height */
+  overflow: hidden;              /* Hide default overflow */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width, 260px);
+  z-index: 1040;
+  background: #fff;
+  border-right: 1px solid var(--border-soft, rgba(26,29,46,0.06));
+  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+}
+
+/* The scrollable area (nav links) */
+.sp-sidebar nav {
+  flex: 1 1 auto;                /* Fill available space */
+  overflow-y: auto;              /* Enable vertical scroll */
+  overflow-x: hidden;
+  min-height: 0;                 /* Critical for flex scrolling */
+  padding: 8px 0;
+}
+
+/* Keep brand and user card fixed at top */
+.sp-sidebar > a:first-child,
+.sp-sidebar .member-badge {
+  flex-shrink: 0;                /* Prevent squishing */
+}
+
+/* Keep logout fixed at bottom */
+.sp-sidebar > .border-top {
+  flex-shrink: 0;
+  background: #fff;              /* Cover content behind */
+}
+
+/* ─── Custom Scrollbar (Theme-matched) ─── */
+.sp-sidebar nav::-webkit-scrollbar {
+  width: 5px;
+}
+.sp-sidebar nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sp-sidebar nav::-webkit-scrollbar-thumb {
+  background: rgba(26, 115, 232, 0.18);
+  border-radius: 50px;
+}
+.sp-sidebar nav::-webkit-scrollbar-thumb:hover {
+  background: var(--primary, #1a73e8);
+}
+
+/* Firefox */
+.sp-sidebar nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 115, 232, 0.18) transparent;
+}
+
+/* ─── Mobile: Full overlay scroll ─── */
+@media (max-width: 991px) {
+  .sp-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+  }
+  .sp-sidebar.show {
+    transform: translateX(0);
+  }
+  .sp-sidebar nav {
+    -webkit-overflow-scrolling: touch; /* Smooth iOS scroll */
+  }
+}

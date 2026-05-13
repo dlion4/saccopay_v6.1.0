@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SACCOPay | Account Setup & Onboarding</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        /* Custom Base CSS for Dark Cyber Theme */
+        :root {
+            --neon-green: #00ff66;
+            --dark-bg: #050608;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Complex Background with Green Glows */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 102, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 102, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Cybernetic line pattern */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 80 0 80 80' fill='none' stroke='%23ffffff' stroke-width='0.5'/%3E%3Cpath d='M 40 40 Q 60 20 80 40 T 120 40' fill='none' stroke='%2300ff66' stroke-width='1' opacity='0.5'/%3E%3Cpath d='M 40 45 Q 60 25 80 45 T 120 45' fill='none' stroke='%2300ff66' stroke-width='1' opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 80px 80px;
+            pointer-events: none;
+        }
+
+        /* Glassmorphic Container */
+        .wizard-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .text-neon {
+            color: var(--neon-green) !important;
+            text-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
+        }
+
+        /* Buttons */
+        .btn-neon {
+            background-color: var(--neon-green); color: #000; font-weight: 700; border-radius: 12px; 
+            padding: 12px 30px; border: none; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); letter-spacing: 0.5px;
+        }
+        .btn-neon:hover { background-color: #00cc52; color: #000; box-shadow: 0 0 30px rgba(0, 255, 102, 0.6); transform: translateY(-2px); }
+        .btn-neon:disabled { background-color: rgba(0,255,102,0.3); color: rgba(0,0,0,0.5); box-shadow: none; cursor: not-allowed; transform: none; }
+        
+        .btn-outline-neon {
+            background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); border-radius: 12px; 
+            font-weight: 600; padding: 12px 30px; transition: all 0.3s ease;
+        }
+        .btn-outline-neon:hover { background: rgba(0,255,102,0.1); color: var(--neon-green); border-color: var(--neon-green); }
+
+        /* Forms */
+        .form-control { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; border-radius: 12px; padding: 12px 16px; transition: 0.3s;}
+        .form-control:focus { background: rgba(0,0,0,0.5); border-color: var(--neon-green); box-shadow: 0 0 0 4px rgba(0, 255, 102, 0.1); color: #fff;}
+        .form-control::placeholder { color: rgba(255,255,255,0.4); }
+        .input-group-text { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.6); }
+
+        /* Checkboxes */
+        .form-check-input { background-color: rgba(0,0,0,0.4); border-color: var(--glass-border); transition: 0.2s;}
+        .form-check-input:checked { background-color: var(--neon-green); border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0,255,102,0.4); }
+        .form-check-input:focus { box-shadow: 0 0 0 0.25rem rgba(0,255,102,0.2); border-color: var(--neon-green); }
+
+        /* Wizard Progress Bar */
+        .wizard-header { background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--glass-border); padding: 30px 40px; }
+        .progress-track { display: flex; justify-content: space-between; position: relative; margin-top: 20px; }
+        .progress-track::before { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.1); z-index: 1; }
+        .progress-indicator { position: absolute; top: 15px; left: 0; height: 3px; background: var(--neon-green); z-index: 2; transition: width 0.4s ease; width: 0%; box-shadow: 0 0 10px var(--neon-green);}
+        
+        .step-node {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--dark-bg); border: 2px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;
+            z-index: 3; position: relative; transition: all 0.4s ease; color: rgba(255,255,255,0.5);
+        }
+        .step-node.active { border-color: var(--neon-green); background: var(--neon-green); color: #000; box-shadow: 0 0 15px rgba(0,255,102,0.5); }
+        .step-node.completed { border-color: var(--neon-green); background: var(--dark-bg); color: var(--neon-green); box-shadow: 0 0 10px rgba(0,255,102,0.2); }
+        
+        .step-label { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.5); white-space: nowrap; transition: color 0.3s; }
+        .step-node.active .step-label, .step-node.completed .step-label { color: #fff; }
+
+        /* Step Panels */
+        .wizard-step-content { display: none; padding: 40px; animation: fadeIn 0.4s ease forwards; }
+        .wizard-step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Selectable Cards (Radio Alternatives) */
+        .select-card {
+            border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; 
+            background: rgba(10,12,16,0.6); cursor: pointer; transition: all 0.3s ease; 
+            height: 100%; position: relative; overflow: hidden; backdrop-filter: blur(10px);
+        }
+        .select-card:hover { border-color: rgba(0,255,102,0.4); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,255,102,0.1); }
+        .select-card.selected { border-color: var(--neon-green); background: rgba(0,255,102,0.05); box-shadow: inset 0 0 20px rgba(0,255,102,0.05); }
+        .select-card.selected::after {
+            content: '\F26A'; font-family: 'bootstrap-icons'; position: absolute; top: 15px; right: 15px; color: var(--neon-green); font-size: 1.2rem;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+        
+        .icon-box {
+            width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 15px;
+        }
+
+        /* SACCO List Scroll Area */
+        .sacco-list-container {
+            max-height: 300px; overflow-y: auto; border-radius: 12px; border: 1px solid var(--glass-border); 
+            background: rgba(0,0,0,0.3); padding: 10px;
+        }
+        .sacco-item {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px; 
+            margin-bottom: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between;
+        }
+        .sacco-item:hover { border-color: rgba(0,255,102,0.5); background: rgba(255,255,255,0.05); }
+        .sacco-item.checked { border-color: var(--neon-green); background: rgba(0,255,102,0.08); box-shadow: inset 0 0 15px rgba(0,255,102,0.1); }
+
+        /* Custom Checkbox for SACCO list */
+        .custom-chk { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.3); border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: 0.2s; background: rgba(0,0,0,0.3); pointer-events: none;}
+        .sacco-item.checked .custom-chk { background: var(--neon-green); border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0,255,102,0.5);}
+        .sacco-item.checked .custom-chk::after { content: '\F26A'; font-family: 'bootstrap-icons'; color: #000; font-size: 1rem; font-weight: bold;}
+
+        /* Cyber Panels for Agreements */
+        .cyber-panel { border: 1px solid var(--glass-border); border-radius: 16px; background: rgba(10, 12, 16, 0.6); backdrop-filter: blur(10px); padding: 25px; }
+
+        /* Modals */
+        .modal-content { background: rgba(10, 12, 16, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--neon-green); border-radius: 24px; color: white; box-shadow: 0 0 40px rgba(0,255,102,0.1);}
+        .modal-header { border-bottom: 1px solid var(--glass-border); }
+        .modal-footer { border-top: 1px solid var(--glass-border); }
+
+        @media (max-width: 768px) {
+            .wizard-header { padding: 20px; }
+            .wizard-step-content { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wizard-container">
+        <div class="wizard-header text-center">
+            <h3 class="fw-bold mb-1"><i class="bi bi-wallet2 text-neon me-2"></i>SACCO<span class="text-neon">Pay</span></h3>
+            <p class="small mb-4" style="color: rgba(255,255,255,0.6);">Initialize your secure profile in three steps.</p>
+            
+            <div class="progress-track px-4">
+                <div class="progress-indicator" id="progressIndicator"></div>
+                <div class="step-node active" id="node-1">1<span class="step-label">Role Setup</span></div>
+                <div class="step-node" id="node-2">2<span class="step-label">Link SACCO</span></div>
+                <div class="step-node" id="node-3">3<span class="step-label">Agreements</span></div>
+            </div>
+        </div>
+
+        <div class="wizard-step-content active" id="step-1">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold text-white">How will you use the platform?</h4>
+                <p class="small" style="color: rgba(255,255,255,0.6);">Select your primary operating mode. This shapes your dashboard experience.</p>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="select-card" onclick="selectAccountType('member', this)">
+                        <div class="icon-box" style="background: rgba(0,255,102,0.1); color: var(--neon-green); border: 1px solid rgba(0,255,102,0.3);"><i class="bi bi-person-fill"></i></div>
+                        <h6 class="fw-bold text-white">SACCO Member</h6>
+                        <p class="small mb-0 lh-sm" style="color: rgba(255,255,255,0.5);">Access FOSA wallets, apply for loans, and monitor dividends.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="select-card" onclick="selectAccountType('admin', this)">
+                        <div class="icon-box" style="background: rgba(111,66,193,0.1); color: #b66dff; border: 1px solid rgba(111,66,193,0.3);"><i class="bi bi-shield-lock-fill"></i></div>
+                        <h6 class="fw-bold text-white">SACCO Admin</h6>
+                        <p class="small mb-0 lh-sm" style="color: rgba(255,255,255,0.5);">Manage core banking ledgers, KYC queues, and SASRA reports.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="select-card" onclick="selectAccountType('unaffiliated', this)">
+                        <div class="icon-box" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1);"><i class="bi bi-compass"></i></div>
+                        <h6 class="fw-bold text-white">Explore SACCOs</h6>
+                        <p class="small mb-0 lh-sm" style="color: rgba(255,255,255,0.5);">I am not in a SACCO yet. I want to browse and join digitally.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end border-top pt-4" style="border-color: var(--glass-border) !important;">
+                <button class="btn btn-neon" id="btn-next-1" disabled onclick="goToStep(2)">Proceed <i class="bi bi-arrow-right ms-2"></i></button>
+            </div>
+        </div>
+
+        <div class="wizard-step-content" id="step-2">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold text-white" id="step2-title">Link your Institution</h4>
+                <p class="small" style="color: rgba(255,255,255,0.6);" id="step2-desc">Select the SACCOs you are registered with.</p>
+            </div>
+
+            <div id="sacco-selection-area">
+                <div class="input-group mb-3 shadow-lg rounded-3">
+                    <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-start-0 py-3" id="saccoSearch" placeholder="Search by name, town, or sector..." onkeyup="filterSaccos()">
+                </div>
+
+                <div class="sacco-list-container mb-4" id="saccoList">
+                    <div class="sacco-item" onclick="toggleSacco(this)">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Rongo+Sacco&background=00ff66&color=000" class="rounded-circle border border-dark" width="40">
+                            <div><h6 class="fw-bold mb-0 text-white">RONGO SACCO LTD</h6><small style="color: rgba(255,255,255,0.5);">Nairobi HQ</small></div>
+                        </div>
+                        <div class="custom-chk"></div>
+                    </div>
+                    
+                    <div class="sacco-item" onclick="toggleSacco(this)">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=United+Employees&background=0d6efd&color=fff" class="rounded-circle border border-dark" width="40">
+                            <div><h6 class="fw-bold mb-0 text-white">United Employees SACCO</h6><small style="color: rgba(255,255,255,0.5);">National / Govt</small></div>
+                        </div>
+                        <div class="custom-chk"></div>
+                    </div>
+
+                    <div class="sacco-item" onclick="toggleSacco(this)">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Kimilili+Farmers&background=ffc107&color=000" class="rounded-circle border border-dark" width="40">
+                            <div><h6 class="fw-bold mb-0 text-white">Kimilili Farmers SACCO</h6><small style="color: rgba(255,255,255,0.5);">Bungoma County</small></div>
+                        </div>
+                        <div class="custom-chk"></div>
+                    </div>
+
+                    <div class="sacco-item" onclick="toggleSacco(this)">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Juja+Campus&background=6f42c1&color=fff" class="rounded-circle border border-dark" width="40">
+                            <div><h6 class="fw-bold mb-0 text-white">Juja Campus SACCO</h6><small style="color: rgba(255,255,255,0.5);">Kiambu County</small></div>
+                        </div>
+                        <div class="custom-chk"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="no-sacco-message" class="text-center p-5 cyber-panel d-none mb-4">
+                <i class="bi bi-compass text-neon mb-3" style="font-size: 3rem; text-shadow: 0 0 20px var(--neon-green);"></i>
+                <h5 class="fw-bold text-white">Discovery Portal Setup</h5>
+                <p class="small mb-0" style="color: rgba(255,255,255,0.6);">Since you don't have an account yet, your dashboard will be configured to browse and digitally apply to top-rated SACCOs in your region.</p>
+            </div>
+
+            <div class="d-flex justify-content-between border-top pt-4" style="border-color: var(--glass-border) !important;">
+                <button class="btn btn-outline-neon" onclick="goToStep(1)"><i class="bi bi-arrow-left me-2"></i> Back</button>
+                <button class="btn btn-neon" id="btn-next-2" disabled onclick="goToStep(3)">Verify Selection <i class="bi bi-arrow-right ms-2"></i></button>
+            </div>
+        </div>
+
+        <div class="wizard-step-content" id="step-3">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold text-white">Finalize Configuration</h4>
+                <p class="small" style="color: rgba(255,255,255,0.6);">Review platform agreements before entering the secure dashboard.</p>
+            </div>
+
+            <div class="cyber-panel mb-5">
+                <div class="form-check mb-4 d-flex align-items-start gap-3">
+                    <input class="form-check-input fs-5 mt-1" type="checkbox" id="chkTerms" onchange="validateStep3()">
+                    <label class="form-check-label text-white fw-medium" for="chkTerms">
+                        I agree to the <a href="#" class="text-neon text-decoration-none fw-bold border-bottom border-success" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a> & operational guidelines.
+                    </label>
+                </div>
+                
+                <div class="form-check mb-4 d-flex align-items-start gap-3">
+                    <input class="form-check-input fs-5 mt-1" type="checkbox" id="chkPrivacy" onchange="validateStep3()">
+                    <label class="form-check-label text-white fw-medium" for="chkPrivacy">
+                        I acknowledge the <a href="#" class="text-neon text-decoration-none fw-bold border-bottom border-success" data-bs-toggle="modal" data-bs-target="#privacyModal">Data Privacy Policy</a> (Kenya DPA Compliant).
+                    </label>
+                </div>
+
+                <div class="form-check d-flex align-items-start gap-3 p-3 rounded-3" style="background: rgba(0,255,102,0.05); border: 1px solid rgba(0,255,102,0.2);">
+                    <input class="form-check-input fs-5 mt-1" type="checkbox" id="chkData" onchange="validateStep3()">
+                    <label class="form-check-label text-white fw-medium small" for="chkData">
+                        <strong class="text-neon">Identity & Credit Check Consent:</strong> I authorize SACCOPay and linked entities to verify my identity via the Integrated Population Registration System (IPRS) and query my status with Metropol/TransUnion CRBs.
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between border-top pt-4" style="border-color: var(--glass-border) !important;">
+                <button class="btn btn-outline-neon" onclick="goToStep(2)"><i class="bi bi-arrow-left me-2"></i> Back</button>
+                <button class="btn btn-neon px-5" id="btn-submit" disabled onclick="completeOnboarding()">
+                    <span class="d-none spinner-border spinner-border-sm me-2 text-dark" id="submitSpinner"></span>
+                    Initialize Dashboard
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="termsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-white"><i class="bi bi-file-text-fill text-neon me-2"></i>Terms of Service</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small mb-3" style="color: rgba(255,255,255,0.5);">Last updated: May 2026</p>
+                    <div class="p-3 border rounded small text-white" style="background: rgba(0,0,0,0.3); border-color: var(--glass-border) !important; line-height: 1.6;">
+                        <h6 class="fw-bold text-neon">1. Platform Usage</h6>
+                        <p>SACCOPay serves as an intermediary software provider facilitating digital interactions between SACCOs and their members. We do not hold deposits or disburse loans directly.</p>
+                        <h6 class="fw-bold text-neon mt-3">2. User Responsibilities</h6>
+                        <p>You agree to provide accurate KYC documentation and maintain the security of your account credentials (PIN/Passwords).</p>
+                        <h6 class="fw-bold text-neon mt-3">3. Liability</h6>
+                        <p>SACCOPay is not liable for loan rejections, dividend payout delays, or policy changes enacted by your specific SACCO administration.</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-neon w-100" data-bs-dismiss="modal">Acknowledge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="privacyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-white"><i class="bi bi-shield-lock-fill text-neon me-2"></i>Data Privacy Policy</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small mb-3" style="color: rgba(255,255,255,0.5);">Compliant with the ODPC Kenya Data Protection Act.</p>
+                    <div class="p-3 border rounded small text-white" style="background: rgba(0,0,0,0.3); border-color: var(--glass-border) !important; line-height: 1.6;">
+                        <h6 class="fw-bold text-neon">1. Data Collection</h6>
+                        <p>We collect Personally Identifiable Information (PII) including National ID, KRA PIN, Payslips, and Biometrics strictly for identity verification and loan appraisal.</p>
+                        <h6 class="fw-bold text-neon mt-3">2. Data Sharing</h6>
+                        <p>Your data is shared exclusively with your selected SACCOs, the IPRS for identity checks, and Metropol/TransUnion CRBs for credit scoring.</p>
+                        <h6 class="fw-bold text-neon mt-3">3. Your Rights</h6>
+                        <p>You have the right to request a copy of your data or request account deletion (subject to SACCO clearance regulations regarding active loans and guarantees).</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-neon w-100" data-bs-dismiss="modal">Acknowledge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content text-center p-4 border-0">
+                <div class="icon-box mx-auto mb-3" style="width:70px; height:70px; font-size:2.5rem; background: rgba(0,255,102,0.1); color: var(--neon-green); border: 1px solid var(--neon-green); border-radius: 50%;">
+                    <i class="bi bi-check-lg" style="text-shadow: 0 0 15px var(--neon-green);"></i>
+                </div>
+                <h4 class="fw-bold mb-2 text-white">System Ready</h4>
+                <p class="small mb-4" style="color: rgba(255,255,255,0.6);">Authentication complete. Loading your secure workspace...</p>
+                <div class="spinner-border text-neon mx-auto" role="status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedAccountType = null;
+        let selectedSaccos = 0;
+
+        // Step 1: Select Account Type
+        function selectAccountType(type, element) {
+            selectedAccountType = type;
+            
+            // Remove 'selected' class from all cards
+            const cards = document.querySelectorAll('.select-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            
+            // Add 'selected' to clicked card
+            element.classList.add('selected');
+            
+            // Enable next button
+            document.getElementById('btn-next-1').disabled = false;
+        }
+
+        // Step 2: Toggle Sacco Checkboxes
+        function toggleSacco(element) {
+            element.classList.toggle('checked');
+            
+            // Count checked items
+            selectedSaccos = document.querySelectorAll('.sacco-item.checked').length;
+            
+            // Enable next button if at least one is selected
+            if(selectedSaccos > 0) {
+                document.getElementById('btn-next-2').disabled = false;
+            } else {
+                document.getElementById('btn-next-2').disabled = true;
+            }
+        }
+
+        // Step 2: Sacco Search Filter
+        function filterSaccos() {
+            let input = document.getElementById('saccoSearch').value.toLowerCase();
+            let items = document.querySelectorAll('.sacco-item');
+            
+            items.forEach(item => {
+                let text = item.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        // Step 3: Validate Agreements
+        function validateStep3() {
+            let t1 = document.getElementById('chkTerms').checked;
+            let t2 = document.getElementById('chkPrivacy').checked;
+            let t3 = document.getElementById('chkData').checked;
+            
+            if (t1 && t2 && t3) {
+                document.getElementById('btn-submit').disabled = false;
+            } else {
+                document.getElementById('btn-submit').disabled = true;
+            }
+        }
+
+        // Wizard Navigation Logic
+        function goToStep(stepNumber) {
+            // Setup Dynamic content for Step 2 based on Step 1 choice
+            if(stepNumber === 2) {
+                const saccoArea = document.getElementById('sacco-selection-area');
+                const noSaccoMsg = document.getElementById('no-sacco-message');
+                const btnNext2 = document.getElementById('btn-next-2');
+                const step2Title = document.getElementById('step2-title');
+                const step2Desc = document.getElementById('step2-desc');
+
+                if (selectedAccountType === 'unaffiliated') {
+                    saccoArea.classList.add('d-none');
+                    noSaccoMsg.classList.remove('d-none');
+                    btnNext2.disabled = false; // Allow skipping SACCO selection
+                    step2Title.innerText = "Discover Instutitions";
+                    step2Desc.innerText = "Explore the cooperative ecosystem securely.";
+                } else {
+                    saccoArea.classList.remove('d-none');
+                    noSaccoMsg.classList.add('d-none');
+                    step2Title.innerText = "Link your Institution";
+                    if(selectedAccountType === 'admin') {
+                        step2Desc.innerText = "Search and select the SACCO(s) you manage or operate.";
+                    } else {
+                        step2Desc.innerText = "Search and select all the SACCOs you are currently registered with.";
+                    }
+                    // Re-validate button based on selections
+                    btnNext2.disabled = (document.querySelectorAll('.sacco-item.checked').length === 0);
+                }
+            }
+
+            // Hide all steps
+            document.querySelectorAll('.wizard-step-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show target step
+            document.getElementById('step-' + stepNumber).classList.add('active');
+            
+            // Update Progress Bar UI
+            const indicator = document.getElementById('progressIndicator');
+            if(stepNumber === 1) indicator.style.width = "0%";
+            if(stepNumber === 2) indicator.style.width = "50%";
+            if(stepNumber === 3) indicator.style.width = "100%";
+
+            // Update Node States
+            for(let i=1; i<=3; i++) {
+                let node = document.getElementById('node-' + i);
+                if (i < stepNumber) {
+                    node.className = 'step-node completed';
+                    node.innerHTML = '<i class="bi bi-check fs-5"></i><span class="step-label">' + getStepLabel(i) + '</span>';
+                } else if (i === stepNumber) {
+                    node.className = 'step-node active';
+                    node.innerHTML = i + '<span class="step-label">' + getStepLabel(i) + '</span>';
+                } else {
+                    node.className = 'step-node';
+                    node.innerHTML = i + '<span class="step-label">' + getStepLabel(i) + '</span>';
+                }
+            }
+        }
+
+        // Helper for labels
+        function getStepLabel(i) {
+            if(i===1) return 'Role Setup';
+            if(i===2) return 'Link SACCO';
+            if(i===3) return 'Agreements';
+        }
+
+        // Final Submission — Direct redirect, no spinners/delays
+            function completeOnboarding() {
+                window.location.href = '../member/index-main.html';
+            }
+    </script>
+</body>
+</html>

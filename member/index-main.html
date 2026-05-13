@@ -1,1927 +1,1770 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SaccoPay — Member Dashboard</title>
-
-  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
+  
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="./member-style2.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="./desposit.css">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       UNIFIED MASTER THEME — Use on ALL pages
+       ═══════════════════════════════════════════════════════════════ */
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1558b0;
+      --primary-light: #e8f0fe;
+      --primary-subtle: rgba(26, 115, 232, 0.08);
+      --primary-border: rgba(26, 115, 232, 0.22);
+      --primary-hover: rgba(26, 115, 232, 0.04);
+      --bg-base: #F5F6FA;
+      --bg-card: #FFFFFF;
+      --bg-input: #F0F2F8;
+      --text-primary: #1A1D2E;
+      --text-secondary: rgba(26, 29, 46, 0.72);
+      --text-muted: rgba(26, 29, 46, 0.50);
+      --border-soft: rgba(26, 29, 46, 0.06);
+      --border-medium: rgba(26, 29, 46, 0.10);
+      --success: #00C853;
+      --warning: #F9A825;
+      --danger: #E53935;
+      --info: #0288D1;
+      --purple: #AB00D9;
+      --font-mono: 'JetBrains Mono', monospace;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
+      --shadow-primary: 0 4px 16px rgba(26, 115, 232, 0.22);
+      --gradient-primary: linear-gradient(135deg, #1a73e8 0%, #00f7ff 100%);
+      --gradient-hero: linear-gradient(135deg, #1a73e8 0%, #1558b0 60%, #00f7ff 100%);
+      --sidebar-width: 260px;
+      --topbar-height: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       LAYOUT WRAPPER — Sidebar + Main (100% width system)
+       ═══════════════════════════════════════════════════════════════ */
+    .sp-layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      position: relative;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sp-sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: #fff;
+      border-right: 1px solid var(--border-soft);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1040;
+      transition: transform 0.3s ease, width 0.3s ease;
+      overflow-y: auto;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sp-sidebar .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: var(--shadow-primary);
+      flex-shrink: 0;
+    }
+
+    .sp-sidebar .nav-link {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 0;
+      position: relative;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .sp-sidebar .nav-link:hover {
+      color: var(--text-primary);
+      background: var(--primary-hover);
+    }
+
+    .sp-sidebar .nav-link.active {
+      color: var(--primary);
+      background: linear-gradient(90deg, var(--primary-subtle) 0%, rgba(26, 115, 232, 0.02) 100%);
+      font-weight: 600;
+    }
+
+    .sp-sidebar .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--gradient-primary);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .sp-sidebar .nav-icon {
+      width: 20px;
+      text-align: center;
+      margin-right: 10px;
+      font-size: 15px;
+    }
+
+    .sp-sidebar .section-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(26, 29, 46, 0.30);
+      padding: 12px 20px 6px;
+    }
+
+    .sp-sidebar .member-badge {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .sp-sidebar .nav-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 50px;
+      min-width: 18px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+    }
+
+    /* ─── MAIN CONTENT WRAPPER ─── */
+    .sp-main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      width: calc(100% - var(--sidebar-width));
+      transition: margin-left 0.3s ease, width 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── TOPBAR ─── */
+    .sp-topbar {
+      height: var(--topbar-height);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid var(--border-soft);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .sp-topbar::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary-border) 30%, var(--primary-border) 70%, transparent);
+    }
+
+    .topbar-btn {
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .topbar-btn:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    .topbar-btn .badge-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 16px;
+      height: 16px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255, 255, 255, 0.92);
+    }
+
+    /* ─── PAGE CONTENT CONTAINER ─── */
+    .sp-content {
+      width: 100%;
+      max-width: 100%;
+      padding: 20px;
+      flex: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CARDS & COMPONENTS
+       ═══════════════════════════════════════════════════════════════ */
+    .sp-card {
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .sp-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-medium);
+    }
+
+    .sp-card.clickable {
+      cursor: pointer;
+    }
+
+    .sp-card.clickable:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Badges */
+    .sp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Progress */
+    .sp-progress {
+      height: 6px;
+      border-radius: 50px;
+      background: rgba(26, 29, 46, 0.06);
+      overflow: hidden;
+    }
+
+    .sp-progress-fill {
+      height: 100%;
+      border-radius: 50px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    /* Toast */
+    .sp-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: calc(100vw - 48px);
+    }
+
+    .sp-toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #fff;
+      border: 1px solid var(--border-medium);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      min-width: 280px;
+      max-width: 420px;
+      animation: slideInRight 0.3s ease;
+    }
+
+    .sp-toast.success {
+      border-left: 3px solid var(--success);
+    }
+
+    .sp-toast.warning {
+      border-left: 3px solid var(--warning);
+    }
+
+    .sp-toast.danger {
+      border-left: 3px solid var(--danger);
+    }
+
+    .sp-toast.info {
+      border-left: 3px solid var(--info);
+    }
+
+    .sp-toast.primary {
+      border-left: 3px solid var(--primary);
+    }
+
+    /* Sidebar Backdrop */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1035;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar-backdrop.show {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Animations */
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       DASHBOARD-SPECIFIC STYLES (Unified Theme)
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Stat Cards */
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-medium);
+      transform: translateY(-2px);
+    }
+
+    .stat-card--primary .stat-icon {
+      background: var(--primary-subtle);
+      color: var(--primary);
+    }
+
+    .stat-card--success .stat-icon {
+      background: rgba(0, 200, 83, 0.08);
+      color: var(--success);
+    }
+
+    .stat-card--warning .stat-icon {
+      background: rgba(249, 168, 37, 0.08);
+      color: var(--warning);
+    }
+
+    .stat-card--info .stat-icon {
+      background: rgba(2, 136, 209, 0.06);
+      color: var(--info);
+    }
+
+    .stat-card--danger .stat-icon {
+      background: rgba(229, 57, 53, 0.06);
+      color: var(--danger);
+    }
+
+    .stat-card-body {
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .stat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      word-break: break-word;
+      margin-bottom: 4px;
+    }
+
+    .stat-change {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .stat-change.positive {
+      color: var(--success);
+    }
+
+    .stat-change.negative {
+      color: var(--danger);
+    }
+
+    .stat-card-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .stat-link {
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .stat-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Dashboard Card */
+    .dashboard-card {
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .dashboard-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .dashboard-card .card-header {
+      background: transparent;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 14px 16px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .dashboard-card .card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Mini Stat Card */
+    .mini-stat-card {
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 100%;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s;
+    }
+
+    .mini-stat-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .mini-stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .bg-accent-subtle {
+      background: var(--primary-subtle);
+    }
+
+    .bg-success-subtle {
+      background: rgba(0, 200, 83, 0.08);
+    }
+
+    .bg-info-subtle {
+      background: rgba(2, 136, 209, 0.06);
+    }
+
+    .bg-warning-subtle {
+      background: rgba(249, 168, 37, 0.08);
+    }
+
+    .bg-danger-subtle {
+      background: rgba(229, 57, 53, 0.06);
+    }
+
+    .text-accent {
+      color: var(--primary) !important;
+    }
+
+    .border-accent-subtle {
+      border-color: var(--primary-border) !important;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Buttons */
+    .btn-accent {
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      box-shadow: var(--shadow-primary);
+      transition: all 0.2s;
+    }
+
+    .btn-accent:hover {
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(26, 115, 232, 0.3);
+    }
+
+    .btn-outline-accent {
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      background: #fff;
+      font-weight: 500;
+    }
+
+    .btn-outline-accent:hover {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Loan Progress Card */
+    .loan-progress-card {
+      background: var(--bg-input);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .loan-detail-card {
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      transition: all 0.25s;
+    }
+
+    .loan-detail-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Announcements */
+    .announcement-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .announcement-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      display: block;
+    }
+
+    .announcement-item:hover {
+      background: var(--primary-hover);
+    }
+
+    .announcement-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Chart Bars */
+    .chart-placeholder {
+      height: 220px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      width: 100%;
+      height: 100%;
+      padding: 10px 0;
+    }
+
+    .chart-bar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .chart-bar {
+      width: 100%;
+      max-width: 32px;
+      background: var(--primary);
+      border-radius: 6px 6px 0 0;
+      opacity: 0.7;
+      transition: all 0.3s;
+      min-height: 4px;
+    }
+
+    .chart-bar:hover {
+      opacity: 1;
+      transform: scaleY(1.05);
+    }
+
+    .chart-bar.active-bar {
+      background: var(--gradient-primary);
+      opacity: 1;
+      box-shadow: var(--shadow-primary);
+    }
+
+    .chart-bar.upcoming {
+      background: var(--border-medium);
+      opacity: 0.4;
+    }
+
+    .chart-bar-item span {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Summary List */
+    .summary-list .list-group-item {
+      border-color: var(--border-soft);
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    /* Notification Dropdown */
+    .notification-dropdown {
+      border-radius: 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-lg);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .notification-dropdown .dropdown-header {
+      padding: 12px 16px;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .notification-item:hover {
+      background: var(--primary-hover);
+    }
+
+    .notification-item.unread {
+      background: var(--primary-subtle);
+    }
+
+    .notif-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .notif-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notif-content p {
+      font-size: 12px;
+      margin-bottom: 2px;
+      line-height: 1.4;
+    }
+
+    .notif-content small {
+      font-size: 11px;
+    }
+
+    /* Alert Custom */
+    .alert-info-custom {
+      background: rgba(2, 136, 209, 0.06);
+      border: 1px solid rgba(2, 136, 209, 0.15);
+      color: var(--info);
+      border-radius: 10px;
+    }
+
+    /* Content Footer */
+    .content-footer {
+      padding: 16px 0;
+      margin-top: auto;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    /* Table */
+    .sp-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sp-table {
+      width: 100%;
+      margin-bottom: 0;
+      font-size: 13px;
+      min-width: 700px;
+    }
+
+    .sp-table thead tr {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      background: rgba(26, 29, 46, 0.02);
+    }
+
+    /* Modal Enhancements */
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border-soft);
+      padding: 16px 20px;
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 12px 20px;
+    }
+
+    /* Form Controls */
+    .form-control,
+    .form-select {
+      border-color: var(--border-medium);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    }
+
+    .input-group-text {
+      border-color: var(--border-medium);
+      background: var(--bg-input);
+      font-size: 13px;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+      border-color: var(--border-soft);
+      color: var(--text-secondary);
+      font-size: 12px;
+      border-radius: 8px;
+      margin: 0 2px;
+    }
+
+    .pagination .page-item.active .page-link {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Accordion */
+    .accordion-item {
+      border-color: var(--border-soft);
+      border-radius: 10px !important;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .accordion-button {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 16px;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      box-shadow: none;
+    }
+
+    .accordion-body {
+      font-size: 13px;
+      padding: 12px 16px;
+    }
+
+    /* Tab Nav */
+    .nav-tabs .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 10px 14px;
+    }
+
+    .nav-tabs .nav-link.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: transparent;
+      font-weight: 600;
+    }
+
+    .nav-tabs .nav-link:hover {
+      border-color: transparent;
+      color: var(--text-primary);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       UNIVERSAL RESPONSIVE
+       ═══════════════════════════════════════════════════════════════ */
+    @media (max-width: 1199px) {
+      .sp-content {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 991px) {
+      .sp-sidebar {
+        transform: translateX(-100%);
+        z-index: 1050;
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .sp-sidebar.show {
+        transform: translateX(0);
+      }
+
+      .sp-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+
+      .sp-content {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .sp-content {
+        padding: 14px;
+      }
+
+      .stat-value {
+        font-size: 18px !important;
+      }
+
+      .stat-card-body {
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+      }
+
+      .chart-placeholder {
+        height: 180px;
+      }
+
+      .chart-bars {
+        gap: 4px;
+      }
+
+      .chart-bar {
+        max-width: 20px;
+        border-radius: 3px 3px 0 0;
+      }
+
+      .modal-body {
+        padding: 16px !important;
+      }
+
+      .modal-header {
+        padding: 14px 16px !important;
+      }
+
+      .modal-footer {
+        padding: 10px 16px !important;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .modal-footer .btn {
+        flex: 1 1 auto;
+        min-width: 100px;
+      }
+
+      .section-header {
+        flex-direction: column;
+      }
+
+      .section-header .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 575px) {
+      :root {
+        --sidebar-width: 280px;
+      }
+
+      .sp-content {
+        padding: 12px;
+      }
+
+      .stat-value {
+        font-size: 20px !important;
+      }
+
+      .sp-topbar {
+        padding: 0 12px;
+      }
+
+      .topbar-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .dashboard-card {
+        border-radius: 14px;
+      }
+
+      .stat-card {
+        border-radius: 14px;
+      }
+
+      .mini-stat-card {
+        padding: 12px;
+      }
+
+      .sp-toast-container {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+
+      .sp-toast {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+      }
+
+      .pagination .page-link {
+        padding: 4px 8px;
+      }
+
+      .btn-group-sm .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(26, 29, 46, 0.12);
+      border-radius: 50px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+  </style>
+  <base target="_blank">
+
+  
+ <link href="./member-sidebar-style.css" rel="stylesheet" />
 </head>
+
 <body>
 
-  <!-- ========== TOAST CONTAINER ========== -->
-  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" style="z-index:9999;">
-    <!-- Welcome Toast -->
-    <div id="toastWelcome" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-      <div class="d-flex">
-        <div class="toast-body">
-          <i class="bi bi-hand-thumbs-up-fill me-2"></i>Welcome back, <strong>John Doe</strong>! Your dashboard is ready.
+  <!-- ═══════════════════════════════════════════════════════════════
+   UNIVERSAL SIDEBAR BACKDROP
+   ═══════════════════════════════════════════════════════════════ -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+   LAYOUT WRAPPER — Sidebar + Main (100% width)
+   ═══════════════════════════════════════════════════════════════ -->
+  <div class="sp-layout">
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sp-sidebar" id="sidebar">
+      <!-- Brand -->
+      <a href="./index-main.html" class="d-flex align-items-center gap-2 px-3 py-3 text-decoration-none border-bottom"
+        style="border-color:var(--border-soft)!important;min-height:64px;">
+        <div class="brand-logo"><i class="bi bi-shield-lock-fill" style="font-size:16px;"></i></div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text-primary);">Sacco<span
+              style="color:var(--primary);">Pay</span></div>
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:0.04em;">Member Portal</div>
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-    <!-- Success Toast Template -->
-    <div id="toastSuccess" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
-      <div class="d-flex">
-        <div class="toast-body"><i class="bi bi-check-circle-fill me-2"></i><span id="toastSuccessMsg">Action completed successfully!</span></div>
-        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-    <!-- Error Toast Template -->
-    <div id="toastError" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-      <div class="d-flex">
-        <div class="toast-body"><i class="bi bi-exclamation-triangle-fill me-2"></i><span id="toastErrorMsg">Something went wrong.</span></div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-    <!-- Info Toast Template -->
-    <div id="toastInfo" class="toast align-items-center text-bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
-      <div class="d-flex">
-        <div class="toast-body"><i class="bi bi-info-circle-fill me-2"></i><span id="toastInfoMsg">Info notification.</span></div>
-        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== SIDEBAR ========== -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-brand">
-        <div class="brand-icon">
-          <i class="bi bi-shield-lock-fill"></i>
-        </div>
-        <div class="brand-text">
-          <span class="brand-name">SaccoPay</span>
-          <span class="brand-sub">Member Portal</span>
-        </div>
-      </div>
-      <button class="btn sidebar-close-btn d-lg-none" id="sidebarCloseBtn" aria-label="Close sidebar">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-
-    <div class="sidebar-user-card">
-      <div class="user-avatar-wrap">
-        <img src="https://ui-avatars.com/api/?name=James+Kamau&background=1a73e8&color=fff&size=80&bold=true&font-size=0.4" alt="James Kamau" class="user-avatar" />
-        <span class="avatar-status-dot"></span>
-      </div>
-      <div class="user-info">
-        <h6 class="user-name">James Kamau</h6>
-        <span class="user-role badge bg-accent-subtle">Active Member</span>
-        <span class="user-id" style="font-size:11px;color:var(--text-muted);">SCO-2024-00142</span>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <ul class="nav flex-column">
-        <li class="nav-section-title">MAIN</li>
-        <li class="nav-item">
-          <a class="nav-link" href="./index-main.html">
-            <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./wallet.html">
-            <i class="bi bi-wallet-fill"></i><span>Wallet</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./member-profile.html">
-            <i class="bi bi-person-vcard"></i><span>Sacco Profile</span>
-          </a>
-        </li>
-
-        <li class="nav-section-title">FINANCE</li>
-        <li class="nav-item">
-          <a class="nav-link" href="./finance-savings.html">
-            <i class="bi bi-piggy-bank-fill"></i><span>Savings</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./finance-deposits.html">
-            <i class="bi bi-arrow-down-circle-fill"></i><span>Deposits</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./finance-withdrawals.html">
-            <i class="bi bi-arrow-up-circle-fill"></i><span>Withdrawals</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./reports-transactions.html">
-            <i class="bi bi-arrow-left-right"></i><span>Transactions</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./reports-statements.html">
-            <i class="bi bi-file-earmark-text"></i><span>Statements</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./membership-dividends.html">
-            <i class="bi bi-gift-fill"></i><span>Dividends</span>
-          </a>
-        </li>
-
-        <li class="nav-section-title">LOANS</li>
-        <li class="nav-item">
-          <a class="nav-link" href="./loans.html">
-            <i class="bi bi-cash-stack"></i><span>My Loans <span class="badge bg-warning text-dark ms-1">2</span></span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./loan-repayments.html">
-            <i class="bi bi-calendar-check-fill"></i><span>Loan Repayment</span>
-          </a>
-        </li>
-
-        <li class="nav-section-title">MEMBERSHIP</li>
-        <li class="nav-item">
-          <a class="nav-link" href="./membership-shares.html">
-            <i class="bi bi-bar-chart-fill"></i><span>Shares</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./membership-guarantors.html">
-            <i class="bi bi-people-fill"></i><span>Guarantors</span>
-          </a>
-        </li>
-
-        <li class="nav-section-title">ACCOUNT</li>
-        <li class="nav-item">
-          <a class="nav-link" href="./account-notifications.html">
-            <i class="bi bi-bell-fill"></i><span>Notifications <span class="badge bg-accent ms-1">5</span></span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./account-settings.html">
-            <i class="bi bi-gear-fill"></i><span>Settings</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./support.html">
-            <i class="bi bi-headset"></i><span>Support</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <div class="sidebar-footer">
-      <a href="./logout.html" class="btn btn-outline-danger w-100" id="logoutBtn">
-        <i class="bi bi-box-arrow-left me-2"></i>Logout
       </a>
-    </div>
-  </aside>
 
-  <!-- ========== SIDEBAR OVERLAY ========== -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-  <!-- ========== MAIN CONTENT ========== -->
-  <main class="main-content" id="mainContent">
-
-    <!-- ===== TOP NAVBAR ===== -->
-    <header class="top-navbar">
-      <div class="d-flex align-items-center gap-3">
-        <button class="btn btn-icon d-lg-none" id="sidebarToggleBtn" aria-label="Toggle sidebar">
-          <i class="bi bi-list fs-4"></i>
-        </button>
-        <div class="page-title-wrap">
-          <h4 class="page-title mb-0" id="pageTitle">Dashboard</h4>
-          <small class="text-muted d-none d-sm-inline" id="pageBreadcrumb">Home / Dashboard</small>
+      <!-- User Card -->
+      <div class="member-badge">
+        <div class="d-flex align-items-center gap-3">
+          <div class="position-relative">
+            <img
+              src="https://ui-avatars.com/api/?name=James+Kamau&background=1a73e8&color=fff&size=80&bold=true&font-size=0.4"
+              alt="James Kamau" class="rounded-circle" width="38" height="38"
+              style="border:2px solid var(--primary-border);" />
+            <span
+              style="position:absolute;bottom:0;right:0;width:10px;height:10px;background:var(--success);border-radius:50%;border:2px solid #fff;"></span>
+          </div>
+          <div class="flex-grow-1 min-w-0">
+            <div style="font-size:12px;font-weight:600;" class="text-truncate">James Kamau</div>
+            <span class="sp-badge mt-1"
+              style="background:var(--primary-subtle);color:var(--primary);border:1px solid var(--primary-border);font-size:9px;padding:2px 8px;">Active
+              Member</span>
+            <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);margin-top:2px;">
+              SCO-2024-00142</div>
+          </div>
         </div>
       </div>
-      <div class="d-flex align-items-center gap-2">
-        <!-- Search -->
-        <div class="navbar-search d-none d-md-block">
-          <div class="input-group input-group-sm">
-            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control border-start-0" placeholder="Search..." aria-label="Search" />
-          </div>
-        </div>
-        <!-- Notifications -->
-        <div class="dropdown">
-          <button class="btn btn-icon position-relative" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
-            <i class="bi bi-bell fs-5"></i>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">3</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end notification-dropdown" style="width:320px;">
-            <li class="dropdown-header d-flex justify-content-between align-items-center">
-              <strong>Notifications</strong>
-              <a href="#" class="text-decoration-none small text-accent">Mark all read</a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <a class="dropdown-item notification-item unread" href="#">
-                <div class="notif-icon bg-success-subtle text-success"><i class="bi bi-check-circle-fill"></i></div>
-                <div class="notif-content">
-                  <p class="mb-0">Contribution of <strong>KES 5,000</strong> received</p>
-                  <small class="text-muted">2 mins ago</small>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item notification-item unread" href="#">
-                <div class="notif-icon bg-warning-subtle text-warning"><i class="bi bi-clock-fill"></i></div>
-                <div class="notif-content">
-                  <p class="mb-0">Loan repayment due in <strong>3 days</strong></p>
-                  <small class="text-muted">1 hour ago</small>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item notification-item unread" href="#">
-                <div class="notif-icon bg-info-subtle text-info"><i class="bi bi-megaphone-fill"></i></div>
-                <div class="notif-content">
-                  <p class="mb-0">Annual General Meeting scheduled for <strong>Dec 15</strong></p>
-                  <small class="text-muted">Yesterday</small>
-                </div>
-              </a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-center small text-accent" href="#">View All Notifications</a></li>
-          </ul>
-        </div>
-        <!-- User Menu -->
-        <div class="dropdown">
-          <button class="btn btn-icon d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=36&bold=true&font-size=0.4" alt="User" class="rounded-circle" width="36" height="36" />
-            <span class="d-none d-md-inline fw-semibold small">John Doe</span>
-            <i class="bi bi-chevron-down small"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#" data-section="profile"><i class="bi bi-person me-2"></i>My Profile</a></li>
-            <li><a class="dropdown-item" href="#" data-section="settings"><i class="bi bi-gear me-2"></i>Settings</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="#" id="logoutBtn2"><i class="bi bi-box-arrow-left me-2"></i>Logout</a></li>
-          </ul>
-        </div>
+
+      <!-- Navigation -->
+      <nav class="py-2 flex-grow-1">
+        <div class="section-label">Main</div>
+        <a href="./index-main.html" class="nav-link active" data-section="dashboard"><span class="nav-icon"><i
+              class="bi bi-grid-1x2-fill"></i></span> Dashboard</a>
+        <a href="./wallet.html" class="nav-link" data-section="wallet"><span class="nav-icon"><i
+              class="bi bi-wallet-fill"></i></span> Wallet</a>
+        <a href="./member-profile.html" class="nav-link" data-section="profile"><span class="nav-icon"><i
+              class="bi bi-person-vcard"></i></span> Sacco Profile</a>
+
+        <div class="section-label">Finance</div>
+        <a href="./finance-savings.html" class="nav-link" data-section="savings"><span class="nav-icon"><i
+              class="bi bi-piggy-bank-fill"></i></span> Savings</a>
+        <a href="./finance-deposits.html" class="nav-link" data-section="contributions"><span class="nav-icon"><i
+              class="bi bi-arrow-down-circle-fill"></i></span> Deposits</a>
+        <a href="./finance-withdrawals.html" class="nav-link" data-section="withdrawals"><span class="nav-icon"><i
+              class="bi bi-arrow-up-circle-fill"></i></span> Withdrawals</a>
+        <a href="./reports-transactions.html" class="nav-link" data-section="transactions"><span class="nav-icon"><i
+              class="bi bi-arrow-left-right"></i></span> Transactions</a>
+        <a href="./reports-statements.html" class="nav-link" data-section="statements"><span class="nav-icon"><i
+              class="bi bi-file-earmark-text"></i></span> Statements</a>
+        <a href="./membership-dividends.html" class="nav-link" data-section="dividends"><span class="nav-icon"><i
+              class="bi bi-gift-fill"></i></span> Dividends</a>
+
+        <div class="section-label">Loans</div>
+        <a href="./loans.html" class="nav-link" data-section="loans"><span class="nav-icon"><i
+              class="bi bi-cash-stack"></i></span> My Loans <span class="nav-badge ms-auto">2</span></a>
+        <a href="./loan-repayments.html" class="nav-link" data-section="repayments"><span class="nav-icon"><i
+              class="bi bi-calendar-check-fill"></i></span> Loan Repayment</a>
+
+        <div class="section-label">Membership</div>
+        <a href="./membership-shares.html" class="nav-link" data-section="shares"><span class="nav-icon"><i
+              class="bi bi-bar-chart-fill"></i></span> Shares</a>
+        <a href="./membership-guarantors.html" class="nav-link" data-section="guarantors"><span class="nav-icon"><i
+              class="bi bi-people-fill"></i></span> Guarantors</a>
+
+        <div class="section-label">Account</div>
+        <a href="./account-notifications.html" class="nav-link d-flex align-items-center"
+          data-section="notifications"><span class="nav-icon"><i class="bi bi-bell-fill"></i></span> Notifications <span
+            class="nav-badge ms-auto">5</span></a>
+        <a href="./account-settings.html" class="nav-link" data-section="settings"><span class="nav-icon"><i
+              class="bi bi-gear-fill"></i></span> Settings</a>
+        <a href="./support.html" class="nav-link" data-section="support"><span class="nav-icon"><i
+              class="bi bi-headset"></i></span> Support</a>
+      </nav>
+
+      <div class="border-top p-2" style="border-color:var(--border-soft)!important;">
+        <a href="#" class="nav-link text-danger"
+          onclick="event.preventDefault();new bootstrap.Modal(document.getElementById('modalLogout')).show();"><span
+            class="nav-icon"><i class="bi bi-box-arrow-left"></i></span> Logout</a>
       </div>
-    </header>
+    </aside>
 
-    <!-- ===== CONTENT WRAPPER ===== -->
-    <div class="content-wrapper">
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <div class="sp-main" id="mainContent">
 
-      <!-- ===================== SECTION: DASHBOARD ===================== -->
-      <section class="content-section active" id="section-dashboard">
-
-        <!-- Quick Stats Row -->
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-lg-3">
-            <div class="stat-card stat-card--primary">
-              <div class="stat-card-body">
-                <div class="stat-icon">
-                  <i class="bi bi-wallet-fill"></i>
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">Total Savings</span>
-                  <h3 class="stat-value">KES 245,000</h3>
-                  <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>12.5%</span>
-                </div>
-              </div>
-              <div class="stat-card-footer">
-                <a href="#" data-section="contributions" class="stat-link">View Details <i class="bi bi-arrow-right"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-lg-3">
-            <div class="stat-card stat-card--success">
-              <div class="stat-card-body">
-                <div class="stat-icon">
-                  <i class="bi bi-graph-up-arrow"></i>
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">Share Capital</span>
-                  <h3 class="stat-value">KES 50,000</h3>
-                  <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>8.2%</span>
-                </div>
-              </div>
-              <div class="stat-card-footer">
-                <a href="#" data-section="dividends" class="stat-link">View Details <i class="bi bi-arrow-right"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-lg-3">
-            <div class="stat-card stat-card--warning">
-              <div class="stat-card-body">
-                <div class="stat-icon">
-                  <i class="bi bi-bank"></i>
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">Loan Balance</span>
-                  <h3 class="stat-value">KES 80,000</h3>
-                  <span class="stat-change negative"><i class="bi bi-arrow-down-short"></i>5.3%</span>
-                </div>
-              </div>
-              <div class="stat-card-footer">
-                <a href="#" data-section="loans" class="stat-link">View Details <i class="bi bi-arrow-right"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-lg-3">
-            <div class="stat-card stat-card--info">
-              <div class="stat-card-body">
-                <div class="stat-icon">
-                  <i class="bi bi-currency-exchange"></i>
-                </div>
-                <div class="stat-info">
-                  <span class="stat-label">Dividends Earned</span>
-                  <h3 class="stat-value">KES 12,300</h3>
-                  <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>18.7%</span>
-                </div>
-              </div>
-              <div class="stat-card-footer">
-                <a href="#" data-section="dividends" class="stat-link">View Details <i class="bi bi-arrow-right"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Actions + Account Summary -->
-        <div class="row g-3 mb-4">
-          <div class="col-lg-8">
-            <div class="card dashboard-card h-100">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0"><i class="bi bi-lightning-charge-fill text-accent me-2"></i>Quick Actions</h6>
-              </div>
-              <div class="card-body">
-                <div class="row g-2">
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalContribute">
-                      <i class="bi bi-plus-circle-fill"></i>
-                      <span>Contribute</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalLoanApply">
-                      <i class="bi bi-bank"></i>
-                      <span>Apply Loan</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalWithdraw">
-                      <i class="bi bi-cash-stack"></i>
-                      <span>Withdraw</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalTransfer">
-                      <i class="bi bi-arrow-left-right"></i>
-                      <span>Transfer</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" data-bs-toggle="modal" data-bs-target="#modalRepayLoan">
-                      <i class="bi bi-credit-card-fill"></i>
-                      <span>Repay Loan</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" onclick="navigateTo('statements')">
-                      <i class="bi bi-file-earmark-text"></i>
-                      <span>Statements</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" onclick="navigateTo('support')">
-                      <i class="bi bi-headset"></i>
-                      <span>Support</span>
-                    </button>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <button class="btn btn-action w-100" onclick="navigateTo('profile')">
-                      <i class="bi bi-person-gear"></i>
-                      <span>Profile</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="card dashboard-card h-100">
-              <div class="card-header">
-                <h6 class="card-title mb-0"><i class="bi bi-person-badge-fill text-accent me-2"></i>Account Summary</h6>
-              </div>
-              <div class="card-body p-0">
-                <ul class="list-group list-group-flush summary-list">
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="text-muted">Member No.</span>
-                    <strong>SP-2024-0451</strong>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="text-muted">Joined</span>
-                    <strong>Jan 15, 2020</strong>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="text-muted">Status</span>
-                    <span class="badge bg-success-subtle text-success">Active</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="text-muted">Loan Limit</span>
-                    <strong>KES 500,000</strong>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="text-muted">Guarantors</span>
-                    <strong>3 Available</strong>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <span class="text-muted">Next Contribution</span>
-                    <strong class="text-accent">Dec 1, 2024</strong>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Transactions + Loan Status -->
-        <div class="row g-3 mb-4">
-          <div class="col-lg-7">
-            <div class="card dashboard-card">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0"><i class="bi bi-clock-history text-accent me-2"></i>Recent Transactions</h6>
-                <a href="#" class="btn btn-sm btn-outline-accent" data-section="transactions">View All</a>
-              </div>
-              <div class="card-body p-0">
-                <div class="table-responsive">
-                  <table class="table table-hover mb-0 align-middle">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th class="text-end">Amount</th>
-                        <th class="text-center">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><small>Nov 28, 2024</small></td>
-                        <td><span class="badge bg-success-subtle text-success">Deposit</span></td>
-                        <td>Monthly Contribution</td>
-                        <td class="text-end fw-semibold text-success">+KES 5,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <td><small>Nov 25, 2024</small></td>
-                        <td><span class="badge bg-danger-subtle text-danger">Debit</span></td>
-                        <td>Loan Repayment</td>
-                        <td class="text-end fw-semibold text-danger">-KES 8,500</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <td><small>Nov 20, 2024</small></td>
-                        <td><span class="badge bg-info-subtle text-info">Transfer</span></td>
-                        <td>To Savings Account</td>
-                        <td class="text-end fw-semibold text-info">KES 10,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <td><small>Nov 15, 2024</small></td>
-                        <td><span class="badge bg-warning-subtle text-warning">Withdrawal</span></td>
-                        <td>Emergency Withdrawal</td>
-                        <td class="text-end fw-semibold text-warning">-KES 15,000</td>
-                        <td class="text-center"><span class="badge bg-warning text-dark">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <td><small>Nov 10, 2024</small></td>
-                        <td><span class="badge bg-success-subtle text-success">Deposit</span></td>
-                        <td>Share Capital Top-up</td>
-                        <td class="text-end fw-semibold text-success">+KES 20,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-5">
-            <div class="card dashboard-card h-100">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0"><i class="bi bi-pie-chart-fill text-accent me-2"></i>Active Loans</h6>
-                <a href="#" class="btn btn-sm btn-outline-accent" data-section="loans">View All</a>
-              </div>
-              <div class="card-body">
-                <!-- Loan 1 -->
-                <div class="loan-progress-card mb-3">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="fw-semibold">Normal Loan</span>
-                    <span class="small text-muted">KES 60,000 / 100,000</span>
-                  </div>
-                  <div class="progress" style="height:8px;">
-                    <div class="progress-bar bg-accent" role="progressbar" style="width:60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-1">
-                    <small class="text-muted">60% Repaid</small>
-                    <small class="text-muted">Due: Mar 2025</small>
-                  </div>
-                </div>
-                <!-- Loan 2 -->
-                <div class="loan-progress-card mb-3">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="fw-semibold">Emergency Loan</span>
-                    <span class="small text-muted">KES 15,000 / 20,000</span>
-                  </div>
-                  <div class="progress" style="height:8px;">
-                    <div class="progress-bar bg-success" role="progressbar" style="width:75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-1">
-                    <small class="text-muted">75% Repaid</small>
-                    <small class="text-muted">Due: Jan 2025</small>
-                  </div>
-                </div>
-                <!-- Loan Summary -->
-                <div class="alert alert-info-custom d-flex align-items-center mt-3 mb-0">
-                  <i class="bi bi-info-circle-fill me-2 fs-5"></i>
-                  <div>
-                    <strong>Total Outstanding:</strong> KES 45,000<br>
-                    <small>Next installment: KES 8,500 on Dec 5, 2024</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contribution Trend + Announcements -->
-        <div class="row g-3 mb-4">
-          <div class="col-lg-8">
-            <div class="card dashboard-card">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0"><i class="bi bi-bar-chart-line-fill text-accent me-2"></i>Contribution Trend (2024)</h6>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button type="button" class="btn btn-outline-accent active">Monthly</button>
-                  <button type="button" class="btn btn-outline-accent">Quarterly</button>
-                  <button type="button" class="btn btn-outline-accent">Yearly</button>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="chart-placeholder" id="contributionChart">
-                  <div class="chart-bars">
-                    <div class="chart-bar-item" data-month="Jan">
-                      <div class="chart-bar" style="height:40%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>Jan</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Feb">
-                      <div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>Feb</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Mar">
-                      <div class="chart-bar" style="height:45%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>Mar</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Apr">
-                      <div class="chart-bar" style="height:60%;" data-bs-toggle="tooltip" title="KES 7,500"></div>
-                      <span>Apr</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="May">
-                      <div class="chart-bar" style="height:55%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>May</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Jun">
-                      <div class="chart-bar" style="height:70%;" data-bs-toggle="tooltip" title="KES 10,000"></div>
-                      <span>Jun</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Jul">
-                      <div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>Jul</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Aug">
-                      <div class="chart-bar" style="height:65%;" data-bs-toggle="tooltip" title="KES 8,000"></div>
-                      <span>Aug</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Sep">
-                      <div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>Sep</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Oct">
-                      <div class="chart-bar" style="height:75%;" data-bs-toggle="tooltip" title="KES 10,000"></div>
-                      <span>Oct</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Nov">
-                      <div class="chart-bar active-bar" style="height:80%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
-                      <span>Nov</span>
-                    </div>
-                    <div class="chart-bar-item" data-month="Dec">
-                      <div class="chart-bar upcoming" style="height:30%;" data-bs-toggle="tooltip" title="Upcoming"></div>
-                      <span>Dec</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="card dashboard-card h-100">
-              <div class="card-header">
-                <h6 class="card-title mb-0"><i class="bi bi-megaphone-fill text-accent me-2"></i>Announcements</h6>
-              </div>
-              <div class="card-body p-0">
-                <div class="announcement-list">
-                  <a href="#" class="announcement-item" data-bs-toggle="modal" data-bs-target="#modalAnnouncement">
-                    <div class="announce-badge"><span class="badge bg-danger">New</span></div>
-                    <h6>Annual General Meeting</h6>
-                    <p class="mb-1 small text-muted">The AGM has been scheduled for December 15, 2024. All members are required to attend.</p>
-                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 28, 2024</small>
-                  </a>
-                  <a href="#" class="announcement-item">
-                    <h6>Dividend Declaration</h6>
-                    <p class="mb-1 small text-muted">Year 2024 dividends will be credited to accounts by January 15, 2025.</p>
-                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 20, 2024</small>
-                  </a>
-                  <a href="#" class="announcement-item">
-                    <h6>New Loan Products</h6>
-                    <p class="mb-1 small text-muted">We have introduced Education and Asset Finance loan products with competitive rates.</p>
-                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 10, 2024</small>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ===================== SECTION: CONTRIBUTIONS ===================== -->
-      <section class="content-section" id="section-contributions">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">My Contributions</h5>
-            <p class="text-muted mb-0">Track and manage all your sacco contributions</p>
-          </div>
-          <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalContribute">
-            <i class="bi bi-plus-circle me-2"></i>New Contribution
+      <!-- Topbar -->
+      <header class="sp-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm border-0 d-lg-none" onclick="toggleSidebar()"
+            style="font-size:18px;color:var(--text-muted);padding:4px 8px;">
+            <i class="bi bi-list"></i>
           </button>
-        </div>
-
-        <!-- Contribution Stats -->
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-accent-subtle"><i class="bi bi-wallet2 text-accent"></i></div>
-              <div>
-                <small class="text-muted">Total Contributions</small>
-                <h5 class="mb-0">KES 245,000</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-success-subtle"><i class="bi bi-calendar-check text-success"></i></div>
-              <div>
-                <small class="text-muted">This Month</small>
-                <h5 class="mb-0">KES 5,000</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-info-subtle"><i class="bi bi-graph-up text-info"></i></div>
-              <div>
-                <small class="text-muted">Average Monthly</small>
-                <h5 class="mb-0">KES 6,200</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-warning-subtle"><i class="bi bi-hash text-warning"></i></div>
-              <div>
-                <small class="text-muted">Months Active</small>
-                <h5 class="mb-0">58</h5>
-              </div>
-            </div>
+          <div>
+            <h4 class="mb-0 fw-bold" style="font-size:16px;" id="pageTitle">Dashboard</h4>
+            <small class="text-muted d-none d-sm-inline" style="font-size:12px;" id="pageBreadcrumb">Home /
+              Dashboard</small>
           </div>
         </div>
-
-        <!-- Contributions Tabs -->
-        <div class="card dashboard-card">
-          <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#contribHistory" type="button" role="tab">History</button>
+        <div class="ms-auto d-flex align-items-center gap-2">
+          <!-- Search -->
+          <div class="input-group input-group-sm d-none d-md-flex" style="max-width:240px;">
+            <span class="input-group-text border-end-0"
+              style="background:var(--bg-input);border-color:var(--border-medium);"><i class="bi bi-search"
+                style="font-size:12px;color:var(--text-muted);"></i></span>
+            <input type="text" class="form-control border-start-0" placeholder="Search..."
+              style="background:var(--bg-input);border-color:var(--border-medium);font-size:13px;" />
+          </div>
+          <!-- Notifications -->
+          <div class="dropdown">
+            <button class="topbar-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+              <i class="bi bi-bell" style="font-size:14px;"></i>
+              <span class="badge-dot">3</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end notification-dropdown" style="width:320px;">
+              <li class="dropdown-header d-flex justify-content-between align-items-center">
+                <strong style="font-size:13px;">Notifications</strong>
+                <a href="#" class="text-decoration-none small text-accent">Mark all read</a>
               </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contribSchedule" type="button" role="tab">Schedule</button>
+              <li>
+                <hr class="dropdown-divider m-0">
               </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contribRecurring" type="button" role="tab">Recurring</button>
+              <li>
+                <a class="dropdown-item notification-item unread" href="#">
+                  <div class="notif-icon bg-success-subtle text-success"><i class="bi bi-check-circle-fill"></i></div>
+                  <div class="notif-content">
+                    <p class="mb-0">Contribution of <strong>KES 5,000</strong> received</p>
+                    <small class="text-muted">2 mins ago</small>
+                  </div>
+                </a>
               </li>
+              <li>
+                <a class="dropdown-item notification-item unread" href="#">
+                  <div class="notif-icon bg-warning-subtle text-warning"><i class="bi bi-clock-fill"></i></div>
+                  <div class="notif-content">
+                    <p class="mb-0">Loan repayment due in <strong>3 days</strong></p>
+                    <small class="text-muted">1 hour ago</small>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item notification-item unread" href="#">
+                  <div class="notif-icon bg-info-subtle text-info"><i class="bi bi-megaphone-fill"></i></div>
+                  <div class="notif-content">
+                    <p class="mb-0">Annual General Meeting scheduled for <strong>Dec 15</strong></p>
+                    <small class="text-muted">Yesterday</small>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider m-0">
+              </li>
+              <li><a class="dropdown-item text-center small text-accent py-2" href="#">View All Notifications</a></li>
             </ul>
           </div>
-          <div class="card-body">
-            <div class="tab-content">
-              <!-- History Tab -->
-              <div class="tab-pane fade show active" id="contribHistory" role="tabpanel">
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  <div class="input-group input-group-sm" style="max-width:250px;">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search contributions..." />
-                  </div>
-                  <select class="form-select form-select-sm" style="max-width:150px;">
-                    <option>All Types</option>
-                    <option>Monthly</option>
-                    <option>Extra</option>
-                    <option>Share Capital</option>
-                  </select>
-                  <select class="form-select form-select-sm" style="max-width:150px;">
-                    <option>All Status</option>
-                    <option>Completed</option>
-                    <option>Pending</option>
-                    <option>Failed</option>
-                  </select>
-                </div>
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle mb-0">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Method</th>
-                        <th class="text-end">Amount</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Receipt</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>Nov 28, 2024</td>
-                        <td>Monthly</td>
-                        <td><i class="bi bi-phone me-1"></i>M-Pesa</td>
-                        <td class="text-end fw-semibold">KES 5,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                        <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>Oct 30, 2024</td>
-                        <td>Monthly</td>
-                        <td><i class="bi bi-phone me-1"></i>M-Pesa</td>
-                        <td class="text-end fw-semibold">KES 5,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                        <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>Oct 15, 2024</td>
-                        <td>Extra</td>
-                        <td><i class="bi bi-credit-card me-1"></i>Bank</td>
-                        <td class="text-end fw-semibold">KES 10,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                        <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                      </tr>
-                      <tr>
-                        <td>4</td>
-                        <td>Sep 28, 2024</td>
-                        <td>Monthly</td>
-                        <td><i class="bi bi-phone me-1"></i>M-Pesa</td>
-                        <td class="text-end fw-semibold">KES 5,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                        <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                      </tr>
-                      <tr>
-                        <td>5</td>
-                        <td>Aug 30, 2024</td>
-                        <td>Share Capital</td>
-                        <td><i class="bi bi-credit-card me-1"></i>Bank</td>
-                        <td class="text-end fw-semibold">KES 20,000</td>
-                        <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                        <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <nav class="mt-3">
-                  <ul class="pagination pagination-sm justify-content-center mb-0">
-                    <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <!-- Schedule Tab -->
-              <div class="tab-pane fade" id="contribSchedule" role="tabpanel">
-                <div class="text-center py-4">
-                  <i class="bi bi-calendar2-week display-4 text-muted"></i>
-                  <h6 class="mt-3">Contribution Schedule</h6>
-                  <p class="text-muted">Your next contribution of <strong>KES 5,000</strong> is due on <strong>December 1, 2024</strong></p>
-                  <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalContribute">
-                    <i class="bi bi-plus-circle me-2"></i>Pay Now
-                  </button>
-                </div>
-              </div>
-              <!-- Recurring Tab -->
-              <div class="tab-pane fade" id="contribRecurring" role="tabpanel">
-                <div class="alert alert-info-custom mb-3">
-                  <i class="bi bi-info-circle-fill me-2"></i>Set up automatic contributions from your M-Pesa or bank account.
-                </div>
-                <div class="card border">
-                  <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6 class="mb-1">Monthly Auto-Deduction</h6>
-                      <small class="text-muted">KES 5,000 via M-Pesa on 1st of every month</small>
-                    </div>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" checked id="recurringToggle">
-                      <label class="form-check-label" for="recurringToggle">Active</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== SECTION: LOANS ===================== -->
-      <section class="content-section" id="section-loans">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">Loans</h5>
-            <p class="text-muted mb-0">Manage your loan applications and repayments</p>
-          </div>
-          <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalLoanApply">
-            <i class="bi bi-plus-circle me-2"></i>Apply for Loan
-          </button>
-        </div>
-
-        <!-- Loan Stats -->
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-accent-subtle"><i class="bi bi-bank text-accent"></i></div>
-              <div>
-                <small class="text-muted">Total Borrowed</small>
-                <h5 class="mb-0">KES 120,000</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-danger-subtle"><i class="bi bi-exclamation-circle text-danger"></i></div>
-              <div>
-                <small class="text-muted">Outstanding</small>
-                <h5 class="mb-0">KES 45,000</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-success-subtle"><i class="bi bi-check2-circle text-success"></i></div>
-              <div>
-                <small class="text-muted">Total Repaid</small>
-                <h5 class="mb-0">KES 75,000</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-info-subtle"><i class="bi bi-hash text-info"></i></div>
-              <div>
-                <small class="text-muted">Active Loans</small>
-                <h5 class="mb-0">2</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Loan Tabs -->
-        <div class="card dashboard-card">
-          <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#loansActive" type="button" role="tab">Active Loans</button>
+          <!-- User Menu -->
+          <div class="dropdown">
+            <button class="d-flex align-items-center gap-2 px-2 py-1 border rounded-3 bg-white dropdown-toggle"
+              data-bs-toggle="dropdown"
+              style="border-color:var(--border-soft)!important;font-size:13px;cursor:pointer;">
+              <img
+                src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=36&bold=true&font-size=0.4"
+                alt="User" class="rounded-circle" width="28" height="28" />
+              <span class="d-none d-md-inline" style="color:var(--text-secondary);font-weight:500;">John Doe</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:14px;min-width:200px;">
+              <li class="px-3 py-2 border-bottom">
+                <div style="font-weight:600;font-size:13px;">John Doe</div>
+                <div style="font-size:11px;color:var(--text-muted);">john.doe@email.com</div>
               </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#loansHistory" type="button" role="tab">Loan History</button>
+              <li><a class="dropdown-item py-2" href="#" data-section="profile"><i
+                    class="bi bi-person me-2 text-muted"></i>My Profile</a></li>
+              <li><a class="dropdown-item py-2" href="#" data-section="settings"><i
+                    class="bi bi-gear me-2 text-muted"></i>Settings</a></li>
+              <li>
+                <hr class="dropdown-divider">
               </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#loansProducts" type="button" role="tab">Loan Products</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#loansCalculator" type="button" role="tab">Calculator</button>
-              </li>
+              <li><a class="dropdown-item py-2 text-danger" href="#"
+                  onclick="event.preventDefault();new bootstrap.Modal(document.getElementById('modalLogout')).show();"><i
+                    class="bi bi-box-arrow-left me-2"></i>Logout</a></li>
             </ul>
           </div>
-          <div class="card-body">
-            <div class="tab-content">
-              <!-- Active Loans -->
-              <div class="tab-pane fade show active" id="loansActive" role="tabpanel">
-                <div class="row g-3">
-                  <!-- Loan Card 1 -->
-                  <div class="col-md-6">
-                    <div class="card border loan-detail-card">
-                      <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                          <div>
-                            <h6 class="mb-1">Normal Loan</h6>
-                            <small class="text-muted">Ref: LN-2024-0089</small>
-                          </div>
-                          <span class="badge bg-accent">Active</span>
-                        </div>
-                        <div class="row g-2 mb-3">
-                          <div class="col-6">
-                            <small class="text-muted d-block">Principal</small>
-                            <strong>KES 100,000</strong>
-                          </div>
-                          <div class="col-6">
-                            <small class="text-muted d-block">Outstanding</small>
-                            <strong class="text-danger">KES 40,000</strong>
-                          </div>
-                          <div class="col-6">
-                            <small class="text-muted d-block">Interest Rate</small>
-                            <strong>12% p.a.</strong>
-                          </div>
-                          <div class="col-6">
-                            <small class="text-muted d-block">Monthly Installment</small>
-                            <strong>KES 8,500</strong>
-                          </div>
-                        </div>
-                        <div class="progress mb-2" style="height:8px;">
-                          <div class="progress-bar bg-accent" style="width:60%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                          <small class="text-muted">60% Repaid</small>
-                          <small class="text-muted">Due: Mar 2025</small>
-                        </div>
-                        <div class="mt-3">
-                          <button class="btn btn-sm btn-accent me-1" data-bs-toggle="modal" data-bs-target="#modalRepayLoan">
-                            <i class="bi bi-credit-card me-1"></i>Repay
-                          </button>
-                          <button class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-file-text me-1"></i>Schedule
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Loan Card 2 -->
-                  <div class="col-md-6">
-                    <div class="card border loan-detail-card">
-                      <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                          <div>
-                            <h6 class="mb-1">Emergency Loan</h6>
-                            <small class="text-muted">Ref: LN-2024-0112</small>
-                          </div>
-                          <span class="badge bg-accent">Active</span>
-                        </div>
-                        <div class="row g-2 mb-3">
-                          <div class="col-6">
-                            <small class="text-muted d-block">Principal</small>
-                            <strong>KES 20,000</strong>
-                          </div>
-                          <div class="col-6">
-                            <small class="text-muted d-block">Outstanding</small>
-                            <strong class="text-danger">KES 5,000</strong>
-                          </div>
-                          <div class="col-6">
-                            <small class="text-muted d-block">Interest Rate</small>
-                            <strong>10% p.a.</strong>
-                          </div>
-                          <div class="col-6">
-                            <small class="text-muted d-block">Monthly Installment</small>
-                            <strong>KES 3,500</strong>
-                          </div>
-                        </div>
-                        <div class="progress mb-2" style="height:8px;">
-                          <div class="progress-bar bg-success" style="width:75%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                          <small class="text-muted">75% Repaid</small>
-                          <small class="text-muted">Due: Jan 2025</small>
-                        </div>
-                        <div class="mt-3">
-                          <button class="btn btn-sm btn-accent me-1" data-bs-toggle="modal" data-bs-target="#modalRepayLoan">
-                            <i class="bi bi-credit-card me-1"></i>Repay
-                          </button>
-                          <button class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-file-text me-1"></i>Schedule
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+        </div>
+      </header>
+
+      <!-- ═══ PAGE CONTENT ═══ -->
+      <div class="sp-content fade-in-up">
+
+        <!-- ===================== SECTION: DASHBOARD ===================== -->
+        <section class="content-section active" id="section-dashboard">
+
+          <!-- Quick Stats Row -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="stat-card stat-card--primary">
+                <div class="stat-card-body">
+                  <div class="stat-icon"><i class="bi bi-wallet-fill"></i></div>
+                  <div class="stat-info">
+                    <span class="stat-label">Total Savings</span>
+                    <h3 class="stat-value">KES 245,000</h3>
+                    <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>12.5%</span>
                   </div>
                 </div>
-              </div>
-              <!-- Loan History -->
-              <div class="tab-pane fade" id="loansHistory" role="tabpanel">
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle mb-0">
-                    <thead>
-                      <tr>
-                        <th>Ref</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Date Issued</th>
-                        <th>Date Cleared</th>
-                        <th class="text-center">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>LN-2023-0045</td>
-                        <td>Normal</td>
-                        <td>KES 50,000</td>
-                        <td>Mar 2023</td>
-                        <td>Sep 2023</td>
-                        <td class="text-center"><span class="badge bg-success">Cleared</span></td>
-                      </tr>
-                      <tr>
-                        <td>LN-2022-0021</td>
-                        <td>Emergency</td>
-                        <td>KES 15,000</td>
-                        <td>Jul 2022</td>
-                        <td>Oct 2022</td>
-                        <td class="text-center"><span class="badge bg-success">Cleared</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="stat-card-footer">
+                  <a href="#" data-section="contributions" class="stat-link">View Details <i
+                      class="bi bi-arrow-right"></i></a>
                 </div>
               </div>
-              <!-- Loan Products -->
-              <div class="tab-pane fade" id="loansProducts" role="tabpanel">
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <div class="card border text-center p-3">
-                      <div class="mb-2"><i class="bi bi-house-door-fill display-6 text-accent"></i></div>
-                      <h6>Normal Loan</h6>
-                      <p class="small text-muted">Up to 3x savings at 12% p.a. Repay in 12-36 months.</p>
-                      <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalLoanApply">Apply Now</button>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="card border text-center p-3">
-                      <div class="mb-2"><i class="bi bi-lightning-fill display-6 text-warning"></i></div>
-                      <h6>Emergency Loan</h6>
-                      <p class="small text-muted">Up to 1x savings at 10% p.a. Disbursed within 24 hours.</p>
-                      <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalLoanApply">Apply Now</button>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="card border text-center p-3">
-                      <div class="mb-2"><i class="bi bi-mortarboard-fill display-6 text-info"></i></div>
-                      <h6>Education Loan</h6>
-                      <p class="small text-muted">Up to 2x savings at 8% p.a. School fees financing.</p>
-                      <button class="btn btn-sm btn-accent" data-bs-toggle="modal" data-bs-target="#modalLoanApply">Apply Now</button>
-                    </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="stat-card stat-card--success">
+                <div class="stat-card-body">
+                  <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                  <div class="stat-info">
+                    <span class="stat-label">Share Capital</span>
+                    <h3 class="stat-value">KES 50,000</h3>
+                    <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>8.2%</span>
                   </div>
                 </div>
+                <div class="stat-card-footer">
+                  <a href="#" data-section="dividends" class="stat-link">View Details <i
+                      class="bi bi-arrow-right"></i></a>
+                </div>
               </div>
-              <!-- Loan Calculator -->
-              <div class="tab-pane fade" id="loansCalculator" role="tabpanel">
-                <div class="row justify-content-center">
-                  <div class="col-md-8">
-                    <form id="loanCalcForm">
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <label class="form-label">Loan Amount (KES)</label>
-                          <input type="number" class="form-control" id="calcAmount" value="100000" min="1000" />
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Interest Rate (%)</label>
-                          <input type="number" class="form-control" id="calcRate" value="12" min="1" max="50" step="0.5" />
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Term (Months)</label>
-                          <input type="number" class="form-control" id="calcTerm" value="12" min="1" max="60" />
-                        </div>
-                      </div>
-                      <button type="button" class="btn btn-accent mt-3" id="btnCalculate">
-                        <i class="bi bi-calculator me-2"></i>Calculate
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="stat-card stat-card--warning">
+                <div class="stat-card-body">
+                  <div class="stat-icon"><i class="bi bi-bank"></i></div>
+                  <div class="stat-info">
+                    <span class="stat-label">Loan Balance</span>
+                    <h3 class="stat-value">KES 80,000</h3>
+                    <span class="stat-change negative"><i class="bi bi-arrow-down-short"></i>5.3%</span>
+                  </div>
+                </div>
+                <div class="stat-card-footer">
+                  <a href="#" data-section="loans" class="stat-link">View Details <i class="bi bi-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="stat-card stat-card--info">
+                <div class="stat-card-body">
+                  <div class="stat-icon"><i class="bi bi-currency-exchange"></i></div>
+                  <div class="stat-info">
+                    <span class="stat-label">Dividends Earned</span>
+                    <h3 class="stat-value">KES 12,300</h3>
+                    <span class="stat-change positive"><i class="bi bi-arrow-up-short"></i>18.7%</span>
+                  </div>
+                </div>
+                <div class="stat-card-footer">
+                  <a href="#" data-section="dividends" class="stat-link">View Details <i
+                      class="bi bi-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions + Account Summary -->
+          <div class="row g-3 mb-4">
+            <div class="col-lg-8">
+              <div class="dashboard-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="card-title mb-0"><i class="bi bi-lightning-charge-fill text-accent me-2"></i>Quick Actions
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row g-2">
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" data-bs-toggle="modal"
+                        data-bs-target="#modalContribute" style="border-radius:10px;">
+                        <i class="bi bi-plus-circle-fill d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Contribute</span>
                       </button>
-                    </form>
-                    <div id="calcResult" class="mt-4" style="display:none;">
-                      <div class="card border bg-light">
-                        <div class="card-body">
-                          <div class="row text-center g-3">
-                            <div class="col-4">
-                              <small class="text-muted d-block">Monthly Payment</small>
-                              <h5 class="text-accent mb-0" id="calcMonthly">-</h5>
-                            </div>
-                            <div class="col-4">
-                              <small class="text-muted d-block">Total Interest</small>
-                              <h5 class="text-warning mb-0" id="calcInterest">-</h5>
-                            </div>
-                            <div class="col-4">
-                              <small class="text-muted d-block">Total Repayment</small>
-                              <h5 class="mb-0" id="calcTotal">-</h5>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" data-bs-toggle="modal"
+                        data-bs-target="#modalLoanApply" style="border-radius:10px;">
+                        <i class="bi bi-bank d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Apply Loan</span>
+                      </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" data-bs-toggle="modal"
+                        data-bs-target="#modalWithdraw" style="border-radius:10px;">
+                        <i class="bi bi-cash-stack d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Withdraw</span>
+                      </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" data-bs-toggle="modal"
+                        data-bs-target="#modalTransfer" style="border-radius:10px;">
+                        <i class="bi bi-arrow-left-right d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Transfer</span>
+                      </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" data-bs-toggle="modal"
+                        data-bs-target="#modalRepayLoan" style="border-radius:10px;">
+                        <i class="bi bi-credit-card-fill d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Repay Loan</span>
+                      </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" onclick="navigateTo('statements')"
+                        style="border-radius:10px;">
+                        <i class="bi bi-file-earmark-text d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Statements</span>
+                      </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" onclick="navigateTo('support')"
+                        style="border-radius:10px;">
+                        <i class="bi bi-headset d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Support</span>
+                      </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <button class="btn btn-outline-accent w-100 py-2" onclick="navigateTo('profile')"
+                        style="border-radius:10px;">
+                        <i class="bi bi-person-gear d-block mb-1" style="font-size:18px;"></i>
+                        <span style="font-size:12px;">Profile</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="dashboard-card h-100">
+                <div class="card-header">
+                  <h6 class="card-title mb-0"><i class="bi bi-person-badge-fill text-accent me-2"></i>Account Summary
+                  </h6>
+                </div>
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush summary-list">
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Member No.</span>
+                      <strong>SP-2024-0451</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Joined</span>
+                      <strong>Jan 15, 2020</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Status</span>
+                      <span class="sp-badge"
+                        style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Active</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Loan Limit</span>
+                      <strong>KES 500,000</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Guarantors</span>
+                      <strong>3 Available</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Next Contribution</span>
+                      <strong class="text-accent">Dec 1, 2024</strong>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Transactions + Loan Status -->
+          <div class="row g-3 mb-4">
+            <div class="col-lg-7">
+              <div class="dashboard-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="card-title mb-0"><i class="bi bi-clock-history text-accent me-2"></i>Recent Transactions
+                  </h6>
+                  <a href="#" class="btn btn-sm btn-outline-accent" data-section="transactions">View All</a>
+                </div>
+                <div class="card-body p-0">
+                  <div class="sp-table-wrap">
+                    <table class="table table-hover mb-0 align-middle sp-table">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Type</th>
+                          <th>Description</th>
+                          <th class="text-end">Amount</th>
+                          <th class="text-center">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><small>Nov 28, 2024</small></td>
+                          <td><span class="sp-badge"
+                              style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Deposit</span>
+                          </td>
+                          <td>Monthly Contribution</td>
+                          <td class="text-end fw-semibold text-success">+KES 5,000</td>
+                          <td class="text-center"><span class="sp-badge"
+                              style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Completed</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><small>Nov 25, 2024</small></td>
+                          <td><span class="sp-badge"
+                              style="background:rgba(229,57,53,0.06);color:var(--danger);border:1px solid rgba(229,57,53,0.18);">Debit</span>
+                          </td>
+                          <td>Loan Repayment</td>
+                          <td class="text-end fw-semibold text-danger">-KES 8,500</td>
+                          <td class="text-center"><span class="sp-badge"
+                              style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Completed</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><small>Nov 20, 2024</small></td>
+                          <td><span class="sp-badge"
+                              style="background:rgba(2,136,209,0.06);color:var(--info);border:1px solid rgba(2,136,209,0.18);">Transfer</span>
+                          </td>
+                          <td>To Savings Account</td>
+                          <td class="text-end fw-semibold text-info">KES 10,000</td>
+                          <td class="text-center"><span class="sp-badge"
+                              style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Completed</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><small>Nov 15, 2024</small></td>
+                          <td><span class="sp-badge"
+                              style="background:rgba(249,168,37,0.08);color:var(--warning);border:1px solid rgba(249,168,37,0.2);">Withdrawal</span>
+                          </td>
+                          <td>Emergency Withdrawal</td>
+                          <td class="text-end fw-semibold" style="color:var(--warning);">-KES 15,000</td>
+                          <td class="text-center"><span class="sp-badge"
+                              style="background:rgba(249,168,37,0.08);color:var(--warning);border:1px solid rgba(249,168,37,0.2);">Pending</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><small>Nov 10, 2024</small></td>
+                          <td><span class="sp-badge"
+                              style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Deposit</span>
+                          </td>
+                          <td>Share Capital Top-up</td>
+                          <td class="text-end fw-semibold text-success">+KES 20,000</td>
+                          <td class="text-center"><span class="sp-badge"
+                              style="background:rgba(0,200,83,0.08);color:var(--success);border:1px solid rgba(0,200,83,0.2);">Completed</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="dashboard-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="card-title mb-0"><i class="bi bi-pie-chart-fill text-accent me-2"></i>Active Loans</h6>
+                  <a href="#" class="btn btn-sm btn-outline-accent" data-section="loans">View All</a>
+                </div>
+                <div class="card-body">
+                  <!-- Loan 1 -->
+                  <div class="loan-progress-card mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="fw-semibold">Normal Loan</span>
+                      <span class="small text-muted">KES 60,000 / 100,000</span>
+                    </div>
+                    <div class="sp-progress">
+                      <div class="sp-progress-fill" style="width:60%;background:var(--primary);"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                      <small class="text-muted">60% Repaid</small>
+                      <small class="text-muted">Due: Mar 2025</small>
+                    </div>
+                  </div>
+                  <!-- Loan 2 -->
+                  <div class="loan-progress-card mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="fw-semibold">Emergency Loan</span>
+                      <span class="small text-muted">KES 15,000 / 20,000</span>
+                    </div>
+                    <div class="sp-progress">
+                      <div class="sp-progress-fill" style="width:75%;background:var(--success);"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                      <small class="text-muted">75% Repaid</small>
+                      <small class="text-muted">Due: Jan 2025</small>
+                    </div>
+                  </div>
+                  <!-- Loan Summary -->
+                  <div class="alert alert-info-custom d-flex align-items-center mt-3 mb-0">
+                    <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                    <div>
+                      <strong>Total Outstanding:</strong> KES 45,000<br>
+                      <small>Next installment: KES 8,500 on Dec 5, 2024</small>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- ===================== SECTION: WITHDRAWALS ===================== -->
-      <section class="content-section" id="section-withdrawals">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">Withdrawals</h5>
-            <p class="text-muted mb-0">Request and track fund withdrawals</p>
-          </div>
-          <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalWithdraw">
-            <i class="bi bi-cash-stack me-2"></i>New Withdrawal
-          </button>
-        </div>
-
-        <div class="card dashboard-card">
-          <div class="card-header">
-            <h6 class="card-title mb-0"><i class="bi bi-clock-history text-accent me-2"></i>Withdrawal History</h6>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Method</th>
-                    <th>Account</th>
-                    <th class="text-end">Amount</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Nov 15, 2024</td>
-                    <td><i class="bi bi-phone me-1"></i>M-Pesa</td>
-                    <td>0712***456</td>
-                    <td class="text-end fw-semibold">KES 15,000</td>
-                    <td class="text-center"><span class="badge bg-warning text-dark">Pending</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-danger" title="Cancel Request"><i class="bi bi-x-circle"></i></button></td>
-                  </tr>
-                  <tr>
-                    <td>Oct 5, 2024</td>
-                    <td><i class="bi bi-credit-card me-1"></i>Bank</td>
-                    <td>KCB ***789</td>
-                    <td class="text-end fw-semibold">KES 30,000</td>
-                    <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                  </tr>
-                  <tr>
-                    <td>Aug 20, 2024</td>
-                    <td><i class="bi bi-phone me-1"></i>M-Pesa</td>
-                    <td>0712***456</td>
-                    <td class="text-end fw-semibold">KES 10,000</td>
-                    <td class="text-center"><span class="badge bg-success">Completed</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-secondary" title="Download Receipt"><i class="bi bi-download"></i></button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== SECTION: TRANSACTIONS ===================== -->
-      <section class="content-section" id="section-transactions">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">All Transactions</h5>
-            <p class="text-muted mb-0">Complete history of all your financial activities</p>
-          </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-outline-accent btn-sm" id="btnExportCSV"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV</button>
-            <button class="btn btn-outline-accent btn-sm" id="btnExportPDF"><i class="bi bi-file-earmark-pdf me-1"></i>Export PDF</button>
-          </div>
-        </div>
-
-        <div class="card dashboard-card">
-          <div class="card-header">
-            <div class="d-flex flex-wrap gap-2">
-              <div class="input-group input-group-sm" style="max-width:250px;">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search transactions..." />
-              </div>
-              <select class="form-select form-select-sm" style="max-width:150px;">
-                <option>All Types</option>
-                <option>Deposits</option>
-                <option>Withdrawals</option>
-                <option>Loans</option>
-                <option>Transfers</option>
-              </select>
-              <input type="date" class="form-control form-control-sm" style="max-width:160px;" />
-              <input type="date" class="form-control form-control-sm" style="max-width:160px;" />
-              <button class="btn btn-sm btn-accent"><i class="bi bi-funnel me-1"></i>Filter</button>
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Ref</th>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th class="text-end">Debit</th>
-                    <th class="text-end">Credit</th>
-                    <th class="text-end">Balance</th>
-                    <th class="text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><small>TXN-001</small></td>
-                    <td><small>Nov 28</small></td>
-                    <td><span class="badge bg-success-subtle text-success">Deposit</span></td>
-                    <td>Monthly Contribution</td>
-                    <td class="text-end">-</td>
-                    <td class="text-end text-success fw-semibold">5,000</td>
-                    <td class="text-end fw-semibold">245,000</td>
-                    <td class="text-center"><span class="badge bg-success">Done</span></td>
-                  </tr>
-                  <tr>
-                    <td><small>TXN-002</small></td>
-                    <td><small>Nov 25</small></td>
-                    <td><span class="badge bg-danger-subtle text-danger">Debit</span></td>
-                    <td>Loan Repayment</td>
-                    <td class="text-end text-danger fw-semibold">8,500</td>
-                    <td class="text-end">-</td>
-                    <td class="text-end fw-semibold">240,000</td>
-                    <td class="text-center"><span class="badge bg-success">Done</span></td>
-                  </tr>
-                  <tr>
-                    <td><small>TXN-003</small></td>
-                    <td><small>Nov 20</small></td>
-                    <td><span class="badge bg-info-subtle text-info">Transfer</span></td>
-                    <td>Internal Transfer</td>
-                    <td class="text-end text-danger fw-semibold">10,000</td>
-                    <td class="text-end">-</td>
-                    <td class="text-end fw-semibold">248,500</td>
-                    <td class="text-center"><span class="badge bg-success">Done</span></td>
-                  </tr>
-                  <tr>
-                    <td><small>TXN-004</small></td>
-                    <td><small>Nov 15</small></td>
-                    <td><span class="badge bg-warning-subtle text-warning">Withdrawal</span></td>
-                    <td>Emergency Withdrawal</td>
-                    <td class="text-end text-danger fw-semibold">15,000</td>
-                    <td class="text-end">-</td>
-                    <td class="text-end fw-semibold">258,500</td>
-                    <td class="text-center"><span class="badge bg-warning text-dark">Pending</span></td>
-                  </tr>
-                  <tr>
-                    <td><small>TXN-005</small></td>
-                    <td><small>Nov 10</small></td>
-                    <td><span class="badge bg-success-subtle text-success">Deposit</span></td>
-                    <td>Share Capital</td>
-                    <td class="text-end">-</td>
-                    <td class="text-end text-success fw-semibold">20,000</td>
-                    <td class="text-end fw-semibold">273,500</td>
-                    <td class="text-center"><span class="badge bg-success">Done</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer">
-            <nav>
-              <ul class="pagination pagination-sm justify-content-center mb-0">
-                <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== SECTION: STATEMENTS ===================== -->
-      <section class="content-section" id="section-statements">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">Account Statements</h5>
-            <p class="text-muted mb-0">Download or view your account statements</p>
-          </div>
-        </div>
-
-        <div class="card dashboard-card">
-          <div class="card-body">
-            <form class="row g-3 align-items-end">
-              <div class="col-md-3">
-                <label class="form-label">Account Type</label>
-                <select class="form-select">
-                  <option>Savings Account</option>
-                  <option>Share Capital</option>
-                  <option>Loan Account</option>
-                  <option>All Accounts</option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">From Date</label>
-                <input type="date" class="form-control" />
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">To Date</label>
-                <input type="date" class="form-control" />
-              </div>
-              <div class="col-md-3">
-                <button type="button" class="btn btn-accent w-100"><i class="bi bi-file-earmark-text me-2"></i>Generate Statement</button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="card dashboard-card mt-3">
-          <div class="card-header">
-            <h6 class="card-title mb-0"><i class="bi bi-folder2-open text-accent me-2"></i>Recent Statements</h6>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Period</th>
-                    <th>Account</th>
-                    <th>Generated On</th>
-                    <th class="text-center">Format</th>
-                    <th class="text-center">Download</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Oct 2024</td>
-                    <td>Savings Account</td>
-                    <td>Nov 1, 2024</td>
-                    <td class="text-center"><span class="badge bg-danger-subtle text-danger">PDF</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-accent"><i class="bi bi-download me-1"></i>Download</button></td>
-                  </tr>
-                  <tr>
-                    <td>Sep 2024</td>
-                    <td>Savings Account</td>
-                    <td>Oct 1, 2024</td>
-                    <td class="text-center"><span class="badge bg-danger-subtle text-danger">PDF</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-accent"><i class="bi bi-download me-1"></i>Download</button></td>
-                  </tr>
-                  <tr>
-                    <td>Q3 2024</td>
-                    <td>All Accounts</td>
-                    <td>Oct 5, 2024</td>
-                    <td class="text-center"><span class="badge bg-success-subtle text-success">Excel</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-accent"><i class="bi bi-download me-1"></i>Download</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== SECTION: DIVIDENDS ===================== -->
-      <section class="content-section" id="section-dividends">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">Dividends & Returns</h5>
-            <p class="text-muted mb-0">Track your earnings, dividends, and interest on savings</p>
-          </div>
-        </div>
-
-        <div class="row g-3 mb-4">
-          <div class="col-md-4">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-accent-subtle"><i class="bi bi-graph-up-arrow text-accent"></i></div>
-              <div>
-                <small class="text-muted">Total Dividends Earned</small>
-                <h5 class="mb-0">KES 12,300</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-success-subtle"><i class="bi bi-piggy-bank text-success"></i></div>
-              <div>
-                <small class="text-muted">Interest on Savings</small>
-                <h5 class="mb-0">KES 8,500</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="mini-stat-card">
-              <div class="mini-stat-icon bg-info-subtle"><i class="bi bi-percent text-info"></i></div>
-              <div>
-                <small class="text-muted">Dividend Rate (2024)</small>
-                <h5 class="mb-0">15%</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card dashboard-card">
-          <div class="card-header">
-            <h6 class="card-title mb-0"><i class="bi bi-clock-history text-accent me-2"></i>Dividend History</h6>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Year</th>
-                    <th>Type</th>
-                    <th class="text-end">Amount</th>
-                    <th>Date Credited</th>
-                    <th class="text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>2024</td>
-                    <td>Annual Dividend</td>
-                    <td class="text-end fw-semibold text-success">KES 7,500</td>
-                    <td>Pending (Jan 2025)</td>
-                    <td class="text-center"><span class="badge bg-warning text-dark">Pending</span></td>
-                  </tr>
-                  <tr>
-                    <td>2023</td>
-                    <td>Annual Dividend</td>
-                    <td class="text-end fw-semibold text-success">KES 4,800</td>
-                    <td>Jan 15, 2024</td>
-                    <td class="text-center"><span class="badge bg-success">Credited</span></td>
-                  </tr>
-                  <tr>
-                    <td>2023</td>
-                    <td>Interest on Savings</td>
-                    <td class="text-end fw-semibold text-success">KES 8,500</td>
-                    <td>Jan 15, 2024</td>
-                    <td class="text-center"><span class="badge bg-success">Credited</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== SECTION: PROFILE ===================== -->
-      <section class="content-section" id="section-profile">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">My Profile</h5>
-            <p class="text-muted mb-0">View and update your personal information</p>
-          </div>
-        </div>
-
-        <div class="row g-4">
-          <!-- Profile Card -->
-          <div class="col-lg-4">
-            <div class="card dashboard-card text-center">
-              <div class="card-body py-4">
-                <div class="position-relative d-inline-block mb-3">
-                  <img src="https://ui-avatars.com/api/?name=John+Doe&background=1a73e8&color=fff&size=120&bold=true&font-size=0.4" alt="Profile" class="rounded-circle border border-4 border-accent-subtle" width="120" height="120" />
-                  <button class="btn btn-sm btn-accent rounded-circle position-absolute bottom-0 end-0" title="Change Photo" style="width:32px;height:32px;padding:0;">
-                    <i class="bi bi-camera-fill small"></i>
-                  </button>
+          <!-- Contribution Trend + Announcements -->
+          <div class="row g-3 mb-4">
+            <div class="col-lg-8">
+              <div class="dashboard-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="card-title mb-0"><i class="bi bi-bar-chart-line-fill text-accent me-2"></i>Contribution
+                    Trend (2024)</h6>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-accent active">Monthly</button>
+                    <button type="button" class="btn btn-outline-accent">Quarterly</button>
+                    <button type="button" class="btn btn-outline-accent">Yearly</button>
+                  </div>
                 </div>
-                <h5 class="mb-1">John Doe</h5>
-                <p class="text-muted mb-2">john.doe@email.com</p>
-                <span class="badge bg-success-subtle text-success mb-3">Active Member</span>
-                <hr>
-                <ul class="list-unstyled text-start small">
-                  <li class="mb-2"><i class="bi bi-hash me-2 text-accent"></i><strong>Member No:</strong> SP-2024-0451</li>
-                  <li class="mb-2"><i class="bi bi-calendar3 me-2 text-accent"></i><strong>Joined:</strong> Jan 15, 2020</li>
-                  <li class="mb-2"><i class="bi bi-telephone me-2 text-accent"></i><strong>Phone:</strong> +254 712 345 678</li>
-                  <li class="mb-2"><i class="bi bi-geo-alt me-2 text-accent"></i><strong>Location:</strong> Nairobi, Kenya</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <!-- Profile Form -->
-          <div class="col-lg-8">
-            <div class="card dashboard-card">
-              <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profilePersonal" type="button" role="tab">Personal Info</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profileSecurity" type="button" role="tab">Security</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profileKYC" type="button" role="tab">KYC Documents</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profileNextOfKin" type="button" role="tab">Next of Kin</button>
-                  </li>
-                </ul>
-              </div>
-              <div class="card-body">
-                <div class="tab-content">
-                  <!-- Personal Info -->
-                  <div class="tab-pane fade show active" id="profilePersonal" role="tabpanel">
-                    <form>
-                      <div class="row g-3">
-                        <div class="col-md-6">
-                          <label class="form-label">First Name</label>
-                          <input type="text" class="form-control" value="John" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Last Name</label>
-                          <input type="text" class="form-control" value="Doe" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Email Address</label>
-                          <input type="email" class="form-control" value="john.doe@email.com" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Phone Number</label>
-                          <input type="tel" class="form-control" value="+254 712 345 678" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">ID Number</label>
-                          <input type="text" class="form-control" value="12345678" readonly />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Date of Birth</label>
-                          <input type="date" class="form-control" value="1990-05-15" />
-                        </div>
-                        <div class="col-12">
-                          <label class="form-label">Address</label>
-                          <textarea class="form-control" rows="2">P.O. Box 12345-00100, Nairobi</textarea>
-                        </div>
-                        <div class="col-12">
-                          <button type="button" class="btn btn-accent" onclick="showToast('success','Profile updated successfully!')">
-                            <i class="bi bi-check-lg me-2"></i>Update Profile
-                          </button>
-                        </div>
+                <div class="card-body">
+                  <div class="chart-placeholder" id="contributionChart">
+                    <div class="chart-bars">
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:40%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
+                        <span>Jan</span>
                       </div>
-                    </form>
-                  </div>
-                  <!-- Security -->
-                  <div class="tab-pane fade" id="profileSecurity" role="tabpanel">
-                    <form>
-                      <div class="row g-3">
-                        <div class="col-md-12">
-                          <label class="form-label">Current Password</label>
-                          <input type="password" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">New Password</label>
-                          <input type="password" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Confirm New Password</label>
-                          <input type="password" class="form-control" />
-                        </div>
-                        <div class="col-12">
-                          <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="enable2FA" checked>
-                            <label class="form-check-label" for="enable2FA">Enable Two-Factor Authentication (2FA)</label>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <button type="button" class="btn btn-accent" onclick="showToast('success','Password updated successfully!')">
-                            <i class="bi bi-shield-lock me-2"></i>Update Password
-                          </button>
-                        </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
+                        <span>Feb</span>
                       </div>
-                    </form>
-                  </div>
-                  <!-- KYC -->
-                  <div class="tab-pane fade" id="profileKYC" role="tabpanel">
-                    <div class="table-responsive">
-                      <table class="table align-middle mb-0">
-                        <thead>
-                          <tr>
-                            <th>Document</th>
-                            <th>Status</th>
-                            <th class="text-center">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><i class="bi bi-file-earmark-image me-2"></i>National ID (Front)</td>
-                            <td><span class="badge bg-success">Verified</span></td>
-                            <td class="text-center"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>View</button></td>
-                          </tr>
-                          <tr>
-                            <td><i class="bi bi-file-earmark-image me-2"></i>National ID (Back)</td>
-                            <td><span class="badge bg-success">Verified</span></td>
-                            <td class="text-center"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>View</button></td>
-                          </tr>
-                          <tr>
-                            <td><i class="bi bi-file-earmark-image me-2"></i>Passport Photo</td>
-                            <td><span class="badge bg-success">Verified</span></td>
-                            <td class="text-center"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>View</button></td>
-                          </tr>
-                          <tr>
-                            <td><i class="bi bi-file-earmark-image me-2"></i>KRA PIN Certificate</td>
-                            <td><span class="badge bg-warning text-dark">Pending</span></td>
-                            <td class="text-center"><button class="btn btn-sm btn-accent"><i class="bi bi-upload me-1"></i>Upload</button></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:45%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
+                        <span>Mar</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:60%;" data-bs-toggle="tooltip" title="KES 7,500"></div>
+                        <span>Apr</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:55%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
+                        <span>May</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:70%;" data-bs-toggle="tooltip" title="KES 10,000"></div>
+                        <span>Jun</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
+                        <span>Jul</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:65%;" data-bs-toggle="tooltip" title="KES 8,000"></div>
+                        <span>Aug</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:50%;" data-bs-toggle="tooltip" title="KES 5,000"></div>
+                        <span>Sep</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar" style="height:75%;" data-bs-toggle="tooltip" title="KES 10,000"></div>
+                        <span>Oct</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar active-bar" style="height:80%;" data-bs-toggle="tooltip"
+                          title="KES 5,000"></div><span>Nov</span>
+                      </div>
+                      <div class="chart-bar-item">
+                        <div class="chart-bar upcoming" style="height:30%;" data-bs-toggle="tooltip" title="Upcoming">
+                        </div><span>Dec</span>
+                      </div>
                     </div>
                   </div>
-                  <!-- Next of Kin -->
-                  <div class="tab-pane fade" id="profileNextOfKin" role="tabpanel">
-                    <form>
-                      <div class="row g-3">
-                        <div class="col-md-6">
-                          <label class="form-label">Full Name</label>
-                          <input type="text" class="form-control" value="Jane Doe" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Relationship</label>
-                          <select class="form-select">
-                            <option selected>Spouse</option>
-                            <option>Parent</option>
-                            <option>Sibling</option>
-                            <option>Child</option>
-                            <option>Other</option>
-                          </select>
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">Phone Number</label>
-                          <input type="tel" class="form-control" value="+254 722 987 654" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">ID Number</label>
-                          <input type="text" class="form-control" value="87654321" />
-                        </div>
-                        <div class="col-12">
-                          <button type="button" class="btn btn-accent" onclick="showToast('success','Next of kin updated!')">
-                            <i class="bi bi-check-lg me-2"></i>Save Changes
-                          </button>
-                        </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="dashboard-card h-100">
+                <div class="card-header">
+                  <h6 class="card-title mb-0"><i class="bi bi-megaphone-fill text-accent me-2"></i>Announcements</h6>
+                </div>
+                <div class="card-body p-0">
+                  <div class="announcement-list">
+                    <a href="#" class="announcement-item" data-bs-toggle="modal" data-bs-target="#modalAnnouncement">
+                      <div class="mb-1"><span class="sp-badge"
+                          style="background:rgba(229,57,53,0.06);color:var(--danger);border:1px solid rgba(229,57,53,0.18);">New</span>
                       </div>
-                    </form>
+                      <h6 style="font-size:13px;font-weight:700;">Annual General Meeting</h6>
+                      <p class="mb-1 small text-muted">The AGM has been scheduled for December 15, 2024. All members are
+                        required to attend.</p>
+                      <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 28, 2024</small>
+                    </a>
+                    <a href="#" class="announcement-item">
+                      <h6 style="font-size:13px;font-weight:700;">Dividend Declaration</h6>
+                      <p class="mb-1 small text-muted">Year 2024 dividends will be credited to accounts by January 15,
+                        2025.</p>
+                      <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 20, 2024</small>
+                    </a>
+                    <a href="#" class="announcement-item">
+                      <h6 style="font-size:13px;font-weight:700;">New Loan Products</h6>
+                      <p class="mb-1 small text-muted">We have introduced Education and Asset Finance loan products with
+                        competitive rates.</p>
+                      <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>Nov 10, 2024</small>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- ===================== SECTION: SUPPORT ===================== -->
-      <section class="content-section" id="section-support">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">Support Center</h5>
-            <p class="text-muted mb-0">Get help, raise tickets, and contact support</p>
-          </div>
-          <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalNewTicket">
-            <i class="bi bi-plus-circle me-2"></i>New Ticket
-          </button>
-        </div>
 
-        <div class="row g-3 mb-4">
-          <!-- Contact Cards -->
-          <div class="col-md-4">
-            <div class="card dashboard-card text-center p-4 h-100">
-              <i class="bi bi-telephone-fill display-5 text-accent mb-3"></i>
-              <h6>Call Us</h6>
-              <p class="small text-muted mb-2">Mon-Fri, 8AM - 5PM</p>
-              <a href="tel:+254700000000" class="btn btn-sm btn-outline-accent"><i class="bi bi-telephone me-1"></i>+254 700 000 000</a>
+        <!-- ========== FOOTER ========== -->
+        <footer class="content-footer">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p class="mb-1 mb-md-0 small text-muted">&copy; 2024 SaccoPay. All rights reserved.</p>
+            <div class="d-flex gap-3 small">
+              <a href="#" class="text-muted text-decoration-none">Privacy Policy</a>
+              <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+              <a href="#" class="text-muted text-decoration-none">Help Center</a>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="card dashboard-card text-center p-4 h-100">
-              <i class="bi bi-envelope-fill display-5 text-accent mb-3"></i>
-              <h6>Email Us</h6>
-              <p class="small text-muted mb-2">Response within 24 hours</p>
-              <a href="mailto:support@saccopay.co.ke" class="btn btn-sm btn-outline-accent"><i class="bi bi-envelope me-1"></i>support@saccopay.co.ke</a>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card dashboard-card text-center p-4 h-100">
-              <i class="bi bi-chat-dots-fill display-5 text-accent mb-3"></i>
-              <h6>Live Chat</h6>
-              <p class="small text-muted mb-2">Instant support</p>
-              <button class="btn btn-sm btn-accent"><i class="bi bi-chat-left-text me-1"></i>Start Chat</button>
-            </div>
-          </div>
-        </div>
+        </footer>
 
-        <!-- Support Tickets -->
-        <div class="card dashboard-card">
-          <div class="card-header">
-            <h6 class="card-title mb-0"><i class="bi bi-ticket-detailed text-accent me-2"></i>My Tickets</h6>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Ticket ID</th>
-                    <th>Subject</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th class="text-center">Priority</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><small>#TK-2024-089</small></td>
-                    <td>M-Pesa payment not reflecting</td>
-                    <td>Payments</td>
-                    <td>Nov 28, 2024</td>
-                    <td class="text-center"><span class="badge bg-danger">High</span></td>
-                    <td class="text-center"><span class="badge bg-warning text-dark">Open</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-accent"><i class="bi bi-eye me-1"></i>View</button></td>
-                  </tr>
-                  <tr>
-                    <td><small>#TK-2024-085</small></td>
-                    <td>Loan statement request</td>
-                    <td>Loans</td>
-                    <td>Nov 20, 2024</td>
-                    <td class="text-center"><span class="badge bg-info">Low</span></td>
-                    <td class="text-center"><span class="badge bg-success">Resolved</span></td>
-                    <td class="text-center"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye me-1"></i>View</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      </div><!-- /sp-content -->
+    </div><!-- /sp-main -->
+  </div><!-- /sp-layout -->
 
-        <!-- FAQ Section -->
-        <div class="card dashboard-card mt-3">
-          <div class="card-header">
-            <h6 class="card-title mb-0"><i class="bi bi-question-circle-fill text-accent me-2"></i>Frequently Asked Questions</h6>
-          </div>
-          <div class="card-body">
-            <div class="accordion" id="faqAccordion">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">How do I make a contribution?</button>
-                </h2>
-                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body small">You can make contributions via M-Pesa paybill, bank transfer, or through the "Contribute" button on your dashboard. The M-Pesa paybill number is 123456 and account number is your member number.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">How do I apply for a loan?</button>
-                </h2>
-                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body small">Navigate to the Loans section and click "Apply for Loan". You can borrow up to 3x your total savings. You will need guarantors for loans above KES 50,000.</div>
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">When are dividends paid?</button>
-                </h2>
-                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                  <div class="accordion-body small">Dividends are declared at the Annual General Meeting (AGM) held every December and credited to member accounts by January 15 of the following year.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== SECTION: SETTINGS ===================== -->
-      <section class="content-section" id="section-settings">
-        <div class="section-header mb-4">
-          <div>
-            <h5 class="mb-1">Settings</h5>
-            <p class="text-muted mb-0">Manage your preferences and notifications</p>
-          </div>
-        </div>
-
-        <div class="row g-4">
-          <div class="col-lg-6">
-            <div class="card dashboard-card">
-              <div class="card-header">
-                <h6 class="card-title mb-0"><i class="bi bi-bell-fill text-accent me-2"></i>Notification Preferences</h6>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div>
-                    <h6 class="mb-0">Email Notifications</h6>
-                    <small class="text-muted">Receive transaction alerts via email</small>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" checked id="notifEmail">
-                  </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div>
-                    <h6 class="mb-0">SMS Notifications</h6>
-                    <small class="text-muted">Receive transaction alerts via SMS</small>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" checked id="notifSMS">
-                  </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div>
-                    <h6 class="mb-0">Push Notifications</h6>
-                    <small class="text-muted">Browser push notifications</small>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="notifPush">
-                  </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 class="mb-0">Loan Reminders</h6>
-                    <small class="text-muted">Reminders before loan due dates</small>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" checked id="notifLoan">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="card dashboard-card">
-              <div class="card-header">
-                <h6 class="card-title mb-0"><i class="bi bi-palette-fill text-accent me-2"></i>Display Preferences</h6>
-              </div>
-              <div class="card-body">
-                <div class="mb-3">
-                  <label class="form-label">Language</label>
-                  <select class="form-select">
-                    <option selected>English</option>
-                    <option>Kiswahili</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Currency Display</label>
-                  <select class="form-select">
-                    <option selected>KES (Kenya Shillings)</option>
-                    <option>USD (US Dollars)</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Date Format</label>
-                  <select class="form-select">
-                    <option selected>DD/MM/YYYY</option>
-                    <option>MM/DD/YYYY</option>
-                    <option>YYYY-MM-DD</option>
-                  </select>
-                </div>
-                <button type="button" class="btn btn-accent" onclick="showToast('success','Settings saved!')">
-                  <i class="bi bi-check-lg me-2"></i>Save Preferences
-                </button>
-              </div>
-            </div>
-
-            <div class="card dashboard-card mt-3 border-danger">
-              <div class="card-header bg-danger-subtle">
-                <h6 class="card-title mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Danger Zone</h6>
-              </div>
-              <div class="card-body">
-                <p class="small text-muted mb-3">These actions are irreversible. Please proceed with caution.</p>
-                <button class="btn btn-outline-danger btn-sm me-2"><i class="bi bi-download me-1"></i>Download My Data</button>
-                <button class="btn btn-danger btn-sm"><i class="bi bi-trash me-1"></i>Request Account Deletion</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== FOOTER ========== -->
-      <footer class="content-footer">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-          <p class="mb-1 mb-md-0 small text-muted">&copy; 2024 SaccoPay. All rights reserved.</p>
-          <div class="d-flex gap-3 small">
-            <a href="#" class="text-muted text-decoration-none">Privacy Policy</a>
-            <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
-            <a href="#" class="text-muted text-decoration-none">Help Center</a>
-          </div>
-        </div>
-      </footer>
-
-    </div><!-- /content-wrapper -->
-  </main>
-
-  <!-- ===================================================================== -->
-  <!-- ========================= MODALS ==================================== -->
-  <!-- ===================================================================== -->
+  <!-- ════════════════════════════════════════════ -->
+  <!--                 MODALS                      -->
+  <!-- ════════════════════════════════════════════ -->
 
   <!-- MODAL: Make Contribution -->
-  <div class="modal fade" id="modalContribute" tabindex="-1" aria-labelledby="modalContributeLabel" aria-hidden="true">
+  <div class="modal fade" id="modalContribute" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalContributeLabel"><i class="bi bi-plus-circle-fill text-accent me-2"></i>Make Contribution</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-plus-circle-fill text-accent me-2"></i>Make Contribution</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="formContribute">
@@ -1952,27 +1795,27 @@
               <input type="tel" class="form-control" placeholder="e.g. 0712345678" />
             </div>
             <div class="alert alert-info-custom small">
-              <i class="bi bi-info-circle-fill me-1"></i>An M-Pesa STK push will be sent to your phone. Please enter your PIN to complete.
+              <i class="bi bi-info-circle-fill me-1"></i>An M-Pesa STK push will be sent to your phone. Please enter
+              your PIN to complete.
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-accent" onclick="handleContribute()">
-            <i class="bi bi-send-fill me-2"></i>Submit Payment
-          </button>
+          <button type="button" class="btn btn-accent" onclick="handleContribute()"><i
+              class="bi bi-send-fill me-2"></i>Submit Payment</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: Apply Loan -->
-  <div class="modal fade" id="modalLoanApply" tabindex="-1" aria-labelledby="modalLoanApplyLabel" aria-hidden="true">
+  <div class="modal fade" id="modalLoanApply" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalLoanApplyLabel"><i class="bi bi-bank text-accent me-2"></i>Loan Application</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-bank text-accent me-2"></i>Loan Application</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="formLoanApply">
@@ -2013,22 +1856,17 @@
                   <option>Other</option>
                 </select>
               </div>
-              <div class="col-12">
-                <label class="form-label">Guarantor 1 (Member No.)</label>
-                <input type="text" class="form-control" placeholder="e.g. SP-2024-0123" />
-              </div>
-              <div class="col-12">
-                <label class="form-label">Guarantor 2 (Member No.)</label>
-                <input type="text" class="form-control" placeholder="e.g. SP-2024-0456" />
-              </div>
-              <div class="col-12">
-                <label class="form-label">Additional Notes</label>
-                <textarea class="form-control" rows="2" placeholder="Any additional information..."></textarea>
-              </div>
+              <div class="col-12"><label class="form-label">Guarantor 1 (Member No.)</label><input type="text"
+                  class="form-control" placeholder="e.g. SP-2024-0123" /></div>
+              <div class="col-12"><label class="form-label">Guarantor 2 (Member No.)</label><input type="text"
+                  class="form-control" placeholder="e.g. SP-2024-0456" /></div>
+              <div class="col-12"><label class="form-label">Additional Notes</label><textarea class="form-control"
+                  rows="2" placeholder="Any additional information..."></textarea></div>
               <div class="col-12">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="loanTerms" required>
-                  <label class="form-check-label small" for="loanTerms">I agree to the <a href="#" class="text-accent">loan terms and conditions</a></label>
+                  <label class="form-check-label small" for="loanTerms">I agree to the <a href="#"
+                      class="text-accent">loan terms and conditions</a></label>
                 </div>
               </div>
             </div>
@@ -2036,21 +1874,20 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-accent" onclick="handleLoanApply()">
-            <i class="bi bi-send-fill me-2"></i>Submit Application
-          </button>
+          <button type="button" class="btn btn-accent" onclick="handleLoanApply()"><i
+              class="bi bi-send-fill me-2"></i>Submit Application</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: Withdraw -->
-  <div class="modal fade" id="modalWithdraw" tabindex="-1" aria-labelledby="modalWithdrawLabel" aria-hidden="true">
+  <div class="modal fade" id="modalWithdraw" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalWithdrawLabel"><i class="bi bi-cash-stack text-accent me-2"></i>Withdrawal Request</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-cash-stack text-accent me-2"></i>Withdrawal Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="formWithdraw">
@@ -2078,28 +1915,29 @@
               <label class="form-label">Reason</label>
               <textarea class="form-control" rows="2" placeholder="Reason for withdrawal..."></textarea>
             </div>
-            <div class="alert alert-warning small">
-              <i class="bi bi-exclamation-triangle-fill me-1"></i>Withdrawals are processed within 48 hours and may require admin approval.
+            <div class="alert alert-warning small"
+              style="background:rgba(249,168,37,0.08);border-color:rgba(249,168,37,0.2);color:var(--warning);border-radius:10px;">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>Withdrawals are processed within 48 hours and may
+              require admin approval.
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-accent" onclick="handleWithdraw()">
-            <i class="bi bi-send-fill me-2"></i>Submit Request
-          </button>
+          <button type="button" class="btn btn-accent" onclick="handleWithdraw()"><i
+              class="bi bi-send-fill me-2"></i>Submit Request</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: Transfer -->
-  <div class="modal fade" id="modalTransfer" tabindex="-1" aria-labelledby="modalTransferLabel" aria-hidden="true">
+  <div class="modal fade" id="modalTransfer" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalTransferLabel"><i class="bi bi-arrow-left-right text-accent me-2"></i>Internal Transfer</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-arrow-left-right text-accent me-2"></i>Internal Transfer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="formTransfer">
@@ -2132,21 +1970,20 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-accent" onclick="handleTransfer()">
-            <i class="bi bi-send-fill me-2"></i>Transfer Now
-          </button>
+          <button type="button" class="btn btn-accent" onclick="handleTransfer()"><i
+              class="bi bi-send-fill me-2"></i>Transfer Now</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: Repay Loan -->
-  <div class="modal fade" id="modalRepayLoan" tabindex="-1" aria-labelledby="modalRepayLoanLabel" aria-hidden="true">
+  <div class="modal fade" id="modalRepayLoan" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalRepayLoanLabel"><i class="bi bi-credit-card-fill text-accent me-2"></i>Loan Repayment</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-credit-card-fill text-accent me-2"></i>Loan Repayment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="formRepayLoan">
@@ -2176,28 +2013,25 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-accent" onclick="handleRepayLoan()">
-            <i class="bi bi-send-fill me-2"></i>Pay Now
-          </button>
+          <button type="button" class="btn btn-accent" onclick="handleRepayLoan()"><i
+              class="bi bi-send-fill me-2"></i>Pay Now</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: New Support Ticket -->
-  <div class="modal fade" id="modalNewTicket" tabindex="-1" aria-labelledby="modalNewTicketLabel" aria-hidden="true">
+  <div class="modal fade" id="modalNewTicket" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalNewTicketLabel"><i class="bi bi-ticket-detailed-fill text-accent me-2"></i>New Support Ticket</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-ticket-detailed-fill text-accent me-2"></i>New Support Ticket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="formNewTicket">
-            <div class="mb-3">
-              <label class="form-label">Subject</label>
-              <input type="text" class="form-control" placeholder="Brief description of your issue" required />
-            </div>
+            <div class="mb-3"><label class="form-label">Subject</label><input type="text" class="form-control"
+                placeholder="Brief description of your issue" required /></div>
             <div class="mb-3">
               <label class="form-label">Category</label>
               <select class="form-select" required>
@@ -2218,39 +2052,35 @@
                 <option>Critical</option>
               </select>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Description</label>
-              <textarea class="form-control" rows="4" placeholder="Describe your issue in detail..." required></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Attachment (Optional)</label>
-              <input type="file" class="form-control" accept=".pdf,.png,.jpg,.jpeg" />
-            </div>
+            <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" rows="4"
+                placeholder="Describe your issue in detail..." required></textarea></div>
+            <div class="mb-3"><label class="form-label">Attachment (Optional)</label><input type="file"
+                class="form-control" accept=".pdf,.png,.jpg,.jpeg" /></div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-accent" onclick="handleNewTicket()">
-            <i class="bi bi-send-fill me-2"></i>Submit Ticket
-          </button>
+          <button type="button" class="btn btn-accent" onclick="handleNewTicket()"><i
+              class="bi bi-send-fill me-2"></i>Submit Ticket</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: Announcement Detail -->
-  <div class="modal fade" id="modalAnnouncement" tabindex="-1" aria-labelledby="modalAnnouncementLabel" aria-hidden="true">
+  <div class="modal fade" id="modalAnnouncement" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalAnnouncementLabel"><i class="bi bi-megaphone-fill text-accent me-2"></i>Announcement</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-megaphone-fill text-accent me-2"></i>Announcement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <h5>Annual General Meeting 2024</h5>
           <p class="text-muted small mb-3"><i class="bi bi-calendar3 me-1"></i>Posted: November 28, 2024</p>
           <p>Dear Members,</p>
-          <p>You are cordially invited to the SaccoPay Annual General Meeting scheduled for <strong>December 15, 2024 at 10:00 AM</strong> at the Nairobi Conference Center.</p>
+          <p>You are cordially invited to the SaccoPay Annual General Meeting scheduled for <strong>December 15, 2024 at
+              10:00 AM</strong> at the Nairobi Conference Center.</p>
           <p><strong>Agenda:</strong></p>
           <ul>
             <li>Review of 2024 Financial Performance</li>
@@ -2263,21 +2093,20 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-accent" onclick="showToast('success','Attendance confirmed!')">
-            <i class="bi bi-check-circle me-2"></i>Confirm Attendance
-          </button>
+          <button type="button" class="btn btn-accent" onclick="showToast('success','Attendance confirmed!')"><i
+              class="bi bi-check-circle me-2"></i>Confirm Attendance</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL: Logout Confirmation -->
-  <div class="modal fade" id="modalLogout" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true">
+  <div class="modal fade" id="modalLogout" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalLogoutLabel"><i class="bi bi-box-arrow-left text-danger me-2"></i>Logout</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="bi bi-box-arrow-left text-danger me-2"></i>Logout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body text-center">
           <i class="bi bi-question-circle display-4 text-warning mb-3"></i>
@@ -2285,56 +2114,73 @@
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-danger" onclick="window.location.href='../index.html'">
-            <i class="bi bi-box-arrow-left me-2"></i>Logout
-          </button>
+          <button type="button" class="btn btn-danger" onclick="window.location.href='../index.html'"><i
+              class="bi bi-box-arrow-left me-2"></i>Logout</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ========== SCRIPTS ========== -->
+  <!-- Toast -->
+  <div class="sp-toast-container" id="toastContainer"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+   UNIVERSAL SCRIPTS — Use on ALL pages
+   ═══════════════════════════════════════════════════════════════ -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./member-sidebar.js"></script>
   <script>
-    // ===== SIDEBAR TOGGLE =====
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
-
-    function openSidebar() {
-      sidebar.classList.add('open');
-      sidebarOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeSidebar() {
-      sidebar.classList.remove('open');
-      sidebarOverlay.classList.remove('active');
-      document.body.style.overflow = '';
+    /* ─── UNIVERSAL SIDEBAR TOGGLE ─── */
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      sidebar.classList.toggle('show');
+      backdrop.classList.toggle('show');
     }
 
-    sidebarToggleBtn.addEventListener('click', openSidebar);
-    sidebarCloseBtn.addEventListener('click', closeSidebar);
-    sidebarOverlay.addEventListener('click', closeSidebar);
+    /* ─── UNIVERSAL TOAST SYSTEM ─── */
+    function showToast(type, message) {
+      const c = document.getElementById('toastContainer');
+      const icons = {
+        success: 'bi bi-check-circle-fill',
+        danger: 'bi bi-exclamation-circle-fill',
+        warning: 'bi bi-exclamation-triangle-fill',
+        info: 'bi bi-info-circle-fill',
+        primary: 'bi bi-bell-fill'
+      };
+      const colors = {
+        success: '#00C853',
+        danger: '#E53935',
+        warning: '#F9A825',
+        info: '#0288D1',
+        primary: '#1a73e8'
+      };
+      const t = document.createElement('div');
+      t.className = `sp-toast ${type}`;
+      t.innerHTML = `<i class="${icons[type] || icons.info}" style="color:${colors[type]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${type.charAt(0).toUpperCase() + type.slice(1)}</div><div style="font-size:11px;color:var(--text-muted);">${message}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`;
+      c.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transition = 'opacity .3s';
+        setTimeout(() => t.remove(), 300);
+      }, 5000);
+    }
 
-    // ===== NAVIGATION =====
-    const navLinks = document.querySelectorAll('[data-section]');
+    /* ─── NAVIGATION ─── */
+    /* ─── NAVIGATION ─── */
     const sections = document.querySelectorAll('.content-section');
     const pageTitle = document.getElementById('pageTitle');
     const pageBreadcrumb = document.getElementById('pageBreadcrumb');
 
     function navigateTo(sectionName) {
-      // Update sections
       sections.forEach(s => s.classList.remove('active'));
       const target = document.getElementById('section-' + sectionName);
       if (target) target.classList.add('active');
 
-      // Update nav links
-      document.querySelectorAll('.sidebar-nav .nav-link').forEach(l => l.classList.remove('active'));
-      const activeLink = document.querySelector('.sidebar-nav .nav-link[data-section="' + sectionName + '"]');
+      document.querySelectorAll('.sp-sidebar .nav-link').forEach(l => l.classList.remove('active'));
+      const activeLink = document.querySelector('.sp-sidebar .nav-link[data-section="' + sectionName + '"]');
       if (activeLink) activeLink.classList.add('active');
 
-      // Update page title
       const titles = {
         dashboard: 'Dashboard',
         contributions: 'Contributions',
@@ -2350,114 +2196,63 @@
       pageTitle.textContent = titles[sectionName] || 'Dashboard';
       pageBreadcrumb.textContent = 'Home / ' + (titles[sectionName] || 'Dashboard');
 
-      // Close sidebar on mobile
-      closeSidebar();
-
-      // Scroll to top
+      toggleSidebar();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    navLinks.forEach(link => {
+    document.querySelectorAll('[data-section]').forEach(link => {
       link.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+
+        // If this is a real page link (sidebar), let the browser navigate normally
+        if (href && href !== '#' && !href.startsWith('#') && href !== 'javascript:void(0)') {
+          // On mobile, close the sidebar before leaving so the next page opens clean
+          if (window.innerWidth < 992) {
+            toggleSidebar();
+          }
+          return; // do NOT prevent default
+        }
+
+        // Otherwise treat it as in-page section navigation
         e.preventDefault();
         const section = this.getAttribute('data-section');
         if (section) navigateTo(section);
       });
-    });
-
-    // Stat card links
-    document.querySelectorAll('.stat-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const section = this.getAttribute('data-section');
-        if (section) navigateTo(section);
-      });
-    });
-
-    // ===== TOAST SYSTEM =====
-    function showToast(type, message) {
-      let toastEl, msgEl, bgClass;
-      switch(type) {
-        case 'success':
-          toastEl = document.getElementById('toastSuccess');
-          msgEl = document.getElementById('toastSuccessMsg');
-          toastEl.className = 'toast align-items-center text-bg-success border-0';
-          break;
-        case 'error':
-          toastEl = document.getElementById('toastError');
-          msgEl = document.getElementById('toastErrorMsg');
-          break;
-        case 'info':
-          toastEl = document.getElementById('toastInfo');
-          msgEl = document.getElementById('toastInfoMsg');
-          break;
-        default:
-          toastEl = document.getElementById('toastInfo');
-          msgEl = document.getElementById('toastInfoMsg');
-      }
-      if (msgEl) msgEl.textContent = message;
-      const toast = new bootstrap.Toast(toastEl);
-      toast.show();
-    }
-
-    // ===== MODAL ACTION HANDLERS =====
+    });/* ─── MODAL ACTION HANDLERS ─── */
     function handleContribute() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalContribute'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('modalContribute')).hide();
       showToast('success', 'Contribution submitted! M-Pesa STK push sent to your phone.');
     }
-
     function handleLoanApply() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalLoanApply'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('modalLoanApply')).hide();
       showToast('success', 'Loan application submitted successfully! You will receive a response within 24 hours.');
     }
-
     function handleWithdraw() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalWithdraw'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('modalWithdraw')).hide();
       showToast('success', 'Withdrawal request submitted! Processing will take up to 48 hours.');
     }
-
     function handleTransfer() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalTransfer'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('modalTransfer')).hide();
       showToast('success', 'Transfer completed successfully!');
     }
-
     function handleRepayLoan() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalRepayLoan'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('modalRepayLoan')).hide();
       showToast('success', 'Loan repayment processed successfully!');
     }
-
     function handleNewTicket() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('modalNewTicket'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('modalNewTicket')).hide();
       showToast('success', 'Support ticket created! Ticket ID: #TK-2024-090. We will respond within 24 hours.');
     }
 
-    // ===== LOGOUT =====
-    document.getElementById('logoutBtn').addEventListener('click', function(e) {
-      e.preventDefault();
-      new bootstrap.Modal(document.getElementById('modalLogout')).show();
-    });
-    document.getElementById('logoutBtn2').addEventListener('click', function(e) {
-      e.preventDefault();
-      new bootstrap.Modal(document.getElementById('modalLogout')).show();
-    });
-
-    // ===== LOAN CALCULATOR =====
-    document.getElementById('btnCalculate')?.addEventListener('click', function() {
+    /* ─── LOAN CALCULATOR ─── */
+    document.getElementById('btnCalculate')?.addEventListener('click', function () {
       const amount = parseFloat(document.getElementById('calcAmount').value);
       const rate = parseFloat(document.getElementById('calcRate').value) / 100 / 12;
       const term = parseInt(document.getElementById('calcTerm').value);
-
       if (amount && rate && term) {
         const monthly = (amount * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
         const totalPayment = monthly * term;
         const totalInterest = totalPayment - amount;
-
         document.getElementById('calcMonthly').textContent = 'KES ' + Math.round(monthly).toLocaleString();
         document.getElementById('calcInterest').textContent = 'KES ' + Math.round(totalInterest).toLocaleString();
         document.getElementById('calcTotal').textContent = 'KES ' + Math.round(totalPayment).toLocaleString();
@@ -2466,26 +2261,23 @@
       }
     });
 
-    // ===== EXPORT HANDLERS =====
-    document.getElementById('btnExportCSV')?.addEventListener('click', function() {
+    /* ─── EXPORT HANDLERS ─── */
+    document.getElementById('btnExportCSV')?.addEventListener('click', function () {
       showToast('success', 'CSV export started. File will download shortly.');
     });
-    document.getElementById('btnExportPDF')?.addEventListener('click', function() {
+    document.getElementById('btnExportPDF')?.addEventListener('click', function () {
       showToast('success', 'PDF export started. File will download shortly.');
     });
 
-    // ===== WELCOME TOAST ON LOAD =====
-    document.addEventListener('DOMContentLoaded', function() {
-      // Init tooltips
+    /* ─── INIT ─── */
+    document.addEventListener('DOMContentLoaded', function () {
       const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
       tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
-
-      // Welcome toast
-      setTimeout(() => {
-        const welcomeToast = new bootstrap.Toast(document.getElementById('toastWelcome'));
-        welcomeToast.show();
-      }, 800);
+      setTimeout(() => showToast('primary', 'Welcome back, John Doe! Your dashboard is ready.'), 800);
     });
   </script>
+
+  <script src="./member-sidebar.js"></script>
 </body>
+
 </html>

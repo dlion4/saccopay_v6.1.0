@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout Preview | SACCOPay Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./admin-dashboard.css">
+
+    <style>
+        .preview-box {
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-teal));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-weight: 600;
+        }
+        .preview-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        .device-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            z-index: 9999;
+            box-shadow: var(--shadow-md);
+        }
+        .code-snippet {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .code-snippet code {
+            color: var(--primary-green-dark);
+        }
+        .highlight {
+            background: var(--primary-green-ultra-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary-green-dark);
+            font-weight: 600;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="device-indicator" id="deviceIndicator">
+        <i class="bi bi-display"></i> <span id="deviceName">Desktop</span>
+    </div>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-logo"><i class="bi bi-bank2"></i></div>
+                <div class="sidebar-brand-text"><h1>SACCO</h1><p>Admin</p></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Menu</div>
+                <div class="nav-item"><a href="#" class="nav-link active"><i class="bi bi-speedometer2 nav-icon"></i><span>Dashboard</span></a></div>
+                <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-people nav-icon"></i><span>Members</span></a></div>
+                <div class="nav-item"><a href="#" class="nav-link"><i class="bi bi-cash-stack nav-icon"></i><span>Loans</span></a></div>
+            </nav>
+        </aside>
+
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="bi bi-list" id="toggleIcon"></i></button>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <div class="topbar-content">
+                    <div class="topbar-search">
+                        <i class="bi bi-search topbar-search-icon"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="topbar-actions">
+                        <button class="topbar-action-btn"><i class="bi bi-bell"></i><span class="notification-badge">3</span></button>
+                        <div class="user-profile">
+                            <div class="user-avatar">JM</div>
+                            <div class="user-info"><h4>John Maina</h4><p>Manager</p></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="dashboard-header mb-4">
+                    <h2>Responsive Grid Preview</h2>
+                    <p>Resize your browser to see how cards adapt to different screen sizes</p>
+                </div>
+
+                <!-- PATTERN 1: 4 Stats Cards -->
+                <h5 class="mb-3">Pattern 1: Stat Cards <span class="highlight">col-12 col-sm-6 col-lg-3</span></h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="preview-box">
+                            <div>Card 1</div>
+                            <div class="preview-label">col-12 col-sm-6 col-lg-3</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="preview-box">
+                            <div>Card 2</div>
+                            <div class="preview-label">col-12 col-sm-6 col-lg-3</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="preview-box">
+                            <div>Card 3</div>
+                            <div class="preview-label">col-12 col-sm-6 col-lg-3</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="preview-box">
+                            <div>Card 4</div>
+                            <div class="preview-label">col-12 col-sm-6 col-lg-3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+&lt;div class="<code>row g-3</code>"&gt;<br>
+&nbsp;&nbsp;&lt;div class="<code>col-12 col-sm-6 col-lg-3</code>"&gt;...&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;div class="<code>col-12 col-sm-6 col-lg-3</code>"&gt;...&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;div class="<code>col-12 col-sm-6 col-lg-3</code>"&gt;...&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;div class="<code>col-12 col-sm-6 col-lg-3</code>"&gt;...&lt;/div&gt;<br>
+&lt;/div&gt;
+                </div>
+
+                <!-- PATTERN 2: 2 Column Layout -->
+                <h5 class="mb-3">Pattern 2: Two Columns <span class="highlight">col-12 col-lg-8 + col-12 col-lg-4</span></h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-lg-8">
+                        <div class="preview-box" style="background: linear-gradient(135deg, #2196f3, #00bcd4);">
+                            <div>Main Content (66%)</div>
+                            <div class="preview-label">col-12 col-lg-8</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="preview-box" style="background: linear-gradient(135deg, #ff9800, #f44336);">
+                            <div>Sidebar (33%)</div>
+                            <div class="preview-label">col-12 col-lg-4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+&lt;div class="<code>row g-3</code>"&gt;<br>
+&nbsp;&nbsp;&lt;div class="<code>col-12 col-lg-8</code>"&gt;...&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;div class="<code>col-12 col-lg-4</code>"&gt;...&lt;/div&gt;<br>
+&lt;/div&gt;
+                </div>
+
+                <!-- PATTERN 3: 3 Equal Columns -->
+                <h5 class="mb-3">Pattern 3: Three Columns <span class="highlight">col-12 col-md-4</span></h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-4">
+                        <div class="preview-box" style="background: linear-gradient(135deg, #9c27b0, #e91e63);">
+                            <div>Column A</div>
+                            <div class="preview-label">col-12 col-md-4</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="preview-box" style="background: linear-gradient(135deg, #9c27b0, #e91e63);">
+                            <div>Column B</div>
+                            <div class="preview-label">col-12 col-md-4</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="preview-box" style="background: linear-gradient(135deg, #9c27b0, #e91e63);">
+                            <div>Column C</div>
+                            <div class="preview-label">col-12 col-md-4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PATTERN 4: 6 Small Cards -->
+                <h5 class="mb-3">Pattern 4: Six Mini Cards <span class="highlight">col-6 col-md-4 col-lg-2</span></h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-4 col-lg-2"><div class="preview-box" style="background: #607d8b;"><div>1</div></div></div>
+                    <div class="col-6 col-md-4 col-lg-2"><div class="preview-box" style="background: #607d8b;"><div>2</div></div></div>
+                    <div class="col-6 col-md-4 col-lg-2"><div class="preview-box" style="background: #607d8b;"><div>3</div></div></div>
+                    <div class="col-6 col-md-4 col-lg-2"><div class="preview-box" style="background: #607d8b;"><div>4</div></div></div>
+                    <div class="col-6 col-md-4 col-lg-2"><div class="preview-box" style="background: #607d8b;"><div>5</div></div></div>
+                    <div class="col-6 col-md-4 col-lg-2"><div class="preview-box" style="background: #607d8b;"><div>6</div></div></div>
+                </div>
+
+                <!-- PATTERN 5: Table Responsive -->
+                <h5 class="mb-3">Pattern 5: Responsive Table <span class="highlight">table-responsive</span></h5>
+                <div class="table-container mb-4">
+                    <div class="table-header">
+                        <h3>Recent Transactions</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-sm btn-outline">Export</button>
+                            <button class="btn btn-sm btn-primary">View All</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Member</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>TX-001</td>
+                                    <td>John Otieno</td>
+                                    <td>Deposit</td>
+                                    <td>KES 50,000</td>
+                                    <td>2026-05-13</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>TX-002</td>
+                                    <td>Sarah Akinyi</td>
+                                    <td>Loan Repayment</td>
+                                    <td>KES 12,500</td>
+                                    <td>2026-05-12</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>TX-003</td>
+                                    <td>David Kipkorir</td>
+                                    <td>Withdrawal</td>
+                                    <td>KES 25,000</td>
+                                    <td>2026-05-11</td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PATTERN 6: Mixed Cards -->
+                <h5 class="mb-3">Pattern 6: Mixed Layout <span class="highlight">Various col-* combinations</span></h5>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="glass-card">
+                            <div class="glass-card-header"><h5>Chart Section</h5></div>
+                            <div class="glass-card-body">
+                                <div class="css-bar-chart">
+                                    <div class="bar-item">
+                                        <div class="bar-label">Week 1</div>
+                                        <div class="bar-container"><div class="bar-fill" style="width: 75%;"></div></div>
+                                        <div class="bar-value">45M</div>
+                                    </div>
+                                    <div class="bar-item">
+                                        <div class="bar-label">Week 2</div>
+                                        <div class="bar-container"><div class="bar-fill" style="width: 85%;"></div></div>
+                                        <div class="bar-value">52M</div>
+                                    </div>
+                                    <div class="bar-item">
+                                        <div class="bar-label">Week 3</div>
+                                        <div class="bar-container"><div class="bar-fill" style="width: 60%;"></div></div>
+                                        <div class="bar-value">35M</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="glass-card">
+                            <div class="glass-card-header"><h5>Quick Stats</h5></div>
+                            <div class="glass-card-body">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="quick-stat-card">
+                                            <div class="quick-stat-icon bg-success-soft text-success"><i class="bi bi-person-plus"></i></div>
+                                            <div class="quick-stat-value">156</div>
+                                            <div class="quick-stat-label">New Members</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="quick-stat-card">
+                                            <div class="quick-stat-icon bg-info-soft text-info"><i class="bi bi-send"></i></div>
+                                            <div class="quick-stat-value">89</div>
+                                            <div class="quick-stat-label">Loans Out</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="quick-stat-card">
+                                            <div class="quick-stat-icon bg-primary-soft text-primary"><i class="bi bi-arrow-down-circle"></i></div>
+                                            <div class="quick-stat-value">1.2K</div>
+                                            <div class="quick-stat-label">Repayments</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="quick-stat-card">
+                                            <div class="quick-stat-icon bg-warning-soft text-warning"><i class="bi bi-exclamation-triangle"></i></div>
+                                            <div class="quick-stat-value">23</div>
+                                            <div class="quick-stat-label">Overdue</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./admin-dashboard.js"></script>
+    <script>
+        // Device indicator
+        function updateDeviceIndicator() {
+            const width = window.innerWidth;
+            const name = document.getElementById('deviceName');
+            const indicator = document.getElementById('deviceIndicator');
+
+            if (width < 576) {
+                name.textContent = 'Mobile (<576px)';
+                indicator.style.borderColor = 'var(--status-danger)';
+            } else if (width < 768) {
+                name.textContent = 'Large Phone (576px+)';
+                indicator.style.borderColor = 'var(--status-warning)';
+            } else if (width < 992) {
+                name.textContent = 'Tablet (768px+)';
+                indicator.style.borderColor = 'var(--accent-orange)';
+            } else if (width < 1200) {
+                name.textContent = 'Desktop (992px+)';
+                indicator.style.borderColor = 'var(--primary-green)';
+            } else {
+                name.textContent = 'Large Desktop (1200px+)';
+                indicator.style.borderColor = 'var(--accent-teal)';
+            }
+        }
+
+        window.addEventListener('resize', updateDeviceIndicator);
+        updateDeviceIndicator();
+    </script>
+</body>
+</html>

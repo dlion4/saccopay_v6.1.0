@@ -14,8 +14,8 @@
         :root {
             --pri: #1a73e8;
             --pri-l: #1558b0;
-            --pri-sub: rgba(255, 107, 0, 0.06);
-            --pri-bdr: rgba(255, 107, 0, 0.20);
+            --pri-sub: rgba(26, 115, 232, 0.06);
+            --pri-bdr: rgba(26, 115, 232, 0.20);
             --bg: #F5F6FA;
             --card: #fff;
             --inp: #F0F2F8;
@@ -25,7 +25,7 @@
             --mono: 'JetBrains Mono', monospace;
             --sh-s: 0 1px 3px rgba(0, 0, 0, 0.06);
             --sh-m: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --sh-o: 0 4px 16px rgba(255, 107, 0, 0.18);
+            --sh-o: 0 4px 16px rgba(26, 115, 232, 0.18);
             --grd: linear-gradient(135deg, #1a73e8, #1558b0, #00f7ff);
             --sbw: 260px;
             --grn: #00C853;
@@ -80,12 +80,12 @@
 
         .sp-sidebar .nav-link:hover {
             color: var(--tx);
-            background: rgba(255, 107, 0, 0.04);
+            background: rgba(26, 115, 232, 0.04);
         }
 
         .sp-sidebar .nav-link.active {
             color: var(--pri);
-            background: linear-gradient(90deg, rgba(255, 107, 0, 0.08), rgba(255, 107, 0, 0.02));
+            background: linear-gradient(90deg, rgba(26, 115, 232, 0.08), rgba(26, 115, 232, 0.02));
             font-weight: 600;
         }
 
@@ -128,7 +128,7 @@
             font-weight: 700;
             padding: 1px 6px;
             border-radius: 50px;
-            box-shadow: 0 2px 6px rgba(255, 107, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
         }
 
         .sp-main {
@@ -155,7 +155,7 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.15) 30%, rgba(255, 107, 0, 0.25) 50%, rgba(255, 107, 0, 0.15) 70%, transparent);
+            background: linear-gradient(90deg, transparent, rgba(26, 115, 232, 0.15) 30%, rgba(26, 115, 232, 0.25) 50%, rgba(26, 115, 232, 0.15) 70%, transparent);
         }
 
         .topbar-btn {
@@ -310,7 +310,7 @@
             right: -40px;
             width: 220px;
             height: 220px;
-            background: rgba(255, 107, 0, 0.12);
+            background: rgba(26, 115, 232, 0.12);
             border-radius: 50%;
         }
 
@@ -321,7 +321,7 @@
             right: 60px;
             width: 180px;
             height: 180px;
-            background: rgba(255, 107, 0, 0.06);
+            background: rgba(26, 115, 232, 0.06);
             border-radius: 50%;
         }
 
@@ -371,7 +371,7 @@
 
         .pcard.selected {
             border-color: var(--pri);
-            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12), var(--sh-o);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12), var(--sh-o);
         }
 
         .pcard .ribbon {
@@ -490,7 +490,7 @@
         .pm.act {
             border-color: var(--pri);
             background: var(--pri-sub);
-            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.10);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.10);
         }
 
         .pm .pi {
@@ -546,7 +546,7 @@
         .stk-spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(255, 107, 0, 0.15);
+            border: 4px solid rgba(26, 115, 232, 0.15);
             border-top-color: var(--pri);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -607,7 +607,7 @@
         }
 
         .sch-row:hover {
-            background: rgba(255, 107, 0, 0.03);
+            background: rgba(26, 115, 232, 0.03);
         }
 
         .sch-row.paid {
@@ -746,11 +746,14 @@
             border-radius: 50px;
         }
     </style>
+<base target="_blank">
+ <link href="./member-sidebar-style.css" rel="stylesheet" />
 </head>
 
 <body>
 
-    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+    <div class="sp-layout">
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
     <!-- SIDEBAR -->
     <aside class="sp-sidebar" id="sidebar">
@@ -764,7 +767,7 @@
         </a>
         <div class="member-badge d-flex align-items-center gap-3">
             <div
-                style="width:38px;height:38px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(255,107,0,0.2);">
+                style="width:38px;height:38px;background:var(--grd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;border:2px solid rgba(26, 115, 232, 0.2);">
                 JK</div>
             <div class="flex-grow-1 min-w-0">
                 <div style="font-size:12px;font-weight:600;" class="text-truncate">James Kamau</div>
@@ -823,7 +826,7 @@
     <!-- MAIN -->
     <div class="sp-main" id="mainContent">
         <header class="sp-topbar d-flex align-items-center px-3 px-lg-4">
-            <button class="btn btn-sm border-0 d-lg-none me-2" onclick="openSidebar()"
+            <button class="btn btn-sm border-0 d-lg-none me-2" onclick="toggleSidebar()"
                 style="font-size:18px;color:var(--txm);"><i class="fas fa-bars"></i></button>
             <nav aria-label="breadcrumb" class="d-none d-md-block">
                 <ol class="breadcrumb mb-0" style="font-size:13px;">
@@ -1012,7 +1015,7 @@
                                                         style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);"><i
                                                             class="fas fa-check-circle"></i> Active</span>
                                                     <span class="b"
-                                                        style="background:rgba(255,107,0,0.06);color:var(--pri);border:1px solid rgba(255,107,0,0.2);font-size:10px;"><i
+                                                        style="background:rgba(26, 115, 232, 0.06);color:var(--pri);border:1px solid rgba(26, 115, 232, 0.2);font-size:10px;"><i
                                                             class="fas fa-bolt"></i> Quick Loan</span>
                                                 </div>
                                             </div>
@@ -1267,7 +1270,7 @@
                                 <h6 class="fw-bold mb-1">Emergency Loan</h6>
                                 <div class="d-flex gap-2 mb-3">
                                     <span class="b"
-                                        style="background:rgba(255,107,0,0.06);color:var(--pri);border:1px solid var(--pri-bdr);font-size:9px;"><i
+                                        style="background:rgba(26, 115, 232, 0.06);color:var(--pri);border:1px solid var(--pri-bdr);font-size:9px;"><i
                                             class="fas fa-bolt"></i> Quick</span>
                                     <span class="b"
                                         style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i
@@ -1383,7 +1386,7 @@
                                 <h6 class="fw-bold mb-1">Salary Advance</h6>
                                 <div class="d-flex gap-2 mb-3">
                                     <span class="b"
-                                        style="background:rgba(255,107,0,0.06);color:var(--pri);border:1px solid var(--pri-bdr);font-size:9px;"><i
+                                        style="background:rgba(26, 115, 232, 0.06);color:var(--pri);border:1px solid var(--pri-bdr);font-size:9px;"><i
                                             class="fas fa-bolt"></i> Instant</span>
                                     <span class="b"
                                         style="background:rgba(0,200,83,0.08);color:var(--grn);border:1px solid rgba(0,200,83,0.2);font-size:9px;"><i
@@ -1915,7 +1918,7 @@
                 </div>
                 <div class="modal-body px-4 pb-4" style="max-height:350px;overflow:auto;">
                     <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1"
-                        style="cursor:pointer;background:rgba(255,107,0,0.03);"
+                        style="cursor:pointer;background:rgba(26, 115, 232, 0.03);"
                         onclick="showToast('Emergency Loan KES 3,200 due Mar 1 — 4 days','warning');bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();">
                         <div
                             style="width:32px;height:32px;background:rgba(249,168,37,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ylw);flex-shrink:0;font-size:12px;">
@@ -1929,7 +1932,7 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-start gap-3 p-2 rounded-3 mb-1"
-                        style="cursor:pointer;background:rgba(255,107,0,0.03);"
+                        style="cursor:pointer;background:rgba(26, 115, 232, 0.03);"
                         onclick="bootstrap.Modal.getInstance(document.getElementById('notifModal')).hide();setTimeout(()=>new bootstrap.Modal(document.getElementById('appTrackModal')).show(),300);">
                         <div
                             style="width:32px;height:32px;background:rgba(249,168,37,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ylw);flex-shrink:0;font-size:12px;">
@@ -1997,8 +2000,7 @@
         function showToast(m, t = 'info') { const c = document.getElementById('toastC'); const ic = { success: 'fa-check-circle', danger: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle', primary: 'fa-bell' }; const cl = { success: 'var(--grn)', danger: 'var(--red)', warning: 'var(--ylw)', info: 'var(--blu)', primary: 'var(--pri)' }; const e = document.createElement('div'); e.className = `t ${t}`; e.innerHTML = `<i class="fas ${ic[t] || ic.info}" style="color:${cl[t]};font-size:18px;flex-shrink:0;"></i><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${t.charAt(0).toUpperCase() + t.slice(1)}</div><div style="font-size:11px;color:var(--txm);">${m}</div></div><button onclick="this.parentElement.remove()" class="btn-close btn-close-sm ms-2" style="font-size:10px;"></button>`; c.appendChild(e); setTimeout(() => { e.style.opacity = '0'; e.style.transition = 'opacity .3s'; setTimeout(() => e.remove(), 300); }, 5000); }
 
         // ═══ SIDEBAR ═══
-        function openSidebar() { document.getElementById('sidebar').classList.add('show'); document.getElementById('sidebarBackdrop').classList.add('show'); }
-        function closeSidebar() { document.getElementById('sidebar').classList.remove('show'); document.getElementById('sidebarBackdrop').classList.remove('show'); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); document.getElementById('sidebarBackdrop').classList.toggle('show'); }
 
         // ═══ TAB SCROLL ═══
         function scrollToProducts() { document.getElementById('tabProducts').click(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -2247,6 +2249,8 @@
         // ═══ INIT ═══
         document.addEventListener('DOMContentLoaded', () => { calc(); setTimeout(() => showToast('Emergency Loan: KES 3,200 due in 4 days (Mar 1)', 'warning'), 800); });
     </script>
+    </div>
+  <script src="./member-sidebar.js"></script>
 </body>
 
 </html>

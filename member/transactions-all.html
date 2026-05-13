@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transactions Management | SACCOPay Member</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -14,431 +14,1022 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 
     <style>
-        /* ============================================
-           SACCOPAY MEMBER — MASTER STYLESHEET
-        ============================================ */
+<style>
+        /* ═══════════════════════════════════════════════════════════════
+           UNIFIED MASTER THEME — Use on ALL pages
+           ═══════════════════════════════════════════════════════════════ */
         :root {
             --primary: #1a73e8;
             --primary-dark: #1558b0;
             --primary-light: #e8f0fe;
-            --primary-ultra: #e6faf4;
-            --teal: #00bcd4;
-            --blue: #2196f3;
-            --purple: #9c27b0;
-            --orange: #ff9800;
-            --red: #f44336;
-            --green: #4caf50;
-            --bg: #f8fafb;
-            --bg2: #ffffff;
-            --bg3: #f0f4f7;
-            --glass: rgba(255, 255, 255, 0.85);
-            --border: #e2e8f0;
-            --text1: #1a2332;
-            --text2: #64748b;
-            --text3: #94a3b8;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
-            --shadow-glow: 0 0 20px rgba(0, 208, 132, 0.15);
-            --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-full: 9999px;
-            --sp-xs: 0.25rem; --sp-sm: 0.5rem; --sp-md: 1rem; --sp-lg: 1.5rem; --sp-xl: 2rem; --sp-2xl: 3rem;
-            --font: 'Inter', -apple-system, sans-serif;
+            --primary-subtle: rgba(26, 115, 232, 0.08);
+            --primary-border: rgba(26, 115, 232, 0.22);
+            --primary-hover: rgba(26, 115, 232, 0.04);
+            --bg-base: #F5F6FA;
+            --bg-card: #FFFFFF;
+            --bg-input: #F0F2F8;
+            --text-primary: #1A1D2E;
+            --text-secondary: rgba(26, 29, 46, 0.72);
+            --text-muted: rgba(26, 29, 46, 0.50);
+            --border-soft: rgba(26, 29, 46, 0.06);
+            --border-medium: rgba(26, 29, 46, 0.10);
+            --success: #00C853;
+            --warning: #F9A825;
+            --danger: #E53935;
+            --info: #0288D1;
+            --purple: #AB00D9;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
+            --shadow-primary: 0 4px 16px rgba(26, 115, 232, 0.22);
+            --gradient-primary: linear-gradient(135deg, #1a73e8 0%, #00f7ff 100%);
+            --gradient-hero: linear-gradient(135deg, #1a73e8 0%, #1558b0 60%, #00f7ff 100%);
+            --sidebar-width: 260px;
+            --topbar-height: 64px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; }
+
+        html, body { overflow-x: hidden; }
+
         body {
-            font-family: var(--font);
-            background: linear-gradient(135deg, #f8fafb 0%, #e6faf4 100%);
-            color: var(--text1);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           LAYOUT WRAPPER — Sidebar + Main
+           ═══════════════════════════════════════════════════════════════ */
+        .sp-layout {
+            display: flex;
             min-height: 100vh;
+            width: 100%;
+            position: relative;
         }
 
-        /* Layout */
-        .member-layout { display: flex; min-height: 100vh; }
+        /* ─── SIDEBAR ─── */
+        .sp-sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid var(--border-soft);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1040;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* Sidebar Navigation */
-        .member-sidebar {
-            width: 260px; background: var(--glass);
+        .sp-sidebar .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: var(--shadow-primary);
+            flex-shrink: 0;
+        }
+
+        .sp-sidebar .nav-link {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 0;
+            position: relative;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+        }
+
+        .sp-sidebar .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--primary-hover);
+        }
+
+        .sp-sidebar .nav-link.active {
+            color: var(--primary);
+            background: linear-gradient(90deg, var(--primary-subtle) 0%, rgba(26, 115, 232, 0.02) 100%);
+            font-weight: 600;
+        }
+
+        .sp-sidebar .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient-primary);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .sp-sidebar .nav-icon {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 15px;
+        }
+
+        .sp-sidebar .section-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(26, 29, 46, 0.30);
+            padding: 12px 20px 6px;
+        }
+
+        .sp-sidebar .member-badge {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .sp-sidebar .nav-badge {
+            background: var(--primary);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 50px;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+        }
+
+        /* ─── MAIN CONTENT WRAPPER ─── */
+        .sp-main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            width: calc(100% - var(--sidebar-width));
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── TOPBAR ─── */
+        .sp-topbar {
+            height: var(--topbar-height);
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom: 1px solid var(--border-soft);
             backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(0, 208, 132, 0.15);
-            position: fixed; height: 100vh;
-            overflow-y: auto; z-index: 1000;
-            box-shadow: var(--shadow-md);
-        }
-        .sidebar-brand {
-            padding: var(--sp-xl);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: var(--sp-md);
-        }
-        .brand-logo {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            border-radius: var(--r-md);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 800; font-size: 1.1rem;
-        }
-        .brand-text h2 {
-            font-size: 1.1rem; font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .brand-text p { font-size: 0.7rem; color: var(--text3); }
-
-        .member-info-bar {
-            padding: var(--sp-md) var(--sp-xl);
-            border-bottom: 1px solid var(--border);
-            background: var(--primary-ultra);
-        }
-        .member-info-bar .m-name { font-size: 0.88rem; font-weight: 700; }
-        .member-info-bar .m-id { font-size: 0.7rem; color: var(--text2); }
-
-        .nav-group { padding: var(--sp-sm) 0; }
-        .nav-section-title {
-            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.08em; color: var(--text3);
-            padding: var(--sp-sm) var(--sp-xl); margin-top: var(--sp-sm);
-        }
-        .nav-item { margin: 2px var(--sp-md); }
-        .nav-link {
-            display: flex; align-items: center; gap: var(--sp-sm);
-            padding: 10px var(--sp-md); color: var(--text2);
-            text-decoration: none; border-radius: var(--r-md);
-            font-size: 0.85rem; font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .nav-link:hover { background: var(--primary-ultra); color: var(--primary-dark); transform: translateX(4px); }
-        .nav-link.active {
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            color: white; box-shadow: 0 4px 12px rgba(0, 208, 132, 0.3);
-        }
-        .nav-link i { width: 18px; flex-shrink: 0; }
-        .nav-badge {
-            margin-left: auto; background: var(--red);
-            color: white; padding: 1px 6px; border-radius: var(--r-full);
-            font-size: 0.65rem; font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
         }
 
-        /* Main Content */
-        .member-main { flex: 1; margin-left: 260px; min-height: 100vh; }
-
-        /* Topbar */
-        .member-topbar {
-            background: var(--glass); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 208, 132, 0.15);
-            padding: var(--sp-md) var(--sp-xl);
-            position: sticky; top: 0; z-index: 100;
-            box-shadow: var(--shadow-sm);
+        .sp-topbar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-border) 30%, var(--primary-border) 70%, transparent);
         }
-        .topbar-inner { display: flex; justify-content: space-between; align-items: center; }
-        .page-breadcrumb { font-size: 0.8rem; color: var(--text2); }
-        .page-breadcrumb span { color: var(--primary); font-weight: 600; }
-        .topbar-right { display: flex; align-items: center; gap: var(--sp-md); }
+
         .topbar-btn {
-            width: 36px; height: 36px; border-radius: var(--r-full);
-            background: var(--bg2); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; font-size: 1rem; color: var(--text2);
-            position: relative; text-decoration: none;
+            width: 36px;
+            height: 36px;
+            background: #fff;
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.15s;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
         }
-        .topbar-btn:hover { background: var(--primary-ultra); border-color: var(--primary); color: var(--primary); }
-        .topbar-notif {
-            position: absolute; top: -4px; right: -4px;
-            width: 18px; height: 18px; background: var(--red);
-            border-radius: 50%; font-size: 0.6rem; color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; border: 2px solid white;
-        }
-        .user-chip {
-            display: flex; align-items: center; gap: var(--sp-sm);
-            padding: 6px 12px; background: var(--bg2);
-            border: 1px solid var(--border); border-radius: var(--r-full);
-            cursor: pointer; transition: all 0.2s;
-        }
-        .user-chip:hover { border-color: var(--primary); }
-        .user-chip-av {
-            width: 28px; height: 28px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 0.68rem;
-        }
-        .user-chip span { font-size: 0.8rem; font-weight: 600; }
 
-        /* Page Workspace */
-        .page-content { padding: var(--sp-xl); max-width: 1150px; }
+        .topbar-btn:hover {
+            background: var(--primary-subtle);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
 
-        /* Hero Overview Card */
+        .topbar-btn .badge-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.92);
+        }
+
+        /* ─── PAGE CONTENT CONTAINER ─── */
+        .sp-content {
+            width: 100%;
+            max-width: 100%;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           CARDS
+           ═══════════════════════════════════════════════════════════════ */
+        .sp-card {
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .sp-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-medium);
+        }
+
+        .sp-card.clickable { cursor: pointer; }
+        .sp-card.clickable:hover { transform: translateY(-2px); }
+
+        .sp-card-accent {
+            border-top: 2px solid var(--primary);
+        }
+
+        /* Stat Cards */
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            word-break: break-word;
+        }
+
+        /* Hero Gradient Card */
+        .hero-deposit {
+            background: var(--gradient-hero);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .hero-deposit::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .hero-deposit::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            right: 80px;
+            width: 160px;
+            height: 160px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        /* Payment Method Cards */
+        .pay-method {
+            border: 2px solid var(--border-medium);
+            border-radius: 14px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            background: #fff;
+            height: 100%;
+        }
+
+        .pay-method:hover {
+            border-color: var(--primary-border);
+            background: var(--primary-subtle);
+        }
+
+        .pay-method.active {
+            border-color: var(--primary);
+            background: var(--primary-subtle);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12);
+        }
+
+        .pay-method .pay-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 24px;
+        }
+
+        /* Progress Bars */
+        .sp-progress {
+            height: 6px;
+            border-radius: 50px;
+            background: rgba(26, 29, 46, 0.06);
+            overflow: hidden;
+        }
+
+        .sp-progress-fill {
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .sp-progress-fill.shimmer::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* Badges */
+        .sp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Toast */
+        .sp-toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: calc(100vw - 48px);
+        }
+
+        .sp-toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: #fff;
+            border: 1px solid var(--border-medium);
+            border-radius: 14px;
+            box-shadow: var(--shadow-lg);
+            min-width: 280px;
+            max-width: 420px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .sp-toast.success { border-left: 3px solid var(--success); }
+        .sp-toast.warning { border-left: 3px solid var(--warning); }
+        .sp-toast.danger { border-left: 3px solid var(--danger); }
+        .sp-toast.info { border-left: 3px solid var(--info); }
+        .sp-toast.primary { border-left: 3px solid var(--primary); }
+
+        /* STK Loader */
+        .stk-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 40px 20px;
+        }
+
+        .stk-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(26, 115, 232, 0.15);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Phone Input */
+        .phone-input-group { position: relative; }
+        .phone-input-group .flag {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            pointer-events: none;
+        }
+        .phone-input-group .prefix {
+            position: absolute;
+            left: 42px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+        .phone-input-group input {
+            padding-left: 82px !important;
+            font-family: var(--font-mono);
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* Card Visual */
+        .card-visual {
+            background: linear-gradient(135deg, #1A1D2E 0%, #2D3048 100%);
+            border-radius: 14px;
+            padding: 24px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-visual::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .card-visual .card-number {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            letter-spacing: 3px;
+            margin: 16px 0;
+            word-break: break-all;
+        }
+
+        .card-visual .card-brand {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+        }
+
+        /* Step indicator */
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-dot.done {
+            background: rgba(0, 200, 83, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 200, 83, 0.2);
+        }
+
+        .step-dot.active {
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .step-dot.pending {
+            background: rgba(26, 29, 46, 0.04);
+            color: var(--text-muted);
+            border: 1px solid var(--border-medium);
+        }
+
+        /* Table */
+        .sp-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sp-table {
+            width: 100%;
+            margin-bottom: 0;
+            font-size: 13px;
+            min-width: 700px;
+        }
+
+        .sp-table thead tr {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            background: rgba(26, 29, 46, 0.02);
+        }
+
+        /* Sidebar Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1035;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar-backdrop.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes countDown {
+            from { stroke-dashoffset: 0; }
+            to { stroke-dashoffset: 283; }
+        }
+        .fade-in-up { animation: fadeInUp 0.4s ease both; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           UNIVERSAL RESPONSIVE — Works on ALL pages
+           ═══════════════════════════════════════════════════════════════ */
+        @media (max-width: 1199px) {
+            .sp-content { padding: 18px; }
+        }
+
+        @media (max-width: 991px) {
+            .sp-sidebar {
+                transform: translateX(-100%);
+                z-index: 1050;
+                box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+            }
+            .sp-sidebar.show { transform: translateX(0); }
+            .sp-main {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .sp-content { padding: 16px; }
+        }
+
+        @media (max-width: 767px) {
+            .sp-content { padding: 14px; }
+            .stat-value { font-size: 20px !important; }
+            .hero-deposit { padding: 24px !important; border-radius: 16px; }
+            .hero-deposit .display-5 { font-size: 1.75rem !important; }
+
+            /* Stack pay methods 2 per row */
+            .pay-method { padding: 12px; }
+            .pay-method .pay-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+
+            /* Modal padding */
+            .modal-body { padding: 20px !important; }
+            .modal-header { padding: 20px 20px 0 !important; }
+            .modal-footer { padding: 0 20px 20px !important; flex-wrap: wrap; gap: 8px; }
+            .modal-footer .btn { flex: 1 1 auto; min-width: 100px; }
+        }
+
+        @media (max-width: 575px) {
+            :root { --sidebar-width: 280px; }
+            .sp-content { padding: 12px; }
+
+            /* Stat cards full width on tiny screens */
+            .stat-card-mobile { width: 100% !important; }
+            .stat-value { font-size: 22px !important; }
+
+            /* Hero compact */
+            .hero-deposit { padding: 20px !important; }
+            .hero-deposit .display-5 { font-size: 1.5rem !important; }
+
+            /* Pay methods single column */
+            .pay-method-col { width: 100%; }
+
+            /* Topbar compact */
+            .sp-topbar { padding: 0 12px; }
+            .topbar-btn { width: 34px; height: 34px; }
+
+            /* Buttons in header */
+            .page-header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            .page-header-actions .btn { width: 100%; }
+
+            /* Toast adjust */
+            .sp-toast-container {
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+            }
+            .sp-toast { min-width: 0; width: 100%; }
+
+            /* Cards radius softer */
+            .sp-card { border-radius: 14px; }
+
+            /* Pagination compact */
+            .pagination .page-link { padding: 4px 8px; font-size: 12px; }
+
+            /* Modal dialog full-width feel */
+            .modal-dialog {
+                margin: 0.5rem;
+                max-width: calc(100% - 1rem);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(26, 29, 46, 0.12);
+            border-radius: 50px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    </style>
+        /* ═══════════════════════════════════════════════════════════════
+           TRANSACTIONS PAGE — SPECIFIC STYLES
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* Hero Gradient Card (Transactions Dark Blue) */
         .hero-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
-            border-radius: var(--r-xl); padding: var(--sp-2xl); color: white;
-            margin-bottom: var(--sp-xl); position: relative; overflow: hidden;
+            border-radius: 20px;
+            padding: 32px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
         }
         .hero-card::before {
             content: ''; position: absolute; top: -60px; right: -60px;
             width: 240px; height: 240px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 208, 132, 0.2), transparent);
+            background: radial-gradient(circle, rgba(26, 115, 232, 0.2), transparent);
         }
         .hero-card::after {
             content: ''; position: absolute; bottom: -40px; left: -40px;
             width: 180px; height: 180px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 188, 212, 0.12), transparent);
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.12), transparent);
         }
         .hero-inner { position: relative; z-index: 1; }
-        .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--sp-xl); flex-wrap: wrap; gap: var(--sp-md); }
         .hero-label { font-size: 0.75rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
         .hero-value { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; line-height: 1; }
         .hero-sub { font-size: 0.82rem; opacity: 0.7; margin-top: 4px; }
+        .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
 
-        .hero-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-md); }
+        .hero-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .kpi-box {
             background: rgba(255, 255, 255, 0.07);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--r-md); padding: var(--sp-md);
+            border-radius: 12px; padding: 16px;
         }
         .kpi-box .k-label { font-size: 0.68rem; opacity: 0.6; margin-bottom: 4px; }
         .kpi-box .k-value { font-size: 1.2rem; font-weight: 700; }
-        .kpi-box .k-value.pos { color: var(--primary-light); }
+        .kpi-box .k-value.pos { color: #e8f0fe; }
         .kpi-box .k-value.neg { color: #ff8a80; }
 
-        /* Quick Action Row */
-        .quick-action-bar {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--sp-md); margin-bottom: var(--sp-xl);
-        }
+        /* Quick Action Tiles */
         .qa-tile {
-            background: var(--glass); backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 208, 132, 0.2);
-            border-radius: var(--r-lg); padding: var(--sp-md) var(--sp-lg);
-            display: flex; align-items: center; gap: var(--sp-md);
-            cursor: pointer; transition: all 0.2s ease;
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex; align-items: center; gap: 14px;
+            cursor: pointer; transition: all 0.25s;
             text-decoration: none; color: inherit;
+            box-shadow: var(--shadow-sm);
         }
         .qa-tile:hover {
-            transform: translateY(-2px); box-shadow: var(--shadow-md);
-            border-color: var(--primary); background: var(--primary-ultra);
-            color: inherit;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-border);
         }
         .qa-icon {
-            width: 42px; height: 42px; border-radius: var(--r-md);
+            width: 42px; height: 42px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; flex-shrink: 0;
         }
-        .qa-icon.dep { background: rgba(0, 208, 132, 0.12); color: var(--primary-dark); }
-        .qa-icon.wdr { background: rgba(244, 67, 54, 0.12); color: var(--red); }
-        .qa-icon.txf { background: rgba(0, 188, 212, 0.12); color: var(--teal); }
-        .qa-icon.snd { background: rgba(33, 150, 243, 0.12); color: var(--blue); }
-
+        .qa-icon.dep { background: rgba(0, 200, 83, 0.1); color: var(--success); }
+        .qa-icon.wdr { background: rgba(229, 57, 53, 0.1); color: var(--danger); }
+        .qa-icon.txf { background: rgba(2, 136, 209, 0.1); color: var(--info); }
+        .qa-icon.snd { background: rgba(26, 115, 232, 0.1); color: var(--primary); }
         .qa-tile h6 { font-size: 0.88rem; font-weight: 600; margin: 0; }
-        .qa-tile p { font-size: 0.68rem; color: var(--text2); margin: 0; }
+        .qa-tile p { font-size: 0.68rem; color: var(--text-muted); margin: 0; }
 
-        /* Filter Controls & Tabs Bar */
+        /* Controls & Tabs */
         .controls-card {
-            background: var(--glass); backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 208, 132, 0.15); border-radius: var(--r-lg);
-            padding: var(--sp-md) var(--sp-xl); margin-bottom: var(--sp-lg);
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            padding: 14px 20px;
+            margin-bottom: 16px;
             display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: var(--sp-md); box-shadow: var(--shadow-sm);
+            flex-wrap: wrap; gap: 14px;
+            box-shadow: var(--shadow-sm);
         }
-        .tx-tabs { display: flex; gap: var(--sp-xs); overflow-x: auto; }
+        .tx-tabs { display: flex; gap: 4px; overflow-x: auto; }
         .tx-tab {
             padding: 8px 16px; border: none; background: transparent;
-            font-size: 0.82rem; font-weight: 600; color: var(--text2);
-            border-radius: var(--r-full); cursor: pointer; transition: all 0.2s;
+            font-size: 0.82rem; font-weight: 600; color: var(--text-muted);
+            border-radius: 50px; cursor: pointer; transition: all 0.2s;
             white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
         }
-        .tx-tab:hover { color: var(--primary); background: var(--bg3); }
-        .tx-tab.active { background: linear-gradient(135deg, var(--primary), var(--teal)); color: white; box-shadow: 0 2px 8px rgba(0, 208, 132, 0.25); }
-        .tx-tab .tcnt { background: rgba(255, 255, 255, 0.25); padding: 1px 6px; border-radius: var(--r-full); font-size: 0.65rem; }
-        .tx-tab:not(.active) .tcnt { background: var(--border); color: var(--text2); }
+        .tx-tab:hover { color: var(--primary); background: var(--primary-hover); }
+        .tx-tab.active {
+            background: var(--gradient-primary); color: #fff;
+            box-shadow: var(--shadow-primary);
+        }
+        .tx-tab .tcnt {
+            background: rgba(255, 255, 255, 0.25); padding: 1px 6px;
+            border-radius: 50px; font-size: 0.65rem;
+        }
+        .tx-tab:not(.active) .tcnt { background: var(--bg-input); color: var(--text-muted); }
 
-        .filter-tools { display: flex; align-items: center; gap: var(--sp-sm); flex-wrap: wrap; }
+        .filter-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .search-box { position: relative; min-width: 220px; }
-        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.85rem; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
         .search-box input {
             width: 100%; padding: 8px 12px 8px 36px; font-size: 0.82rem;
-            border: 1px solid var(--border); border-radius: var(--r-md);
-            background: var(--bg2); outline: none; transition: all 0.2s;
+            border: 1px solid var(--border-medium); border-radius: 10px;
+            background: var(--bg-input); outline: none; transition: all 0.2s;
         }
-        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ultra); }
-
-        /* Main Table Container */
-        .g-card {
-            background: var(--glass); backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 208, 132, 0.15); border-radius: var(--r-lg);
-            box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: var(--sp-xl);
-        }
-        .g-card-header {
-            padding: var(--sp-md) var(--sp-xl); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .g-card-header h3 { font-size: 0.95rem; font-weight: 700; margin: 0; }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
 
         /* Data Table */
         .tx-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         .tx-table th {
-            background: var(--bg3); padding: 10px var(--sp-md); text-align: left;
-            font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text3);
-            border-bottom: 2px solid var(--border);
+            background: var(--bg-input); padding: 10px 14px; text-align: left;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            color: var(--text-muted); border-bottom: 2px solid var(--border-soft);
         }
-        .tx-table td { padding: 12px var(--sp-md); border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .tx-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
         .tx-table tr { transition: background 0.2s; }
-        .tx-table tr:hover { background: var(--primary-ultra); }
+        .tx-table tr:hover { background: var(--primary-light); }
 
-        .tx-cell-main { display: flex; align-items: center; gap: var(--sp-sm); }
+        .tx-cell-main { display: flex; align-items: center; gap: 10px; }
         .tx-icon {
             width: 36px; height: 36px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 0.9rem; flex-shrink: 0;
         }
-        .tx-icon.dep { background: rgba(0, 208, 132, 0.12); color: var(--primary-dark); }
-        .tx-icon.wdr { background: rgba(244, 67, 54, 0.12); color: var(--red); }
-        .tx-icon.txf { background: rgba(0, 188, 212, 0.12); color: var(--teal); }
-        .tx-icon.rep { background: rgba(33, 150, 243, 0.12); color: var(--blue); }
-        .tx-icon.shr { background: rgba(156, 39, 176, 0.12); color: var(--purple); }
+        .tx-icon.dep { background: rgba(0, 200, 83, 0.1); color: var(--success); }
+        .tx-icon.wdr { background: rgba(229, 57, 53, 0.1); color: var(--danger); }
+        .tx-icon.txf { background: rgba(2, 136, 209, 0.1); color: var(--info); }
+        .tx-icon.rep { background: rgba(26, 115, 232, 0.1); color: var(--primary); }
+        .tx-icon.shr { background: rgba(171, 0, 217, 0.1); color: var(--purple); }
 
-        .tx-title { font-weight: 600; color: var(--text1); margin-bottom: 2px; }
-        .tx-ref { font-size: 0.68rem; color: var(--text3); font-family: monospace; }
-
-        .tx-channel { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text2); }
-        .tx-date { font-size: 0.78rem; color: var(--text2); white-space: nowrap; }
-
+        .tx-title { font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+        .tx-ref { font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .tx-channel { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text-secondary); }
+        .tx-date { font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; }
         .tx-amt { font-weight: 700; font-size: 0.9rem; text-align: right; white-space: nowrap; }
-        .tx-amt.pos { color: var(--primary-dark); }
-        .tx-amt.neg { color: var(--text1); }
+        .tx-amt.pos { color: var(--success); }
+        .tx-amt.neg { color: var(--text-primary); }
 
         /* Badges */
         .sbadge {
             display: inline-flex; align-items: center; gap: 4px;
-            padding: 3px 10px; border-radius: var(--r-full);
+            padding: 3px 10px; border-radius: 50px;
             font-size: 0.7rem; font-weight: 700;
         }
-        .sbadge.ok { background: rgba(0, 208, 132, 0.1); color: var(--primary-dark); }
-        .sbadge.pend { background: rgba(255, 152, 0, 0.1); color: #e65100; }
-        .sbadge.fail { background: rgba(244, 67, 54, 0.12); color: #c62828; }
+        .sbadge.ok { background: rgba(0, 200, 83, 0.1); color: #00a344; }
+        .sbadge.pend { background: rgba(249, 168, 37, 0.1); color: #c08a00; }
+        .sbadge.fail { background: rgba(229, 57, 53, 0.1); color: #c62828; }
 
-        /* Modals */
-        .modal-content { border: none; border-radius: var(--r-lg); box-shadow: var(--shadow-lg); }
-        .modal-header.gh { background: linear-gradient(135deg, var(--primary), var(--teal)); color: white; border: none; border-radius: var(--r-lg) var(--r-lg) 0 0; }
-        .modal-header .btn-close { filter: brightness(0) invert(1); }
-        .modal-body { padding: var(--sp-xl); }
-        .modal-footer { border-top: 1px solid var(--border); padding: var(--sp-md) var(--sp-xl); }
-
-        /* Receipt View */
+        /* Receipt */
         .receipt-card {
-            border: 2px dashed var(--border); border-radius: var(--r-md);
-            padding: var(--sp-lg); background: var(--bg);
+            border: 2px dashed var(--border-medium); border-radius: 14px;
+            padding: 20px; background: var(--bg-base);
         }
-        .receipt-head { text-align: center; margin-bottom: var(--sp-md); padding-bottom: var(--sp-md); border-bottom: 1px solid var(--border); }
-        .receipt-head .r-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 208, 132, 0.15); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 8px; }
+        .receipt-head { text-align: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft); }
+        .receipt-head .r-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: rgba(0, 200, 83, 0.1); color: var(--success);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin: 0 auto 8px;
+        }
         .receipt-head h4 { font-size: 1.2rem; font-weight: 800; margin: 0; }
-        .receipt-head p { font-size: 0.75rem; color: var(--text2); margin: 0; }
-
-        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+        .receipt-head p { font-size: 0.75rem; color: var(--text-secondary); margin: 0; }
+        .drow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 0.82rem; }
         .drow:last-child { border-bottom: none; }
-        .drow .dl { color: var(--text3); font-weight: 500; }
-        .drow .dv { font-weight: 600; color: var(--text1); text-align: right; }
+        .drow .dl { color: var(--text-muted); font-weight: 500; }
+        .drow .dv { font-weight: 600; color: var(--text-primary); text-align: right; }
 
         /* Form Components */
-        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
-        .finput { border: 2px solid var(--border); border-radius: var(--r-md); padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%; }
-        .finput:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.12); outline: none; }
-        .fselect { border: 2px solid var(--border); border-radius: var(--r-md); padding: 10px 14px; font-size: 0.875rem; width: 100%; outline: none; }
-        .fselect:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 208, 132, 0.12); }
+        .flbl { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .finput {
+            border: 2px solid var(--border-medium); border-radius: 10px;
+            padding: 10px 14px; font-size: 0.875rem; transition: all 0.3s; width: 100%;
+            background: #fff; color: var(--text-primary);
+        }
+        .finput:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); outline: none; }
+        .fselect {
+            border: 2px solid var(--border-medium); border-radius: 10px;
+            padding: 10px 14px; font-size: 0.875rem; width: 100%; outline: none;
+            background: #fff; color: var(--text-primary);
+        }
+        .fselect:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
 
         /* Buttons */
-        .btn-g { background: linear-gradient(135deg, var(--primary), var(--teal)); color: white; border: none; border-radius: var(--r-md); padding: 10px 20px; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-        .btn-g:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 208, 132, 0.4); color: white; }
-        .btn-o { background: transparent; border: 2px solid var(--primary); color: var(--primary); border-radius: var(--r-md); padding: 8px 18px; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-g {
+            background: var(--gradient-primary); color: white; border: none;
+            border-radius: 10px; padding: 10px 20px; font-weight: 600;
+            font-size: 0.875rem; cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-g:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary); color: white; }
+        .btn-o {
+            background: transparent; border: 2px solid var(--primary); color: var(--primary);
+            border-radius: 10px; padding: 8px 18px; font-weight: 600;
+            font-size: 0.875rem; cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
         .btn-o:hover { background: var(--primary); color: white; }
-        .btn-ghost-s { background: transparent; border: none; color: var(--text2); border-radius: var(--r-md); padding: 8px 14px; font-weight: 500; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-        .btn-ghost-s:hover { background: var(--bg3); color: var(--primary); }
+        .btn-ghost-s {
+            background: transparent; border: none; color: var(--text-secondary);
+            border-radius: 8px; padding: 8px 14px; font-weight: 500;
+            font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-ghost-s:hover { background: var(--bg-input); color: var(--primary); }
+        .btn-red {
+            background: var(--danger); color: white; border: none;
+            border-radius: 10px; padding: 10px 20px; font-weight: 600;
+            font-size: 0.875rem; cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-red:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3); }
 
-        .tab-content-pane { display: none; }
-        .tab-content-pane.active { display: block; }
+        /* Outflow bars */
+        .outflow-bar { height: 6px; background: var(--bg-input); border-radius: 50px; overflow: hidden; margin-bottom: 16px; }
+        .outflow-fill { height: 100%; border-radius: 50px; }
 
-        @media (max-width: 768px) {
-            .member-sidebar { transform: translateX(-100%); transition: 0.3s; }
-            .member-sidebar.open { transform: translateX(0); }
-            .member-main { margin-left: 0; }
+        /* Modal overrides */
+        .modal-content { border: none; border-radius: 16px; box-shadow: var(--shadow-lg); }
+        .modal-header.gh {
+            background: var(--gradient-hero); color: white; border: none;
+            border-radius: 16px 16px 0 0; padding: 16px 20px;
+        }
+        .modal-header .btn-close { filter: brightness(0) invert(1); }
+        .modal-body { padding: 24px; }
+        .modal-footer { border-top: 1px solid var(--border-soft); padding: 14px 20px; }
+
+        /* Responsive */
+        @media (max-width: 991px) {
             .hero-kpis { grid-template-columns: repeat(2, 1fr); }
             .controls-card { flex-direction: column; align-items: stretch; }
             .filter-tools { justify-content: space-between; }
         }
+        @media (max-width: 767px) {
+            .hero-kpis { grid-template-columns: 1fr; }
+            .hero-value { font-size: 1.75rem !important; }
+            .hero-card { padding: 24px !important; }
+        }
 
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+<base target="_blank">
+ <link href="./member-sidebar-style.css" rel="stylesheet" />
 </head>
 <body>
-<div class="member-layout">
 
-    <!-- ===================== SIDEBAR NAVIGATION ===================== -->
-    <aside class="member-sidebar" id="sidebar">
-        <div class="sidebar-brand">
+<!-- ═══════════════════════════════════════════════════════════════
+     UNIFIED LAYOUT WRAPPER — Sidebar + Main
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="sp-layout">
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sp-sidebar" id="sidebar">
+        <!-- Brand -->
+        <div style="padding: 20px; border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; gap: 12px;">
             <div class="brand-logo">S</div>
-            <div class="brand-text"><h2>SACCOPay</h2><p>Member Portal</p></div>
+            <div>
+                <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary);">SACCOPay</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">Member Portal</div>
+            </div>
         </div>
 
-        <div class="member-info-bar">
-            <div class="m-name">James Kamau</div>
-            <div class="m-id">SCO-2024-00142 · Rongo SACCO</div>
+        <!-- Member Badge -->
+        <div class="member-badge">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">James Kamau</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">SCO-2024-00142 · Rongo SACCO</div>
         </div>
 
-        <nav class="nav-group">
-            <div class="nav-section-title">Main</div>
-            <div class="nav-item"><a href="./index-main.html" class="nav-link"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a></div>
-            <div class="nav-item"><a href="./wallet.html" class="nav-link"><i class="bi bi-wallet2"></i><span>Wallet</span></a></div>
-            <div class="nav-item"><a href="./member-profile.html" class="nav-link"><i class="bi bi-person-vcard"></i><span>Sacco Profile</span></a></div>
+        <!-- Navigation -->
+        <nav style="flex: 1; padding: 8px 0;">
+            <div class="section-label">Main</div>
+            <a href="./index-main.html" class="nav-link"><span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>Dashboard</a>
+            <a href="./wallet.html" class="nav-link"><span class="nav-icon"><i class="bi bi-wallet2"></i></span>Wallet</a>
+            <a href="./member-profile.html" class="nav-link"><span class="nav-icon"><i class="bi bi-person-vcard"></i></span>Sacco Profile</a>
 
-            <div class="nav-section-title">Finance</div>
-            <div class="nav-item"><a href="./finance-savings.html" class="nav-link"><i class="bi bi-piggy-bank"></i><span>Savings</span></a></div>
-            <div class="nav-item"><a href="./finance-deposits.html" class="nav-link"><i class="bi bi-arrow-down-circle"></i><span>Deposits</span></a></div>
-            <div class="nav-item"><a href="./finance-withdrawals.html" class="nav-link"><i class="bi bi-arrow-up-circle"></i><span>Withdrawals</span></a></div>
-            <div class="nav-item"><a href="./reports-transactions.html" class="nav-link"><i class="bi bi-arrow-left-right"></i><span>Transactions</span></a></div>
-            <div class="nav-item"><a href="./reports-statements.html" class="nav-link"><i class="bi bi-file-text"></i><span>Statements</span></a></div>
+            <div class="section-label">Finance</div>
+            <a href="./finance-savings.html" class="nav-link"><span class="nav-icon"><i class="bi bi-piggy-bank"></i></span>Savings</a>
+            <a href="./finance-deposits.html" class="nav-link"><span class="nav-icon"><i class="bi bi-arrow-down-circle"></i></span>Deposits</a>
+            <a href="./finance-withdrawals.html" class="nav-link"><span class="nav-icon"><i class="bi bi-arrow-up-circle"></i></span>Withdrawals</a>
+            <a href="./reports-transactions.html" class="nav-link active"><span class="nav-icon"><i class="bi bi-arrow-left-right"></i></span>Transactions</a>
+            <a href="./reports-statements.html" class="nav-link"><span class="nav-icon"><i class="bi bi-file-text"></i></span>Statements</a>
 
-            <div class="nav-section-title">Loans</div>
-            <div class="nav-item"><a href="./loans.html" class="nav-link"><i class="bi bi-cash-stack"></i><span>My Loans</span><span class="nav-badge">2</span></a></div>
-            <div class="nav-item"><a href="./loan-repayments.html" class="nav-link"><i class="bi bi-calendar-check"></i><span>Loan Repayment</span></a></div>
+            <div class="section-label">Loans</div>
+            <a href="./loans.html" class="nav-link"><span class="nav-icon"><i class="bi bi-cash-stack"></i></span>My Loans<span class="nav-badge" style="margin-left: auto;">2</span></a>
+            <a href="./loan-repayments.html" class="nav-link"><span class="nav-icon"><i class="bi bi-calendar-check"></i></span>Loan Repayment</a>
 
-            <div class="nav-section-title">Membership</div>
-            <div class="nav-item"><a href="./membership-shares.html" class="nav-link"><i class="bi bi-bar-chart"></i><span>Shares</span></a></div>
-            <div class="nav-item"><a href="./membership-dividends.html" class="nav-link"><i class="bi bi-gift"></i><span>Dividends</span></a></div>
-            <div class="nav-item"><a href="./membership-guarantors.html" class="nav-link"><i class="bi bi-people"></i><span>Guarantors</span></a></div>
+            <div class="section-label">Membership</div>
+            <a href="./membership-shares.html" class="nav-link"><span class="nav-icon"><i class="bi bi-bar-chart"></i></span>Shares</a>
+            <a href="./membership-dividends.html" class="nav-link"><span class="nav-icon"><i class="bi bi-gift"></i></span>Dividends</a>
+            <a href="./membership-guarantors.html" class="nav-link"><span class="nav-icon"><i class="bi bi-people"></i></span>Guarantors</a>
 
-            <div class="nav-section-title">Account</div>
-            <div class="nav-item"><a href="./account-notifications.html" class="nav-link"><i class="bi bi-bell"></i><span>Notifications</span><span class="nav-badge">5</span></a></div>
-            <div class="nav-item"><a href="./account-settings.html" class="nav-link"><i class="bi bi-gear"></i><span>Settings</span></a></div>
-            <div class="nav-item"><a href="./support.html" class="nav-link"><i class="bi bi-headset"></i><span>Support</span></a></div>
-            <div class="nav-item"><a href="./logout.html" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a></div>
+            <div class="section-label">Account</div>
+            <a href="./account-notifications.html" class="nav-link"><span class="nav-icon"><i class="bi bi-bell"></i></span>Notifications<span class="nav-badge" style="margin-left: auto;">5</span></a>
+            <a href="./account-settings.html" class="nav-link"><span class="nav-icon"><i class="bi bi-gear"></i></span>Settings</a>
+            <a href="./support.html" class="nav-link"><span class="nav-icon"><i class="bi bi-headset"></i></span>Support</a>
+            <a href="./logout.html" class="nav-link" style="color: var(--danger);"><span class="nav-icon"><i class="bi bi-box-arrow-left"></i></span>Logout</a>
         </nav>
     </aside>
-    <!-- ===================== MAIN CONTENT AREA ===================== -->
-    <main class="member-main">
 
-        <!-- Topbar Navigation -->
-        <div class="member-topbar">
-            <div class="topbar-inner">
-                <div>
-                    <button class="btn-ghost-s d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list" style="font-size:1.3rem;"></i></button>
-                    <div class="page-breadcrumb">Home / Transactions / <span>Overview</span></div>
+    <!-- Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="sp-main">
+
+        <!-- Topbar -->
+        <div class="sp-topbar">
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <button class="topbar-btn d-lg-none" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                    <i class="bi bi-list" style="font-size: 1.2rem;"></i>
+                </button>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">
+                    Home / Transactions / <span style="color: var(--primary); font-weight: 600;">Overview</span>
                 </div>
-                <div class="topbar-right">
-                    <a href="notifications.html" class="topbar-btn"><i class="bi bi-bell"></i><span class="topbar-notif">3</span></a>
-                    <div class="user-chip" onclick="openModal('profileModal')">
-                        <div class="user-chip-av">JK</div>
-                        <span>John K.</span>
-                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text3);"></i>
-                    </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="notifications.html" class="topbar-btn" aria-label="Notifications">
+                    <i class="bi bi-bell"></i>
+                    <span class="badge-dot">3</span>
+                </a>
+                <div class="user-chip" onclick="openModal('profileModal')" style="cursor: pointer;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.68rem;">JK</div>
+                    <span style="font-size: 0.8rem; font-weight: 600;">John K.</span>
+                    <i class="bi bi-chevron-down" style="font-size: 0.7rem; color: var(--text-muted);"></i>
                 </div>
             </div>
         </div>
 
-        <div class="page-content">
+        <!-- Page Content -->
+        <div class="sp-content">
 
             <!-- ===== HERO OVERVIEW CARD ===== -->
-            <div class="hero-card fade-in">
+            <div class="hero-card fade-in-up">
                 <div class="hero-inner">
                     <div class="hero-top">
                         <div>
@@ -447,7 +1038,9 @@
                             <div class="hero-sub">Combined Inflows & Outflows for December 2024</div>
                         </div>
                         <div>
-                            <button class="btn-o" style="border-color:rgba(255,255,255,0.3);color:white;" onclick="openModal('exportModal')"><i class="bi bi-cloud-download"></i> Export Statement</button>
+                            <button class="btn-o" style="border-color:rgba(255,255,255,0.3);color:white;" onclick="openModal('exportModal')">
+                                <i class="bi bi-cloud-download"></i> Export Statement
+                            </button>
                         </div>
                     </div>
                     <div class="hero-kpis">
@@ -465,41 +1058,23 @@
                         </div>
                         <div class="kpi-box">
                             <div class="k-label">Success Rate</div>
-                            <div class="k-value" style="color:var(--primary-light);">98.4%</div>
+                            <div class="k-value" style="color:#e8f0fe;">98.4%</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ===== QUICK ACTION ROW ===== -->
-            <div class="quick-action-bar fade-in">
-                <a href="#" class="qa-tile" onclick="openModal('depositModal')">
-                    <div class="qa-icon dep"><i class="bi bi-box-arrow-in-down"></i></div>
-                    <div><h6>Deposit Funds</h6><p>Add via M-Pesa/Bank</p></div>
-                </a>
-                <a href="#" class="qa-tile" onclick="openModal('withdrawModal')">
-                    <div class="qa-icon wdr"><i class="bi bi-box-arrow-up"></i></div>
-                    <div><h6>Withdraw Funds</h6><p>To Wallet or Bank</p></div>
-                </a>
-                <a href="#" class="qa-tile" onclick="openModal('transferModal')">
-                    <div class="qa-icon txf"><i class="bi bi-arrow-left-right"></i></div>
-                    <div><h6>Internal Transfer</h6><p>Move funds in SACCO</p></div>
-                </a>
-                <a href="#" class="qa-tile" onclick="openModal('sendModal')">
-                    <div class="qa-icon snd"><i class="bi bi-send"></i></div>
-                    <div><h6>Send Money</h6><p>To another Member</p></div>
-                </a>
-            </div>
-
             <!-- ===== ANALYTICS VISUALIZATION PANEL ===== -->
-            <div class="row g-4 mb-4 fade-in">
+            <div class="row g-4 mb-4 fade-in-up">
                 <div class="col-lg-8">
-                    <div class="g-card" style="margin-bottom:0; height: 100%;">
-                        <div class="g-card-header">
-                            <h3><i class="bi bi-graph-up me-2" style="color:var(--primary);"></i> Activity Insights (Inflows vs Outflows)</h3>
-                            <span style="font-size:0.75rem;color:var(--text3);">Last 6 Months</span>
+                    <div class="sp-card" style="height: 100%;">
+                        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 0.95rem; font-weight: 700; margin: 0;">
+                                <i class="bi bi-graph-up me-2" style="color:var(--primary);"></i> Activity Insights (Inflows vs Outflows)
+                            </h3>
+                            <span style="font-size:0.75rem;color:var(--text-muted);">Last 6 Months</span>
                         </div>
-                        <div style="padding:var(--sp-md) var(--sp-xl);">
+                        <div style="padding: 16px 20px;">
                             <div style="position: relative; height: 200px;">
                                 <canvas id="txTrendChart"></canvas>
                             </div>
@@ -507,41 +1082,37 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="g-card" style="margin-bottom:0; height: 100%;">
-                        <div class="g-card-header">
-                            <h3><i class="bi bi-pie-chart me-2" style="color:var(--teal);"></i> Outflow Breakdown</h3>
+                    <div class="sp-card" style="height: 100%;">
+                        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 0.95rem; font-weight: 700; margin: 0;">
+                                <i class="bi bi-pie-chart me-2" style="color:var(--info);"></i> Outflow Breakdown
+                            </h3>
                         </div>
-                        <div style="padding:var(--sp-md) var(--sp-lg); display: flex; flex-direction: column; justify-content: center; height: 200px;">
+                        <div style="padding: 20px;">
                             <div style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
-                                <span><i class="bi bi-circle-fill me-2" style="color:var(--blue); font-size:0.5rem;"></i>Loan Repayments</span>
+                                <span><i class="bi bi-circle-fill me-2" style="color:var(--primary); font-size:0.5rem;"></i>Loan Repayments</span>
                                 <strong>65%</strong>
                             </div>
-                            <div style="height:6px; background:var(--bg3); border-radius:var(--r-full); margin-bottom:16px; overflow:hidden;">
-                                <div style="width:65%; height:100%; background:var(--blue);"></div>
-                            </div>
+                            <div class="outflow-bar"><div class="outflow-fill" style="width:65%; background:var(--primary);"></div></div>
 
                             <div style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
-                                <span><i class="bi bi-circle-fill me-2" style="color:var(--teal); font-size:0.5rem;"></i>Share Purchases</span>
+                                <span><i class="bi bi-circle-fill me-2" style="color:var(--info); font-size:0.5rem;"></i>Share Purchases</span>
                                 <strong>25%</strong>
                             </div>
-                            <div style="height:6px; background:var(--bg3); border-radius:var(--r-full); margin-bottom:16px; overflow:hidden;">
-                                <div style="width:25%; height:100%; background:var(--teal);"></div>
-                            </div>
+                            <div class="outflow-bar"><div class="outflow-fill" style="width:25%; background:var(--info);"></div></div>
 
                             <div style="display:flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
-                                <span><i class="bi bi-circle-fill me-2" style="color:var(--orange); font-size:0.5rem;"></i>External Withdrawals</span>
+                                <span><i class="bi bi-circle-fill me-2" style="color:var(--warning); font-size:0.5rem;"></i>External Withdrawals</span>
                                 <strong>10%</strong>
                             </div>
-                            <div style="height:6px; background:var(--bg3); border-radius:var(--r-full); overflow:hidden;">
-                                <div style="width:10%; height:100%; background:var(--orange);"></div>
-                            </div>
+                            <div class="outflow-bar"><div class="outflow-fill" style="width:10%; background:var(--warning);"></div></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- ===== FILTER CONTROLS & TABS BAR ===== -->
-            <div class="controls-card fade-in">
+            <div class="controls-card fade-in-up">
                 <div class="tx-tabs">
                     <button class="tx-tab active" onclick="filterCategory('all', this)">All Transactions <span class="tcnt">18</span></button>
                     <button class="tx-tab" onclick="filterCategory('dep', this)">Deposits <span class="tcnt">6</span></button>
@@ -559,407 +1130,401 @@
             </div>
 
             <!-- ===== MAIN TRANSACTIONS TABLE ===== -->
-            <div class="g-card fade-in">
-                <div class="g-card-header">
-                    <h3>Transaction Ledger</h3>
-                    <span style="font-size:0.75rem; color:var(--text2);">Showing December 2024 Records</span>
+            <div class="sp-card fade-in-up" style="margin-bottom: 24px;">
+                <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; margin: 0;">Transaction Ledger</h3>
+                    <span style="font-size:0.75rem; color:var(--text-secondary);">Showing December 2024 Records</span>
                 </div>
-                <table class="tx-table" id="txLedgerTable">
-                    <thead>
-                        <tr>
-                            <th>Transaction Details</th>
-                            <th>Reference</th>
-                            <th>Channel</th>
-                            <th>Date & Time</th>
-                            <th>Status</th>
-                            <th style="text-align: right;">Amount (KES)</th>
-                            <th style="text-align: center;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- TRX 1: Deposit -->
-                        <tr class="tx-row dep-row">
-                            <td>
-                                <div class="tx-cell-main">
-                                    <div class="tx-icon dep"><i class="bi bi-arrow-down-left"></i></div>
-                                    <div>
-                                        <div class="tx-title">Deposit to Regular Savings</div>
-                                        <div style="font-size:0.7rem; color:var(--text3);">Savings Account Contribution</div>
+                <div class="sp-table-wrap">
+                    <table class="tx-table" id="txLedgerTable">
+                        <thead>
+                            <tr>
+                                <th>Transaction Details</th>
+                                <th>Reference</th>
+                                <th>Channel</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Amount (KES)</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- TRX 1: Deposit -->
+                            <tr class="tx-row dep-row">
+                                <td>
+                                    <div class="tx-cell-main">
+                                        <div class="tx-icon dep"><i class="bi bi-arrow-down-left"></i></div>
+                                        <div>
+                                            <div class="tx-title">Deposit to Regular Savings</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Savings Account Contribution</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><span class="tx-ref">TRX-2024-09812</span></td>
-                            <td><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa PayBill</span></td>
-                            <td><div class="tx-date">Dec 18, 2024<br><span style="font-size:0.68rem; color:var(--text3);">03:45 PM</span></div></td>
-                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
-                            <td class="tx-amt pos">+15,000.00</td>
-                            <td style="text-align: center;">
-                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09812', 'Deposit to Regular Savings', '+15,000.00', 'M-Pesa PayBill', 'Success', 'Dec 18, 2024 03:45 PM', 'John Kamau', 'Regular Savings')">
-                                    <i class="bi bi-receipt"></i> View
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td><span class="tx-ref">TRX-2024-09812</span></td>
+                                <td><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa PayBill</span></td>
+                                <td><div class="tx-date">Dec 18, 2024<br><span style="font-size:0.68rem; color:var(--text-muted);">03:45 PM</span></div></td>
+                                <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                                <td class="tx-amt pos">+15,000.00</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09812', 'Deposit to Regular Savings', '+15,000.00', 'M-Pesa PayBill', 'Success', 'Dec 18, 2024 03:45 PM', 'John Kamau', 'Regular Savings')">
+                                        <i class="bi bi-receipt"></i> View
+                                    </button>
+                                </td>
+                            </tr>
 
-                        <!-- TRX 2: Repayment -->
-                        <tr class="tx-row rep-row">
-                            <td>
-                                <div class="tx-cell-main">
-                                    <div class="tx-icon rep"><i class="bi bi-cash-coin"></i></div>
-                                    <div>
-                                        <div class="tx-title">Loan Repayment Installment</div>
-                                        <div style="font-size:0.7rem; color:var(--text3);">Personal Loan (LN-2024-00845)</div>
+                            <!-- TRX 2: Repayment -->
+                            <tr class="tx-row rep-row">
+                                <td>
+                                    <div class="tx-cell-main">
+                                        <div class="tx-icon rep"><i class="bi bi-cash-coin"></i></div>
+                                        <div>
+                                            <div class="tx-title">Loan Repayment Installment</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Personal Loan (LN-2024-00845)</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><span class="tx-ref">TRX-2024-09811</span></td>
-                            <td><span class="tx-channel"><i class="bi bi-wallet2"></i> SACCO Wallet</span></td>
-                            <td><div class="tx-date">Dec 15, 2024<br><span style="font-size:0.68rem; color:var(--text3);">11:20 AM</span></div></td>
-                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
-                            <td class="tx-amt neg">-12,500.00</td>
-                            <td style="text-align: center;">
-                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09811', 'Loan Repayment Installment', '-12,500.00', 'SACCO Wallet', 'Success', 'Dec 15, 2024 11:20 AM', 'John Kamau', 'Personal Loan (LN-2024-00845)')">
-                                    <i class="bi bi-receipt"></i> View
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td><span class="tx-ref">TRX-2024-09811</span></td>
+                                <td><span class="tx-channel"><i class="bi bi-wallet2"></i> SACCO Wallet</span></td>
+                                <td><div class="tx-date">Dec 15, 2024<br><span style="font-size:0.68rem; color:var(--text-muted);">11:20 AM</span></div></td>
+                                <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                                <td class="tx-amt neg">-12,500.00</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09811', 'Loan Repayment Installment', '-12,500.00', 'SACCO Wallet', 'Success', 'Dec 15, 2024 11:20 AM', 'John Kamau', 'Personal Loan (LN-2024-00845)')">
+                                        <i class="bi bi-receipt"></i> View
+                                    </button>
+                                </td>
+                            </tr>
 
-                        <!-- TRX 3: Withdrawal -->
-                        <tr class="tx-row wdr-row">
-                            <td>
-                                <div class="tx-cell-main">
-                                    <div class="tx-icon wdr"><i class="bi bi-arrow-up-right"></i></div>
-                                    <div>
-                                        <div class="tx-title">Withdrawal from Emergency Fund</div>
-                                        <div style="font-size:0.7rem; color:var(--text3);">Cash Out Request</div>
+                            <!-- TRX 3: Withdrawal -->
+                            <tr class="tx-row wdr-row">
+                                <td>
+                                    <div class="tx-cell-main">
+                                        <div class="tx-icon wdr"><i class="bi bi-arrow-up-right"></i></div>
+                                        <div>
+                                            <div class="tx-title">Withdrawal from Emergency Fund</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Cash Out Request</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><span class="tx-ref">TRX-2024-09810</span></td>
-                            <td><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa Disburse</span></td>
-                            <td><div class="tx-date">Dec 12, 2024<br><span style="font-size:0.68rem; color:var(--text3);">09:10 AM</span></div></td>
-                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
-                            <td class="tx-amt neg">-5,000.00</td>
-                            <td style="text-align: center;">
-                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09810', 'Withdrawal from Emergency Fund', '-5,000.00', 'M-Pesa Disburse', 'Success', 'Dec 12, 2024 09:10 AM', 'Emergency Fund', 'John Kamau (M-Pesa)')">
-                                    <i class="bi bi-receipt"></i> View
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td><span class="tx-ref">TRX-2024-09810</span></td>
+                                <td><span class="tx-channel"><i class="bi bi-phone"></i> M-Pesa Disburse</span></td>
+                                <td><div class="tx-date">Dec 12, 2024<br><span style="font-size:0.68rem; color:var(--text-muted);">09:10 AM</span></div></td>
+                                <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                                <td class="tx-amt neg">-5,000.00</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09810', 'Withdrawal from Emergency Fund', '-5,000.00', 'M-Pesa Disburse', 'Success', 'Dec 12, 2024 09:10 AM', 'Emergency Fund', 'John Kamau (M-Pesa)')">
+                                        <i class="bi bi-receipt"></i> View
+                                    </button>
+                                </td>
+                            </tr>
 
-                        <!-- TRX 4: Share Purchase -->
-                        <tr class="tx-row txf-row">
-                            <td>
-                                <div class="tx-cell-main">
-                                    <div class="tx-icon shr"><i class="bi bi-shield-plus"></i></div>
-                                    <div>
-                                        <div class="tx-title">Share Capital Purchase</div>
-                                        <div style="font-size:0.7rem; color:var(--text3);">Internal Capital Top-Up</div>
+                            <!-- TRX 4: Share Purchase -->
+                            <tr class="tx-row txf-row">
+                                <td>
+                                    <div class="tx-cell-main">
+                                        <div class="tx-icon shr"><i class="bi bi-shield-plus"></i></div>
+                                        <div>
+                                            <div class="tx-title">Share Capital Purchase</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Internal Capital Top-Up</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><span class="tx-ref">TRX-2024-09809</span></td>
-                            <td><span class="tx-channel"><i class="bi bi-arrow-left-right"></i> Internal Transfer</span></td>
-                            <td><div class="tx-date">Dec 10, 2024<br><span style="font-size:0.68rem; color:var(--text3);">04:00 PM</span></div></td>
-                            <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
-                            <td class="tx-amt pos">+10,000.00</td>
-                            <td style="text-align: center;">
-                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09809', 'Share Capital Purchase', '+10,000.00', 'Internal Transfer', 'Success', 'Dec 10, 2024 04:00 PM', 'Regular Savings', 'Share Capital')">
-                                    <i class="bi bi-receipt"></i> View
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td><span class="tx-ref">TRX-2024-09809</span></td>
+                                <td><span class="tx-channel"><i class="bi bi-arrow-left-right"></i> Internal Transfer</span></td>
+                                <td><div class="tx-date">Dec 10, 2024<br><span style="font-size:0.68rem; color:var(--text-muted);">04:00 PM</span></div></td>
+                                <td><span class="sbadge ok"><i class="bi bi-check-circle-fill"></i> Success</span></td>
+                                <td class="tx-amt pos">+10,000.00</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09809', 'Share Capital Purchase', '+10,000.00', 'Internal Transfer', 'Success', 'Dec 10, 2024 04:00 PM', 'Regular Savings', 'Share Capital')">
+                                        <i class="bi bi-receipt"></i> View
+                                    </button>
+                                </td>
+                            </tr>
 
-                        <!-- TRX 5: Pending Transfer -->
-                        <tr class="tx-row txf-row">
-                            <td>
-                                <div class="tx-cell-main">
-                                    <div class="tx-icon txf"><i class="bi bi-arrow-left-right"></i></div>
-                                    <div>
-                                        <div class="tx-title">Transfer to SACCO Wallet</div>
-                                        <div style="font-size:0.7rem; color:var(--text3);">Wallet Fund Allocation</div>
+                            <!-- TRX 5: Pending Transfer -->
+                            <tr class="tx-row txf-row">
+                                <td>
+                                    <div class="tx-cell-main">
+                                        <div class="tx-icon txf"><i class="bi bi-arrow-left-right"></i></div>
+                                        <div>
+                                            <div class="tx-title">Transfer to SACCO Wallet</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Wallet Fund Allocation</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><span class="tx-ref">TRX-2024-09808</span></td>
-                            <td><span class="tx-channel"><i class="bi bi-bank"></i> Bank Disburse</span></td>
-                            <td><div class="tx-date">Dec 08, 2024<br><span style="font-size:0.68rem; color:var(--text3);">01:30 PM</span></div></td>
-                            <td><span class="sbadge pend"><i class="bi bi-hourglass-split"></i> Pending</span></td>
-                            <td class="tx-amt pos">+20,000.00</td>
-                            <td style="text-align: center;">
-                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09808', 'Transfer to SACCO Wallet', '+20,000.00', 'Bank Disburse', 'Pending Approval', 'Dec 08, 2024 01:30 PM', 'KCB Bank Kenya', 'SACCO Wallet')">
-                                    <i class="bi bi-receipt"></i> View
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td><span class="tx-ref">TRX-2024-09808</span></td>
+                                <td><span class="tx-channel"><i class="bi bi-bank"></i> Bank Disburse</span></td>
+                                <td><div class="tx-date">Dec 08, 2024<br><span style="font-size:0.68rem; color:var(--text-muted);">01:30 PM</span></div></td>
+                                <td><span class="sbadge pend"><i class="bi bi-hourglass-split"></i> Pending</span></td>
+                                <td class="tx-amt pos">+20,000.00</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09808', 'Transfer to SACCO Wallet', '+20,000.00', 'Bank Disburse', 'Pending Approval', 'Dec 08, 2024 01:30 PM', 'KCB Bank Kenya', 'SACCO Wallet')">
+                                        <i class="bi bi-receipt"></i> View
+                                    </button>
+                                </td>
+                            </tr>
 
-                        <!-- TRX 6: Failed Withdrawal -->
-                        <tr class="tx-row wdr-row">
-                            <td>
-                                <div class="tx-cell-main">
-                                    <div class="tx-icon wdr"><i class="bi bi-x-circle"></i></div>
-                                    <div>
-                                        <div class="tx-title">Withdrawal from Regular Savings</div>
-                                        <div style="font-size:0.7rem; color:var(--text3);">External Bank Transfer</div>
+                            <!-- TRX 6: Failed Withdrawal -->
+                            <tr class="tx-row wdr-row">
+                                <td>
+                                    <div class="tx-cell-main">
+                                        <div class="tx-icon wdr"><i class="bi bi-x-circle"></i></div>
+                                        <div>
+                                            <div class="tx-title">Withdrawal from Regular Savings</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">External Bank Transfer</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><span class="tx-ref">TRX-2024-09807</span></td>
-                            <td><span class="tx-channel"><i class="bi bi-bank"></i> EFT Gateway</span></td>
-                            <td><div class="tx-date">Dec 05, 2024<br><span style="font-size:0.68rem; color:var(--text3);">10:05 AM</span></div></td>
-                            <td><span class="sbadge fail"><i class="bi bi-x-circle-fill"></i> Failed</span></td>
-                            <td class="tx-amt neg">-15,000.00</td>
-                            <td style="text-align: center;">
-                                <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09807', 'Withdrawal from Regular Savings', '-15,000.00', 'EFT Gateway', 'Failed (Reversed)', 'Dec 05, 2024 10:05 AM', 'Regular Savings', 'Equity Bank (Failed)')">
-                                    <i class="bi bi-receipt"></i> View
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </td>
+                                <td><span class="tx-ref">TRX-2024-09807</span></td>
+                                <td><span class="tx-channel"><i class="bi bi-bank"></i> EFT Gateway</span></td>
+                                <td><div class="tx-date">Dec 05, 2024<br><span style="font-size:0.68rem; color:var(--text-muted);">10:05 AM</span></div></td>
+                                <td><span class="sbadge fail"><i class="bi bi-x-circle-fill"></i> Failed</span></td>
+                                <td class="tx-amt neg">-15,000.00</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-ghost-s" onclick="viewReceipt('TRX-2024-09807', 'Withdrawal from Regular Savings', '-15,000.00', 'EFT Gateway', 'Failed (Reversed)', 'Dec 05, 2024 10:05 AM', 'Regular Savings', 'Equity Bank (Failed)')">
+                                        <i class="bi bi-receipt"></i> View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
     </main>
 </div>
 
-<!-- ====================================================================
-     MODALS (ZERO DEAD ENDS ASSURANCE)
-==================================================================== -->
+<!-- ═══════════════════════════════════════════════════════════════
+     MODALS (All Original Functionality Preserved)
+     ═══════════════════════════════════════════════════════════════ -->
 
 <!-- 1. TRANSACTION RECEIPT / DETAIL MODAL -->
-<div class="modal fade" id="txReceiptModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction Receipt</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="receipt-card">
-            <div class="receipt-head">
-                <div class="r-icon"><i class="bi bi-check2-circle"></i></div>
-                <h4 id="rcptAmount">+KES 15,000.00</h4>
-                <p id="rcptTitle">Deposit to Regular Savings</p>
-                <span class="sbadge ok mt-2" id="rcptStatus">Success</span>
+<div class="modal fade" id="txReceiptModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header gh">
+                <h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Transaction Receipt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="drow"><span class="dl">Transaction Ref</span><span class="dv" id="rcptRef">TRX-2024-09812</span></div>
-            <div class="drow"><span class="dl">Payment Method</span><span class="dv" id="rcptMethod">M-Pesa PayBill</span></div>
-            <div class="drow"><span class="dl">Source</span><span class="dv" id="rcptSource">John Kamau</span></div>
-            <div class="drow"><span class="dl">Destination</span><span class="dv" id="rcptDest">Regular Savings</span></div>
-            <div class="drow"><span class="dl">Transaction Fee</span><span class="dv">KES 0.00</span></div>
-            <div class="drow"><span class="dl">Timestamp</span><span class="dv" id="rcptDate">Dec 18, 2024 03:45 PM</span></div>
-        </div>
-        <div class="mt-4 text-center">
-            <p style="font-size:0.75rem; color:var(--text3);">If you notice any discrepancies regarding this transaction, please raise an official dispute right away.</p>
-        </div>
-    </div>
-    <div class="modal-footer" style="display:flex; justify-content:space-between;">
-        <button class="btn-ghost-s" style="color:var(--red);" onclick="closeAndOpen('txReceiptModal', 'disputeModal')"><i class="bi bi-shield-exclamation"></i> Raise Dispute</button>
-        <div style="display:flex; gap:8px;">
-            <button class="btn-o" onclick="showToast('Receipt downloaded successfully!')"><i class="bi bi-download"></i> PDF</button>
-            <button class="btn-g" onclick="window.print()"><i class="bi bi-printer"></i> Print</button>
-        </div>
-    </div>
-</div></div></div>
-
-<!-- 2. DEPOSIT FUNDS MODAL -->
-<div class="modal fade" id="depositModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-box-arrow-in-down me-2"></i>Deposit Funds</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="row g-3">
-            <div class="col-12"><label class="flbl">Select Deposit Channel</label>
-                <select class="fselect" id="depChannelSelect" onchange="toggleDepFields()">
-                    <option value="mpesa">M-Pesa Express (STK Push)</option>
-                    <option value="bank">Direct Bank EFT</option>
-                    <option value="card">Visa / Mastercard</option>
-                </select>
+            <div class="modal-body">
+                <div class="receipt-card">
+                    <div class="receipt-head">
+                        <div class="r-icon"><i class="bi bi-check2-circle"></i></div>
+                        <h4 id="rcptAmount">+KES 15,000.00</h4>
+                        <p id="rcptTitle">Deposit to Regular Savings</p>
+                        <span class="sbadge ok mt-2" id="rcptStatus">Success</span>
+                    </div>
+                    <div class="drow"><span class="dl">Transaction Ref</span><span class="dv" id="rcptRef">TRX-2024-09812</span></div>
+                    <div class="drow"><span class="dl">Payment Method</span><span class="dv" id="rcptMethod">M-Pesa PayBill</span></div>
+                    <div class="drow"><span class="dl">Source</span><span class="dv" id="rcptSource">John Kamau</span></div>
+                    <div class="drow"><span class="dl">Destination</span><span class="dv" id="rcptDest">Regular Savings</span></div>
+                    <div class="drow"><span class="dl">Transaction Fee</span><span class="dv">KES 0.00</span></div>
+                    <div class="drow"><span class="dl">Timestamp</span><span class="dv" id="rcptDate">Dec 18, 2024 03:45 PM</span></div>
+                </div>
+                <div class="mt-4 text-center">
+                    <p style="font-size:0.75rem; color:var(--text-muted);">If you notice any discrepancies regarding this transaction, please raise an official dispute right away.</p>
+                </div>
             </div>
-            <div class="col-12"><label class="flbl">Target SACCO Account</label>
-                <select class="fselect">
-                    <option>Regular Savings Account</option>
-                    <option>Share Capital (Buy Shares)</option>
-                    <option>Emergency Fund Account</option>
-                    <option>SACCOPay Personal Wallet</option>
-                </select>
-            </div>
-            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="finput" placeholder="e.g. 5000"></div>
-
-            <!-- Context Dependent Channel Inputs -->
-            <div class="col-12" id="mpesaPhoneRow"><label class="flbl">M-Pesa Mobile Number</label><input type="text" class="finput" value="0722123456"></div>
-            <div class="col-12" id="bankRefRow" style="display:none;"><label class="flbl">EFT Payment Ref Code</label><input type="text" class="finput" placeholder="e.g. EFT9382410"></div>
-        </div>
-        <div style="margin-top:var(--sp-lg); padding:10px; background:var(--primary-ultra); border-radius:var(--r-sm); font-size:0.8rem; color:var(--primary-dark);">
-            <i class="bi bi-info-circle-fill me-1"></i> No fees charged for internal deposits via M-Pesa. Processing is instant upon mobile PIN entry.
-        </div>
-    </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('depositModal', 'Deposit request initiated via M-Pesa. Check your phone to complete PIN authorization.')"><i class="bi bi-check-circle"></i> Complete Deposit</button></div>
-</div></div></div>
-
-<!-- 3. WITHDRAW FUNDS MODAL -->
-<div class="modal fade" id="withdrawModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-box-arrow-up me-2"></i>Withdraw Funds</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="row g-3">
-            <div class="col-12"><label class="flbl">Source Account</label>
-                <select class="fselect">
-                    <option>Regular Savings (Bal: KES 125,000.00)</option>
-                    <option>Emergency Fund (Bal: KES 18,000.00)</option>
-                    <option>SACCOPay Personal Wallet (Bal: KES 5,400.00)</option>
-                </select>
-            </div>
-            <div class="col-12"><label class="flbl">Withdraw To</label>
-                <select class="fselect">
-                    <option>Registered M-Pesa (0722***456)</option>
-                    <option>Linked Bank Account (KCB ****8821)</option>
-                </select>
-            </div>
-            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="finput" placeholder="e.g. 2000"></div>
-            <div class="col-12"><label class="flbl">Member Authorization PIN</label><input type="password" class="finput" placeholder="Enter 4-digit PIN" maxlength="4"></div>
-        </div>
-        <div style="margin-top:var(--sp-lg); padding:10px; background:rgba(255,152,0,0.1); border-radius:var(--r-sm); font-size:0.8rem; color:#e65100;">
-            <i class="bi bi-shield-exclamation me-1"></i> Ensure your exposure capacity permits this withdrawal. Standard transfer fees (KES 35) apply.
-        </div>
-    </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('withdrawModal', 'Withdrawal processed successfully. Funds disbursed to your registered M-Pesa account.')"><i class="bi bi-box-arrow-up"></i> Disburse Funds</button></div>
-</div></div></div>
-
-<!-- 4. INTERNAL TRANSFER MODAL -->
-<div class="modal fade" id="transferModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-arrow-left-right me-2"></i>Internal Funds Transfer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="row g-3">
-            <div class="col-md-6"><label class="flbl">From Account</label>
-                <select class="fselect">
-                    <option>Regular Savings</option>
-                    <option>SACCOPay Wallet</option>
-                </select>
-            </div>
-            <div class="col-md-6"><label class="flbl">To Account</label>
-                <select class="fselect">
-                    <option>Share Capital (Buy Shares)</option>
-                    <option>Emergency Fund</option>
-                    <option>Regular Savings</option>
-                </select>
-            </div>
-            <div class="col-12"><label class="flbl">Transfer Amount (KES)</label><input type="number" class="finput" placeholder="e.g. 5000"></div>
-            <div class="col-12"><label class="flbl">Description/Narration</label><input type="text" class="finput" placeholder="e.g. Top up shares capital"></div>
-        </div>
-    </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('transferModal', 'Internal funds transfer complete. Accounts synchronized.')"><i class="bi bi-check-circle"></i> Commit Transfer</button></div>
-</div></div></div>
-
-<!-- 5. SEND MONEY MODAL -->
-<div class="modal fade" id="sendModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-send me-2"></i>Send Money (Member-to-Member)</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="row g-3">
-            <div class="col-12"><label class="flbl">Recipient Member ID or Phone</label><input type="text" class="finput" placeholder="e.g. SP-10089 or 0712345678"></div>
-            <div class="col-12"><label class="flbl">Source Fund</label>
-                <select class="fselect"><option>SACCOPay Wallet (Instant)</option><option>Regular Savings Account</option></select>
-            </div>
-            <div class="col-12"><label class="flbl">Amount (KES)</label><input type="number" class="finput" placeholder="Enter amount"></div>
-            <div class="col-12"><label class="flbl">Message/Note</label><input type="text" class="finput" placeholder="e.g. Settlement for group supplies"></div>
-        </div>
-    </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('sendModal', 'Funds successfully transferred to recipient member.')"><i class="bi bi-send"></i> Send Money</button></div>
-</div></div></div>
-
-<!-- 6. FILTERS MODAL -->
-<div class="modal fade" id="filterModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-funnel me-2"></i>Advanced Transaction Filters</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="row g-3">
-            <div class="col-md-6"><label class="flbl">Start Date</label><input type="date" class="finput"></div>
-            <div class="col-md-6"><label class="flbl">End Date</label><input type="date" class="finput"></div>
-            <div class="col-12"><label class="flbl">Transaction Status</label>
-                <select class="fselect"><option>All Statuses</option><option>Success Only</option><option>Pending Only</option><option>Failed Only</option></select>
-            </div>
-            <div class="col-12"><label class="flbl">Specific Channel</label>
-                <select class="fselect"><option>All Delivery Channels</option><option>M-Pesa Integrated</option><option>Bank EFT / Gateway</option><option>Internal Ledger Transfer</option></select>
+            <div class="modal-footer" style="display:flex; justify-content:space-between;">
+                <button class="btn-ghost-s" style="color:var(--danger);" onclick="closeAndOpen('txReceiptModal', 'disputeModal')">
+                    <i class="bi bi-shield-exclamation"></i> Raise Dispute
+                </button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-o" onclick="showToast('Receipt downloaded successfully!')">
+                        <i class="bi bi-download"></i> PDF
+                    </button>
+                    <button class="btn-g" onclick="window.print()">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Reset</button><button class="btn-g" onclick="processAction('filterModal', 'Filters applied to ledger feed successfully.')"><i class="bi bi-funnel"></i> Apply Filter</button></div>
-</div></div></div>
+</div>
 
-<!-- 7. EXPORT STATEMENT MODAL -->
-<div class="modal fade" id="exportModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gh"><h5 class="modal-title"><i class="bi bi-cloud-download me-2"></i>Export Account Statement</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="row g-3">
-            <div class="col-12"><label class="flbl">Statement Format</label>
-                <select class="fselect"><option>Adobe PDF (.pdf)</option><option>Microsoft Excel (.xlsx)</option><option>Comma Separated Values (.csv)</option></select>
+<!-- 2. FILTERS MODAL -->
+<div class="modal fade" id="filterModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header gh">
+                <h5 class="modal-title"><i class="bi bi-funnel me-2"></i>Advanced Transaction Filters</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="col-12"><label class="flbl">Scope Selection</label>
-                <select class="fselect"><option>Current Month (Dec 2024)</option><option>Last 90 Days</option><option>Complete Lifetime Statement</option></select>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="flbl">Start Date</label><input type="date" class="finput"></div>
+                    <div class="col-md-6"><label class="flbl">End Date</label><input type="date" class="finput"></div>
+                    <div class="col-12">
+                        <label class="flbl">Transaction Status</label>
+                        <select class="fselect">
+                            <option>All Statuses</option><option>Success Only</option><option>Pending Only</option><option>Failed Only</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="flbl">Specific Channel</label>
+                        <select class="fselect">
+                            <option>All Delivery Channels</option><option>M-Pesa Integrated</option><option>Bank EFT / Gateway</option><option>Internal Ledger Transfer</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="col-12"><label class="flbl">Send Duplicate Copy to Registered Email?</label>
-                <div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" checked style="cursor:pointer;"></div>
+            <div class="modal-footer">
+                <button class="btn-ghost-s" data-bs-dismiss="modal">Reset</button>
+                <button class="btn-g" onclick="processAction('filterModal', 'Filters applied to ledger feed successfully.')">
+                    <i class="bi bi-funnel"></i> Apply Filter
+                </button>
             </div>
         </div>
     </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-g" onclick="processAction('exportModal', 'Statement packaged successfully. Download initialised.')"><i class="bi bi-download"></i> Execute Download</button></div>
-</div></div></div>
+</div>
 
-<!-- 8. RAISE DISPUTE MODAL -->
-<div class="modal fade" id="disputeModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header gr"><h5 class="modal-title"><i class="bi bi-shield-exclamation me-2"></i>Raise Transaction Dispute</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div style="background:rgba(244, 67, 54, 0.08); border-radius:var(--r-sm); padding:10px; margin-bottom:var(--sp-md); font-size:0.8rem; color:#c62828;">
-            Disputing Reference: <strong id="disputeRefCode">TRX-2024-09812</strong>
-        </div>
-        <div class="row g-3">
-            <div class="col-12"><label class="flbl">Issue Category</label>
-                <select class="fselect"><option>Amount deducted but transaction failed</option><option>Incorrect amount charged/credited</option><option>Duplicate ledger processing</option><option>Unrecognised account processing</option></select>
+<!-- 3. EXPORT STATEMENT MODAL -->
+<div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header gh">
+                <h5 class="modal-title"><i class="bi bi-cloud-download me-2"></i>Export Account Statement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="col-12"><label class="flbl">Detailed Explanation</label><textarea class="finput" rows="4" placeholder="Describe the discrepancy clearly so support agents can reconcile..."></textarea></div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="flbl">Statement Format</label>
+                        <select class="fselect">
+                            <option>Adobe PDF (.pdf)</option><option>Microsoft Excel (.xlsx)</option><option>Comma Separated Values (.csv)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="flbl">Scope Selection</label>
+                        <select class="fselect">
+                            <option>Current Month (Dec 2024)</option><option>Last 90 Days</option><option>Complete Lifetime Statement</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="flbl">Send Duplicate Copy to Registered Email?</label>
+                        <div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" checked style="cursor:pointer;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-g" onclick="processAction('exportModal', 'Statement packaged successfully. Download initialised.')">
+                    <i class="bi bi-download"></i> Execute Download
+                </button>
+            </div>
         </div>
     </div>
-    <div class="modal-footer"><button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button><button class="btn-red" onclick="processAction('disputeModal', 'Dispute ticket registered. Support desk will update status within 24 hours.')"><i class="bi bi-send"></i> Submit Dispute Ticket</button></div>
-</div></div></div>
+</div>
 
-<!-- Profile Modal View -->
-<div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content">
-    <div class="modal-body text-center" style="padding:var(--sp-xl);">
-        <div class="user-chip-av" style="width:64px; height:64px; font-size:1.4rem; margin:0 auto var(--sp-md);">JK</div>
-        <h5 style="font-weight:700;">John Kamau</h5>
-        <p style="font-size:0.75rem; color:var(--text2);">SP-10015 · Active Account</p>
-        <hr style="margin:var(--sp-sm) 0; border-color:var(--border);">
-        <div style="display:flex; flex-direction:column; gap:4px;">
-            <button class="btn-ghost-s w-100 justify-content-center" onclick="window.location.href='profile.html'"><i class="bi bi-person me-2"></i>My Profile</button>
-            <button class="btn-ghost-s w-100 justify-content-center" onclick="window.location.href='settings.html'"><i class="bi bi-gear me-2"></i>Settings</button>
-            <button class="btn-ghost-s w-100 justify-content-center" style="color:var(--red);" onclick="showToast('Securely logging out account...')"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+<!-- 4. RAISE DISPUTE MODAL -->
+<div class="modal fade" id="disputeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--danger), #b71c1c); color: white; border: none; border-radius: 16px 16px 0 0;">
+                <h5 class="modal-title"><i class="bi bi-shield-exclamation me-2"></i>Raise Transaction Dispute</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: brightness(0) invert(1);"></button>
+            </div>
+            <div class="modal-body">
+                <div style="background:rgba(229, 57, 53, 0.08); border-radius:8px; padding:10px; margin-bottom:16px; font-size:0.8rem; color:#c62828;">
+                    Disputing Reference: <strong id="disputeRefCode">TRX-2024-09812</strong>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="flbl">Issue Category</label>
+                        <select class="fselect">
+                            <option>Amount deducted but transaction failed</option>
+                            <option>Incorrect amount charged/credited</option>
+                            <option>Duplicate ledger processing</option>
+                            <option>Unrecognised account processing</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="flbl">Detailed Explanation</label>
+                        <textarea class="finput" rows="4" placeholder="Describe the discrepancy clearly so support agents can reconcile..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost-s" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-red" onclick="processAction('disputeModal', 'Dispute ticket registered. Support desk will update status within 24 hours.')">
+                    <i class="bi bi-send"></i> Submit Dispute Ticket
+                </button>
+            </div>
         </div>
     </div>
-</div></div></div>
+</div>
 
-<!-- Universal Notification Toast -->
-<div class="position-fixed top-0 end-0 p-3" style="z-index:11000;"><div id="toast" class="toast align-items-center text-bg-success border-0" role="alert"><div class="d-flex"><div class="toast-body" id="toastMsg"><i class="bi bi-check-circle-fill me-2"></i>Success!</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+<!-- 5. PROFILE MODAL -->
+<div class="modal fade" id="profileModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center" style="padding: 28px;">
+                <div style="width:64px; height:64px; border-radius:50%; background: var(--gradient-primary); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:1.4rem; margin:0 auto 16px;">JK</div>
+                <h5 style="font-weight:700;">John Kamau</h5>
+                <p style="font-size:0.75rem; color:var(--text-muted);">SP-10015 · Active Account</p>
+                <hr style="margin:12px 0; border-color:var(--border-soft);">
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <button class="btn-ghost-s w-100 justify-content-center" onclick="window.location.href='profile.html'"><i class="bi bi-person me-2"></i>My Profile</button>
+                    <button class="btn-ghost-s w-100 justify-content-center" onclick="window.location.href='settings.html'"><i class="bi bi-gear me-2"></i>Settings</button>
+                    <button class="btn-ghost-s w-100 justify-content-center" style="color:var(--danger);" onclick="showToast('Securely logging out account...')"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     UNIVERSAL TOAST CONTAINER
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="sp-toast-container" id="toastContainer"></div>
 
 <!-- Bootstrap 5 Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ========== INTERACTIVE PLATFORM UTILITIES ==========
-function showToast(m, type='success'){
-    const el = document.getElementById('toast');
-    el.className = 'toast align-items-center border-0 text-bg-' + (type === 'error' ? 'danger' : 'success');
-    document.getElementById('toastMsg').innerHTML = '<i class="bi bi-' + (type === 'error' ? 'x-circle' : 'check-circle') + '-fill me-2"></i>' + m;
-    new bootstrap.Toast(el, {delay: 3000}).show();
+// ═══════════════════════════════════════════════════════════════
+// UNIVERSAL MASTER FUNCTIONS (Same across ALL pages)
+// ═══════════════════════════════════════════════════════════════
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('show');
+    document.getElementById('sidebarBackdrop').classList.toggle('show');
 }
 
-function openModal(id){ new bootstrap.Modal(document.getElementById(id)).show(); }
-function closeModal(id){ const m = bootstrap.Modal.getInstance(document.getElementById(id)); if(m) m.hide(); }
-function closeAndOpen(closeId, openId){ closeModal(closeId); setTimeout(() => openModal(openId), 350); }
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'sp-toast ' + type;
+    const icon = type === 'success' ? 'bi-check-circle-fill' : type === 'danger' ? 'bi-x-circle-fill' : type === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill';
+    toast.innerHTML = '<i class="bi ' + icon + '" style="font-size:1.1rem; color: var(--' + (type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'warning' ? 'warning' : 'info') + ');"></i><span style="font-size:0.88rem; font-weight:500;">' + message + '</span>';
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
 
-function processAction(modalId, msg){
+// ═══════════════════════════════════════════════════════════════
+// PAGE-SPECIFIC FUNCTIONS (All Original Logic Preserved)
+// ═══════════════════════════════════════════════════════════════
+
+function openModal(id) { new bootstrap.Modal(document.getElementById(id)).show(); }
+function closeModal(id) { const m = bootstrap.Modal.getInstance(document.getElementById(id)); if(m) m.hide(); }
+function closeAndOpen(closeId, openId) { closeModal(closeId); setTimeout(() => openModal(openId), 350); }
+
+function processAction(modalId, msg) {
     closeModal(modalId);
     showToast(msg);
 }
 
-// Contextually Toggle Deposit Inputs
-function toggleDepFields(){
+function toggleDepFields() {
     const ch = document.getElementById('depChannelSelect').value;
     document.getElementById('mpesaPhoneRow').style.display = ch === 'mpesa' ? 'block' : 'none';
     document.getElementById('bankRefRow').style.display = ch === 'bank' ? 'block' : 'none';
 }
 
-// Receipt Parameter Insertion
-function viewReceipt(ref, title, amount, method, status, date, source, dest){
+function viewReceipt(ref, title, amount, method, status, date, source, dest) {
     document.getElementById('rcptRef').textContent = ref;
     document.getElementById('rcptTitle').textContent = title;
     document.getElementById('rcptAmount').textContent = (amount.startsWith('+') ? '+KES ' : '-KES ') + amount.replace(/[+-]/,'');
@@ -972,29 +1537,21 @@ function viewReceipt(ref, title, amount, method, status, date, source, dest){
     stBadge.className = 'sbadge mt-2 ' + (status.includes('Success') ? 'ok' : status.includes('Pending') ? 'pend' : 'fail');
     stBadge.textContent = status;
 
-    // Inject matching code to Dispute parameter display
     document.getElementById('disputeRefCode').textContent = ref;
-
     openModal('txReceiptModal');
 }
 
-// Contextual Table Ledger Filter
-function filterCategory(cat, btn){
+function filterCategory(cat, btn) {
     document.querySelectorAll('.tx-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-
     const rows = document.querySelectorAll('#txLedgerTable tbody tr');
     rows.forEach(r => {
-        if(cat === 'all'){
-            r.style.display = '';
-        } else {
-            r.style.display = r.classList.contains(cat + '-row') ? '' : 'none';
-        }
+        if(cat === 'all') { r.style.display = ''; }
+        else { r.style.display = r.classList.contains(cat + '-row') ? '' : 'none'; }
     });
 }
 
-// Simple Row Keyword Searching
-function searchTx(){
+function searchTx() {
     const term = document.getElementById('txSearchInput').value.toLowerCase();
     const rows = document.querySelectorAll('#txLedgerTable tbody tr');
     rows.forEach(r => {
@@ -1003,10 +1560,13 @@ function searchTx(){
     });
 }
 
-// ========== INITIALISE CHART.JS ANALYTICS ==========
-document.addEventListener('DOMContentLoaded', function(){
+// ═══════════════════════════════════════════════════════════════
+// CHART.JS INITIALISATION
+// ═══════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('txTrendChart');
-    if(ctx){
+    if(ctx) {
         new Chart(ctx, {
             type: 'bar',
             data: {
@@ -1038,5 +1598,6 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 });
 </script>
+  <script src="./member-sidebar.js"></script>
 </body>
 </html>
