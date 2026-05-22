@@ -236,25 +236,29 @@ All TypeScript interfaces properly typed
 
 
 above is chat history:
+MY INSTRUCTIONS
 
-now do the same build design in angular for this admin attached page
-retain all functionality and actions and theme and color and the functionality like editing inputs, modals popups tabs retain all of it
-retain the modals 
+now do the same build design in angular for this member page attached page
+retain all functionality and actions and theme and color and the functionality like editing inputs, modals popups,buttons, tabs retain all of it
+retain the modals.  and the add the responsive style on mobile devices the dat should not crump or broken  on mobile device
 give the exactly matching theme as the code i have given not shoddy theme,
 i have attached how the page preview looks like
 make sure the modals work, the edits fields  work, the toast works, the buttons work no blank spaces no blank buttons
 build as exact as the page i have give but now angularized, give the body content alone no side bar no header
 make it responsive to small screen with cards, sections and content not distorting to look shoddy aligned or broken
 you are a pro design don over look my instructions
+you shoukd add sections, add modals add cards but dont minus or remove whatever is there
 
-rebuild the Angular component to exactly match the original design.  carefully study the provided HTML and CSS to ensure the neo-green glassmorphic theme, layout, and all interactive elements (modals, toasts, filters, quick entry) are perfectly replicated using Angular v21 standalone syntax.
+rebuild the Angular component to exactly match the original design.  carefully study the provided HTML and CSS to ensure the color theme, and all interactive elements (modals, toasts, filters, quick entry) are perfectly replicated using Angular v21 standalone syntax.
+you will be retainng the same theme for every page smoothen the theme design of the color that is there oto make it clean and professional
 now recreate the angularized main content page alone fully with working features and 
-dont over use tostas, every buttons does not have to have a tosta, use extremely few/less tostas, every button that opens a modal retain it, retain all the code structure theme colors buttons cards make them responsive to mobile screen designed to viewed well, design extremely proper,
+dont over use tostas, every buttons does not have to have a tostas, use extremely few/less tostas, every button that opens a modal retain it, retain all the code structure theme colors buttons cards make them responsive to mobile screen designed to viewed well, design extremely proper,
 i repeat don't use extremely many tostas, retain everything from theme to color to ui and functionality modals centrally placed, tabs etc
 Retain/maintain or strictly maintain all the sections of this code every thing they ui ux everything if the modal is scrollable apply, if the pages have forms with editable sections maintain everything
 my client demands quality so maintain the code form it original ui ux gui angularized for my project
 build the three files
 no mat, ssr or other packages that conflict
+buttons or link without anything atcahed a relevant modal for them like no dead ends, create the missing modals
 
 .html
 .scss
